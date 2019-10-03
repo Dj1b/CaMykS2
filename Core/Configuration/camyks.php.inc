@@ -2,7 +2,6 @@
 /**
  * @brief CaMykS static description file.
  * @details Engine / Description File
- * @file Core/Configuration/camyks.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0
  * @date Creation: Oct 2019

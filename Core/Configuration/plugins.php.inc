@@ -2,7 +2,6 @@
 /**
  * @brief CaMykS plugins configuration file.
  * @details Engine / Configuration File
- * @file Core/Configuration/plugins.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0
  * @date Creation: Sep 2019
