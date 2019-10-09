@@ -3,9 +3,9 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
- * @date Creation: Apr 2019
- * @date Modification: Apr 2019
+ * @version 1.0.1
+ * @date Creation: Oct 2019
+ * @date Modification: Oct 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -15,7 +15,7 @@
 /**
  * Cryptographer class.
  */
-final class Cryptographer {
+final class Cryptographer extends Clibrary{
     /**
      * @var array $engines
      * @brief Available engines.
@@ -35,19 +35,45 @@ final class Cryptographer {
     );
 
     /**
-     * @var integer $lastError
-     * @brief Last error.
-     */
-    private $lastError = 0;
-
-    /**
      * Class constructor.
      * @param array $params
      * @return void
      */
     public function __construct($params=array()) {
+        parent::__construct();
+
+        /* Update parameters */
         $this->update_params($params);
     }
+
+    /* Override CLibrary methods */
+
+    /**
+     * Define error code list.
+     * @return void
+     */
+    protected function define_errorCodes() {
+        $this->errorCodes = array(
+            /* Engine errors */
+            1 => 'UnknownEngine',
+            2 => 'EngineNotAvailable',
+
+            /* Cipher errors */
+            11 => 'UnknownCipher',
+
+            /* Key / iv errors */
+            21 => 'KeyIsEmpty',
+            22 => 'IvIsEmpty',
+
+            /* Result errors */
+            31 => 'ResultAltered',
+
+            /* Mcrypt specific errors */
+            101 => 'UnknownMCryptMode',
+        );
+    }
+
+    /* Specific parameters management methods */
 
     /**
      * Update a parameter.
@@ -80,8 +106,7 @@ final class Cryptographer {
         }
 
         /* No known engine defined */
-        $this->set_lastError(1);
-        return false;
+        return $this->add_error(1);
     }
 
     /**
@@ -128,57 +153,6 @@ final class Cryptographer {
         return false;
     }
 
-    /**
-     * Return last error code.
-     * @return integer
-     */
-    public function get_lastErrorCode() {
-        return $this->lastError;
-    }
-
-    /**
-     * Return last error message.
-     * @return string
-     */
-    public function get_lastErrorMessage() {
-        global $camyks;
-
-        /* Load dictionnary */
-        $camyks->add_generic_translation('cryptographer');
-
-        switch ($this->lastError) {
-            case 0 : return $camyks->get_translation('cryptographer_error_none');
-            /* Engine errors */
-            case 1 : return $camyks->get_translation('cryptographer_error_unknownengine');
-            case 2 : return $camyks->get_translation('cryptographer_error_enginenotavailable');
-
-            /* Cipher errors */
-            case 11 : return $camyks->get_translation('cryptographer_error_unknowncipher');
-
-            /* Key / iv errors */
-            case 21 : return $camyks->get_translation('cryptographer_error_keyisempty');
-            case 22 : return $camyks->get_translation('cryptographer_error_ivisempty');
-
-            /* Result errors */
-            case 31 : return $camyks->get_translation('cryptographer_error_alteredmessage');
-
-            /* Mcrypt specific errors */
-            case 101 : return $camyks->get_translation('cryptographer_error_unknownmcryptmode');
-        }
-        return $camyks->get_translation('cryptographer_error_unknownerror');
-    }
-
-    /* Private methods */
-
-    /**
-     * Define last error
-     * @param integer $error
-     * @return void
-     */
-    private function set_lastError($error) {
-        $this->lastError = $error;
-    }
-
     /* Private OpenSSL methods */
 
     /**
@@ -186,25 +160,17 @@ final class Cryptographer {
      * @return boolean result
      */
     private function _OpenSSL_check_configuration() {
-        if (!function_exists('openssl_encrypt')) {
-            $this->set_lastError(2);
-            return false;
-        }
+        if (!function_exists('openssl_encrypt'))
+            return $this->add_error(2);
 
-        if (!in_array($this->params['cipher'], openssl_get_cipher_methods())) {
-            $this->set_lastError(11);
-            return false;
-        }
+        if (!in_array($this->params['cipher'], openssl_get_cipher_methods()))
+            return $this->add_error(11);
 
-        if ($this->params['key'] == '') {
-            $this->set_lastError(21);
-            return false;
-        }
+        if ($this->params['key'] == '')
+            return $this->add_error(21);
 
-        if ($this->params['iv'] == '') {
-            $this->set_lastError(22);
-            return false;
-        }
+        if ($this->params['iv'] == '')
+            return $this->add_error(22);
 
         return true;
     }
@@ -244,25 +210,17 @@ final class Cryptographer {
      * @return boolean result
      */
     private function _Mcrypt_check_configuration() {
-        if (!function_exists('mcrypt_encrypt')) {
-            $this->set_lastError(2);
-            return false;
-        }
+        if (!function_exists('mcrypt_encrypt'))
+            return $this->add_error(2);
 
-        if (!in_array($this->params['cipher'], mcrypt_list_algorithms())) {
-            $this->set_lastError(11);
-            return false;
-        }
+        if (!in_array($this->params['cipher'], mcrypt_list_algorithms()))
+            return $this->add_error(11);
 
-        if (!in_array($this->params['mode'], mcrypt_list_modes())) {
-            $this->set_lastError(101);
-            return false;
-        }
+        if (!in_array($this->params['mode'], mcrypt_list_modes()))
+            return $this->add_error(101);
 
-        if ($this->params['key'] == '') {
-            $this->set_lastError(21);
-            return false;
-        }
+        if ($this->params['key'] == '')
+            return $this->add_error(21);
 
         return true;
     }
@@ -304,15 +262,11 @@ final class Cryptographer {
      * @return boolean result
      */
     private function _Sodium_check_configuration() {
-        if (!function_exists('sodium_crypto_secretbox')) {
-            $this->set_lastError(2);
-            return false;
-        }
+        if (!function_exists('sodium_crypto_secretbox'))
+            return $this->add_error(2);
 
-        if ($this->params['key'] == '') {
-            $this->set_lastError(21);
-            return false;
-        }
+        if ($this->params['key'] == '')
+            return $this->add_error(21);
 
         return true;
     }
@@ -355,7 +309,7 @@ final class Cryptographer {
 
         /* Get decrypted data */
         if (($result = sodium_crypto_secretbox_open($data, $iv, $key)) === false) {
-            $this->set_lastError = 31;
+            $this->add_error(31);
         }
 
         /* Return result */
