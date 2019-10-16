@@ -3,7 +3,7 @@
  * @brief CaMykS static description file.
  * @details Engine / Description File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
  * @date Modification: Oct 2019
  * @copyright 2019 CaMykS Team
@@ -58,5 +58,11 @@ $this->layoutExtension = '.html.inc';
  * @brief CaMykS Website
  */
 $this->websiteURL = 'https://www.camyks.net';
+
+/**
+ * @var string $defaultLanguage
+ * @brief CaMykS default language
+ */
+$this->defaultLanguage = 'en_GB';
 
 ?>

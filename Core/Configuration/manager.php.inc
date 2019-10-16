@@ -3,7 +3,7 @@
  * @brief CaMykS manager configuration file.
  * @details Engine / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Sep 2019
  * @date Modification: Oct 2019
  * @copyright 2019 CaMykS Team
@@ -14,7 +14,7 @@ $configuration = array(
     'manager_password' => '',
     'manager_websitesPath' => '',
     'manager_restrainedIPs' => array(),
-    'manager_SSL' => array(),
+    'manager_SSL' => 0,
     'manager_displaySites' => 0,
     'manager_websitesSearchLevel' => 0,
     'manager_defaultLanguage' => '',
