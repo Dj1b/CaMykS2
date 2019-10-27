@@ -222,7 +222,7 @@ final class CDatabaseConnector extends CLibrary {
 
     /**
      * Return database summary.
-     * @return integer
+     * @return array
      */
     public function get_databaseSummary() {
         return $this->connection->get_databaseSummary();
