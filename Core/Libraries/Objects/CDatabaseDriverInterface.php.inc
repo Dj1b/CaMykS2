@@ -14,7 +14,7 @@
 /**
  * CDatabaseDriverInterface class.
  */
-abstract class CDatabaseDriverInterface extends CLibrary {
+abstract class CDatabaseDriverInterface {
     /**
      * @var Object $parent
      * @brief Link to parent CDatabaseConnector object.
@@ -47,13 +47,13 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * Open connection.
      * @return boolean success
      */
-    abstract public function open() {}
+    abstract public function open();
 
     /**
      * Close connection.
      * @return boolean success
      */
-    abstract public function close() {}
+    abstract public function close();
 
     /* Driver methods */
 
@@ -61,7 +61,7 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * Return database driver version.
      * @return string
      */
-    abstract public function get_driverVersion() {}
+    abstract public function get_driverVersion();
 
     /* Database methods */
 
@@ -70,14 +70,14 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $name
      * @return boolean success
      */
-    abstract public function select_database($name=null) {}
+    abstract public function select_database($name=null);
 
     /**
      * Check database exists.
      * @param string $name
      * @return boolean success
      */
-    abstract public function check_database($name=null) {}
+    abstract public function check_database($name=null);
 
     /**
      * Create a database.
@@ -85,26 +85,26 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $charset
      * @return boolean
      */
-    abstract public function create_database($name, $charset='UTF8') {}
+    abstract public function create_database($name, $charset='UTF8');
 
     /**
      * Dump database.
      * @param mixed $file
      * @return mixed
      */
-    abstract public function dump_database($file=false) {}
+    abstract public function dump_database($file=false);
 
     /**
      * Return database size.
      * @return integer
      */
-    abstract public function get_databaseSize() {}
+    abstract public function get_databaseSize();
 
     /**
      * Return database summary.
      * @return array
      */
-    abstract public function get_databaseSummary() {}
+    abstract public function get_databaseSummary();
 
     /* Table methods */
 
@@ -112,35 +112,35 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * Return database table list.
      * @return array
      */
-    abstract public function get_tableList() {}
+    abstract public function get_tableList();
 
     /**
      * Create a table in the database.
      * @param array $params
      * @return boolean success
      */
-    abstract public function create_table($params=array()) {}
+    abstract public function create_table($params=array());
 
     /**
      * Drop a table from the database.
      * @param string $name
      * @return boolean success
      */
-    abstract public function drop_table($name) {}
+    abstract public function drop_table($name);
 
     /**
      * Truncate a table from the database.
      * @param string $name
      * @return boolean success
      */
-    abstract public function truncate_table($name) {}
+    abstract public function truncate_table($name);
 
     /**
      * Modify a table in the database.
      * @param array $params
      * @return boolean success
      */
-    abstract public function alter_table($params=array()) {}
+    abstract public function alter_table($params=array());
 
     /* Query methods */
 
@@ -149,14 +149,14 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $query
      * @return boolean success
      */
-    abstract public function execute_directQuery($query) {}
+    abstract public function execute_directQuery($query);
 
     /**
      * Execute prepared query using CQuery builder.
      * @param Object $query
      * @return boolean success
      */
-    abstract public function execute_builtQuery($query) {}
+    abstract public function execute_builtQuery($query);
 
     /**
      * Record given query from connection library to query list
@@ -174,35 +174,35 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryGeneratedId($resourceName='DefaultResource') {}
+    abstract public function get_queryGeneratedId($resourceName='DefaultResource');
 
     /**
      * Return next query data line.
      * @param string $resourceName
      * @return array
      */
-    abstract public function get_queryDataLine($resourceName='DefaultResource') {}
+    abstract public function get_queryDataLine($resourceName='DefaultResource');
 
     /**
      * Return next query data line with numeric index.
      * @param string $resourceName
      * @return array
      */
-    abstract public function get_queryNumDataLine($resourceName='DefaultResource') {}
+    abstract public function get_queryNumDataLine($resourceName='DefaultResource');
 
     /**
      * Return latest query affected rows.
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryAffectedRows($resourceName='DefaultResource') {}
+    abstract public function get_queryAffectedRows($resourceName='DefaultResource');
 
     /**
      * Return latest query field count.
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryFieldCount($resourceName='DefaultResource') {}
+    abstract public function get_queryFieldCount($resourceName='DefaultResource');
 
     /**
      * Return latest query field type.
@@ -210,14 +210,14 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $resourceName
      * @return string
      */
-    abstract public function get_queryFieldType($fIndex=0, $resourceName='DefaultResource') {}
+    abstract public function get_queryFieldType($fIndex=0, $resourceName='DefaultResource');
 
     /**
      * Return latest query error.
      * @param string $resourceName
      * @return string
      */
-    abstract public function get_queryError($resourceName='DefaultResource') {}
+    abstract public function get_queryError($resourceName='DefaultResource');
 
     /* Ressource methods */
 
@@ -226,7 +226,7 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $resourceName
      * @return boolean result
      */
-    abstract public function close_ressource($resourceName='DefaultResource') {}
+    abstract public function close_ressource($resourceName='DefaultResource');
 
     /* Data methods */
 
@@ -235,6 +235,6 @@ abstract class CDatabaseDriverInterface extends CLibrary {
      * @param string $string
      * @return string
      */
-    abstract public function escape_string($string='') {}
+    abstract public function escape_string($string='');
 }
 ?>
