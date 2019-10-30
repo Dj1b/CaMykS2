@@ -2,7 +2,6 @@
 /**
  * @brief CaMykS visit configuration file.
  * @details Engine / Configuration File
- * @file Core/Configuration/visit.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0
  * @date Creation: Sep 2019

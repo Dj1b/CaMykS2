@@ -2,7 +2,6 @@
 /**
  * @brief CaMykS database configuration file.
  * @details Engine / Configuration File
- * @file Core/Configuration/database.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0
  * @date Creation: Sep 2019

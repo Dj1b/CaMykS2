@@ -19,16 +19,12 @@ CaMykS have several features that makes it powerful. It is multi-site, multiling
 
 ## Requirements
 
-CaMykS is working on LAMP (Linux/Apache/MySQL/PHP) or MAMP (Mac OS X/Apache/MySQL/PHP) systems.
+CaMykS will work on LAMP (Linux/Apache/MySQL/PHP) and MAMP (Mac OS X/Apache/MySQL/PHP) systems. It may work on WAMP systems, but will not be tested.
 
 We advise to suit the following versions:
 * Apache 2.0+, with Rewrite module (Header module advised)
-* PHP 5+ (version 5.6 or 7 advised), with curl, gd, mbstring, xml modules
-* MySQL 5.5+
-
-SQLite3 and PostgreSQL drivers are currently available in beta. They are working but incomplete, and may have some issues we haven't found yet.
-Feel free to share your experience, and help us to finalise them.
-
+* PHP 5.3.26+ (version 5.6 or 7 advised), with curl, gd, mbstring, xml modules
+* MySQL 5.0+
 
 ## Getting started with CaMykS
 
