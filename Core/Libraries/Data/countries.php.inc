@@ -3,9 +3,9 @@
  * @brief CaMykS countries data stored by 2-letters codes (ISO 3166-1).
  * @details Engine / Data Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -2226,7 +2226,7 @@ $cCountries = array(
         'Currency'              => 'nok',
         'Parent'                => 'ni',
     ),
-    'sj' => array( // Slovakia
+    'sk' => array( // Slovakia
         'Type'                  => 'country',
         'OfficialLanguages'     => array('sk'),
         'UnofficialLanguages'   => array(),
@@ -2281,7 +2281,7 @@ $cCountries = array(
         'Currency'              => 'sos',
         'Parent'                => null,
     ),
-    'so' => array( // Suriname
+    'sr' => array( // Suriname
         'Type'                  => 'country',
         'OfficialLanguages'     => array('nl'),
         'UnofficialLanguages'   => array(),
