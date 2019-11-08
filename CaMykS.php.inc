@@ -3,9 +3,9 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a1
+ * @version 2.0a2
  * @date Creation: Feb 2017
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -93,6 +93,49 @@ final class CaMykS {
 
         /* Display */
         $this->display();
+    }
+
+    /* Library related methods */
+
+    /**
+     * Load given library.
+     * @param string $libraryPath
+     * @return boolean success
+     */
+    public function load_library($libraryPath) {
+        /* TO DO SET in camyks initialisation */
+        $rootPath = dirname(__FILE__);
+
+        /* Define file */
+        $file = $rootPath.'/Core/Libraries/'.$libraryPath.'.php.inc';
+
+        /* Check file */
+        if (!file_exists($file))
+            return false;
+
+        /* Load library */
+        require_once($file);
+    }
+
+    /**
+     * Return asset file URL.
+     * @param string $asset
+     * @return string
+     */
+    public function get_assetFileURL($asset) {
+        /* TO DO SET in camyks initialisation */
+        $rootPath = dirname(__FILE__);
+        $rootURL = '/CaMykS2';
+
+        /* Define file */
+        $file = '/Core/Assets/'.$asset;
+
+        /* Check file */
+        if (file_exists($rootPath.$file))
+            return $rootURL.$file;
+
+        /* Default for files that don't exists */
+        return '';
     }
 
     /* Language related methods */
