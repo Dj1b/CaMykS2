@@ -3,7 +3,7 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -63,7 +63,7 @@ function country_getLocalisedTitles($params=array(), $language=null) {
     $params = array_merge(array('Territories'=>1, 'ShortList'=>array()), $params);
 
     /* Load data file */
-    language_getCountriesData();
+    country_getCountriesData();
 
     /* Load locales */
     country_loadCountriesLocale($language);
@@ -97,7 +97,7 @@ function country_getLocalisedTitle($country, $language=null) {
     global $cCountries, $CaMykS;
 
     /* Load data file */
-    language_getCountriesData();
+    country_getCountriesData();
 
     /* Check country */
     if (!isset($cCountries[$country]))
@@ -269,26 +269,44 @@ function country_getCurrencyTitle($country) {
  * @param string $size
  */
 function country_getFlagURL($country, $collection='Flat', $size=16) {
-    global $CaMykS;
+    global $CaMykS, $cCountries;
+
+    /* Load data file */
+    country_getCountriesData();
+
+    /* Check country */
+    if (!isset($cCountries[$country]))
+        return '';
 
     /* Define collections parameters */
     $collections = array(
         'Flat' => array(
             'FileExtension' => 'png',
-            'Sizes'         => array(16, 32, 64, 128, 256),
+            'Sizes'         => array(16, 32, 64, 128, 256, '256U'),
         ),
     );
 
     /* Check collection */
-    if (!isset($collections[$collections]))
+    if (!isset($collections[$collection]))
         return '';
 
     /* Check size */
-    if (!in_array($size, $collections[$collections]['Sizes']))
+    if (!in_array($size, $collections[$collection]['Sizes']))
         return '';
 
-    /* Return file URL from CaMykS */
-    return $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/'.strtolower($country).'.'.$collections[$collections]['FileExtension']);
+    /* Load file URL from CaMykS */
+    $url = $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/'.strtolower($country).'.'.$collections[$collection]['FileExtension']);
+
+    /* Check URL */
+    if ($url != '')
+        return $url;
+
+    /* Check for parent flag */
+    if (!is_null($cCountries[$country]['Parent']))
+        $url = country_getFlagURL($cCountries[$country]['Parent'], $collection, $size);
+
+    /* Return url */
+    return $url;
 }
 
 /**
