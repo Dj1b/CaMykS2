@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -178,7 +178,7 @@ final class CQuery extends CLibrary {
 
             /* Select related errors */
             21 => 'GroupByDataIsInvalid',
-            'xx' => 'LimitDataIsInvalid',
+            22 => 'LimitDataIsInvalid',
 
             /* Insert related errors */
             31 => 'MethodCanOnlyBeUsedWithInsertCommand',
@@ -294,6 +294,14 @@ final class CQuery extends CLibrary {
         return true;
     }
 
+    /**
+     * Return tables values.
+     * @return array
+     */
+    public function get_tables() {
+        return $this->tables;
+    }
+
 
 
 
@@ -303,14 +311,6 @@ final class CQuery extends CLibrary {
      */
     public function get_whereConditions() {
         return $this->whereConditions;
-    }
-
-    /**
-     * Return tables values.
-     * @return array
-     */
-    public function get_tables() {
-        return $this->tables;
     }
 
     /**
@@ -388,7 +388,15 @@ final class CQuery extends CLibrary {
         return $this->limitOffset;
     }
 
-    /* Select specifc methods */
+    /**
+     * Return limits.
+     * @return array
+     */
+    public function get_limits() {
+        return array('count'=>$this->limitCount, 'offset'=>$this->limitOffset);
+    }
+
+    /* Select specific methods */
 
     /**
      * Add select item.
@@ -908,7 +916,7 @@ final class CQuery extends CLibrary {
     /**
      * Update limit, reading and parsing from a SQL query.
      * @param string $data
-     * @return boolnean success
+     * @return boolean success
      */
     private function _read_limitFromSQL($data) {
         $data = trim($data);
@@ -927,7 +935,7 @@ final class CQuery extends CLibrary {
 
         /* Else limit data is malformed */
         } else {
-            return $this->set_error('xx');
+            return $this->set_error(22);
         }
 
         /* Return success */
