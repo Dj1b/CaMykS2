@@ -109,5 +109,4 @@ function currency_getLocalisedTitle($currency, $language=null) {
     /* Return result */
     return $CaMykS->get_locale('currency_'.$currency);
 }
-
 ?>

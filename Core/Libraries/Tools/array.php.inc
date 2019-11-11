@@ -148,5 +148,4 @@ function array_filterRecursive($array, $function) {
     /* Return updated array */
     return $array;
 }
-
 ?>

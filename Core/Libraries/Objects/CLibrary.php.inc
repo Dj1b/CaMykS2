@@ -182,3 +182,4 @@ abstract class CLibrary {
         return $CaMykS->get_locale('GenericErrorMessage', '('.$this->libraryName.'::'.$errorId.') '.$code);
     }
 }
+?>

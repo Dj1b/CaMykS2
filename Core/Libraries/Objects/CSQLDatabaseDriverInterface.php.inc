@@ -9,6 +9,7 @@
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * @todo Management of where conditions, enhancement of select items management, see CQuery library.
  */
 
 /**
@@ -327,3 +328,4 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
         return '"'.$this->escape_string($value).'"';
     }
 }
+?>
