@@ -3,22 +3,22 @@
  * @brief CaMykS website configuration file.
  * @details Skeleton / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  * @date Creation: Sep 2019
- * @date Modification: Sep 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 $configuration = array(
-    'website_camyksPath' => '',
-    'website_camyksMode' => '',
-    'website_url' => '',
-    'website_title' => '',
-    'website_version' => '1.0',
-    'website_status' => 0,
-    'website_encoding' => 'UTF8',
-    'website_CaMykSVersionInMeta' => 1,
-    'website_author' => '',
+    'Website_CaMykSPath' => '',
+    'Website_CaMykSMode' => '',
+    'Website_URL' => '',
+    'Website_Title' => '',
+    'Website_Version' => '1.0',
+    'Website_Status' => 0,  // 0: not installed | 1: installed | 2: development | 3: full maintenance (no admin available) | 4: simple maintenance (admin available)
+    'Website_Encoding' => 'UTF8',
+    'Website_CaMykSVersionInMeta' => 1,
+    'Website_Author' => '',
 );
 ?>
