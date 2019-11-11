@@ -3,7 +3,7 @@
  * @brief CaMykS website configuration file.
  * @details Skeleton / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Sep 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -14,6 +14,7 @@ $configuration = array(
     'Website_CaMykSPath' => '',
     'Website_CaMykSMode' => '',
     'Website_URL' => '',
+    'Website_URLMode' => '',
     'Website_Title' => '',
     'Website_Version' => '1.0',
     'Website_Status' => 0,  // 0: not installed | 1: installed | 2: development | 3: full maintenance (no admin available) | 4: simple maintenance (admin available)
