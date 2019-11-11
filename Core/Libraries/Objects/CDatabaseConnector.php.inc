@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,6 +62,11 @@ final class CDatabaseConnector extends CLibrary {
         if ($this->params['PDO']) {
             $driver = 'PDODBConnection';
         } else {
+            /* Preload SQL interface for SQL drivers */
+            if (preg_match('/sql/', $this->params['Driver']))
+                $CaMykS->load_library('Objects/CSQLDatabaseDriverInterface');
+
+            /* Define driver library */
             switch ($this->params['Driver']) {
                 case 'sqlite3':
                     $driver = 'SQLite3DBConnection';
@@ -80,10 +85,12 @@ final class CDatabaseConnector extends CLibrary {
             }
         }
 
-        /* Load connection */
-        if (!$CaMykS->load_library($driver))
+        /* Load driver library */
+        if (!$CaMykS->load_library('Objects/'.$driver))
             return $this->add_error(2);
-        $this->connection = new $$driver($this);
+
+       /* Load connection */
+       $this->connection = new $$driver($this);
 
         /* Register connector in CaMykS */
         $CaMykS->register_databaseConnection($this);
@@ -427,3 +434,4 @@ final class CDatabaseConnector extends CLibrary {
         return $list;
     }
 }
+?>
