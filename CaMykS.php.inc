@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a3
+ * @version 2.0a4
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -57,6 +57,12 @@ final class CaMykS {
      * @brief Website configuration.
      */
     private $websiteConfiguration = array();
+
+    /**
+     * @var array $plugins
+     * @brief Loaded plugins.
+     */
+    private $plugins = array('Components'=>array(), 'Modules'=>array(), 'Templates'=>array(), 'Themes'=>array());
 
     /**
      * @var array $currentLanguage
@@ -187,8 +193,10 @@ final class CaMykS {
         $this->bench->add_step('CaMykS initialise mode.');
         switch ($this->mode) {
             case CAMYKS_MODE_VISIT:
-            case CAMYKS_MODE_ADMIN:
                 $this->initialise_visit();
+                break;
+            case CAMYKS_MODE_ADMIN:
+                $this->initialise_admin();
                 break;
             case CAMYKS_MODE_REQUEST:
                 $this->initialise_request();
@@ -265,16 +273,43 @@ final class CaMykS {
 
         /* Load errorhandler object */
         //$this->errorHandler = new CErrorHandler();
-
-        /* Define engine public file URLs */
-        $this->define_URLs();
     }
 
     /**
-     * Initialise visit/admin mode.
+     * Initialise visit mode.
      * @return void
      */
     private function initialise_visit() {
+        /* Load visit configuration */
+        $this->load_configuration('visit');
+
+        /* Set up base URL */
+        $this->define_baseURL($this->get_configValue('Visit_SSL'));
+
+        /* Make common initialisation */
+        $this->initialise_common();
+    }
+
+    /**
+     * Initialise admin mode.
+     * @return void
+     */
+    private function initialise_admin() {
+        /* Load admin configuration */
+        $this->load_configuration('admin');
+
+        /* Set up base URL */
+        $this->define_baseURL($this->get_configValue('Admin_SSL'));
+
+        /* Make common initialisation */
+        $this->initialise_common();
+    }
+
+    /**
+     * Execute common initialisation from visit and admin mode, can eventually be called from request mode.
+     * @return void
+     */
+    public function initialise_common() {
 
     }
 
@@ -294,6 +329,10 @@ final class CaMykS {
         /* Load manager configuration */
         $this->load_configuration('Manager');
 
+        /* Set up base URL */
+        $this->define_baseURL($this->get_configValue('Manager_SSL'));
+
+
 
     }
 
@@ -303,36 +342,6 @@ final class CaMykS {
      */
     private function initialise_install() {
 
-    }
-
-    /**
-     * Define CaMykS and website required URLs.
-     * @return void
-     */
-    private function define_URLs() {
-        /* Define website URL */
-        $this->websiteURL = $this->get_configValue('Website_URL');
-        if ($this->websiteURL === false) {
-            $url = $_SERVER['REQUEST_URI'];
-            $this->websiteURL = parse_url($url, PHP_URL_SCHEME).'://'.parse_url($url, PHP_URL_HOST);
-        }
-
-        /* Check website installation mode */
-        $installationMode = $this->get_configValue('Website_CaMykSMode');
-
-        if ($installationMode == 'single') {
-            /* Website is installed in single mode, files are directly accessible */
-            $this->CaMykSAssetsURL = $this->get_configValue('Website_CaMykSPath').'/'.$this->CaMykSAssetsPath;
-            $this->CaMykSPluginsURL = $this->get_configValue('Website_CaMykSPath').'/'.$this->CaMykSPluginsPath;
-        } elseif ($installationMode == 'shared') {
-            /* Website is installed in shared mode, files are accessible through folder sim links or request mode */
-            $this->CaMykSAssetsURL = 'SharedAssets/'.$this->CaMykSAssetsPath;
-            $this->CaMykSPluginsURL = 'SharedPlugins/'.$this->CaMykSPluginsPath;
-        } else {
-            /* No installation mode defined, CaMykS is in Installation or Manager mode */
-            $this->CaMykSAssetsURL = '/'.$this->CaMykSAssetsPath;
-            $this->CaMykSPluginsURL = '/'.$this->CaMykSPluginsPath;
-        }
     }
 
     /* Configuration related methods */
@@ -365,11 +374,11 @@ final class CaMykS {
      */
     public function get_configValue($name, $default=false) {
         /* Check website configuration */
-        if (isset($this->websiteConfiguration[$name]))
+        if (isset($this->websiteConfiguration[$name]) and $this->websiteConfiguration[$name] != null)
             return $this->websiteConfiguration[$name];
 
         /* Check CaMykS configuration */
-        if (isset($this->engineConfiguration[$name]))
+        if (isset($this->engineConfiguration[$name]) and $this->engineConfiguration[$name] != null)
             return $this->engineConfiguration[$name];
 
         /* Return default value */
@@ -380,12 +389,13 @@ final class CaMykS {
 
     /**
      * Load given library.
-     * @param string $libraryPath
+     * @param string $library
+     * @param string $folder
      * @return boolean success
      */
-    public function load_library($libraryPath) {
+    public function load_library($library, $folder='') {
         /* Define file */
-        $file = '/Core/Libraries/'.$libraryPath.'.php.inc';
+        $file = 'Core/Libraries/'.($folder == '' ? '' : $folder.'/').$library.'.php.inc';
 
         /* Check file */
         if (!$this->check_engineFileExists($file))
@@ -405,31 +415,210 @@ final class CaMykS {
             ob_start();
 
         /* Load tool libraries */
-        $this->load_library('Tools/array');
-        $this->load_library('Tools/country');
-        $this->load_library('Tools/currency');
-        $this->load_library('Tools/html');
-        $this->load_library('Tools/language');
+        $this->load_library('array', 'Tools');
+        $this->load_library('country', 'Tools');
+        $this->load_library('currency', 'Tools');
+        $this->load_library('html', 'Tools');
+        $this->load_library('language', 'Tools');
 
-        /* Load parent object library */
-        $this->load_library('Objects/CLibrary');
+        /* Load parent object libraries */
+        $this->load_library('CLibrary', 'Objects');
+        $this->load_library('Plugin', 'Objects');
 
         /* Load object libraries */
-        $this->load_library('Objects/CBench');
-        $this->load_library('Objects/CDatabaseConnector');
-        $this->load_library('Objects/CDatabaseDriverInterface');
-        $this->load_library('Objects/CQuery');
-        $this->load_library('Objects/Plugin');
+        $this->load_library('CBench', 'Objects');
+        $this->load_library('CDatabaseConnector', 'Objects');
+        $this->load_library('CDatabaseDriverInterface', 'Objects');
+        $this->load_library('CQuery', 'Objects');
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
-            foreach (glob ($this->websitePath.'./Assets/Libraries/*'.$this->libraryExtension) as $file)
+            foreach (glob($this->websitePath.'./Assets/Libraries/*'.$this->libraryExtension) as $file)
                 require_once($file);
         }
 
         /* Clean captured extra code in live mode */
         if ($this->get_configValue('Website_Status') == false)
             ob_clean();
+    }
+
+    /* Plugin related methods */
+
+    /**
+     * Load plugin.
+     * @param string $name
+     * @param string $type
+     * @param string $location
+     * @return boolean result
+     */
+    public function load_plugin($name, $type, $location=false) {
+        /* Normalise type */
+        $type = ucwords(strtolower($type).'s');
+
+        /* Check is already loaded */
+        if (isset($this->plugins[$type][$name]))
+            return true;
+
+        /* Check is in system plugins */
+        if ($location == 'system' or ($location === false and $this->check_engineFileExists('Core/Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'system';
+            $path = $this->get_engineFileFullPath('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension);
+        }
+
+        /* Check is in shared plugins */
+        elseif ($location == 'shared' or ($location === false and $this->check_engineFileExists('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'shared';
+            $path = $CaMykS->get_engineFileFullPath('Plugins/'.$type.'/'.$name.'/');
+        }
+
+        /* Check is in website plugins */
+        elseif ($location == 'website' or ($location === false and  $this->check_websiteFileExists('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'website';
+            $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$type.'/'.$name.'/');
+        }
+
+        /* Plugin not found */
+        else {
+            /* Log error ? */
+
+            /* Return failure */
+            return false;
+        }
+
+        /* Load plugin */
+        try {
+            require_once $path;
+            $this->plugins[$type][$name] = new $$name($location);
+        } catch (Exception $e) {
+            /* Log error */
+
+            /* Return failure */
+            return false;
+        }
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Load component.
+     * @param string $name
+     * @param string $location
+     * @return boolean result
+     */
+    public function load_component($name, $location=false) {
+        return $this->load_plugin($name, 'Component', $location);
+    }
+
+    /**
+     * Load module.
+     * @param string $name
+     * @param string $location
+     * @return boolean result
+     */
+    public function load_module($name, $location=false) {
+        return $this->load_plugin($name, 'Module', $location);
+    }
+
+    /**
+     * Load template.
+     * @param string $name
+     * @param string $location
+     * @return boolean result
+     */
+    public function load_template($name, $location=false) {
+        return $this->load_plugin($name, 'Template', $location);
+    }
+
+    /**
+     * Load theme.
+     * @param string $name
+     * @param string $location
+     * @return boolean result
+     */
+    public function load_theme($name, $location=false) {
+        return $this->load_plugin($name, 'Theme', $location);
+    }
+
+    /**
+     * Return link to plugin object.
+     * @param string $name
+     * @param string $type
+     * @param boolean $autoLoad
+     * @return Plugin
+     */
+    public function &get_plugin($name, $type, $autoLoad=false) {
+        /* Normalise type */
+        $type = ucwords(strtolower($type).'s');
+
+        /* Check is in loaded plugin */
+        if (isset($this->plugins[$type][$name]))
+            return $this->plugins[$type][$name];
+
+        /* Try to load plugin */
+        if ($autoLoad and $this->load_plugin($name, $type))
+            return $this->plugins[$type][$name];
+
+        /* Return failure */
+        return $this->falseRef;
+    }
+
+    /**
+     * Return link to component object.
+     * @param string $name
+     * @param boolean $autoLoad
+     * @return Input
+     */
+    public function &get_component($name, $autoLoad=false) {
+        return $this->get_plugin($name, 'Component', $autoLoad);
+    }
+
+    /**
+     * Return link to module object.
+     * @param string $name
+     * @param boolean $autoLoad
+     * @return Module
+     */
+    public function &get_module($name, $autoLoad=false) {
+        return $this->get_plugin($name, 'Module', $autoLoad);
+    }
+
+    /**
+     * Return link to theme object.
+     * @param string $name
+     * @param boolean $autoLoad
+     * @return Theme
+     */
+    public function &get_theme($name, $autoLoad=false) {
+        return $this->get_plugin($name, 'Theme', $autoLoad);
+    }
+
+    /**
+     * Return link to template object.
+     * @param string $templateName
+     * @param boolean $autoLoad
+     * @return Template
+     */
+    public function &get_template($templateName, $autoLoad=false) {
+        return $this->get_plugin($name, 'Template', $autoLoad);
+    }
+
+    /**
+     * Load system plugins.
+     * @return boolean success
+     * @todo
+     */
+    private function load_systemPlugins() {
+
+    }
+
+    /**
+     * Load website plugins.
+     * @return boolean success
+     * @todo
+     */
+    private function load_websitePlugins() {
+
     }
 
     /* File related methods */
@@ -470,6 +659,49 @@ final class CaMykS {
         return file_exists($this->get_websiteFileFullPath($filePath));
     }
 
+    /* URL related methods */
+
+    /**
+     * Define website required URL.
+     * @param integer $SSLMode
+     * @return void
+     */
+    private function define_baseURL($SSLMode=0) {
+        /* Load current URL */
+        $url = $_SERVER['REQUEST_URI'];
+
+        /* Load website URL */
+        $this->websiteURL = $this->get_configValue('Website_URL');
+        if ($this->websiteURL === false) {
+            $this->websiteURL = substr($url, 0, strrpos($url, '/'));
+        }
+
+        /* Check scheme from SSLMode */
+        switch ($SSLMode) {
+            case 1 : // Forced to HTTPS
+                $scheme = 'https';
+                break;
+            case 2 : // Forced to HTTP
+                $scheme = 'http';
+                break;
+            case 3 : // Autocheck
+                /* @todo */
+                break;
+            case 0 : // default / client's choice
+            default :
+                $scheme = parse_url($url, PHP_URL_SCHEME);
+        }
+
+        /* Check host */
+        $host = parse_url($this->websiteURL, PHP_URL_HOST);
+
+        /* Check path */
+        $path = parse_url($this->websiteURL, PHP_URL_PATH);
+
+        /* Finalise URL */
+        $this->websiteURL = $scheme.'://'.$host.'/'.($path != '' ? $path.'/' : '');
+    }
+
     /**
      * Return base URL, case of given mode.
      * @param mixed $URLMode
@@ -481,7 +713,7 @@ final class CaMykS {
             $URLMode = $this->get_configValue('Website_URLMode');
 
         /* Return base url from mode */
-        switch ($mode) {
+        switch ($URLMode) {
             case 'Absolute':
             case 'AbsoluteLong':
                 return $this->websiteURL.'/';
@@ -500,10 +732,15 @@ final class CaMykS {
      * @return string
      */
     public function get_assetFileURL($asset, $URLMode=false) {
-        /* Define file */
-        $file = $this->CaMykSAssetsPath.$asset;
+        /* Check file in website */
+        $file = 'Assets/'.$asset;
+        if ($this->mode < 3) {
+            if (file_exists($file))
+                return $this->get_baseURL($URLMode).$file;
+        }
 
-        /* Check file */
+        /* Check file in CaMykS */
+        $file = 'Core/'.$file;
         if ($this->check_engineFileExists($file))
             return $this->get_baseURL($URLMode).$file;
 
@@ -637,7 +874,7 @@ final class CaMykS {
     }
 
     /**
-     * Return keys from locale
+     * Return keys from locale.
      * @param string $value
      * @param string $prefix
      * @return array
@@ -652,6 +889,36 @@ final class CaMykS {
 
         /* Return keys */
         return $keys;
+    }
+
+    /** Logging related methods */
+
+    /**
+     * Log an information.
+     * @param string $object
+     * @param string $action
+     * @param string $message
+     * @return boolean success
+     */
+    public function log($object, $action, $message='') {
+        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        if ($logManager === false)
+            return false;
+        return $logManager->log($object, $action, $message);
+    }
+
+    /**
+     * Log an error.
+     * @param string $object
+     * @param string $action
+     * @param string $message
+     * @return boolean success
+     */
+    public function log_error($object, $action, $error='', $data1='', $data2='') {
+        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        if ($logManager === false)
+            return false;
+        return $logManager->log_error($object, $action, $message, $data1, $data2);
     }
 
     /* Events handler related methods */
