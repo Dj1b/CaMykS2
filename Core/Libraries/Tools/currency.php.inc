@@ -3,13 +3,13 @@
  * @brief CaMykS currency(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @todo Adds short title (US$, GB£, JP¥, €, ... ) to data, and create method to read them (list & single)
+ * @todo Add short title (US$, GB£, JP¥, €, ... ) to data, and write methods to read them (list & single)
  */
 
 /* Currency data related methods */
@@ -21,7 +21,7 @@
 function currency_loadCurrenciesData() {
     global $CaMykS;
 
-    $CaMykS->load_library('Data/currencies');
+    $CaMykS->load_library('currencies', 'Data');
 }
 
 /**

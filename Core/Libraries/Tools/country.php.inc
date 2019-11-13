@@ -3,7 +3,7 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -20,7 +20,7 @@
 function country_loadCountriesData() {
     global $CaMykS;
 
-    $CaMykS->load_library('Data/countries');
+    $CaMykS->load_library('countries', 'Data');
 }
 
 /**
