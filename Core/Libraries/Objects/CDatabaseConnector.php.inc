@@ -3,7 +3,7 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -252,6 +252,15 @@ final class CDatabaseConnector extends CLibrary {
      */
     public function create_table($params=array()) {
         return $this->connection->create_table($params);
+    }
+
+    /**
+     * Duplicate a table in the database.
+     * @param array $params
+     * @return boolean success
+     */
+    public function duplicate_table($params=array()) {
+        return $this->connection->duplicate_table($params);
     }
 
     /**

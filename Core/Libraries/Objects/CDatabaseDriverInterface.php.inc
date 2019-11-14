@@ -3,9 +3,9 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -120,6 +120,13 @@ abstract class CDatabaseDriverInterface {
      * @return boolean success
      */
     abstract public function create_table($params=array());
+
+    /**
+     * Duplicate a table in the database.
+     * @param array $params
+     * @return boolean success
+     */
+    abstract public function duplicate_table($params=array());
 
     /**
      * Drop a table from the database.
