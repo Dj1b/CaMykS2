@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a4
+ * @version 2.0a5
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -154,7 +154,7 @@ final class CaMykS {
         /* Define website configuration */
         $this->websiteConfiguration = $configuration;
 
-        /* Update start microtime value */
+        /* Set start microtime value */
         $this->startMicroTime = microtime(true);
 
         /* Register shutdown internal function */
@@ -189,8 +189,10 @@ final class CaMykS {
         /* Initialise engine */
         $this->initialise_engine();
 
-        /* Initialise mode */
+        /* Add bench step */
         $this->bench->add_step('CaMykS initialise mode.');
+
+        /* Initialise mode */
         switch ($this->mode) {
             case CAMYKS_MODE_VISIT:
                 $this->initialise_visit();
@@ -208,6 +210,9 @@ final class CaMykS {
                 $this->initialise_install();
                 break;
         }
+
+        /* Run onInitialise event handlers */
+        $this->run_eventHandlers('onInitialise');
     }
 
     /**
@@ -216,6 +221,27 @@ final class CaMykS {
      */
     private function display() {
 
+        /* Add bench step */
+        $this->bench->add_step('CaMykS display mode.');
+
+        /* Dsiplay mode */
+        switch ($this->mode) {
+            case CAMYKS_MODE_VISIT:
+                $this->display_visit();
+                break;
+            case CAMYKS_MODE_ADMIN:
+                $this->display_admin();
+                break;
+            case CAMYKS_MODE_REQUEST:
+                $this->display_request();
+                break;
+            case CAMYKS_MODE_MANAGER:
+                $this->display_manager();
+                break;
+            case CAMYKS_MODE_INSTALL:
+                $this->display_install();
+                break;
+        }
     }
 
     /**
@@ -383,6 +409,16 @@ final class CaMykS {
 
         /* Return default value */
         return $default;
+    }
+
+    /**
+     * Define or update temporary configuration value.
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function set_configValue($name, $value) {
+        $this->websiteConfiguration[$name] = $value;
     }
 
     /* Library related methods */
@@ -752,12 +788,16 @@ final class CaMykS {
 
     /**
      * Load current language from context.
+     * @param integer $mode
      * @return void
      */
-    private function load_currentLanguage() {
-        /* Load language from current session and CaMykS mode */
+    private function load_currentLanguage($mode=null) {
+        /* Check mode */
+        if (is_null($mode)) $mode = $this->get_currentLanguage();
 
         /* Load language from request */
+
+        /* Load language from current session and given mode */
 
         /* Load language from user agent */
 
