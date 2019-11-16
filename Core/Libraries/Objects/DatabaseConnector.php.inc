@@ -3,7 +3,7 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -11,15 +11,17 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+namespace CaMykS2;
+
 /**
- * CDatabaseConnector class.
+ * DatabaseConnector class.
  */
-final class CDatabaseConnector extends CLibrary {
+final class DatabaseConnector extends CaMykSLibrary {
     /**
      * var array $params
      * @brief Connection parameters.
      */
-    private $params = array(
+    protected $params = array(
         'Driver'    => '',
         'PDO'       => false,
         'Host'      => 'localhost',
@@ -55,8 +57,8 @@ final class CDatabaseConnector extends CLibrary {
     public function __construct($params=array()) {
         global $CaMykS;
 
-        /* Merge parameters */
-        $this->params = array_merge($this->params, $params);
+        /* Merge parameters in parent object */
+        parent::__construct($params);
 
         /* Check driver */
         if ($this->params['PDO']) {
@@ -64,21 +66,21 @@ final class CDatabaseConnector extends CLibrary {
         } else {
             /* Preload SQL interface for SQL drivers */
             if (preg_match('/sql/', $this->params['Driver']))
-                $CaMykS->load_library('Objects/CSQLDatabaseDriverInterface');
+                $CaMykS->load_library('DatabaseDrivers/SQLDatabaseDriverInterface', 'Objects');
 
             /* Define driver library */
             switch ($this->params['Driver']) {
                 case 'sqlite3':
-                    $driver = 'SQLite3DBConnection';
+                    $driver = 'SQLite3DatabaseDriver';
                     break;
                 case 'pgsql':
-                    $driver = 'PgSQLDBConnection';
+                    $driver = 'PgSQLDatabaseDriver';
                     break;
                 case 'mysqli':
-                    $driver = 'MySQLiDBConnection';
+                    $driver = 'MySQLiDatabaseDriver';
                     break;
                 case 'mysql':
-                    $driver = 'MySQLDBConnection';
+                    $driver = 'MySQLDatabaseDriver';
                     break;
                 default :
                     return $this->add_error(1);
@@ -86,7 +88,7 @@ final class CDatabaseConnector extends CLibrary {
         }
 
         /* Load driver library */
-        if (!$CaMykS->load_library('Objects/'.$driver))
+        if (!$CaMykS->load_library('DatabaseDrivers/'.$driver, 'Objects'))
             return $this->add_error(2);
 
        /* Load connection */
@@ -108,19 +110,6 @@ final class CDatabaseConnector extends CLibrary {
             1  => 'DriverUnknown',
             2  => 'DriverUnavailable',
         );
-    }
-
-    /* Parameters methods */
-
-    /**
-     * Return parameter value
-     * @param string $param
-     * @return mixed
-     */
-    public function get_param($param) {
-        if (isset($this->params[$param]))
-            return $this->params[$param];
-        return false;
     }
 
     /* Check methods */

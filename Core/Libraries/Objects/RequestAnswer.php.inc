@@ -3,7 +3,7 @@
  * @brief CaMykS request answer object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -11,10 +11,12 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+namespace CaMykS2;
+
 /**
- * CRequestAnswer class.
+ * RequestAnswer class.
  */
-final class CRequestAnswer {
+final class RequestAnswer {
     /**
      * @var array $params
      * @brief Build default object parameters.

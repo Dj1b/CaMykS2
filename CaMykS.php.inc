@@ -3,13 +3,15 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a5
+ * @version 2.0a6
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+
+namespace CaMykS2;
 
 /**
  * @def CAMYKS_MODE_VISIT
@@ -249,6 +251,7 @@ final class CaMykS {
      * @return void
      */
     public function terminate() {
+
         /* Close database connections */
         foreach ($this->openedDBonnections as $connection)
             $connection->close();
@@ -293,7 +296,7 @@ final class CaMykS {
         $this->load_engineLibraries();
 
         /* Load bench object */
-        $this->bench = new CBench();
+        $this->bench = new Bench();
         $this->bench->start('CaMykS loading.', $this->startMicroTime);
         unset($this->startMicroTime);
 
@@ -458,14 +461,17 @@ final class CaMykS {
         $this->load_library('language', 'Tools');
 
         /* Load parent object libraries */
-        $this->load_library('CLibrary', 'Objects');
+        $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('Plugin', 'Objects');
 
         /* Load object libraries */
-        $this->load_library('CBench', 'Objects');
-        $this->load_library('CDatabaseConnector', 'Objects');
-        $this->load_library('CDatabaseDriverInterface', 'Objects');
-        $this->load_library('CQuery', 'Objects');
+        $this->load_library('Bench', 'Objects');
+        $this->load_library('DatabaseConnector', 'Objects');
+        $this->load_library('DatabaseDriverInterface', 'Objects');
+        $this->load_library('DbQuery', 'Objects');
+        $this->load_library('Error', 'Objects');
+        $this->load_library('ErrorHandler', 'Objects');
+        $this->load_library('RequestAnswer', 'Objects');
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {

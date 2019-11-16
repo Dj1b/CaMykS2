@@ -3,19 +3,21 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Oct 2019
- * @date Modification: Oct 2019
+ * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
  */
 
+namespace CaMykS2;
+
 /**
- * CLibrary class.
+ * CaMykSLibrary class.
  */
-abstract class CLibrary {
+abstract class CaMykSLibrary {
 
     /**
      * @var string $libraryName
@@ -23,6 +25,13 @@ abstract class CLibrary {
      */
     private $libraryName = '';
 
+    /* Parameters */
+
+    /**
+     * @var array $params
+     * @brief Object "public" parameters.
+     */
+    protected $params = array();
 
     /* Errors related variables */
 
@@ -40,10 +49,47 @@ abstract class CLibrary {
 
     /**
      * Class constructor.
+     * @param array $params
      * @return void
      */
-    public function __construct() {
+    public function __construct($params=array()) {
+        /* Define library name */
         $this->libraryName = get_class($this);
+
+        /* Define initial parameters */
+        $this->update_params($params);
+    }
+
+    /* Public parameters related methods */
+
+    /**
+     * Update single parameter.
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function update_param($name, $value) {
+        $this->params[$name] = $value;
+    }
+
+    /**
+     * Update multiple parameters.
+     * @param array $params
+     * @return void
+     */
+    public function update_params($params) {
+        $this->params = array_merge($this->params, $params);
+    }
+
+    /**
+     * Return requested parameter value.
+     * @param string $name
+     * @return mixed
+     */
+    public function get_param($name) {
+        if (isset($this->params[$name]))
+            return $this->params[$name];
+        return false;
     }
 
     /* Public errors related methods */

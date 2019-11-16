@@ -4,7 +4,7 @@
  * <br /> Developers can add their own steps in CaMykS running bench, or create their own bench.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -12,31 +12,33 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+namespace CaMykS2;
+
 /**
- * CBench class.
+ * Bench class.
  */
-final class CBench {
+final class Bench extends CaMykSLibrary {
     /**
      * @var array $params
-     * @brief CBench parameters.
+     * @brief Bench parameters.
      */
-    private $params = array('output'    => 'none');
+    protected $params = array('output'    => 'none');
 
     /**
      * @var string $status
-     * @brief CBench status.
+     * @brief Bench status.
      */
     private $status = 'idle';
 
     /**
      * @var array $bench
-     * @brief CBench saved steps.
+     * @brief Bench saved steps.
      */
     private $bench = array();
 
     /**
      * @var array $results
-     * @brief CBench computed results.
+     * @brief Bench computed results.
      */
     private $results = array();
 
@@ -49,8 +51,7 @@ final class CBench {
      * @return void
      */
     public function __construct($params=array()) {
-        /* Merge params */
-        $this->params = array_merge($this->params, $params);
+        parent::__construct($params);
     }
 
     /* public methods */
@@ -121,7 +122,7 @@ final class CBench {
         return $this->results;
     }
 
-    /* private methods */
+    /* Private methods */
 
     /**
      * Export results to CaMykS shared data.
@@ -131,7 +132,7 @@ final class CBench {
         global $CaMykS;
 
         /* save bench to shared data  */
-        $CaMykS->set_sharedData('CBenchResult', $this->results);
+        $CaMykS->set_sharedData('BenchResult', $this->results);
     }
 
     /**
@@ -142,7 +143,7 @@ final class CBench {
         global $CaMykS;
 
         /* save bench to session */
-        $CaMykS->set_sessionValue('CBenchResult', $this->results);
+        $CaMykS->set_sessionValue('BenchResult', $this->results);
     }
 
     /**

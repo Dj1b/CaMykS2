@@ -1,10 +1,10 @@
 <?php
 /**
  * @brief Plugin object.
- * <br />Parent object for Module, Template, Theme, Component, extends CLibrary.
+ * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -12,10 +12,12 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+namespace CaMykS2;
+
 /**
  * Plugin class.
  */
-abstract class Plugin extends CLibrary {
+abstract class Plugin extends CaMykSLibrary {
     /**
      * @var string $version
      * @brief Plugin version.

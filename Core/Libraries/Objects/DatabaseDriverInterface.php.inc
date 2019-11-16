@@ -3,7 +3,7 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -11,10 +11,12 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+namespace CaMykS2;
+
 /**
- * CDatabaseDriverInterface class.
+ * DatabaseDriverInterface class.
  */
-abstract class CDatabaseDriverInterface {
+abstract class DatabaseDriverInterface {
     /**
      * @var Object $parent
      * @brief Link to parent CDatabaseConnector object.

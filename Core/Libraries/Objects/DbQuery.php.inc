@@ -1,9 +1,9 @@
 <?php
 /**
- * @brief CaMykS Dababase query builder library.
+ * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -14,10 +14,12 @@
  * Enhancement of select items management, with unsupported functions, that require additional data.
  */
 
+namespace CaMykS2;
+
 /**
- * CQuery class.
+ * DbQuery class.
  */
-final class CQuery extends CLibrary {
+final class DbQuery extends CaMykSLibrary {
     /**
      * @var array $actionValues
      * @brief List of available actions.

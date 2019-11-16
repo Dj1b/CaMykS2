@@ -3,19 +3,21 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @todo Management of where conditions, enhancement of select items management, see CQuery library.
+ * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
  */
 
+namespace CaMykS2;
+
 /**
- * CDatabaseDriverInterface class.
+ * SQLDatabaseDriverInterface class.
  */
-abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
+abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
     /**
      * Class constructor.
@@ -26,10 +28,10 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
         parent::__construct($parent);
     }
 
-    /* Override CDatabaseDriverInterface methods */
+    /* Override DatabaseDriverInterface methods */
 
     /**
-     * Execute prepared query using CQuery builder.
+     * Execute prepared query using DbQuery builder.
      * @param Object $query
      * @return boolean success
      */
@@ -48,7 +50,7 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
     /* Execute built query methods */
 
     /**
-     * Execute select query using CQuery builder.
+     * Execute select query using DbQuery builder.
      * @param Object $query
      * @return boolean success
      */
@@ -66,7 +68,7 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
     }
 
     /**
-     * Execute insert query using CQuery builder.
+     * Execute insert query using DbQuery builder.
      * @param Object $query
      * @return boolean success
      */
@@ -82,7 +84,7 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
     }
 
     /**
-     * Execute update query using CQuery builder.
+     * Execute update query using DbQuery builder.
      * @param Object $query
      * @return boolean success
      */
@@ -98,7 +100,7 @@ abstract class CSQLDatabaseDriverInterface extends CDatabaseDriverInterface {
     }
 
     /**
-     * Execute delete query using CQuery builder.
+     * Execute delete query using DbQuery builder.
      * @param Object $query
      * @return boolean success
      */
