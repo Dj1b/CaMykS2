@@ -3,9 +3,9 @@
  * @brief Manager entry point for CaMykS2.
  * @details Engine / Index Page
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a
+ * @version 2.0a1
  * @date Creation: Feb 2017
- * @date Modification: Sep 2019
+ * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -19,7 +19,7 @@ if ((@include_once('CaMykS.php.inc')) === false)
     exit('Fatal Error : CaMykS folder not found.');
 
 /* Create CaMykS engine object */
-$CaMykS = new CaMykS(null);
+$CaMykS = new CaMykS2\CaMykS(null);
 
 /* Execute CaMykS engine */
 $CaMykS->execute(CAMYKS_MODE_MANAGER);
