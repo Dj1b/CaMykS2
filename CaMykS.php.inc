@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a6
+ * @version 2.0a7
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -179,6 +179,9 @@ final class CaMykS {
 
         /* Display */
         $this->display();
+
+        /* Close */
+        $this->close();
     }
 
     /* CaMykS main sub methods */
@@ -247,10 +250,21 @@ final class CaMykS {
     }
 
     /**
-     * Close CaMykS engine.
+     * Close CaMykS.
+     * @return void
+     */
+    public function close() {
+        /* Kill processus to call terminate through registered shutdown function */
+        die();
+    }
+
+    /**
+     * Terminate CaMykS.
      * @return void
      */
     public function terminate() {
+        /* Add bench step */
+        if ($this->bench !== false) $this->bench->add_step('CaMykS terminate.');
 
         /* Close database connections */
         foreach ($this->openedDBonnections as $connection)
@@ -301,7 +315,7 @@ final class CaMykS {
         unset($this->startMicroTime);
 
         /* Load errorhandler object */
-        //$this->errorHandler = new CErrorHandler();
+        $this->errorHandler = new ErrorHandler();
     }
 
     /**
@@ -370,6 +384,48 @@ final class CaMykS {
      * @return void
      */
     private function initialise_install() {
+
+    }
+
+    /* CaMykS display methods */
+
+    /**
+     * Display visit mode.
+     * @return void
+     */
+    private function display_visit() {
+
+    }
+
+    /**
+     * Display admin mode.
+     * @return void
+     */
+    private function display_admin() {
+
+    }
+
+    /**
+     * Display visit mode.
+     * @return void
+     */
+    private function display_request() {
+
+    }
+
+    /**
+     * Display manager mode.
+     * @return void
+     */
+    private function display_manager() {
+
+    }
+
+    /**
+     * Display install mode.
+     * @return void
+     */
+    private function display_install() {
 
     }
 
@@ -937,7 +993,7 @@ final class CaMykS {
         return $keys;
     }
 
-    /** Logging related methods */
+    /** Logging & errors related methods */
 
     /**
      * Log an information.
@@ -954,17 +1010,43 @@ final class CaMykS {
     }
 
     /**
+     * Throw fatal error.
+     * @param CaMykS\Error $error
+     * @return void
+     */
+    public function throw_fatalError($error) {
+        /* Log fatal error */
+        $this->log_error($error);
+
+        /* Display fatal error */
+        $this->display_fatalError($error);
+    }
+
+    /**
      * Log an error.
-     * @param string $object
-     * @param string $action
-     * @param string $message
+     * @param CaMykS\Error $error
      * @return boolean success
      */
-    public function log_error($object, $action, $error='', $data1='', $data2='') {
+    private function log_error($error) {
         $logManager = $this->get_module('Admin_SystemLogManager', true);
         if ($logManager === false)
             return false;
-        return $logManager->log_error($object, $action, $message, $data1, $data2);
+        return $logManager->log_error($error);
+    }
+
+    /**
+     * Display a fatal error.
+     * @param CaMykS\Error $error
+     * return void
+     * @todo
+     */
+    public function display_fatalError($error) {
+        /* Load HTMLPage */
+
+        /* Display error */
+
+        /* Close CaMykS */
+        $this->close();
     }
 
     /* Events handler related methods */
