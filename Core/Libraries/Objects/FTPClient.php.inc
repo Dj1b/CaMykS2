@@ -9,7 +9,10 @@
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * @warning This library is not loaded with CaMykS initialisation.
  */
+
+namespace CaMykS2;
 
 /**
  * FTPClient class.
