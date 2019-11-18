@@ -3,7 +3,7 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -17,7 +17,7 @@ namespace CaMykS2;
 /**
  * Cryptographer class.
  */
-final class Cryptographer extends CaMykSLibrary{
+final class Cryptographer extends CaMykSLibrary {
     /**
      * @var array $engines
      * @brief Available engines.
@@ -28,7 +28,7 @@ final class Cryptographer extends CaMykSLibrary{
      * @var array $params
      * @brief Engine parameters.
      */
-    private $params = array(
+    protected $params = array(
         'engine'    => 'OpenSSL',
         'cipher'    => 'aes-256-cbc',
         'mode'      => '',              // specific to Mcrypt
@@ -42,13 +42,10 @@ final class Cryptographer extends CaMykSLibrary{
      * @return void
      */
     public function __construct($params=array()) {
-        parent::__construct();
-
-        /* Update parameters */
-        $this->update_params($params);
+        parent::__construct($params);
     }
 
-    /* Override CLibrary methods */
+    /* Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
@@ -75,26 +72,7 @@ final class Cryptographer extends CaMykSLibrary{
         );
     }
 
-    /* Specific parameters management methods */
-
-    /**
-     * Update a parameter.
-     * @param string $name
-     * @param mixed $value
-     * @return void
-     */
-    public function update_param($name, $value) {
-        $this->params[$name] = $value;
-    }
-
-    /**
-     * Update some parameters.
-     * @param array $params
-     * @return void
-     */
-    public function update_params($params) {
-        $this->params = array_merge($this->params, $params);
-    }
+    /* Specific public methods */
 
     /**
      * Check engine configuration.
