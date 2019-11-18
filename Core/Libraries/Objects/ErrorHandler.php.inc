@@ -3,7 +3,7 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -45,10 +45,10 @@ final class ErrorHandler extends CaMykSLibrary {
         error_reporting($this->get_errorReportingLevel());
 
         /* Override PHP error handler */
-        set_error_handler([$this, 'handle_PHPError']);
+        set_error_handler(array($this, 'handle_PHPError'));
 
         /* Override PHP exception handler */
-        set_exception_handler([$this, 'handle_PHPException']);
+        set_exception_handler(array($this, 'handle_PHPException'));
     }
 
     /* Error handling methods */
