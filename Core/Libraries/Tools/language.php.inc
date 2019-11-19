@@ -3,7 +3,7 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -77,7 +77,7 @@ function language_read($language) {
             return false;
         return array(
             'Language'  => strtolower($matches[1]),
-            'Country'   => $cLanguages[strtolower($matches[1])]['defaultCountry'],
+            'Country'   => $cLanguages[strtolower($matches[1])]['DefaultCountry'],
         );
     }
 
@@ -96,7 +96,7 @@ function language_export($language, $noCountry=false) {
     $language = language_read($language);
 
     /* Return language without country */
-    if ($noCountry === false or $language['Country'] == null)
+    if ($noCountry === true or $language['Country'] == null)
         return strtolower($language['Language']);
 
     /* Return language with country */
@@ -167,7 +167,7 @@ function language_getTitle($language) {
 function language_loadLanguagesLocale($language=null) {
     global $CaMykS;
 
-    $CaMykS->load_locales('Libraries/languages', $language);
+    $CaMykS->load_locales('Libraries/languages', 'language', $language);
 }
 
 /**
