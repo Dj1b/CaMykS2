@@ -70,7 +70,7 @@ final class CaMykS {
      * @var array $currentLanguage
      * @brief Optimised language currently used.
      */
-    private $currentLanguage = array();
+    private $currentLanguage = 'en_GB';
 
     /**
      * @var array $locales
@@ -101,14 +101,14 @@ final class CaMykS {
      * @brief CaMykS event handlers.
      */
     private $eventsHandlers = array(
-        'onInitialise'=>array(),
-        'onVisitPageLoad'=>array(),
-        'onVisitBodyOpen'=>array(),
-        'onVisitBodyClose'=>array(),
-        'onAdminPageLoad'=>array(),
-        'onAdminBodyOpen'=>array(),
-        'onAdminBodyClose'=>array(),
-        'onTerminate'=>array(),
+        'onInitialise'      => array(),
+        'onVisitPageLoad'   => array(),
+        'onVisitBodyOpen'   => array(),
+        'onVisitBodyClose'  => array(),
+        'onAdminPageLoad'   => array(),
+        'onAdminBodyOpen'   => array(),
+        'onAdminBodyClose'  => array(),
+        'onTerminate'       => array(),
     );
 
     /**
@@ -255,7 +255,7 @@ final class CaMykS {
      */
     public function close() {
         /* Kill processus to call terminate through registered shutdown function */
-        die();
+        //die();
     }
 
     /**
@@ -315,7 +315,7 @@ final class CaMykS {
         unset($this->startMicroTime);
 
         /* Load errorhandler object */
-        $this->errorHandler = new ErrorHandler();
+        //$this->errorHandler = new ErrorHandler();
     }
 
     /**
@@ -324,7 +324,7 @@ final class CaMykS {
      */
     private function initialise_visit() {
         /* Load visit configuration */
-        $this->load_configuration('visit');
+        $this->load_configuration('Visit');
 
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Visit_SSL'));
@@ -339,7 +339,7 @@ final class CaMykS {
      */
     private function initialise_admin() {
         /* Load admin configuration */
-        $this->load_configuration('admin');
+        $this->load_configuration('Admin');
 
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Admin_SSL'));
@@ -375,6 +375,8 @@ final class CaMykS {
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Manager_SSL'));
 
+        /* Load language */
+        $this->load_currentLanguage();
 
 
     }
@@ -513,6 +515,7 @@ final class CaMykS {
         $this->load_library('array', 'Tools');
         $this->load_library('country', 'Tools');
         $this->load_library('currency', 'Tools');
+        $this->load_library('date', 'Tools');
         $this->load_library('html', 'Tools');
         $this->load_library('language', 'Tools');
 
@@ -855,7 +858,7 @@ final class CaMykS {
      */
     private function load_currentLanguage($mode=null) {
         /* Check mode */
-        if (is_null($mode)) $mode = $this->get_currentLanguage();
+        if (is_null($mode)) $language = $this->get_currentLanguage();
 
         /* Load language from request */
 
@@ -904,10 +907,11 @@ final class CaMykS {
     /**
      * Load locale file.
      * @param string $file
+     * @param string $prefix
      * @param string $language
      * @return boolean success
      */
-    public function load_locales($file, $language=null) {
+    public function load_locales($file, $prefix='', $language=null) {
         /* Check language */
         if ($language == null)
             $language = $this->get_currentLanguage();
@@ -921,15 +925,9 @@ final class CaMykS {
             if (isset($this->loadedLocales[$file]) and $this->loadedLocales[$file] == $l)
                 return true;
 
-            /* Build path */
-            $path = $file .'/Locale.'.$l.$this->libraryExtension;
-
-            /* Check if file exists */
-            if (file_exists($path)) {
-                require $path;
-                $this->loadedLocales[$file] = $l;
+            /* Try to load locale file */
+            if ($this->load_localeFile($file, $prefix, $l))
                 return true;
-            }
         }
 
         /* No locale found for given language, try to load default language locales */
@@ -941,19 +939,24 @@ final class CaMykS {
             if (isset($this->loadedLocales[$file]) and $this->loadedLocales[$file] == $l)
                 return true;
 
-            /* Build path */
-            $path = $file .'/Locale.'.$l.$this->libraryExtension;
-
-            /* Check if file exists */
-            if (file_exists($path)) {
-                require $path;
-                $this->loadedLocales[$file] = $l;
+            /* Try to load locale file */
+            if ($this->load_localeFile($file, $prefix, $l))
                 return true;
-            }
         }
 
         /* No locale file found, return failure */
         return false;
+    }
+
+    /**
+     * Load engine locale file.
+     * @param string $file
+     * @param string $prefix
+     * @param string $language
+     * @return boolean success
+     */
+    public function load_engineLocales($file, $prefix='', $language=null) {
+        return $this->load_locales($this->CaMykSPath.'/Core/Locales/'.$file, $prefix, $language);
     }
 
     /**
@@ -991,6 +994,42 @@ final class CaMykS {
 
         /* Return keys */
         return $keys;
+    }
+
+    /**
+     * Load locale file.
+     * @param string $file
+     * @param string $prefix
+     * @param string $locale
+     * @return boolean success
+     */
+    private function load_localeFile($file, $prefix, $language) {
+        /* Build path */
+        $path = $file .'/Locales.'.$language.$this->libraryExtension;
+
+        /* Check if file exists */
+        if (!file_exists($path))
+            return false;
+
+        /* Load file */
+        require $path;
+
+        /* Check locales variables */
+        if (!isset($locales) or !is_array($locales))
+            return false;
+
+        /* Update locales with prefix */
+        if (trim($prefix) != '')
+            $locales = array_prefixKeys($locales, trim($prefix).'_');
+
+        /* Add locales to existing locales list */
+        $this->locales = array_merge($this->locales, $locales);
+
+        /* Update locale files list */
+        $this->loadedLocales[$file] = $language;
+
+        /* Return success */
+        return true;
     }
 
     /** Logging & errors related methods */
