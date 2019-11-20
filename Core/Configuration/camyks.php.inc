@@ -3,13 +3,19 @@
  * @brief CaMykS static description file.
  * @details Engine / Description File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+
+/**
+ * @var string $name
+ * @brief CaMykS name.
+ */
+$this->name = 'CaMykS';
 
 /**
  * @var string $version
