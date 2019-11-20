@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -135,7 +135,7 @@ abstract class CaMykSLibrary {
             return false;
 
         /* Load library locales in CaMykS */
-        return $CaMykS->load_locales('Libraries/'.$this->libraryName, $language);
+        return $CaMykS->load_engineLocales('Libraries/'.$this->libraryName, $this->libraryName, $language);
     }
 
     /**
@@ -152,13 +152,15 @@ abstract class CaMykSLibrary {
 
     /**
      * Return locale.
-     * @return boolean success
+     * @param string $locale
+     * @param mixed $data
+     * @return string
      */
-    protected function get_locale($locale='', $params=null) {
+    protected function get_locale($locale='', $data=null) {
         global $CaMykS;
 
         /* Check locale in CaMykS object */
-        return $CaMykS->get_locale($this->libraryName.'_'.$locale, $params);
+        return $CaMykS->get_locale($this->libraryName.'_'.$locale, $data);
     }
 
     /* Protected errors related methods */
