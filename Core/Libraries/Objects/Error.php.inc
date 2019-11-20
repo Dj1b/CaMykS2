@@ -63,13 +63,67 @@ final class Error {
      * @param string $message
      * @return void
      */
-    public function __construct($origin, $type, $code, $file, $line, $message) {
+    public function __construct($origin, $type, $code=0, $file=null, $line=0, $message='') {
         $this->origin = $origin;
         $this->type = $type;
         $this->code = $code;
         $this->file = $file;
         $this->line = $line;
-        $this->message = $message;
+        $this->message = trim($message);
+    }
+
+    /**
+     * Return error header value.
+     * @return string
+     */
+    public function get_header() {
+        $s = '';
+        if ($this->origin != '')
+            $s .= $this->origin.' ';
+        if ($this->type != '') {
+            $s .= $this->type;
+            if ($this->code > 0)
+                $s .= ' ['.$this->code.']';
+        }
+        return $s;
+    }
+
+    /**
+     * Check error has location values.
+     * @return boolean result
+     */
+    public function has_location() {
+        return (!is_null($this->file));
+    }
+
+    /**
+     * Return error location value.
+     * @return string
+     */
+    public function get_location() {
+        if (is_null($this->file))
+            return '';
+        $s = $this->file;
+        if (!$this->line > 0)
+            return $s;
+        $s .= ' (L'.$this->line.')';
+        return $s;
+    }
+
+    /**
+     * Check error has a message.
+     * @return boolean result
+     */
+    public function has_message() {
+        return ($this->message != '');
+    }
+
+    /**
+     * Return error message value.
+     * @return string
+     */
+    public function get_message() {
+        return nl2br($this->message);
     }
 
     /**
@@ -77,8 +131,12 @@ final class Error {
      * @return string
      */
     public function export_asHTML() {
-        return '<strong>'.$this->origin.' '.$this->type.' ['.$this->code.'] </strong>'.
-            '<em>('.$this->file.' - L'.$this->line.')</em>'.$message;
+        $s = '<strong>'.$this->get_header().'</strong>';
+        if ($this->has_location())
+            $s .= ' <em>('.$this->get_location().')</em>';
+        if ($this->has_message())
+            $s .= $this->get_message();
+        return $s;
     }
 
     /**
