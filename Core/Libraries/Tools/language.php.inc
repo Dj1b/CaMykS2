@@ -3,7 +3,7 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -195,11 +195,11 @@ function language_getLocalisedTitles($params=array(), $language=null) {
         /* Add languages from the short list */
         foreach ($params['ShortList'] as $c)
             if (isset($cLanguages[$c]))
-                $result[$c] = $CaMykS->get_locale('language_'.$c);
+                $result[$c] = $CaMykS->get_locale($c, 'language');
     } else {
         /* Add all languages */
         foreach ($cLanguages as $c => $data)
-            $result[$c] = $CaMykS->get_locale('language_'.$c);
+            $result[$c] = $CaMykS->get_locale($c, 'language');
     }
 
     /* Return result */
@@ -227,7 +227,7 @@ function language_getLocalisedTitle($requestLanguage, $resultLanguage=null) {
     language_loadLanguagesLocale($resultLanguage);
 
     /* Return result */
-    return $CaMykS->get_locale('language_'.$requestLanguage);
+    return $CaMykS->get_locale($requestLanguage, 'language');
 }
 
 /* Language default country related methods */

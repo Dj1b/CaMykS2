@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a7
+ * @version 2.0a8
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -830,6 +830,7 @@ final class CaMykS {
     /**
      * Return asset file URL.
      * @param string $asset
+     * @param string $URLMode
      * @return string
      */
     public function get_assetFileURL($asset, $URLMode=false) {
@@ -960,19 +961,40 @@ final class CaMykS {
     }
 
     /**
+     * Check if locale exists.
+     * @param string $key
+     * @param string $prefix
+     * @return boolean result
+     */
+    public function check_locale($key, $prefix='') {
+        /* Check prefix */
+        if ($prefix != '')
+            $prefix .= '_';
+
+        /* Do the check */
+        return isset($this->locales[[$prefix.$key]);
+    }
+
+    /**
      * Return locale string.
      * @param string $key
+     * @param string $prefix
+     * @param mixed $data
      * @param string $default
-     * @return boolean string
+     * @return string
      */
-    public function get_locale($key, $default=null) {
+    public function get_locale($key, $prefix='', $data=null, $default=null) {
+        /* Check prefix */
+        if ($prefix != '')
+            $prefix .= '_';
+
         /* Search and return locale from key */
-        if (isset($this->locales[$key]))
-            return $this->locales[$key];
+        if (isset($this->locales[$prefix.$key]))
+            return vsprintf($this->locales[$prefix.$key], $data);
 
         /* Key not found, return default value */
-        if ($default != null)
-            return $default;
+        if (!is_null($default))
+            return vsprintf($default, $data);
 
         /* No default values, return key */
         return $key;
@@ -990,7 +1012,7 @@ final class CaMykS {
 
         /* Remove prefix, if given */
         if ($prefix != '')
-            $keys = preg_filter('/^'.preg_quote($prefix).'(.*)/', '$1', $keys);
+            $keys = preg_filter('/^'.preg_quote($prefix).'_(.*)/', '$1', $keys);
 
         /* Return keys */
         return $keys;

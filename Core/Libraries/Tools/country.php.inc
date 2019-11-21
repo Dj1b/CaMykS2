@@ -3,7 +3,7 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -75,12 +75,12 @@ function country_getLocalisedTitles($params=array(), $language=null) {
         /* Add countries from the short list */
         foreach ($params['ShortList'] as $c)
             if (isset($cCountries[$c]) and ($cCountries[$c]['Type'] == 'country' or $params['Territories'] == 1))
-                $result[$c] = $CaMykS->get_locale('country_'.$c);
+                $result[$c] = $CaMykS->get_locale($c, 'country');
     } else {
         /* Add all countries */
         foreach ($cCountries as $c => $data)
             if ($data['Type'] == 'country' or $params['Territories'] == 1)
-                $result[$c] = $CaMykS->get_locale('country_'.$c);
+                $result[$c] = $CaMykS->get_locale($c, 'country');
     }
 
     /* Return result */
@@ -107,7 +107,7 @@ function country_getLocalisedTitle($country, $language=null) {
     country_loadCountriesLocale($language);
 
     /* Return result */
-    return $CaMykS->get_locale('country_'.$country);
+    return $CaMykS->get_locale($country, 'country');
 }
 
 /**
@@ -130,7 +130,7 @@ function countries_getCodeFromLocalisedTitle($title, $language=null) {
     country_loadCountriesLocale($language);
 
     /* Search values */
-    $keys = $CaMykS->get_localeKeysByValue($title, 'country_');
+    $keys = $CaMykS->get_localeKeysByValue($title, 'country');
 
     /* Check keys */
     if (count($keys) === 0)
@@ -267,8 +267,10 @@ function country_getCurrencyTitle($country) {
  * @param string $country
  * @param string $collection
  * @param string $size
+ * @param mixed $URLMode
+ * @return string
  */
-function country_getFlagURL($country, $collection='Flat', $size=16) {
+function country_getFlagURL($country, $collection='Flat', $size=16, $URLMode=false) {
     global $CaMykS, $cCountries;
 
     /* Load data file */
@@ -299,7 +301,7 @@ function country_getFlagURL($country, $collection='Flat', $size=16) {
         return '';
 
     /* Load file URL from CaMykS */
-    $url = $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/'.strtolower($country).'.'.$collections[$collection]['FileExtension']);
+    $url = $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/'.strtolower($country).'.'.$collections[$collection]['FileExtension'], $URLMode);
 
     /* Check URL */
     if ($url != '')
@@ -318,15 +320,16 @@ function country_getFlagURL($country, $collection='Flat', $size=16) {
  * @param string$country
  * @param string $collection
  * @param string $size
+ * @param mixed $URLMode
  * @param string $imgParams
  * @param string $language
  * @return string
  */
-function country_getFlagTag($country, $collection=null, $size=null, $imgParams=array(), $language=null) {
+function country_getFlagTag($country, $collection=null, $size=null, $URLMode=false, $imgParams=array(), $language=null) {
     /* Add source to image parameters */
-    $imgParams['src'] = country_getFlagURL($country, $collection, $size);
+    $imgParams['src'] = country_getFlagURL($country, $collection, $size, $URLMode);
 
-    /* Add country name to image paramters */
+    /* Add country name to image parameters */
     if (!isset($imgParams['alt']) or $imgParams['alt'] == '') {
         $imgParams['alt'] = country_getLocalisedTitle($country, $language);
         if (!isset($imgParams['title']) or $imgParams['title'] == '')
