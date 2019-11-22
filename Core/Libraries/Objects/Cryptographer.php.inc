@@ -3,7 +3,7 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -86,7 +86,7 @@ final class Cryptographer extends CaMykSLibrary {
         }
 
         /* No known engine defined */
-        return $this->add_error(1);
+        return $this->add_error(1, $this->params['engine'], __FILE__, __LINE__);
     }
 
     /**
@@ -141,16 +141,16 @@ final class Cryptographer extends CaMykSLibrary {
      */
     private function _OpenSSL_check_configuration() {
         if (!function_exists('openssl_encrypt'))
-            return $this->add_error(2);
+            return $this->add_error(2, 'OpenSSL', __FILE__, __LINE__);
 
         if (!in_array($this->params['cipher'], openssl_get_cipher_methods()))
-            return $this->add_error(11);
+            return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
         if ($this->params['key'] == '')
-            return $this->add_error(21);
+            return $this->add_error(21, '', __FILE__, __LINE__);
 
         if ($this->params['iv'] == '')
-            return $this->add_error(22);
+            return $this->add_error(22, '', __FILE__, __LINE__);
 
         return true;
     }
@@ -191,16 +191,16 @@ final class Cryptographer extends CaMykSLibrary {
      */
     private function _Mcrypt_check_configuration() {
         if (!function_exists('mcrypt_encrypt'))
-            return $this->add_error(2);
+            return $this->add_error(2, 'MCrypt', __FILE__, __LINE__);
 
         if (!in_array($this->params['cipher'], mcrypt_list_algorithms()))
-            return $this->add_error(11);
+            return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
         if (!in_array($this->params['mode'], mcrypt_list_modes()))
-            return $this->add_error(101);
+            return $this->add_error(101, $this->params['mode'], __FILE__, __LINE__);
 
         if ($this->params['key'] == '')
-            return $this->add_error(21);
+            return $this->add_error(21, '', __FILE__, __LINE__);
 
         return true;
     }
@@ -243,10 +243,10 @@ final class Cryptographer extends CaMykSLibrary {
      */
     private function _Sodium_check_configuration() {
         if (!function_exists('sodium_crypto_secretbox'))
-            return $this->add_error(2);
+            return $this->add_error(2, 'Sodium', __FILE__, __LINE__);
 
         if ($this->params['key'] == '')
-            return $this->add_error(21);
+            return $this->add_error(21, '', __FILE__, __LINE__);
 
         return true;
     }
@@ -289,7 +289,7 @@ final class Cryptographer extends CaMykSLibrary {
 
         /* Get decrypted data */
         if (($result = sodium_crypto_secretbox_open($data, $iv, $key)) === false) {
-            $this->add_error(31);
+            $this->add_error(31, '', __FILE__, __LINE__);
         }
 
         /* Return result */

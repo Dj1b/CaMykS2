@@ -3,7 +3,7 @@
  * @brief Push Notification library
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -108,7 +108,7 @@ final class PushNotification extends CaMykSLibrary {
         }
 
         /* No platform found, return as error */
-        return  $this->add_error(1);
+        return  $this->add_error(1, __FILE__, __LINE__);
     }
 
     /**
@@ -137,7 +137,7 @@ final class PushNotification extends CaMykSLibrary {
 
         /* Check connection error */
         if (!$connection)
-            return $this->add_error(3, "$err $errstr");
+            return $this->add_error(3, "$err $errstr", __FILE__, __LINE__);
 
         /* Build payload body */
         $payload = array_merge(array(
@@ -218,8 +218,8 @@ final class PushNotification extends CaMykSLibrary {
 
         /* Set error */
         if (isset($result->results[0]->error))
-             return $this->add_error(4, $result->results[0]->error);
-        return $this->add_error(4, 'Unknown error');
+             return $this->add_error(4, $result->results[0]->error, __FILE__, __LINE__);
+        return $this->add_error(4, '', __FILE__, __LINE__);
     }
 
     /**
@@ -291,7 +291,7 @@ final class PushNotification extends CaMykSLibrary {
             /* Execute post */
             $result = curl_exec($ch);
             if ($result === false)
-                return $this->add_error(3, curl_error($ch));
+                return $this->add_error(3, curl_error($ch), __FILE__, __LINE__);
 
             /* Close connection */
             curl_close($ch);
@@ -301,7 +301,7 @@ final class PushNotification extends CaMykSLibrary {
         }
 
         /* Return failure */
-        return $this->add_error(3, 'No URL defined');
+        return $this->add_error(3, 'No URL defined', __FILE__, __LINE__);
     }
 }
 ?>
