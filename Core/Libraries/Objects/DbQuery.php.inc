@@ -156,7 +156,7 @@ final class DbQuery extends CaMykSLibrary {
         return false;
     }
 
-    /* Override CLibrary methods */
+    /* Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
@@ -183,14 +183,14 @@ final class DbQuery extends CaMykSLibrary {
             22 => 'LimitDataIsInvalid',
 
             /* Insert related errors */
-            31 => 'MethodCanOnlyBeUsedWithInsertCommand',
+            31 => 'PartitionIsOnlyAvailableWithInsertCommand',
             32 => 'PartitionDataIsInvalid',
             33 => 'ValuesDataIsInvalid',
             34 => 'ValuesDataHasNotTheSameItemCount',
             35 => 'ValuesDataDoesNotCorrespondToPartition',
 
             /* Update related errors */
-            41 => 'MethodCanOnlyBeUsedWithUpdateCommand',
+            41 => 'AssignmentIsOnlyAvailableWithUpdateCommand',
             42 => 'AssignmentDataIsInvalid',
 
             /* Delete related errors */

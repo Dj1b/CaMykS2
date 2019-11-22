@@ -98,7 +98,7 @@ final class DatabaseConnector extends CaMykSLibrary {
         $CaMykS->register_databaseConnection($this);
     }
 
-    /* Override CLibrary methods */
+    /* Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
