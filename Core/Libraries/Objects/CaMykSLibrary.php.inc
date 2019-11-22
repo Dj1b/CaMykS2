@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -54,7 +54,7 @@ abstract class CaMykSLibrary {
      */
     public function __construct($params=array()) {
         /* Define library name */
-        $this->libraryName = get_class($this);
+        $this->libraryName = preg_replace('#^CaMykS2\\\#', '', get_class($this));
 
         /* Define initial parameters */
         $this->update_params($params);
@@ -116,7 +116,7 @@ abstract class CaMykSLibrary {
             'Library'   => $this->libraryName,
             'Error'     => $this->errorList[0],
             'Code'      => $this->get_errorCode($this->errorList[0]),
-            /* 'Message'   => $this->get_errorMessage[$this->errorList[0]], */
+            'Message'   => $this->get_errorMessage($this->errorList[0]),
         );
     }
 
@@ -168,18 +168,27 @@ abstract class CaMykSLibrary {
     /**
      * Add an error.
      * @param integer $errorId
+     * @param string $details
+     * @param string $file
+     * @param integer $line
+     * @param boolean $isFatal
      * @return false
      */
-    protected function add_error($errorId) {
+    protected function add_error($errorId, $details, $file='', $line=0, $isFatal=false) {
+        global $CaMykS;
+
         /* Add error at the beginning of the list */
         array_unshift($this->errorList, $errorId);
+
+        /* Send error to CaMykS */
+        $CaMykS->trigger_error($this->libraryName, $errorId, $this->get_errorCode($errorId), $details, $file, $line, $isFatal);
 
         /* Return false */
         return false;
     }
 
     /**
-     * Define error code list, to be override by libraries.
+     * Define error code list, to be overrided by libraries.
      * @return void
      */
     protected function define_errorCodes() {

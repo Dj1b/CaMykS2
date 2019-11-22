@@ -3,7 +3,7 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -54,6 +54,12 @@ final class Error {
     private $message;
 
     /**
+     * var string $details
+     * @brief Details attached to message.
+     */
+    private $details;
+
+    /**
      * Object constructor.
      * @param string $origin
      * @param string $type
@@ -63,13 +69,14 @@ final class Error {
      * @param string $message
      * @return void
      */
-    public function __construct($origin, $type, $code=0, $file=null, $line=0, $message='') {
+    public function __construct($origin, $type, $code=0, $file='', $line=0, $message='', $details='') {
         $this->origin = $origin;
         $this->type = $type;
         $this->code = $code;
         $this->file = $file;
         $this->line = $line;
         $this->message = trim($message);
+        $this->details = trim($details);
     }
 
     /**
@@ -93,7 +100,7 @@ final class Error {
      * @return boolean result
      */
     public function has_location() {
-        return (!is_null($this->file));
+        return ($this->file != '');
     }
 
     /**
@@ -120,10 +127,19 @@ final class Error {
 
     /**
      * Return error message value.
+     * @param boolean $HTMLFormat
      * @return string
      */
-    public function get_message() {
-        return nl2br($this->message);
+    public function get_message($HTMLFormat=false) {
+        /* Build full message with details */
+        $message = $this->message;
+        if ($this->details !== '')
+            $message .= ' ('.$this->details.')';
+
+        /* Check format */
+        if ($HTMLFormat)
+            return nl2br($message);
+        return $message;
     }
 
     /**
@@ -133,9 +149,9 @@ final class Error {
     public function export_asHTML() {
         $s = '<strong>'.$this->get_header().'</strong>';
         if ($this->has_location())
-            $s .= ' <em>('.$this->get_location().')</em>';
+            $s .= ' - <em>'.$this->get_location().'</em>';
         if ($this->has_message())
-            $s .= $this->get_message();
+            $s .= ' - '.$this->get_message(true);
         return $s;
     }
 

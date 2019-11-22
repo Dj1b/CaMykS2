@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a8
+ * @version 2.0a9
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -70,7 +70,7 @@ final class CaMykS {
      * @var array $currentLanguage
      * @brief Optimised language currently used.
      */
-    private $currentLanguage = 'en_GB';
+    private $currentLanguage = 'fr_FR';
 
     /**
      * @var array $locales
@@ -124,22 +124,28 @@ final class CaMykS {
     private $errorHandler = false;
 
     /**
-     * var string $CaMykSPath
+     * @var string $CaMykSPath
      * @brief CaMykS path.
      */
     private $CaMykSPath;
 
     /**
-     * var string $websitePath
+     * @var string $websitePath
      * @brief Website path.
      */
     private $websitePath;
 
     /**
-     * var string $websiteURL
+     * @var string $websiteURL
      * @brief Website URL.
      */
     private $websiteURL;
+
+    /**
+     * @var array $accessibilityFolders
+     * @brief List of accessible folders.
+     */
+    private $accessibilityFolders;
 
     /**
      * @var boolean $falseRef
@@ -181,7 +187,7 @@ final class CaMykS {
         $this->display();
 
         /* Close */
-        $this->close();
+        //$this->close();
     }
 
     /* CaMykS main sub methods */
@@ -255,7 +261,7 @@ final class CaMykS {
      */
     public function close() {
         /* Kill processus to call terminate through registered shutdown function */
-        //die();
+        die();
     }
 
     /**
@@ -315,7 +321,7 @@ final class CaMykS {
         unset($this->startMicroTime);
 
         /* Load errorhandler object */
-        //$this->errorHandler = new ErrorHandler();
+        $this->errorHandler = new ErrorHandler();
     }
 
     /**
@@ -516,7 +522,9 @@ final class CaMykS {
         $this->load_library('country', 'Tools');
         $this->load_library('currency', 'Tools');
         $this->load_library('date', 'Tools');
+        $this->load_library('folder', 'Tools');
         $this->load_library('html', 'Tools');
+        $this->load_library('http', 'Tools');
         $this->load_library('language', 'Tools');
 
         /* Load parent object libraries */
@@ -530,6 +538,7 @@ final class CaMykS {
         $this->load_library('DbQuery', 'Objects');
         $this->load_library('Error', 'Objects');
         $this->load_library('ErrorHandler', 'Objects');
+        $this->load_library('File', 'Objects');
         $this->load_library('RequestAnswer', 'Objects');
 
         /* Load site libraries */
@@ -760,6 +769,64 @@ final class CaMykS {
         return file_exists($this->get_websiteFileFullPath($filePath));
     }
 
+    /**
+     * Check if given path is autorised to be read or written.
+     * @param string $path
+     * @param string $action
+     * @return boolean result
+     */
+    public function check_pathAccessibility($path, $action='read') {
+        /* Check action */
+        if (!in_array($action, array('read', 'write')))
+            return false;
+
+        /* Load folders */
+        if (is_null($this->accessibilityFolders))
+            $this->load_accessibilityFolders();
+
+        /* Check acessiblity */
+        foreach ($this->accessibilityFolders as $folder => $permissions) {
+            /* Check permission is available */
+            if (!in_array($action, $permissions))
+                continue;
+
+            /* Check is in path */
+            if (folder_checkIsInPath($path, $folder))
+                return true;
+        }
+
+        /* Return default value */
+        return false;
+    }
+
+    /**
+     * Load accessibility folders.
+     * @return void
+     */
+    private function load_accessibilityFolders() {
+        /* Build folder */
+        $this->accessibilityFolders = array(
+            /* Read permission on website root */
+            $this->get_websiteFileFullPath('') => array('read'),
+
+            /* Read/write permission on website configuration */
+            $this->get_websiteFileFullPath('Configuration') => array('read', 'write'),
+
+            /* Read/write permission on website data */
+            $this->get_websiteFileFullPath('Data') => array('read', 'write'),
+
+            /* Read permission on CaMykS root */
+            $this->get_engineFileFullPath('') => array('read'),
+
+            /* Read permission on tmp folder */
+            folder_getTemporaryFolder() => array('read'),
+        );
+
+        /* Read/write permission on CaMykS configuration in manager mode */
+        if ($this->mode === CAMYKS_MODE_MANAGER)
+            $$this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('read', 'write');
+    }
+
     /* URL related methods */
 
     /**
@@ -827,6 +894,30 @@ final class CaMykS {
         return '';
     }
 
+    /* Assets related files */
+
+    /**
+     * Return asset file path.
+     * @param string $asset
+     * @return string
+     */
+    public function get_assetFilePath($asset) {
+        /* Check file in website */
+        $file = 'Assets/'.$asset;
+        if ($this->mode < 3) {
+            if (file_exists($file))
+                return $file;
+        }
+
+        /* Check file in CaMykS */
+        $file = 'Core/'.$file;
+        if ($this->check_engineFileExists($file))
+            return $this->get_engineFileFullPath($file);
+
+        /* Default for files that don't exists */
+        return '';
+    }
+
     /**
      * Return asset file URL.
      * @param string $asset
@@ -845,6 +936,29 @@ final class CaMykS {
         $file = 'Core/'.$file;
         if ($this->check_engineFileExists($file))
             return $this->get_baseURL($URLMode).$file;
+
+        /* Default for files that don't exists */
+        return '';
+    }
+
+    /**
+     * Load asset layout.
+     * @param string $layout
+     * @param mixed $context
+     * @return string
+     */
+    public function load_assetLayout($layout, $context=null) {
+        /* Check file in website */
+        $file = 'Assets/Layouts/'.$layout.$this->layoutExtension;
+        if ($this->mode < 3) {
+            if (file_exists($file))
+                include $file;
+        }
+
+        /* Check file in CaMykS */
+        $file = 'Core/'.$file;
+        if ($this->check_engineFileExists($file))
+            include $file;
 
         /* Default for files that don't exists */
         return '';
@@ -972,7 +1086,7 @@ final class CaMykS {
             $prefix .= '_';
 
         /* Do the check */
-        return isset($this->locales[[$prefix.$key]);
+        return isset($this->locales[$prefix.$key]);
     }
 
     /**
@@ -1057,38 +1171,55 @@ final class CaMykS {
     /** Logging & errors related methods */
 
     /**
-     * Log an information.
+     * Trigger an internal error.
+     * @param string $origin
+     * @param integer $code
+     * @param string $message
+     * @param string $details
+     * @param string $file
+     * @param integer $line
+     * @param boolean $isFatal
+     * @return boolean success
+     */
+    public function trigger_error($origin, $code, $message, $details, $file='', $line=0, $isFatal=false) {
+        if ($this->errorHandler !== false)
+            return $this->errorHandler->handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal);
+        return false;
+    }
+
+    /**
+     * Log a message.
      * @param string $object
      * @param string $action
      * @param string $message
      * @return boolean success
      */
-    public function log($object, $action, $message='') {
+    public function log_message($object, $action, $message='') {
         $logManager = $this->get_module('Admin_SystemLogManager', true);
         if ($logManager === false)
             return false;
-        return $logManager->log($object, $action, $message);
+        return $logManager->log_message($object, $action, $message);
     }
 
     /**
-     * Throw fatal error.
-     * @param CaMykS\Error $error
-     * @return void
+     * Log messages.
+     * @param string $object
+     * @param string $messages
+     * @return boolean success
      */
-    public function throw_fatalError($error) {
-        /* Log fatal error */
-        $this->log_error($error);
-
-        /* Display fatal error */
-        $this->display_fatalError($error);
+    public function log_messages($object, $messages=array()) {
+        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        if ($logManager === false)
+            return false;
+        return $logManager->log_messages($object, $messages);
     }
 
     /**
      * Log an error.
-     * @param CaMykS\Error $error
+     * @param CaMykS2\Error $error
      * @return boolean success
      */
-    private function log_error($error) {
+    public function log_error($error) {
         $logManager = $this->get_module('Admin_SystemLogManager', true);
         if ($logManager === false)
             return false;
@@ -1096,15 +1227,24 @@ final class CaMykS {
     }
 
     /**
-     * Display a fatal error.
-     * @param CaMykS\Error $error
-     * return void
-     * @todo
+     * Display splash message.
+     * @param string $layout
+     * @param mixed $content
+     * @param integer $HTTPCode
+     * @return void
      */
-    public function display_fatalError($error) {
-        /* Load HTMLPage */
+    public function display_splashMessage($layout, $content='', $HTTPCode=200) {
+        /* Send HTTP code */
+        header('HTTP/1.1 '.$HTTPCode.' '.http_getResponseCodeName($HTTPCode));
+
+        /* Display page header */
+        $this->load_assetLayout('Page/Header');
 
         /* Display error */
+        $this->load_assetLayout($layout, $content);
+
+        /* Display page footer */
+        $this->load_assetLayout('Page/Footer');
 
         /* Close CaMykS */
         $this->close();

@@ -3,7 +3,7 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -21,7 +21,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @var array $params
      * @brief ErrorHandler parameters.
      */
-    protected $params = array('output'    => 'none');
+    protected $params = array('output'    => 'auto');
 
     /**
      * @var array $errors
@@ -94,9 +94,6 @@ final class ErrorHandler extends CaMykSLibrary {
 
         /* Save new error */
         $this->errors[] = $error;
-
-        /* Throw fatal error */
-        $this->throw_fatalError($error);
     }
 
     /**
@@ -104,14 +101,15 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param string $origin
      * @param integer $code
      * @param string $message
+     * @param string $details
      * @param string $file
      * @param integer $line
      * @param boolean $isFatal
      * @return void
      */
-    public function handle_CaMykSError($origin, $code, $message, $file, $line, $isFatal) {
+    public function handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal) {
         /* Create error */
-        $error = new Error($origin, 'Error', $code, $file, $line, $message);
+        $error = new Error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
 
         /* Save new error */
         $this->errors[] = $error;
@@ -125,13 +123,14 @@ final class ErrorHandler extends CaMykSLibrary {
      * Handle Database error in CaMykS.
      * @param integer $code
      * @param string $message
+     * @param string $details
      * @param string $file
      * @param integer $line
      * @return void
      */
-    public function handle_CaMykSDatabaseError($origin, $code, $message, $file, $line) {
+    public function handle_CaMykSDatabaseError($code, $message, $details, $file, $line) {
         /* Save new error */
-        $this->errors[] = new Error($origin, 'Database Error', $code, $file, $line, $message);
+        $this->errors[] = new Error('CaMykS', 'Database Error', $code, $file, $line, $message, $details);
     }
 
     /* Exportation method */
@@ -142,6 +141,8 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return mixed
      */
     public function export($output='') {
+        global $CaMykS;
+
         /* Check output method */
         $method = $output != '' ? $output : $this->params['output'];
 
@@ -151,7 +152,12 @@ final class ErrorHandler extends CaMykSLibrary {
             case 'session': return $this->export_toSession();
             case 'logs': return $this->export_toCaMykSLogs();
             case 'html': return $this->export_toHTML();
-            case 'none': default : return $this->errors;
+            case 'none': return;
+            case 'auto': default:
+                if ($CaMykS->get_configValue('Website_Status') == 1)
+                    return $this->export('logs');
+                else
+                    return $this->export('html');
         }
         return;
     }
@@ -219,8 +225,17 @@ final class ErrorHandler extends CaMykSLibrary {
     private function throw_fatalError($error) {
         global $CaMykS;
 
-        /* Throw a fatal error through CaMykS */
-        $CaMykS->throw_fatalError($error);
+        /* Log fatal error */
+        $CaMykS->log_error($error);
+
+        /* Select layout to display */
+        if ($CaMykS->get_configValue('Website_CaMykSMode') == 1)
+            $layout = 'Error/Simplified';
+        else
+            $layout = 'Error/Complete';
+
+        /* Display fatal error */
+        $CaMykS->display_splashMessage($layout, $error, 500);
     }
 
     /* Private exporting methods */
@@ -257,8 +272,23 @@ final class ErrorHandler extends CaMykSLibrary {
     private function export_toCaMykSLogs() {
         global $CaMykS;
 
+        $messages = array();
+        foreach ($this->errors as $error) {
+            $message = array();
+            if ($error->has_location())
+                $message[] = $error->get_location();
+            if ($error->has_message())
+                $message[] = $error->get_message();
+            $message = implode(' - ', $message);
+
+            $messages[] = array(
+                'action' => $error->get_header(),
+                'message' => $message,
+            );
+        }
+
         /* Log errors to CaMykS logs */
-        //$CaMykS->log_information($this->params['parent'], $msg1, $msg2, $this->params['file'], $this->params['line']);
+        $CaMykS->log_messages('Errors', $messages);
     }
 
     /**
