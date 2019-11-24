@@ -3,7 +3,7 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -246,11 +246,11 @@ final class DbQuery extends CaMykSLibrary {
     public function set_action($action='') {
         /* Check action is already set */
         if ($this->action != '')
-            return $this->add_error(2);
+            return $this->add_error(2, $this->action, __FILE__, __LINE__);
 
         /* Check is known action */
         if (!in_array($action, $this->actionValues))
-            return $this->add_error(1);
+            return $this->add_error(1, $action, __FILE__, __LINE__);
 
         /* Save action and return success */
         $this->action = strtolower($action);
@@ -275,19 +275,19 @@ final class DbQuery extends CaMykSLibrary {
     public function add_table($table=null, $alias=null, $join='inner') {
         /* Check if query action is defined */
         if ($this->action == '')
-            return $this->add_error(3);
+            return $this->add_error(3, '', __FILE__, __LINE__);
 
         /* Check table value */
         if (is_null($table))
-            return $this->add_error(11);
+            return $this->add_error(11, '', __FILE__, __LINE__);
 
         /* Check already defined table and action */
         if (count($this->tables) == 1 and $this->action != 'select')
-            return $this->add_error(12);
+            return $this->add_error(12, $this->action, __FILE__, __LINE__);
 
         /* Check already defined table and action */
         if (!in_array(strtolower($join), $this->joinValues))
-            return $this->add_error(13);
+            return $this->add_error(13, $join, __FILE__, __LINE__);
 
         /* Add table to table list */
         $this->tables[] = array('table'=>$table, 'alias'=>$alias, 'join'=>$join);
@@ -330,7 +330,7 @@ final class DbQuery extends CaMykSLibrary {
 
         /* Check for null value */
         if (is_null($value)) {
-            return $this->add_error(16);
+            return $this->add_error(16, '', __FILE__, __LINE__);
 
         /* Check for rand() value */
         } elseif (strtolower($value) == 'rand()') {
@@ -341,11 +341,11 @@ final class DbQuery extends CaMykSLibrary {
         } elseif ($type == 'special') {
             $value = strtolower($value);
             if (!in_array($value, $this->orderBySpecialValues))
-                return $this->add_error(14);
+              return $this->add_error(14, $value, __FILE__, __LINE__);
 
         /* Check way */
         } elseif (!in_array($way, $this->orderByWayValues))
-            return $this->add_error(15);
+            return $this->add_error(15, $way, __FILE__, __LINE__);
 
         /* Add value to list */
         $this->orderBy[] = array('value'=>$value, 'way'=>$way, 'table'=>$table, 'type'=>$type);
@@ -411,7 +411,7 @@ final class DbQuery extends CaMykSLibrary {
     public function add_selectItem($column, $alias='', $table='', $function='') {
         /* Check for null value */
         if (is_null($column))
-            return $this->add_error(21);
+            return $this->add_error(21, '', __FILE__, __LINE__);
         if (is_string($column))
             $column = array('column'=>$column, 'alias'=>$alias, 'table'=>$table, 'function'=>$function);
 
@@ -439,7 +439,7 @@ final class DbQuery extends CaMykSLibrary {
     public function add_selectGroupBy($column, $table='') {
         /* Check for null value */
         if (is_null($column))
-            return $this->add_error(22);
+            return $this->add_error(22, '', __FILE__, __LINE__);
 
         /* Add value to list */
         $this->selectGroupBy[] = array('column'=>$column, 'table'=>$table);
@@ -466,11 +466,11 @@ final class DbQuery extends CaMykSLibrary {
     public function set_insertPartition($partition=null) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
-            return $this->add_error(31);
+            return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check partition */
         if (!is_array($partition) or !array_checkDataType($partition, 'string'))
-            return $this->add_error(32);
+            return $this->add_error(32, '', __FILE__, __LINE__);
 
         /* Define partition */
         $this->insertPartition = $partition;
@@ -495,18 +495,18 @@ final class DbQuery extends CaMykSLibrary {
      public function add_insertValues($values) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
-            return $this->add_error(31);
+            return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check values */
         if (!is_array($values))
-            return $this->add_error(33);
+            return $this->add_error(33, '', __FILE__, __LINE__);
 
         /* Check values length */
         if ($this->insertPartition != null) {
             if (count($this->insertPartition) != count($values))
-                return $this->add_error(35);
+                return $this->add_error(35, '', __FILE__, __LINE__);
         } elseif (count($this->insertValues) > 0 and count($this->insertValues[0]) != count($values))
-            return $this->add_error(34);
+            return $this->add_error(34, '', __FILE__, __LINE__);
 
         /* Add extra checks for associative array */
         if (array_isAssociative($values)) {
@@ -517,7 +517,7 @@ final class DbQuery extends CaMykSLibrary {
                     if (isset($values[$key]))
                         $v[] = $values[$key];
                     else
-                        return $this->add_error(35);
+                        return $this->add_error(35, '', __FILE__, __LINE__);
                 }
             } else {
                 /* Use keys as partition, if keys are correct */
@@ -541,11 +541,11 @@ final class DbQuery extends CaMykSLibrary {
      public function add_insertValuesList($list) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
-            return $this->add_error(31);
+            return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check values */
         if (!is_array($list))
-            return $this->add_error(33);
+            return $this->add_error(33, '', __FILE__, __LINE__);
 
         /* Add values */
         foreach ($list as $values)
@@ -575,11 +575,11 @@ final class DbQuery extends CaMykSLibrary {
     public function add_updateAssignment($name=null, $value=null) {
         /* Check if query action is defined to update */
         if ($this->action != 'update')
-            return $this->add_error(41);
+            return $this->add_error(41, $this->action, __FILE__, __LINE__);
 
         /* Check name and value */
         if (!is_string($name))
-            return $this->add_error(42);
+            return $this->add_error(42, '', __FILE__, __LINE__);
 
         /* Add name and value to assignment list */
         $this->updateAssignments[] = array(
@@ -624,7 +624,7 @@ final class DbQuery extends CaMykSLibrary {
         }
 
         /* No relevant action found */
-        return $this->add_error(2);
+        return $this->add_error(2, '', __FILE__, __LINE__);
     }
 
     /**
@@ -708,7 +708,7 @@ final class DbQuery extends CaMykSLibrary {
     private function _read_fromSQLSelect($query) {
         /* Check SQL query */
         if (!preg_match('/^select (.+) from ([\w\s\,]+)( where (.+))?( group by (.+))?( order by (.+))?( limit ([0-9]+(\s*(\,|offset)\s*[0-9]+)?))?;?$/Ui', $query, $matches))
-            return $this->add_error(61);
+          return $this->add_error(61, '', __FILE__, __LINE__);
 
         /* Define action */
         if (!$this->set_action('select'))
@@ -750,7 +750,7 @@ final class DbQuery extends CaMykSLibrary {
     private function _read_fromSQLInsert($query) {
         /* Check SQL query */
         if (!preg_match('/^insert into ([\w]+)( partition)?( \([\w, `]*\))? values (.*);?$/Ui', $query, $matches))
-            return $this->add_error(61);
+            return $this->add_error(61, '', __FILE__, __LINE__);
 
         /* Define action */
         if (!$this->set_action('insert'))
@@ -781,7 +781,7 @@ final class DbQuery extends CaMykSLibrary {
     private function _read_fromSQLUpdate($query) {
         /* Check SQL query */
         if (!preg_match('/^update ([\w]+) set (.*) where (.*);?$/Ui', $query, $matches))
-            return $this->add_error(61);
+            return $this->add_error(61, '', __FILE__, __LINE__);
 
         /* Define action */
         if (!$this->set_action('update'))
@@ -811,7 +811,7 @@ final class DbQuery extends CaMykSLibrary {
     private function _read_fromSQLDelete($query) {
         /* Check SQL query */
         if (!preg_match('/^delete from ([\w]+) where (.*)( order by (.+))?( limit ([0-9]+(\s*(\,|offset)\s*[0-9]+)?))?;?$/Ui', $query, $matches))
-            return $this->add_error(61);
+            return $this->add_error(61, '', __FILE__, __LINE__);
 
         /* Define action */
         if (!$this->set_action('delete'))
@@ -904,7 +904,7 @@ final class DbQuery extends CaMykSLibrary {
             if ($column === false)
                 return false;
             if ($column['alias'] != '' or $column['function'] != '')
-                return $this->add_error(16);
+                return $this->add_error(16, '', __FILE__, __LINE__);
 
             /* Add column */
             if (!$this->add_orderBy($column['column'], $way, $column['table']))
@@ -995,7 +995,7 @@ final class DbQuery extends CaMykSLibrary {
             if ($column === false)
                 return false;
             if ($column['alias'] != '' or $column['function'] != '')
-                return $this->add_error(21);
+                return $this->add_error(21, '', __FILE__, __LINE__);
 
             /* Add column */
             if (!$this->add_selectGroupBy($column['column'], $column['table']))
@@ -1102,7 +1102,7 @@ final class DbQuery extends CaMykSLibrary {
         /* Check for function */
         if (preg_match('/^(\w+)\((\S+)\)$/Ui', $data, $matches)) {
             if (!in_array($matches[1], $this->itemsFunctions))
-                return $this->add_error(17);
+                return $this->add_error(17, '', __FILE__, __LINE__);
             $column['function'] = $matches[1];
             $data = $matches[2];
         }
@@ -1112,7 +1112,7 @@ final class DbQuery extends CaMykSLibrary {
             $column['table'] = $matches[2];
             $column['column'] = $matches[3];
         } else
-            return $this->add_error(16);
+            return $this->add_error(16, '', __FILE__, __LINE__);
 
         /* Return success */
         return $column;
@@ -1138,7 +1138,7 @@ final class DbQuery extends CaMykSLibrary {
 
         /* Check closing parenthesis */
         if ($closePos === false)
-            return $this->add_error(33);
+            return $this->add_error(33, '', __FILE__, __LINE__);
 
         /* Check for no string as variable */
         if ($quotePos === false and $apostPos === false) {
@@ -1192,7 +1192,7 @@ final class DbQuery extends CaMykSLibrary {
                     $qqPos = strpos($temp, $qqChar);
 
                     if ($qPos === false)
-                        return $this->add_error(33);
+                        return $this->add_error(33, '', __FILE__, __LINE__);
 
                     while ($qqPos >= 0 and $qPos == $qqPos+1) {
                         $cursor += $qPos+1;
@@ -1202,7 +1202,7 @@ final class DbQuery extends CaMykSLibrary {
                         $qqPos = strpos($temp, $qqChar);
 
                         if ($qPos === false)
-                            return $this->add_error(33);
+                              return $this->add_error(33, '', __FILE__, __LINE__);
                     }
 
                     $cursor += $qPos+1;
