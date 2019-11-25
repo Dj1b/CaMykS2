@@ -3,7 +3,7 @@
  * @brief CaMykS request answer object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -84,6 +84,18 @@ final class RequestAnswer extends CaMykSLibrary {
      */
     public function is_failure() {
         return (in_array($this->params['status'], array('failure', 'fail')));
+    }
+
+    /**
+     * Send object as final content.
+     * @param array $params
+     * @return void
+     */
+    public function send($params=array()) {
+        if ($this->get_param('output') == 'xml')
+            $this->send_asXML($params);
+        else
+            $this->send_asJSON($params);
     }
 
     /**
