@@ -3,7 +3,7 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -296,7 +296,10 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      */
     private function export_toHTML() {
-        /* display results as HTML */
+        /* Check if there are errors to display */
+        if (count($this->errors) == 0) return;
+
+        /* Display results as HTML */
         echo '<div style="display:none">'."\n";
         foreach ($this->errors as $error) {
             $error->export_asHTML()."<br />\n";
