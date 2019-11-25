@@ -4,7 +4,7 @@
  * <br /> Reads an existing file to do some actions on it.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -17,7 +17,7 @@ namespace CaMykS2;
 /**
  * File class.
  */
-final class File {
+final class File extends CaMykSLibrary{
     /**
      * @var string $file
      * @brief File name.
@@ -59,13 +59,15 @@ final class File {
      * @brief File statistics.
      */
     private $stats = array(
-        'mime'  => null,
-        'type'  => null,
-        'size'  => null,
-        'atime' => null,
-        'mtime' => null,
-        'ctime' => null,
-        'inode' => null,
+        'mime'      => null,
+        'type'      => null,
+        'size'      => null,
+        'atime'     => null,
+        'mtime'     => null,
+        'ctime'     => null,
+        'inode'     => null,
+        'width'     => null,
+        'height'    => null,
     );
 
     /**
@@ -76,6 +78,7 @@ final class File {
      */
     public function __construct($path='', $file=null) {
         global $CaMykS;
+        parent::__construct(array());
 
         /* Define full path */
         if (is_null($file))
@@ -91,9 +94,9 @@ final class File {
 
         /* Check if file is accessible */
         if (($this->isAccessible = file_exists($this->filePath)) == false)
-            return;
+            return $this->add_error(1, '', __FILE__, __LINE__);
         if (($this->isAccessible = $CaMykS->check_pathAccessibility($this->filePath, 'read')) == false)
-            return;
+            return $this->add_error(2, '', __FILE__, __LINE__);
 
         /* Split path and file */
         $this->path = dirname($this->filePath);
@@ -101,6 +104,19 @@ final class File {
 
         /* Get file extension */
         $this->ext = pathinfo($this->file, PATHINFO_EXTENSION);
+    }
+
+    /* Override CaMykSLibrary methods */
+
+    /**
+     * Define error code list.
+     * @return void
+     */
+    protected function define_errorCodes() {
+        $this->errorCodes = array(
+            1 => 'FileDoesntExists',
+            2 => 'FileIsntAccessible',
+        );
     }
 
     /* Check methods */
@@ -131,6 +147,14 @@ final class File {
      */
     public function is_accessible() {
         return $this->isAccessible;
+    }
+
+    /**
+     * Is file a picture.
+     * @return boolean result
+     */
+    public function is_picture() {
+        return ($this->get_genericType() === 'image');
     }
 
     /* Information request methods */
@@ -166,6 +190,16 @@ final class File {
     }
 
     /**
+     * Return querystring.
+     * @return string
+     */
+    public function get_queryString() {
+        if (!$this->is_accessible())
+            return false;
+        return $this->queryString;
+    }
+
+    /**
      * Return mime.
      * @return string
      */
@@ -192,15 +226,14 @@ final class File {
         $this->load_mimeInformation();
 
         /* Parse mime to get type */
-        $mime = $this->stats['mime'];
+        $mime = explode('/', $this->stats['mime']);
 
         /* Check type from first part of mime */
-        $type = strtok('/', $mime);
-        if ($type !== false and !in_array($type, array('application', 'text')))
-            return $type;
+        if ($mime[0] !== false and !in_array($mime[0], array('application', 'text')))
+            return $mime[0];
 
         /* Clean type in second part of mime */
-        $type = preg_replace(array('/^x-/', '/^x-script\./', '/^vnd\./', '/-compressed$/', '/-source$/'), '', $mime);
+        $type = preg_replace(array('/^x-/', '/^x-script\./', '/^vnd\./', '/-compressed$/', '/-source$/'), '', $mime[1]);
 
         /* Check type is a font */
         if ($type == 'ms-fontobject')
@@ -395,7 +428,7 @@ final class File {
     public function get_base64Data() {
         if (!$this->is_accessible())
             return false;
-        return 'data:'.$this->mime.';base64,'.base64_encode(file_get_contents($this->filePath));
+        return 'data:'.$this->get_mime().';base64,'.base64_encode($this->get_contents());
     }
 
     /* Checksum methods */
@@ -408,7 +441,7 @@ final class File {
     public function md5($rawOutput=false) {
         if (!$this->is_accessible())
             return false;
-        return md5_file($this->filePath, $raw_output);
+        return md5_file($this->filePath, $rawOutput);
     }
 
     /**
@@ -430,8 +463,13 @@ final class File {
      * @return void
      */
     public function download($title=null) {
+        global $CaMykS;
+
+        /* Check file is accessible */
         if (!$this->is_accessible())
             return false;
+
+        /* Write headers */
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Content-Type: application/octet-stream');
         header('Content-Description: File Transfer');
@@ -443,8 +481,12 @@ final class File {
             $title  = $this->file;
         }
         header('Content-Disposition: attachment; filename="'.$title.'";');
+
+        /* Write file content */
         echo $this->get_contents();
-        die();
+
+        /* Close CaMykS */
+        $CaMykS->close();
     }
 
     /**
@@ -453,9 +495,13 @@ final class File {
      * @return void
      */
     public function send($title=null) {
+        global $CaMykS;
+
+        /* Check file is accessible */
         if (!$this->is_accessible())
             return false;
 
+        /* Write headers */
         header('Content-Type: '.$this->get_mime());
         if (isset($title)) {
             if (pathinfo($title, PATHINFO_EXTENSION) === '')
@@ -464,8 +510,62 @@ final class File {
             $title  = $this->file;
         }
         header('Content-Disposition: inline; filename="'.$title.'"');
+
+        /* Write file content */
         echo $this->get_contents();
-        die();
+
+        /* Close CaMykS */
+        $CaMykS->close();
+    }
+
+    /* Picture related methods */
+
+    /**
+     * Return picture size as an array.
+     * @return array
+     */
+    public function get_pictureSize() {
+        /* Check file is an picture */
+        if (!$this->is_picture())
+            return false;
+
+        /* Load picture size */
+        $this->load_pictureInformation();
+
+        /* Return result */
+        return array('width'=>$this->stats['width'], 'height'=>$this->stats['height']);
+    }
+
+    /**
+     * Return picture width.
+     * @return array
+     */
+    public function get_pictureWidth() {
+        /* Check file is an picture *
+        if (!$this->is_picture())
+            return false;
+
+        /* Load picture size */
+        $this->load_pictureInformation();
+
+        /* Return result */
+        return $this->stats['width'];
+    }
+
+    /**
+     * Return picture height.
+     * @return array
+     */
+    public function get_pictureHeight() {
+        /* Check file is an picture */
+        if (!$this->is_picture())
+            return false;
+
+        /* Load picture size */
+        $this->load_pictureInformation();
+
+        /* Return result */
+        return $this->stats['height'];
     }
 
     /* Information loading methods */
@@ -508,6 +608,27 @@ final class File {
         $this->stats['inode'] = $stat['ino'];
     }
 
+    /**
+     * Load picture information.
+     * @return void
+     */
+    private function load_pictureInformation() {
+        /* Check information are already loaded */
+        if ($this->stats['width'] != null)
+            return true;
+
+        /* Load data */
+        $data = getImageSize($this->filePath);
+
+        /* Check data */
+        if ($data == '')
+            return;
+
+        /* Add sizes to statistics */
+        $this->stats['width'] = $data[0];
+        $this->stats['height'] = $data[1];
+    }
+
     /* MIME loading sub methods */
 
     /**
@@ -520,7 +641,7 @@ final class File {
             return false;
 
         /* Load finfo */
-        $finfo = @new finfo(FILEINFO_MIME);
+        $finfo = @new \finfo(FILEINFO_MIME);
         if (!$finfo) return false;
 
         /* Load file mime */
@@ -551,7 +672,7 @@ final class File {
         /* Load file mime */
         $mime = mime_content_type($this->filePath);
 
-        /* Chech result */
+        /* Check result */
         if ($mime == '')
             return false;
 
@@ -567,7 +688,7 @@ final class File {
      * @return string
      */
     private function load_mimeInformationFromExtension() {
-        global $cMimes;
+        global $CaMykS, $cMimes;
 
         /* Check for mimes list */
         if (is_null($cMimes))
@@ -575,79 +696,12 @@ final class File {
 
         /* Check ext in mimes */
         if (isset($cMimes[$this->ext]))
-            $this->stats['mime'] = $mime;
+            $this->stats['mime'] = $cMimes[$this->ext];
         else
             $this->stats['mime'] = 'application/octet-stream';
 
         /* Return success */
         return true;
     }
-
-
-
-
-
-
-
-
-
-    /**
-     * Load file mime.
-     * @return void
-     *
-    private function get_mime() {
-        $this->mime = file_getMime($this->filePath, $this->ext);
-        $t = explode('/', $this->mime);
-        $this->type = $t[0];
-    }
-
-    /**
-     * Load file description.
-     * @return void
-     *
-    private function get_descriptions() {
-        $this->typedesc = file_getTypeDescription($this->mime, $this->ext);
-        $this->mimedesc = file_getMimeDescription($this->mime);
-        $this->hsize = file_getFileSize($this->size);
-    }
-
-    /**
-     * Load more information from file.
-     * @return void
-     *
-    private function get_moreInfos() {
-        if ($this->type == 'image') {
-            $this->get_imageInfos();
-        }
-    }
-
-    /**
-     * Load more information from image file.
-     * @return void
-     *
-    private function get_imageInfos() {
-        $this->moreinfos = array_merge($this->moreinfos, file_getImageSize($this->filePath));
-    }
-
-    /**
-     * Return mime relative icon.
-     * @param int $size
-     * @param string $styles
-     * @return string
-     *
-    public function get_mimeIcon($size=32, $styles='') {
-        return file_getMimeIcon($this->mime, $size, $styles);
-    }
-
-    /**
-     * Return mime relative icon URL.
-     * @param int $size
-     * @return string
-     *
-    public function get_mimeIconURL($size=32) {
-        return file_getMimeIconURL($this->mime, $size);
-    }
-
-    */
 }
 ?>
