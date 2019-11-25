@@ -3,7 +3,7 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -299,10 +299,13 @@ final class ErrorHandler extends CaMykSLibrary {
         /* Check if there are errors to display */
         if (count($this->errors) == 0) return;
 
+        /* Check page output is HTML */
+        /* @to do */
+
         /* Display results as HTML */
-        echo '<div style="display:none">'."\n";
+        echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; margin:0 auto; background:#57488e; color:white; border:solid 1px white; padding:12px; font-family:arial; font-size:12px; line-height:16px; ">'."\n";
         foreach ($this->errors as $error) {
-            $error->export_asHTML()."<br />\n";
+            echo $error->export_asHTML()."<br />\n";
         }
         echo '</div>';
     }
