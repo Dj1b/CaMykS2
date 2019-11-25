@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a9
+ * @version 2.0a9.1
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -824,7 +824,7 @@ final class CaMykS {
 
         /* Read/write permission on CaMykS configuration in manager mode */
         if ($this->mode === CAMYKS_MODE_MANAGER)
-            $$this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('read', 'write');
+            $this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('read', 'write');
     }
 
     /* URL related methods */
