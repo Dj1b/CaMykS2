@@ -3,7 +3,7 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -289,7 +289,7 @@ function language_getFileUnit($language=null) {
     $language = language_read($language);
 
     /* Return result */
-    switch ($language) {
+    switch ($language['Language']) {
         case 'fr':
             return 'o';
         case 'en':
