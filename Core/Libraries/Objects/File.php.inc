@@ -4,7 +4,7 @@
  * <br /> Reads an existing file to do some actions on it.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -264,13 +264,14 @@ final class File extends CaMykSLibrary{
         $this->load_mimeInformation();
 
         /* Parse mime to get type */
-        $mime = $this->stats['mime'];
+        $mime = explode('/', $this->stats['mime']);
 
         /* Remove first part of mime */
-        $type = strtok('/', $mime);
+        if ($mime[0] === false or !isset($mime[1]))
+            return '';
 
         /* Clean type in second part of mime */
-        $type = preg_replace(array('/^x-/', '/^x-script\./', '/^vnd\./', '/-compressed$/', '/-source$/'), '', $mime);
+        $type = preg_replace(array('/^x-/', '/^x-script\./', '/^vnd\./', '/-compressed$/', '/-source$/'), '', $mime[1]);
 
         /* Return default type: document */
         return $type;
@@ -296,15 +297,21 @@ final class File extends CaMykSLibrary{
         if (!in_array($params['Mode'], array('Long', 'Short')))
             $params['Mode'] = $defaultParams['Mode'];
 
+        /* Load type */
+        $type = $this->get_genericType();
+
         /* Load locale from type */
-        $s = $this->get_locale($params['Mode'].'Desc_'.ucwords($this->get_genericType()));
+        $s = $this->get_locale($params['Mode'].'Desc_'.ucwords($type));
 
         /* Initialise additionnal elements */
         $add = array();
 
         /* Check for extension */
         if ($params['AddExt'])
-            $add[] = strtoupper($this->ext);
+            if ($type == 'Document')
+                $add[] = strtoupper($this->ext);
+            else
+                $add[] = strtoupper($this->get_type());
 
         /* Check for size */
         if ($params['AddSize'])
