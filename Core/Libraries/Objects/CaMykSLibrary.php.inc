@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Oct 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -146,6 +146,10 @@ abstract class CaMykSLibrary {
     protected function check_locale($locale='') {
         global $CaMykS;
 
+        /* Load library locales in CaMykS */
+        if (!$this->load_locales())
+            return false;
+
         /* Check locale in CaMykS object */
         return $CaMykS->check_locale($locale, $this->libraryName);
     }
@@ -158,6 +162,10 @@ abstract class CaMykSLibrary {
      */
     protected function get_locale($locale='', $data=null) {
         global $CaMykS;
+
+        /* Load library locales in CaMykS */
+        if (!$this->load_locales())
+            return $locale;
 
         /* Check locale in CaMykS object */
         return $CaMykS->get_locale($locale, $this->libraryName, $data);
@@ -226,16 +234,12 @@ abstract class CaMykSLibrary {
         /* Load error code */
         $code = $this->get_errorCode($errorId);
 
-        /* Load library locales in CaMykS */
-        if (!$this->load_locales())
-            return $code;
-
         /* Build locale */
         $locale = 'Error_'.$code;
 
         /* Return localised message */
-        if ($this->check_locale($locale, $this->libraryName))
-            return $this->get_locale($locale, $this->libraryName);
+        if ($this->check_locale($locale))
+            return $this->get_locale($locale);
         return $CaMykS->get_locale('GenericErrorMessage', '('.$this->libraryName.'::'.$errorId.') '.$code);
     }
 }
