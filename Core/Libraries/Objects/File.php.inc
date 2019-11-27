@@ -4,12 +4,13 @@
  * <br /> Reads an existing file to do some actions on it.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * @todo File icon collections.
  */
 
 namespace CaMykS2;
@@ -276,6 +277,48 @@ final class File extends CaMykSLibrary{
     }
 
     /**
+     * Return description.
+     * @param array $params
+     * @return string
+     */
+    public function get_description($params=array()) {
+        if (!$this->is_accessible())
+            return false;
+
+        /* Default parameters list */
+        $defaultParams = array('Mode' => 'Long', 'AddSize' => false, 'AddExt' => false, 'SizeFormat' => 'Binary');
+
+        /* Merge parameters */
+        $params = array_merge($defaultParams, $params);
+
+        /* Check mode */
+        $params['Mode'] = ucwords(strtolower($params['Mode']));
+        if (!in_array($params['Mode'], array('Long', 'Short')))
+            $params['Mode'] = $defaultParams['Mode'];
+
+        /* Load locale from type */
+        $s = $this->get_locale($params['Mode'].'Desc_'.ucwords($this->get_genericType()));
+
+        /* Initialise additionnal elements */
+        $add = array();
+
+        /* Check for extension */
+        if ($params['AddExt'])
+            $add[] = strtoupper($this->ext);
+
+        /* Check for size */
+        if ($params['AddSize'])
+            $add[] = $this->get_humanReadableSize($params['SizeFormat']);
+
+        /* Check for additionnal elements */
+        if (count($add) > 0)
+            $s .= ' ('.implode(', ', $add).')';
+
+        /* Return result */
+        return $s;
+    }
+
+    /**
      * Return icon URL.
      * @param string $collection
      * @param string $size
@@ -376,7 +419,7 @@ final class File extends CaMykSLibrary{
      * @param mixed $format
      * @return string
      */
-    public function get_humanReadableSize($format='binary') {
+    public function get_humanReadableSize($format='Binary') {
         if (!$this->is_accessible())
             return false;
 
@@ -384,7 +427,7 @@ final class File extends CaMykSLibrary{
         $this->load_statistics();
 
         /* Check format */
-        if ($format == 'decimal')
+        if ($format == 'Decimal')
             $divider = 1000.00;
         else
             $divider = 1024.00;
