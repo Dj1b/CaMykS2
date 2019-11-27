@@ -3,7 +3,7 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -227,6 +227,9 @@ final class ErrorHandler extends CaMykSLibrary {
 
         /* Log fatal error */
         $CaMykS->log_error($error);
+
+        /* Remove output */
+        $this->params['output'] = 'none';
 
         /* Select layout to display */
         if ($CaMykS->get_configValue('Website_CaMykSMode') == 1)

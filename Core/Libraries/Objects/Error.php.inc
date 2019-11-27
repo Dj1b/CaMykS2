@@ -3,7 +3,7 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -147,9 +147,9 @@ final class Error {
      * @return string
      */
     public function export_asHTML() {
-        $s = '<strong>'.$this->get_header().'</strong>';
+        $s = '<strong style="color:inherit;">'.$this->get_header().'</strong>';
         if ($this->has_location())
-            $s .= ' - <em>'.$this->get_location().'</em>';
+            $s .= ' - <em style="color:inherit;">'.$this->get_location().'</em>';
         if ($this->has_message())
             $s .= ' - '.$this->get_message(true);
         return $s;
