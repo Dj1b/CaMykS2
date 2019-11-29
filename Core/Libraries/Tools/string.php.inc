@@ -3,7 +3,7 @@
  * @brief String specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -97,6 +97,24 @@ function string_stripPHPTags($value, $replacement='') {
  */
 function string_stripScriptTags($value, $replacement='') {
     return preg_replace('/<script.*?\/script>/s', $replacement, $value);
+}
+
+/* String transformation methods */
+
+/**
+ * Return limited version of given sentence.
+ * @param string $string
+ * @param integer $length
+ * @return string
+ */
+function string_getShortenedSentence($string='', $length=64) {
+    $length = max($length, 4);
+    if (strlen($string) > $length) {
+        if (preg_match('/^(.) {1,'.($length-3).'} /', $string, $matches))
+            return $matches[0].'...';
+        return substr($string, 0, $length).'...';
+    }
+    return $string;
 }
 
 ?>
