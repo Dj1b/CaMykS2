@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a9.1
+ * @version 2.0a9.2
  * @date Creation: Feb 2017
  * @date Modification: Nov 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -522,6 +522,7 @@ final class CaMykS {
         $this->load_library('country', 'Tools');
         $this->load_library('currency', 'Tools');
         $this->load_library('date', 'Tools');
+        $this->load_library('file', 'Tools');
         $this->load_library('folder', 'Tools');
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
@@ -775,9 +776,9 @@ final class CaMykS {
      * @param string $action
      * @return boolean result
      */
-    public function check_pathAccessibility($path, $action='read') {
+    public function check_pathAccessibility($path, $action='Read') {
         /* Check action */
-        if (!in_array($action, array('read', 'write')))
+        if (!in_array($action, array('Read', 'Write', 'Delete')))
             return false;
 
         /* Load folders */
@@ -791,7 +792,7 @@ final class CaMykS {
                 continue;
 
             /* Check is in path */
-            if (folder_checkIsInPath($path, $folder))
+            if (file_checkIsInPath($path, $folder))
                 return true;
         }
 
@@ -807,24 +808,24 @@ final class CaMykS {
         /* Build folder */
         $this->accessibilityFolders = array(
             /* Read permission on website root */
-            $this->get_websiteFileFullPath('') => array('read'),
+            $this->get_websiteFileFullPath('') => array('Read'),
 
             /* Read/write permission on website configuration */
-            $this->get_websiteFileFullPath('Configuration') => array('read', 'write'),
+            $this->get_websiteFileFullPath('Configuration') => array('Read', 'Write'),
 
             /* Read/write permission on website data */
-            $this->get_websiteFileFullPath('Data') => array('read', 'write'),
+            $this->get_websiteFileFullPath('Data') => array('Read', 'Write', 'Delete'),
 
             /* Read permission on CaMykS root */
-            $this->get_engineFileFullPath('') => array('read'),
+            $this->get_engineFileFullPath('') => array('Read'),
 
-            /* Read permission on tmp folder */
-            folder_getTemporaryFolder() => array('read'),
+            /* Read/write permission on tmp folder */
+            folder_getTemporaryFolder() => array('Read', 'Write', 'Delete'),
         );
 
         /* Read/write permission on CaMykS configuration in manager mode */
         if ($this->mode === CAMYKS_MODE_MANAGER)
-            $this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('read', 'write');
+            $this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('Read', 'Write');
     }
 
     /* URL related methods */
@@ -1081,12 +1082,12 @@ final class CaMykS {
      * @return boolean result
      */
     public function check_locale($key, $prefix='') {
-        /* Check prefix */
-        if ($prefix != '')
-            $prefix .= '_';
+        /* Do the check, with prefix */
+        if ($prefix != '' and isset($this->locales[$prefix.'_'.$key]))
+            return true;
 
-        /* Do the check */
-        return isset($this->locales[$prefix.$key]);
+        /* Do the check, without prefix */
+        return isset($this->locales[$key]);
     }
 
     /**
@@ -1098,13 +1099,13 @@ final class CaMykS {
      * @return string
      */
     public function get_locale($key, $prefix='', $data=null, $default=null) {
-        /* Check prefix */
-        if ($prefix != '')
-            $prefix .= '_';
+        /* Search and return locale from key with prefix */
+        if ($prefix != '' and isset($this->locales[$prefix.'_'.$key]))
+            return vsprintf($this->locales[$prefix.'_'.$key], $data);
 
-        /* Search and return locale from key */
-        if (isset($this->locales[$prefix.$key]))
-            return vsprintf($this->locales[$prefix.$key], $data);
+        /* Search and return locale from key without prefix */
+        if (isset($this->locales[$key]))
+            return vsprintf($this->locales[$key], $data);
 
         /* Key not found, return default value */
         if (!is_null($default))
