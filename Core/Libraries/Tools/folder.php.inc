@@ -3,7 +3,7 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -13,16 +13,31 @@
  */
 
 /**
+ * Check path accessibility.
+ * @param string $path
+ * @param string $mode
+ * @return boolean result
+ */
+function folder_checkPathAccessibility($path, $mode='Read') {
+    global $CaMykS;
+
+    /* Check CaMykS exists */
+    if (!is_null($CaMykS) === false)
+        return $CaMykS->check_pathAccessibility($path, $mode);
+
+    /* By default return true */
+    return true;
+}
+
+/**
  * Create all folder needed to complete path.
  * @param string $path
  * @param string $rights
  * @return boolean
  */
 function folder_completePath($path, $rights=0771) {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($path, 'write') === false)
+    if (folder_checkPathAccessibility($path, 'write') === false)
         return false;
 
     /* Create all necessary folders */
@@ -54,10 +69,8 @@ function folder_completePath($path, $rights=0771) {
  * @return boolean
  */
 function folder_delete($folder, $recursive=false) {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($folder, 'write') === false)
+    if (folder_checkPathAccessibility($folder, 'write') === false)
         return false;
 
     /* Delete folder */
@@ -93,14 +106,12 @@ function folder_delete($folder, $recursive=false) {
  * @return boolean
  */
 function folder_copy($source, $target) {
-    global $CaMykS;
-
     /* Check source is accessible */
-    if ($CaMykS->check_pathAvailability($source, 'read') === false)
+    if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
 
     /* Check target is accessible */
-    if ($CaMykS->check_pathAvailability($target, 'write') === false)
+    if (folder_checkPathAccessibility($target, 'write') === false)
         return false;
 
     /* Copy folder */
@@ -134,14 +145,12 @@ function folder_copy($source, $target) {
  * @return boolean
  */
 function folder_move($source, $target) {
-    global $CaMykS;
-
     /* Check source is accessible */
-    if ($CaMykS->check_pathAvailability($source, 'write') === false)
+    if (folder_checkPathAccessibility($source, 'write') === false)
         return false;
 
     /* Check target is accessible */
-    if ($CaMykS->check_pathAvailability($target, 'write') === false)
+    if (folder_checkPathAccessibility($target, 'write') === false)
         return false;
 
     /* test if source and target exist and if target is writable */
@@ -200,10 +209,8 @@ function folder_getTemporaryFolder() {
  * @return array
  */
 function folder_listFiles($folder, $recursive=false, $excluded_folders=array(), $excluded_files=array(), $subFolder='') {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($folder, 'read') === false)
+    if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
 
     $folderPath = $folder.($subFolder != '' ? '/'.$subFolder:'');
@@ -244,10 +251,8 @@ function folder_listFiles($folder, $recursive=false, $excluded_folders=array(), 
  * @return array
  */
 function folder_listFolders($folder) {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($folder, 'read') === false)
+    if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
 
     /* check given path is a folder */
@@ -281,10 +286,8 @@ function folder_listFolders($folder) {
  * @return array
  */
 function folder_listMatchingFolders($folder, $matching_folders = array()) {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($folder, 'read') === false)
+    if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
 
     /* check for matching folders */
@@ -322,10 +325,8 @@ function folder_listMatchingFolders($folder, $matching_folders = array()) {
  * @return integer
  */
 function folder_countFiles($path, $recursive=true) {
-    global $CaMykS;
-
     /* Check folder is accessible */
-    if ($CaMykS->check_pathAvailability($path, 'read') === false)
+    if (folder_checkPathAccessibility($path, 'Read') === false)
         return false;
 
     /* Count files */
@@ -355,14 +356,12 @@ function folder_countFiles($path, $recursive=true) {
  * @return boolean success
  */
 function folder_createZipArchive($source='', $target='',  $includeRootFolder=false) {
-    global $CaMykS;
-
     /* Check source is accessible */
-    if ($CaMykS->check_pathAvailability($source, 'read') === false)
+    if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
 
     /* Check target is accessible */
-    if ($CaMykS->check_pathAvailability($target, 'write') === false)
+    if (folder_checkPathAccessibility($target, 'write') === false)
         return false;
 
     /* check source is a folder */
@@ -415,12 +414,9 @@ function folder_createZipArchive($source='', $target='',  $includeRootFolder=fal
  * @return array
  */
 function folder_getFlatStructure($source='') {
-    global $CaMykS;
-
     /* Check source is accessible */
-    if ($CaMykS->check_pathAvailability($source, 'read') === false)
+    if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
-
 
     $struct = array();
 
@@ -446,25 +442,12 @@ function folder_getFlatStructure($source='') {
 }
 
 /**
- * Check if folder is in path
+ * Check if folder is in path.
  * @param string $folder
  * @param string $path
  * @return boolean result
  */
 function folder_checkIsInPath($folder='', $path='') {
-    global $camyks;
-
-    /* Check path exists, is not empty, and is a directory */
-    if (!file_exists($path) or !is_dir($path) or $path == '')
-        return false;
-    $path = realpath($path).'/';
-
-    /* Check folder */
-    if (!file_exists($folder))
-        return false;
-    $folder = realpath($folder).'/';
-
-    /* Check folder is in path */
-    return preg_match('#^'.$path.'#', $folder);
+    return file_checkIsInPath($folder, $path);
 }
 ?>
