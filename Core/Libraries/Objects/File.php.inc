@@ -1,10 +1,9 @@
 <?php
 /**
  * @brief CaMykS file object library.
- * <br /> Reads an existing file to do some actions on it.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Nov 2019
  * @date Modification: Nov 2019
  * @copyright 2019 CaMykS Team
@@ -30,6 +29,12 @@ final class File extends CaMykSLibrary{
      * @brief File path.
      */
     private $path;
+
+    /**
+     * @var string $mode
+     * @brief File opening mode.
+     */
+    private $mode;
 
     /**
      * @var string $filePath
@@ -75,10 +80,10 @@ final class File extends CaMykSLibrary{
      * Class constructor.
      * @param string $path
      * @param string $file
+     * @param string $mode
      * @return void
      */
-    public function __construct($path='', $file=null) {
-        global $CaMykS;
+    public function __construct($path='', $file=null, $mode='Read') {
         parent::__construct(array());
 
         /* Define full path */
@@ -93,10 +98,17 @@ final class File extends CaMykSLibrary{
         if (isset($f[1]))
             $this->queryString = $f[1];
 
-        /* Check if file is accessible */
-        if (($this->isAccessible = file_exists($this->filePath)) == false)
+        /* Check mode */
+        $this->mode = ucwords(strtolower($mode));
+        if (!in_array($this->mode, array('Read', 'Write', 'Detete')))
+            $this->mode = 'Read';
+
+        /* Check if file exists in read/delete mode */
+        if ($this->mode != 'Write' and ($this->isAccessible = file_exists($this->filePath)) == false)
             return $this->add_error(1, '', __FILE__, __LINE__);
-        if (($this->isAccessible = $CaMykS->check_pathAccessibility($this->filePath, 'read')) == false)
+
+        /* Check if file is accessible in given mode */
+        if (($this->isAccessible = folder_checkPathAccessibility($this->filePath, $this->mode)) == false)
             return $this->add_error(2, '', __FILE__, __LINE__);
 
         /* Split path and file */
@@ -127,7 +139,7 @@ final class File extends CaMykSLibrary{
      * @return boolean result
      */
     public function is_readable() {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
         return is_readable($this->filePath);
     }
@@ -137,16 +149,19 @@ final class File extends CaMykSLibrary{
      * @return boolean result
      */
     public function is_writable() {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Write'))
             return false;
         return is_writable($this->filePath);
     }
 
     /**
      * Is file accessible.
+     * @param string $mode
      * @return boolean result
      */
-    public function is_accessible() {
+    public function is_accessible($mode='All') {
+        if ($mode !== 'All' and $this->mode !== $mode)
+            return false;
         return $this->isAccessible;
     }
 
@@ -200,12 +215,14 @@ final class File extends CaMykSLibrary{
         return $this->queryString;
     }
 
+    /* Read mode methods */
+
     /**
      * Return mime.
      * @return string
      */
     public function get_mime() {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Load information if not already loaded */
@@ -220,7 +237,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_genericType() {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Load information if not already loaded */
@@ -257,7 +274,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_type() {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Load information if not already loaded */
@@ -283,7 +300,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_description($params=array()) {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Default parameters list */
@@ -333,7 +350,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_iconURL($collection='', $size=16, $URLMode=false) {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Define collections parameters */
@@ -407,7 +424,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_size($humanReadable=false) {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Check for human readable result */
@@ -427,7 +444,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function get_humanReadableSize($format='Binary') {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Load statistics if not already loaded */
@@ -459,28 +476,6 @@ final class File extends CaMykSLibrary{
         return $size.' '.$l[$s].$t;
     }
 
-    /* Content related methods */
-
-    /**
-     * Return file content.
-     * @return string
-     */
-    public function get_contents() {
-        if (!$this->is_accessible())
-            return false;
-        return file_get_contents($this->filePath);
-    }
-
-    /**
-     * Return file content as base64 data.
-     * @return string
-     */
-    public function get_base64Data() {
-        if (!$this->is_accessible())
-            return false;
-        return 'data:'.$this->get_mime().';base64,'.base64_encode($this->get_contents());
-    }
-
     /* Checksum methods */
 
     /**
@@ -489,7 +484,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function md5($rawOutput=false) {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
         return md5_file($this->filePath, $rawOutput);
     }
@@ -500,7 +495,7 @@ final class File extends CaMykSLibrary{
      * @return string
      */
     public function crc32($rawOutput=false) {
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
         return hash_file('CRC32', $this->filePath, $rawOutput);
     }
@@ -516,7 +511,7 @@ final class File extends CaMykSLibrary{
         global $CaMykS;
 
         /* Check file is accessible */
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Write headers */
@@ -548,7 +543,7 @@ final class File extends CaMykSLibrary{
         global $CaMykS;
 
         /* Check file is accessible */
-        if (!$this->is_accessible())
+        if (!$this->is_accessible('Read'))
             return false;
 
         /* Write headers */
@@ -566,6 +561,88 @@ final class File extends CaMykSLibrary{
 
         /* Close CaMykS */
         $CaMykS->close();
+    }
+
+    /* Write mode methods */
+
+    /**
+     * Write content to file.
+     * @param string $content
+     * @param boolean $deleteOPCache
+     * @return boolean success
+     */
+    public function write($content, $deleteOPCache=false) {
+       if (!$this->is_accessible('Write'))
+            return false;
+
+        /* Write file */
+        if (@file_put_contents($this->filePath, $content, LOCK_EX) !== false) {
+            /* Remove cache from OPCache */
+            if ($deleteOPCache and function_exists('opcache_invalidate')) opcache_invalidate($this->filePath);
+
+            /* Return sucess */
+            return true;
+        }
+
+        /* Return failure */
+        return false;
+    }
+
+    /**
+     * Append content to file.
+     * @param mixed $content
+     * @return boolean success
+     */
+    public function append($content) {
+       if (!$this->is_accessible('Write'))
+            return false;
+
+        if (is_string($content))
+            return @file_put_contents($this->filePath, $content."\n", FILE_APPEND|LOCK_EX);
+        elseif (is_array($content)) {
+            foreach ($content as $line) {
+                if (!is_string($line))
+                    return false;
+                if (@file_put_contents($this->filePath, $line."\n", FILE_APPEND|LOCK_EX) === false)
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /* Delete mode methods */
+
+    /**
+     * Delete file.
+     * @return boolean success
+     */
+    public function delete() {
+        if (!$this->is_accessible('Delete'))
+            return false;
+        return @unlink($this->filePath);
+    }
+
+    /* Content related methods */
+
+    /**
+     * Return file content.
+     * @return string
+     */
+    public function get_contents() {
+        if (!$this->is_accessible())
+            return false;
+        return file_get_contents($this->filePath);
+    }
+
+    /**
+     * Return file content as base64 data.
+     * @return string
+     */
+    public function get_base64Data() {
+        if (!$this->is_accessible())
+            return false;
+        return 'data:'.$this->get_mime().';base64,'.base64_encode($this->get_contents());
     }
 
     /* Picture related methods */
