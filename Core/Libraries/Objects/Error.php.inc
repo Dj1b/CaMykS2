@@ -67,6 +67,7 @@ final class Error {
      * @param string $file
      * @param integer $line
      * @param string $message
+     * @param string $details
      * @return void
      */
     public function __construct($origin, $type, $code=0, $file='', $line=0, $message='', $details='') {

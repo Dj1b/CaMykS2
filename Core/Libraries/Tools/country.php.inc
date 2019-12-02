@@ -317,7 +317,7 @@ function country_getFlagURL($country, $collection='Flat', $size=16, $URLMode=fal
 
 /**
  * Return country flag tag
- * @param string$country
+ * @param string $country
  * @param string $collection
  * @param string $size
  * @param mixed $URLMode

@@ -243,7 +243,7 @@ final class Cryptographer extends CaMykSLibrary {
      */
     private function _Sodium_check_configuration() {
         if (!function_exists('sodium_crypto_secretbox'))
-            return $this->add_error(2, 'Sodium', __FILE__, __LINE__);
+            return $this->add_error(2, 'Sodium', __FILE__, __LINE__, true);
 
         if ($this->params['key'] == '')
             return $this->add_error(21, '', __FILE__, __LINE__);

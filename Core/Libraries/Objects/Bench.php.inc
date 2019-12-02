@@ -54,11 +54,12 @@ final class Bench extends CaMykSLibrary {
         parent::__construct($params);
     }
 
-    /* public methods */
+    /* Public methods */
 
     /**
      * Start bench.
      * @param string $title
+     * @param integer $startTime
      * @return void
      */
     public function start($title='Start', $startTime=null) {

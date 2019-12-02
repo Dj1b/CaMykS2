@@ -668,7 +668,7 @@ final class File extends CaMykSLibrary{
      * @return array
      */
     public function get_pictureWidth() {
-        /* Check file is an picture *
+        /* Check file is an picture */
         if (!$this->is_picture())
             return false;
 
@@ -788,8 +788,7 @@ final class File extends CaMykSLibrary{
 
     /**
      * Load file mime from PHP internal method.
-     * @param string $file
-     * @return string
+     * @return boolean success
      */
     private function load_mimeInformationFromMimeContentType() {
         /* Check php method is available */
@@ -812,7 +811,7 @@ final class File extends CaMykSLibrary{
 
     /**
      * Load file mime from file extension.
-     * @return string
+     * @return boolean success
      */
     private function load_mimeInformationFromExtension() {
         global $CaMykS, $cMimes;

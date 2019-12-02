@@ -28,7 +28,7 @@ final class DbQuery extends CaMykSLibrary {
     private $actionValues = array('select', 'insert', 'update', 'delete');
 
     /**
-     * @var array $itemsFunction
+     * @var array $itemsFunctions
      * @brief List of functions applicable to items.
      * @note Will become a constant after dropping support for PHP 5.3.
      */

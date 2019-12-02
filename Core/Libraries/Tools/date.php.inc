@@ -2,7 +2,6 @@
 /**
  * @brief Date related methods.
  * @details Engine / Tool Library
- * @file engine/lib/tool/date.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0.0
  * @date Creation: Nov 2019

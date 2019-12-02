@@ -79,7 +79,7 @@ function string_stripTags($value, $replacement='') {
 /**
  * Remove PHP tags from value.
  * @param string $value
- * @param string $replace
+ * @param string $replacement
  * @return string
  */
 function string_stripPHPTags($value, $replacement='') {
@@ -92,7 +92,7 @@ function string_stripPHPTags($value, $replacement='') {
 /**
  * Remove Script tags from value.
  * @param string $value
- * @param string $replace
+ * @param string $replacement
  * @return string
  */
 function string_stripScriptTags($value, $replacement='') {

@@ -463,6 +463,7 @@ final class CaMykS {
     /**
      * Return configuration value.
      * @param string $name
+     * @param mixed $default
      * @return mixed
      */
     public function get_configValue($name, $default=false) {
@@ -1138,7 +1139,7 @@ final class CaMykS {
      * Load locale file.
      * @param string $file
      * @param string $prefix
-     * @param string $locale
+     * @param string $language
      * @return boolean success
      */
     private function load_localeFile($file, $prefix, $language) {

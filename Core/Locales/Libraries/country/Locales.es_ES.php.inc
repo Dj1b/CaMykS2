@@ -2,12 +2,11 @@
 /**
  * @brief Countries spanish dictionnary
  * @details Engine / Dictionnary
- * @file engine/locale/countries/translation_es.php.inc
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0
- * @date Creation: Dec 2010
- * @date Modification: Apr 2018
- * @copyright 2010 - 2018 CaMykS Team
+ * @date Creation: Nov 2019
+ * @date Modification: Dec 2019
+ * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */

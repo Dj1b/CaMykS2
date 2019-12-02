@@ -198,7 +198,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
     /**
      * Return query limits from data.
-     * @param array $orderBy
+     * @param array $limits
      * @return string
      */
     protected function get_limits($limits) {

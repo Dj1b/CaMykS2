@@ -12,61 +12,61 @@
  */
 
 /**
- * @var string $name
+ * @var string $this->name
  * @brief CaMykS name.
  */
 $this->name = 'CaMykS';
 
 /**
- * @var string $version
+ * @var string $this->version
  * @brief CaMykS full version
  */
 $this->version = '2.0p0';
 
 /**
- * @var string $versionMajor
+ * @var string $this->versionMajor
  * @brief CaMykS major version
  */
 $this->versionMajor = '2.0';
 
 /**
- * @var string $versionMinor
+ * @var string $this->versionMinor
  * @brief CaMykS minor version
  */
 $this->versionMinor = 'p0';
 
 /**
- * @var string $lastModificationDate
+ * @var string $this->lastModificationDate
  * @brief CaMykS last modification date
  */
 $this->lastModificationDate = 'Thu, 3 Oct 2019 18:00:00 +0200';
 
 /**
- * @var string $PHPMinVersion
+ * @var string $this->PHPMinVersion
  * @brief PHP minimal version to run CaMykS
  */
 $this->PHPMinVersion = '5.3.26';
 
 /**
- * @var string $libraryExtension
+ * @var string $this->libraryExtension
  * @brief CaMykS libraries extension
  */
 $this->libraryExtension = '.php.inc';
 
 /**
- * @var string $layoutExtension
+ * @var string $this->layoutExtension
  * @brief CaMykS layouts extension
  */
 $this->layoutExtension = '.html.inc';
 
 /**
- * @var string $website
+ * @var string $this->websiteURL
  * @brief CaMykS Website
  */
 $this->websiteURL = 'https://www.camyks.net';
 
 /**
- * @var string $defaultLanguage
+ * @var string $this->defaultLanguage
  * @brief CaMykS default language
  */
 $this->defaultLanguage = 'en_GB';
