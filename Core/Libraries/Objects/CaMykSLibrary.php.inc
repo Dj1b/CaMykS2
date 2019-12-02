@@ -3,9 +3,9 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -90,6 +90,19 @@ abstract class CaMykSLibrary {
         if (isset($this->params[$name]))
             return $this->params[$name];
         return false;
+    }
+
+    /* Public configuration related methods */
+
+    /**
+     * Return configuration value.
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_configValue($name, $default=false) {
+        global $CaMykS;
+        return $CaMykS->get_configValue($name, $default);
     }
 
     /* Public errors related methods */
