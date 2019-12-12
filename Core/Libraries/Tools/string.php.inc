@@ -3,9 +3,9 @@
  * @brief String specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -110,8 +110,10 @@ function string_stripScriptTags($value, $replacement='') {
 function string_getShortenedSentence($string='', $length=64) {
     $length = max($length, 4);
     if (strlen($string) > $length) {
-        if (preg_match('/^(.) {1,'.($length-3).'} /', $string, $matches))
+        if (preg_match('/^(.){1,'.($length-3).'} /u', $string, $matches))
             return $matches[0].'...';
+        if (function_exists('mb_substr'))
+            return mb_substr($string, 0, $length).'...';
         return substr($string, 0, $length).'...';
     }
     return $string;
