@@ -3,9 +3,9 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a9.3
+ * @version 2.0a10
  * @date Creation: Feb 2017
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2017 - 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -312,16 +312,22 @@ final class CaMykS {
         /* Define time zone */
         date_default_timezone_set($this->get_configValue('Engine_TimeZone', 'Europe/Paris'));
 
+        /* Define encoding */
+        $this->define_encoding();
+
         /* Load libraries */
         $this->load_engineLibraries();
+
+        /* Load errorhandler object */
+        $this->errorHandler = new ErrorHandler();
+
+        /* Check server requirements */
+        $this->check_serverRequirements();
 
         /* Load bench object */
         $this->bench = new Bench();
         $this->bench->start('CaMykS loading.', $this->startMicroTime);
         unset($this->startMicroTime);
-
-        /* Load errorhandler object */
-        $this->errorHandler = new ErrorHandler();
     }
 
     /**
@@ -520,6 +526,7 @@ final class CaMykS {
 
         /* Load tool libraries */
         $this->load_library('array', 'Tools');
+        $this->load_library('client', 'Tools');
         $this->load_library('country', 'Tools');
         $this->load_library('currency', 'Tools');
         $this->load_library('date', 'Tools');
@@ -528,6 +535,7 @@ final class CaMykS {
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
         $this->load_library('language', 'Tools');
+        $this->load_library('server', 'Tools');
         $this->load_library('string', 'Tools');
 
         /* Load parent object libraries */
@@ -553,6 +561,38 @@ final class CaMykS {
         /* Clean captured extra code in live mode */
         if ($this->get_configValue('Website_Status') == false)
             ob_clean();
+    }
+
+    /* Initialisation sub methods */
+
+    /**
+     * Define encoding.
+     * @return void
+     */
+    private function define_encoding() {
+        if (extension_loaded('mbstring'))
+            mb_internal_encoding($this->get_configValue('Website_Encoding', 'UTF8'));
+    }
+
+    /**
+     * Check server requirements.
+     * @return void
+     */
+    private function check_serverRequirements() {
+        /* Check PHP version */
+        if (version_compare(PHP_VERSION, $this->PHPMinVersion, '<')) {
+            $this->trigger_error('Fatal', null, 'Current PHP version ('.PHP_VERSION.') doesn\'t meet minimum requirements.'."\n".
+            'To run CaMykS2 properly, PHP engine must be, at least, version '.$this->PHPMinVersion.".\n".
+            'Please update your version of PHP, before running CaMykS2.',
+            '', null, null, true);
+        }
+
+        /* Check mod_rewrite module */
+        if (!server_checkModuleAvailability('mod_rewrite')) {
+            $this->trigger_error('Fatal', null, 'URL rewriting module must be enabled.'."\n".
+            'Please turn on the URL rewriting module of your web software, before running CaMykS2.',
+            '', null, null, true);
+        }
     }
 
     /* Plugin related methods */
