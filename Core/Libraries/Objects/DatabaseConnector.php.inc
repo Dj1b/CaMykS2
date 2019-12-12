@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -418,15 +418,15 @@ final class DatabaseConnector extends CaMykSLibrary {
     public static function get_availableDriverList() {
         $list = array();
 
-        if (function_exists('mysql_connect'))
+        if (extension_loaded('mysql'))
             $list['MySQL'] = 'MySQL';
-        if (class_exists('MySQLi'))
+        if (extension_loaded('mysqli'))
             $list['MySQLi'] = 'MySQLi';
-        if (class_exists('PDO'))
+        if (extension_loaded('PDO'))
             $list['PDO:MySQL'] = 'PDO:MySQL';
-        if (class_exists('SQLite3'))
+        if (extension_loaded('sqlite3'))
             $list['SQLite3'] = 'SQLite3';
-        if (function_exists('pg_connect'))
+        if (extension_loaded('pgsql'))
             $list['PgSQL'] = 'PgSQL';
 
         return $list;
