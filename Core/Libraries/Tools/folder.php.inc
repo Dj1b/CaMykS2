@@ -3,9 +3,9 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -449,5 +449,34 @@ function folder_getFlatStructure($source='') {
  */
 function folder_checkIsInPath($folder='', $path='') {
     return file_checkIsInPath($folder, $path);
+}
+
+/**
+ * Return folder size.
+ * @param string $folder
+ * @param boolean $humanReadable
+ * @param string $hrFormat
+ * @return string
+ */
+function folder_getSize($folder, $humanReadable=false, $hrFormat='Binary') {
+    /* Check source is accessible */
+    if (folder_checkPathAccessibility($folder, 'Read') === false)
+        return false;
+
+    /* Initialise folder size */
+    $s = 0;
+
+    /* Recursively get size of all files */
+    $path = realpath($folder);
+    if ($path !== false && $path != '' && file_exists($path)){
+        foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)) as $object){
+            $s += $object->getSize();
+        }
+    }
+
+    /* Check for human readable result */
+    if (!$humanReadable)
+        return $s;
+    return util_getHumanReadableSize($s, $hrFormat);
 }
 ?>
