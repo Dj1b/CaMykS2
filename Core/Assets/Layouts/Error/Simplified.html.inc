@@ -3,9 +3,9 @@
  * @brief CaMykS simplified error display.
  * @details Engine / Layout
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,14 +37,16 @@ switch ($this->mode) {
 <h1>
     An error has occured.
 </h1>
-
-<p>
+<p class="purple">
     For any questions, or if the problem persists, please contact the <?= $emailLink; ?>.
 </p>
 
 <?php if ($backLink != '') : ?>
 <p>
-    <a href="<?= $backLink; ?>">
+    &nbsp;
+</p>
+<p>
+    <a href="<?= $backLink; ?>" class="button">
         Back
     </a>
 </p>
