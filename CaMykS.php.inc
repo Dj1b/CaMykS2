@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a10
+ * @version 2.0a10.1
  * @date Creation: Feb 2017
  * @date Modification: Dec 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -537,6 +537,7 @@ final class CaMykS {
         $this->load_library('language', 'Tools');
         $this->load_library('server', 'Tools');
         $this->load_library('string', 'Tools');
+        $this->load_library('util', 'Tools');
 
         /* Load parent object libraries */
         $this->load_library('CaMykSLibrary', 'Objects');
