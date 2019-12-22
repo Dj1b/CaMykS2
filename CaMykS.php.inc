@@ -3,7 +3,7 @@
  * @brief CaMykS version 2 CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a10.1
+ * @version 2.0a10.2
  * @date Creation: Feb 2017
  * @date Modification: Dec 2019
  * @copyright 2017 - 2019 CaMykS Team
@@ -390,7 +390,14 @@ final class CaMykS {
         /* Load language */
         $this->load_currentLanguage();
 
+        /* Load manager plugin */
+        $this->manager = &$this->get_plugin('CaMykSManager', 'Special', true, 'System');
 
+        /* Initialise manager */
+        $this->manager->initialise();
+
+        /* Display manager */
+        $this->manager->display();
     }
 
     /**
@@ -472,7 +479,7 @@ final class CaMykS {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue($name, $default=false) {
+    public function get_configValue($name, $default=null) {
         /* Check website configuration */
         if (isset($this->websiteConfiguration[$name]) and $this->websiteConfiguration[$name] != null)
             return $this->websiteConfiguration[$name];
@@ -606,29 +613,29 @@ final class CaMykS {
      * @return boolean result
      */
     public function load_plugin($name, $type, $location=false) {
-        /* Normalise type */
-        $type = ucwords(strtolower($type).'s');
+        /* Define plugins folder */
+        $folder = ucwords(strtolower($type)).'s';
 
         /* Check is already loaded */
-        if (isset($this->plugins[$type][$name]))
+        if (isset($this->plugins[$folder][$name]))
             return true;
 
         /* Check is in system plugins */
-        if ($location == 'system' or ($location === false and $this->check_engineFileExists('Core/Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
-            $location = 'system';
-            $path = $this->get_engineFileFullPath('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension);
+        if ($location == 'System' or ($location === false and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'System';
+            $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in shared plugins */
-        elseif ($location == 'shared' or ($location === false and $this->check_engineFileExists('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
-            $location = 'shared';
-            $path = $CaMykS->get_engineFileFullPath('Plugins/'.$type.'/'.$name.'/');
+        elseif ($location == 'Shared' or ($location === false and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'Shared';
+            $path = $CaMykS->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in website plugins */
-        elseif ($location == 'website' or ($location === false and  $this->check_websiteFileExists('Plugins/'.$type.'/'.$name.'/'.$name.$this->libraryExtension))) {
-            $location = 'website';
-            $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$type.'/'.$name.'/');
+        elseif ($location == 'Website' or ($location === false and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+            $location = 'Website';
+            $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Plugin not found */
@@ -641,8 +648,10 @@ final class CaMykS {
 
         /* Load plugin */
         try {
-            require_once $path;
-            $this->plugins[$type][$name] = new $$name($location);
+            require_once $path.$name.$this->libraryExtension;
+            $class = 'CaMykS2\\'.$name;
+            $this->plugins[$folder][$name] = new $class($location);
+
         } catch (Exception $e) {
             /* Log error */
 
@@ -699,19 +708,21 @@ final class CaMykS {
      * @param string $name
      * @param string $type
      * @param boolean $autoLoad
+     * @param string $location
      * @return Plugin
      */
-    public function &get_plugin($name, $type, $autoLoad=false) {
-        /* Normalise type */
-        $type = ucwords(strtolower($type).'s');
+    public function &get_plugin($name, $type, $autoLoad=false, $location=null) {
+
+        /* Define plugins folder */
+        $folder = ucwords(strtolower($type)).'s';
 
         /* Check is in loaded plugin */
-        if (isset($this->plugins[$type][$name]))
-            return $this->plugins[$type][$name];
+        if (isset($this->plugins[$folder][$name]))
+            return $this->plugins[$folder][$name];
 
         /* Try to load plugin */
-        if ($autoLoad and $this->load_plugin($name, $type))
-            return $this->plugins[$type][$name];
+        if ($autoLoad and $this->load_plugin($name, $type, $location))
+            return $this->plugins[$folder][$name];
 
         /* Return failure */
         return $this->falseRef;
