@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.6
+ * @version 1.0.7
  * @date Creation: Oct 2019
  * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
@@ -23,7 +23,7 @@ abstract class CaMykSLibrary {
      * @var string $libraryName
      * @brief Library name.
      */
-    private $libraryName = '';
+    protected $libraryName = '';
 
     /* Parameters */
 
@@ -100,7 +100,7 @@ abstract class CaMykSLibrary {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue($name, $default=false) {
+    public function get_configValue($name, $default=null) {
         global $CaMykS;
         return $CaMykS->get_configValue($name, $default);
     }
@@ -133,30 +133,14 @@ abstract class CaMykSLibrary {
         );
     }
 
-    /* Protected locales related methods */
-
-    /**
-     * Load library locales.
-     * @param string $language
-     * @return boolean success
-     */
-    protected function load_locales($language=null) {
-        global $CaMykS;
-
-        /* Check CaMykS object */
-        if (!isset($CaMykS))
-            return false;
-
-        /* Load library locales in CaMykS */
-        return $CaMykS->load_engineLocales('Libraries/'.$this->libraryName, $this->libraryName, $language);
-    }
+    /* Public locales related methods */
 
     /**
      * Check if locale exists.
      * @param string $locale
      * @return boolean result
      */
-    protected function check_locale($locale='') {
+    public function check_locale($locale='') {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
@@ -173,15 +157,33 @@ abstract class CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    protected function get_locale($locale='', $data=null) {
+    public function get_locale($locale='', $data=null) {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
         if (!$this->load_locales())
             return $locale;
 
-        /* Check locale in CaMykS object */
+        /* Return locale from CaMykS object */
         return $CaMykS->get_locale($locale, $this->libraryName, $data);
+    }
+
+    /* Protected locales related methods */
+
+    /**
+     * Load library locales.
+     * @param string $language
+     * @return boolean success
+     */
+    protected function load_locales($language=null) {
+        global $CaMykS;
+
+        /* Check CaMykS object */
+        if (!isset($CaMykS))
+            return false;
+
+        /* Load library locales in CaMykS */
+        return $CaMykS->load_engineLocales('Libraries/'.$this->libraryName, $this->libraryName, $language);
     }
 
     /* Protected errors related methods */
