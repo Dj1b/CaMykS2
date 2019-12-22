@@ -3,13 +3,44 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
+ * @date Modification: Dec 2019
  * @copyright 2019 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+
+/**
+ * Return string value from header request.
+ * @param string $name
+ * @param string $default
+ * @return string
+ */
+function http_getStringRequest($name, $default='') {
+    return (isset($_REQUEST[$name]) ? $_REQUEST[$name] : $default);
+}
+
+/**
+ * Return integer value from header request.
+ * @param string $name
+ * @param integer $default
+ * @return integer
+ */
+function http_getIntRequest($name, $default=0) {
+    return (int)http_getStringRequest($name, $default);
+}
+
+/**
+ * Return float value from header request.
+ * @param string $name
+ * @param integer $default
+ * @return integer
+ */
+function http_getFloatRequest($name, $default=0) {
+    return (float)http_getStringRequest($name, $default);
+}
+
 
 /**
  * Return HTTP response code list.
