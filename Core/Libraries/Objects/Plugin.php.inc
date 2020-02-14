@@ -6,8 +6,8 @@
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0.2
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -43,6 +43,18 @@ abstract class Plugin extends CaMykSLibrary {
     protected $pluginPath;
 
     /**
+     * @var array $pluginDependencies
+     * @brief Plugin list of dependencies, including version and mandatoriness.
+     */
+    protected $pluginDependencies = array();
+
+    /**
+     * @var array $pluginExtensions
+     * @brief List of plugin which it provides an extension.
+     */
+    protected $pluginExtensions = array();
+
+    /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
      */
@@ -50,16 +62,19 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * Class constructor.
+     * @param string $location
      * @return void
      */
-    public function __construct($type, $location=false) {
+    public function __construct($location=null) {
         parent::__construct();
-
-        /* Set type */
-        $this->pluginType = $type;
 
         /* Set location and path */
         $this->define_locationAndPath($location);
+
+        /* Check dependencies */
+
+        /* Declare extensions */
+
     }
 
     /* Location related methods */
@@ -69,26 +84,26 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $location
      * @return void
      */
-    private function define_locationAndPath($location=false) {
+    private function define_locationAndPath($location=null) {
         global $CaMykS;
 
         /* Load type folder */
         $typeFolder = $this->get_typeFolder();
 
         /* Check is in shared plugins */
-        if ($location == 'Shared' or ($location === false and __FILE__ == $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
+        if ($location == 'Shared' or ($location === null and __FILE__ == $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
             $this->pluginLocation = 'Shared';
             $this->pluginPath = $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/');
         }
 
         /* Check is in system plugins */
-        elseif ($location == 'System' or ($location === false and __FILE__ == $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
+        elseif ($location == 'System' or ($location === null and __FILE__ == $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
             $this->pluginLocation = 'System';
             $this->pluginPath = $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/');
         }
 
         /* Check is in website plugins */
-        elseif ($location == 'Website' or ($location === false and __FILE__ == $CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
+        elseif ($location == 'Website' or ($location === null and __FILE__ == $CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
             $this->pluginLocation = 'Website';
             $this->pluginPath = $CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/');
         }
