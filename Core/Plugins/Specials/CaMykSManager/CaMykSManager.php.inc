@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Dec 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -20,11 +20,15 @@ final class CaMykSManager extends Plugin {
 
     /**
      * Class constructor.
+     * @param string $location
      * @return void
      */
     public function __construct($location) {
-        parent::__construct('Special', $location);
+        /* Override Plugin variables */
+        $this->pluginType = 'Special';
 
+        /* Execute parent construct */
+        parent::__construct($location);
     }
 
     /**
