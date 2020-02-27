@@ -3,13 +3,14 @@
  * @brief Util methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Dec 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
+ * @todo Finalise util_getRecentRandomUserAgent method once session manager module is done.
  */
 
 /**
@@ -45,5 +46,27 @@ function util_getHumanReadableSize($size, $format='Binary') {
     if ($s == 0)
         return $size.' '.($t == 'o' ? 'octet' : 'byte');
     return $size.' '.$l[$s].$t;
+}
+
+/**
+ * Return recent and random visitor user agent.
+ * @param array $params
+ * @return string
+ */
+function util_getRecentRandomUserAgent($params=array()) {
+    global $camyks;
+
+    /* Default params */
+    $defaultParams = array('deviceType'=> null,  'platform'=>null, 'browser'=>null);
+
+    /* Merge params */
+    $params = array_merge($defaultParams, $params);
+
+    /* Load session manager module */
+
+    /* Load recent random session */
+
+    /* Return user agent */
+    return '';
 }
 ?>
