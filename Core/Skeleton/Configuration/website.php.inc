@@ -3,7 +3,7 @@
  * @brief CaMykS website configuration file.
  * @details Skeleton / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Sep 2019
  * @date Modification: Feb 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -18,9 +18,8 @@ $configuration = array(
     'Website_Title' => '',
     'Website_Version' => '1.0',
     'Website_Status' => 0,  // 0: not installed | 1: live | 2: development | 3: full maintenance (no admin available) | 4: simple maintenance (admin available)
-    'Website_Encoding' => 'UTF8',
-    'Website_CaMykSVersionInMeta' => 1,
+    'Website_Encoding' => 'UTF-8',
     'Website_Author' => '',
-    'Website_HideCMSSignature' => false,
+    'Website_DisplayCMSSignature' => true,
 );
 ?>
