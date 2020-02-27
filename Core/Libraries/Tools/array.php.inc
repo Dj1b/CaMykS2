@@ -3,10 +3,10 @@
  * @brief Array related methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -175,5 +175,31 @@ function array_filterRecursive($array, $function) {
 
     /* Return updated array */
     return $array;
+}
+
+/**
+ * Count items recursively in an array.
+ * @note Parent arrays or empty arrays are not items.
+ * @param array $array
+ * @return integer
+ */
+function array_countRecursive($array) {
+    /* Check array */
+    if (!is_array($array))
+        return $array;
+
+    /* Initialise count */
+    $count = 0;
+
+    /* Read array */
+    foreach ($array as $index => $value) {
+        if (is_array($value))
+            $count += array_countRecursive($value);
+        else
+            $count ++;
+    }
+
+    /* Return count */
+    return $count;
 }
 ?>
