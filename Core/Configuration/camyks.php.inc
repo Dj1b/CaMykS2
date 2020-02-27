@@ -3,10 +3,10 @@
  * @brief CaMykS static description file.
  * @details Engine / Description File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -60,10 +60,10 @@ $this->libraryExtension = '.php.inc';
 $this->layoutExtension = '.html.inc';
 
 /**
- * @var string $this->websiteURL
+ * @var string $this->CMSWebsiteURL
  * @brief CaMykS Website
  */
-$this->websiteURL = 'https://www.camyks.net';
+$this->CMSWebsiteURL = 'https://www.camyks.net';
 
 /**
  * @var string $this->defaultLanguage
