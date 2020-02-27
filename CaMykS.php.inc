@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief CaMykS version 2 CMS master class.
+ * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a10.2
+ * @version 2.0a10.3
  * @date Creation: Feb 2017
- * @date Modification: Dec 2019
- * @copyright 2017 - 2019 CaMykS Team
+ * @date Modification: Feb 2020
+ * @copyright 2017 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -42,6 +42,11 @@ define('CAMYKS_MODE_INSTALL',   4);
  * CaMykS class.
  */
 final class CaMykS {
+    /**
+     * @brief Declare CaMykS variables that are set in CaMykS configuration file.
+     */
+    protected $name, $version, $versionMajor, $versionMinor, $lastModificationDate, $PHPMinVersion, $libraryExtension, $layoutExtension, $CMSWebsiteURL, $defaultLanguage;
+
     /**
      * @var integer $mode
      * @brief CaMykS current mode.
@@ -152,6 +157,18 @@ final class CaMykS {
      * @brief CaMykS false value as reference.
      */
      private $falseRef = false;
+
+    /**
+     * @var Object $currentTheme
+     * @brief Link to current theme used in CaMykS.
+     */
+    public $currentTheme;
+
+    /**
+     * @var Object $currentTemplate
+     * @brief Link to current template used in CaMykS.
+     */
+    public $currentTemplate;
 
     /**
      * Class constructor.
@@ -395,9 +412,6 @@ final class CaMykS {
 
         /* Initialise manager */
         $this->manager->initialise();
-
-        /* Display manager */
-        $this->manager->display();
     }
 
     /**
@@ -439,7 +453,8 @@ final class CaMykS {
      * @return void
      */
     private function display_manager() {
-
+        /* Display manager */
+        $this->manager->display();
     }
 
     /**
@@ -969,7 +984,7 @@ final class CaMykS {
         if ($this->check_engineFileExists($file))
             return $this->get_engineFileFullPath($file);
 
-        /* Default for files that don't exists */
+        /* Default for file that doesn't exist */
         return '';
     }
 
