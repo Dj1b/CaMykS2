@@ -1,6 +1,6 @@
 <?php
 /**
- * @brief CaMykS software editors data for client library.
+ * @brief CaMykS companies data for client library.
  * @details Engine / Data Library
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0.0
@@ -12,13 +12,23 @@
  * @warning This library is not loaded with CaMykS initialisation.
  */
 
-$cClientEditors = array(
+$cClientCompanies = array(
+    /* Alphabet */
+    'alphabet' => array(
+        'Name'      => 'Alphabet',
+        'Link'      => 'https://abc.xyz/',
+        'Country'   => 'us',
+        'Status'    => 'Active',
+        'Parent'    => null,
+    ),
+
     /* Apple */
     'apple' => array(
         'Name'      => 'Apple',
         'Link'      => 'https://www.apple.com',
         'Country'   => 'us',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 
     /* The Chromium Project */
@@ -27,6 +37,7 @@ $cClientEditors = array(
         'Link'      => 'https://www.chromium.org/Home',
         'Country'   => 'us',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 
     /* Ecosia */
@@ -35,6 +46,7 @@ $cClientEditors = array(
         'Link'      => 'https://ecosia.org',
         'Country'   => 'de',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 
     /* Google */
@@ -43,6 +55,7 @@ $cClientEditors = array(
         'Link'      => 'https://www.google.com',
         'Country'   => 'us',
         'Status'    => 'Active',
+        'Parent'    => 'alphabet',
     ),
 
     /* Microsoft */
@@ -51,6 +64,7 @@ $cClientEditors = array(
         'Link'      => 'https://www.microsoft.com',
         'Country'   => 'us',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 
     /* Mozilla foundation */
@@ -59,6 +73,7 @@ $cClientEditors = array(
         'Link'      => 'https://www.apple.com',
         'Country'   => 'us',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 
     /* Opera Software */
@@ -67,6 +82,7 @@ $cClientEditors = array(
         'Link'      => 'https://www.apple.com',
         'Country'   => 'no',
         'Status'    => 'Active',
+        'Parent'    => null,
     ),
 );
 ?>
