@@ -3,7 +3,7 @@
  * @brief Password specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -41,15 +41,22 @@ function password_encode($password, $algorythm=null, $salt='') {
 
 /**
  * Check password.
- * @param string $pwd
  * @param string $password
+ * @param string $hash
  * @param string $algorythm
  * @param string $salt
  * @return boolean result
  */
 function password_check($password, $hash, $algorythm=null, $salt='') {
+    /* Check for integrated salt in hash */
+    if ($salt == '' and preg_match('#\:[0-9a-z]*$#', $hash)) {
+        $hash = explode(':', $hash);
+        $salt = $hash[0];
+        $hash = $hash[1];
+    }
+
     /* Load algorythm from its length */
-    if ($algorythm == null) $algorythm = strlen($hash);
+    if (is_null($algorythm)) $algorythm = strlen($hash);
 
     /* Compare password and hash */
     return ($hash == password_encode($password, $algorythm, $salt));
