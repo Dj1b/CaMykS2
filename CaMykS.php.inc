@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a10.4
+ * @version 2.0a10.5
  * @date Creation: Feb 2017
- * @date Modification: Feb 2020
+ * @date Modification: Mar 2020
  * @copyright 2017 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -162,13 +162,43 @@ final class CaMykS {
      * @var Object $currentTheme
      * @brief Link to current theme used in CaMykS.
      */
-    public $currentTheme;
+    private $currentTheme;
 
     /**
      * @var Object $currentTemplate
      * @brief Link to current template used in CaMykS.
      */
-    public $currentTemplate;
+    private $currentTemplate;
+
+    /**
+     * @var Object $HTMLPage
+     * @brief Main HTML page.
+     */
+    private $HTMLPage;
+
+    /**
+     * @var Object $manager
+     * @brief Link to manager special plugin.
+     */
+    private $manager;
+
+    /**
+     * @var string $corePluginLink
+     * @brief Symbolic link to core plugin folder
+     */
+    private $corePluginLink = 'CorePlugins';
+
+    /**
+     * @var string $sharedPluginLink
+     * @brief Symbolic link to shared plugin folder
+     */
+    private $sharedPluginLink = 'SharedPlugins';
+
+    /**
+     * @var string $coreAssetLink
+     * @brief Symbolic link to core asset folder
+     */
+    private $coreAssetLink = 'CoreAssets';
 
     /**
      * Class constructor.
@@ -184,6 +214,18 @@ final class CaMykS {
 
         /* Register shutdown internal function */
         register_shutdown_function(array($this, 'terminate'));
+    }
+
+    /* CaMykS magic methods */
+
+    /**
+     * Makes some variables accessible in read-only
+     * @param string $variableName
+     * @return mixed
+     */
+    public function __get($variableName) {
+        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension')))
+            return $this->$variableName;
     }
 
     /* CaMykS main method */
@@ -217,8 +259,14 @@ final class CaMykS {
         /* Initialise engine */
         $this->initialise_engine();
 
+        /* Run onInitialise event handlers */
+        $this->run_eventHandlers('onInitialise');
+
         /* Add bench step */
         $this->bench->add_step('CaMykS initialise mode.');
+
+        /* Create HTML page */
+        $this->HTMLPage = new HTMLPage();
 
         /* Initialise mode */
         switch ($this->mode) {
@@ -238,9 +286,6 @@ final class CaMykS {
                 $this->initialise_install();
                 break;
         }
-
-        /* Run onInitialise event handlers */
-        $this->run_eventHandlers('onInitialise');
     }
 
     /**
@@ -252,7 +297,10 @@ final class CaMykS {
         /* Add bench step */
         $this->bench->add_step('CaMykS display mode.');
 
-        /* Dsiplay mode */
+        /* Write HTML page header */
+        $this->HTMLPage->write_header();
+
+        /* Display mode */
         switch ($this->mode) {
             case CAMYKS_MODE_VISIT:
                 $this->display_visit();
@@ -301,6 +349,9 @@ final class CaMykS {
 
         /* Export bench result */
         if ($this->bench !== false) $this->bench->export();
+
+        /* Write HTML page footer */
+        $this->HTMLPage->write_footer();
     }
 
     /* CaMykS initialisation methods */
@@ -360,6 +411,10 @@ final class CaMykS {
 
         /* Make common initialisation */
         $this->initialise_common();
+
+
+        /* Run onVisitPageLoad event handlers */
+        $this->run_eventHandlers('onVisitPageLoad');
     }
 
     /**
@@ -375,6 +430,14 @@ final class CaMykS {
 
         /* Make common initialisation */
         $this->initialise_common();
+
+        /* Load admin locales */
+        $this->load_engineLocales('Admin', 'Admin', $this->currentLanguage);
+
+
+
+        /* Run onAdminPageLoad event handlers */
+        $this->run_eventHandlers('onAdminPageLoad');
     }
 
     /**
@@ -404,11 +467,24 @@ final class CaMykS {
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Manager_SSL'));
 
+        /* Update folder links */
+        $this->corePluginLink = 'Core';
+        $this->sharedPluginLink = '';
+        $this->coreAssetLink = '';
+
         /* Load language */
         $this->load_currentLanguage();
 
         /* Load manager plugin */
         $this->manager = &$this->get_plugin('CaMykSManager', 'Special', true, 'System');
+
+        /* Load template */
+        $this->currentTemplate = &$this->get_template('AdminPage', true, 'System');
+        $this->currentTemplate->initialise();
+
+        /* Load theme */
+        $this->currentTheme = &$this->get_theme($this->get_configValue('Manager_Theme'), true);
+        $this->currentTheme->initialise();
 
         /* Initialise manager */
         $this->manager->initialise();
@@ -429,7 +505,14 @@ final class CaMykS {
      * @return void
      */
     private function display_visit() {
+        /* Run onVisitBodyOpen event handlers */
+        $this->run_eventHandlers('onVisitBodyOpen');
 
+        /* Display template main layout */
+        $this->currentTemplate->display();
+
+        /* Run onVisitBodyClose event handlers */
+        $this->run_eventHandlers('onVisitBodyClose');
     }
 
     /**
@@ -437,7 +520,14 @@ final class CaMykS {
      * @return void
      */
     private function display_admin() {
+        /* Run onAdminBodyOpen event handlers */
+        $this->run_eventHandlers('onAdminBodyOpen');
 
+        /* Display template main layout */
+        $this->currentTemplate->display();
+
+        /* Run onAdminBodyClose event handlers */
+        $this->run_eventHandlers('onAdminBodyClose');
     }
 
     /**
@@ -453,8 +543,8 @@ final class CaMykS {
      * @return void
      */
     private function display_manager() {
-        /* Display manager */
-        $this->manager->display();
+        /* Display template main layout */
+        $this->currentTemplate->display();
     }
 
     /**
@@ -463,6 +553,40 @@ final class CaMykS {
      */
     private function display_install() {
 
+    }
+
+    /* CaMykS display sub methods */
+
+    /**
+     * Display template slot content.
+     * @param integer $slotIndex
+     * @return void
+     */
+    public function display_templateSlotContent($slotIndex) {
+        /* Display mode */
+        switch ($this->mode) {
+            case CAMYKS_MODE_VISIT:
+                /* Display module */
+
+                break;
+            case CAMYKS_MODE_ADMIN:
+                /* Display module in admin module */
+
+                break;
+            case CAMYKS_MODE_REQUEST:
+                /* */
+
+                break;
+            case CAMYKS_MODE_MANAGER:
+                /* Display manager */
+                $this->manager->display();
+
+                break;
+            case CAMYKS_MODE_INSTALL:
+                /* Display install */
+
+                break;
+        }
     }
 
     /* Configuration related methods */
@@ -557,6 +681,7 @@ final class CaMykS {
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
         $this->load_library('language', 'Tools');
+        $this->load_library('password', 'Tools');
         $this->load_library('server', 'Tools');
         $this->load_library('string', 'Tools');
         $this->load_library('util', 'Tools');
@@ -570,11 +695,15 @@ final class CaMykS {
         $this->load_library('DatabaseConnector', 'Objects');
         $this->load_library('DatabaseDriverInterface', 'Objects');
         $this->load_library('DbQuery', 'Objects');
+        $this->load_library('Component', 'Objects');
         $this->load_library('Error', 'Objects');
         $this->load_library('ErrorHandler', 'Objects');
         $this->load_library('File', 'Objects');
         $this->load_library('HTMLPage', 'Objects');
+        $this->load_library('Module', 'Objects');
         $this->load_library('RequestAnswer', 'Objects');
+        $this->load_library('Template', 'Objects');
+        $this->load_library('Theme', 'Objects');
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
@@ -628,7 +757,7 @@ final class CaMykS {
      * @param string $location
      * @return boolean result
      */
-    public function load_plugin($name, $type, $location=false) {
+    public function load_plugin($name, $type, $location=null) {
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
 
@@ -637,19 +766,19 @@ final class CaMykS {
             return true;
 
         /* Check is in system plugins */
-        if ($location == 'System' or ($location === false and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
             $location = 'System';
             $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in shared plugins */
-        elseif ($location == 'Shared' or ($location === false and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
             $location = 'Shared';
             $path = $CaMykS->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in website plugins */
-        elseif ($location == 'Website' or ($location === false and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
             $location = 'Website';
             $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
@@ -685,7 +814,7 @@ final class CaMykS {
      * @param string $location
      * @return boolean result
      */
-    public function load_component($name, $location=false) {
+    public function load_component($name, $location=null) {
         return $this->load_plugin($name, 'Component', $location);
     }
 
@@ -695,7 +824,7 @@ final class CaMykS {
      * @param string $location
      * @return boolean result
      */
-    public function load_module($name, $location=false) {
+    public function load_module($name, $location=null) {
         return $this->load_plugin($name, 'Module', $location);
     }
 
@@ -705,7 +834,7 @@ final class CaMykS {
      * @param string $location
      * @return boolean result
      */
-    public function load_template($name, $location=false) {
+    public function load_template($name, $location=null) {
         return $this->load_plugin($name, 'Template', $location);
     }
 
@@ -715,7 +844,7 @@ final class CaMykS {
      * @param string $location
      * @return boolean result
      */
-    public function load_theme($name, $location=false) {
+    public function load_theme($name, $location=null) {
         return $this->load_plugin($name, 'Theme', $location);
     }
 
@@ -748,40 +877,44 @@ final class CaMykS {
      * Return link to component object.
      * @param string $name
      * @param boolean $autoLoad
+     * @param string $location
      * @return Input
      */
-    public function &get_component($name, $autoLoad=false) {
-        return $this->get_plugin($name, 'Component', $autoLoad);
+    public function &get_component($name, $autoLoad=false, $location=null) {
+        return $this->get_plugin($name, 'Component', $autoLoad, $location);
     }
 
     /**
      * Return link to module object.
      * @param string $name
      * @param boolean $autoLoad
+     * @param string $location
      * @return Module
      */
-    public function &get_module($name, $autoLoad=false) {
-        return $this->get_plugin($name, 'Module', $autoLoad);
+    public function &get_module($name, $autoLoad=false, $location=null) {
+        return $this->get_plugin($name, 'Module', $autoLoad, $location);
     }
 
     /**
      * Return link to theme object.
      * @param string $name
      * @param boolean $autoLoad
+     * @param string $location
      * @return Theme
      */
-    public function &get_theme($name, $autoLoad=false) {
-        return $this->get_plugin($name, 'Theme', $autoLoad);
+    public function &get_theme($name, $autoLoad=false, $location=null) {
+        return $this->get_plugin($name, 'Theme', $autoLoad, $location);
     }
 
     /**
      * Return link to template object.
-     * @param string $templateName
+     * @param string $name
      * @param boolean $autoLoad
+     * @param string $location
      * @return Template
      */
-    public function &get_template($templateName, $autoLoad=false) {
-        return $this->get_plugin($name, 'Template', $autoLoad);
+    public function &get_template($name, $autoLoad=false, $location=null) {
+        return $this->get_plugin($name, 'Template', $autoLoad, $location);
     }
 
     /**
@@ -805,15 +938,6 @@ final class CaMykS {
     /* File related methods */
 
     /**
-     * Return engine file full path.
-     * @param string $filePath
-     * @return string
-     */
-    public function get_engineFileFullPath($filePath) {
-        return $this->CaMykSPath.'/'.$filePath;
-    }
-
-    /**
      * Check if given engine file exists.
      * @param string $filePath
      * @return boolean result
@@ -823,12 +947,12 @@ final class CaMykS {
     }
 
     /**
-     * Return website file full path.
+     * Return engine file full path.
      * @param string $filePath
      * @return string
      */
-    public function get_websiteFileFullPath($filePath) {
-        return $this->websitePath.'/'.$filePath;
+    public function get_engineFileFullPath($filePath) {
+        return $this->CaMykSPath.'/'.$filePath;
     }
 
     /**
@@ -838,6 +962,15 @@ final class CaMykS {
      */
     public function check_websiteFileExists($filePath) {
         return file_exists($this->get_websiteFileFullPath($filePath));
+    }
+
+    /**
+     * Return website file full path.
+     * @param string $filePath
+     * @return string
+     */
+    public function get_websiteFileFullPath($filePath) {
+        return $this->websitePath.'/'.$filePath;
     }
 
     /**
@@ -946,9 +1079,9 @@ final class CaMykS {
      * @param mixed $URLMode
      * @return $string
      */
-    public function get_baseURL($URLMode=false) {
+    public function get_baseURL($URLMode=null) {
         /* Check for website default URL mode */
-        if ($URLMode == false)
+        if ($URLMode == null)
             $URLMode = $this->get_configValue('Website_URLMode');
 
         /* Return base url from mode */
@@ -963,6 +1096,37 @@ final class CaMykS {
                 return '';
         }
         return '';
+    }
+
+    /**
+     * Return website file URL.
+     * @param string $filePath
+     * @return string
+     */
+    public function get_websiteFileURL($filePath, $URLMode=null) {
+        return $this->get_baseURL($URLMode).$filePath;
+    }
+
+    /* Plugin related files */
+
+    /**
+     * Return shared plugin file URL.
+     * @param string $filePath
+     * @param string $URLMode
+     * @return string
+     */
+    public function get_sharedPluginFileURL($filePath, $URLMode=null) {
+        return $this->get_baseURL($URLMode).($this->sharedPluginLink != '' ? $this->sharedPluginLink.'/' : '').$filePath;
+    }
+
+    /**
+     * Return core plugin file URL.
+     * @param string $filePath
+     * @param string $URLMode
+     * @return string
+     */
+    public function get_corePluginFileURL($filePath, $URLMode=null) {
+        return $this->get_baseURL($URLMode).($this->corePluginLink != '' ? $this->corePluginLink.'/' : '').$filePath;
     }
 
     /* Assets related files */
@@ -995,7 +1159,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_assetFileURL($asset, $URLMode=false) {
+    public function get_assetFileURL($asset, $URLMode=null) {
         /* Check file in website */
         $file = 'Assets/'.$asset;
         if ($this->mode < 3) {
@@ -1006,7 +1170,7 @@ final class CaMykS {
         /* Check file in CaMykS */
         $file = 'Core/'.$file;
         if ($this->check_engineFileExists($file))
-            return $this->get_baseURL($URLMode).$file;
+            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$asset;
 
         /* Default for files that don't exists */
         return '';
@@ -1019,6 +1183,9 @@ final class CaMykS {
      * @return string
      */
     public function load_assetLayout($layout, $context=null) {
+        /* Save context */
+        $this->layoutContext = $context;
+
         /* Check file in website */
         $file = 'Assets/Layouts/'.$layout.$this->layoutExtension;
         if ($this->mode < 3) {
@@ -1306,7 +1473,11 @@ final class CaMykS {
      */
     public function display_splashMessage($layout, $content='', $HTTPCode=200) {
         /* Send HTTP code */
-        header('HTTP/1.1 '.$HTTPCode.' '.http_getResponseCodeName($HTTPCode));
+        $this->HTMLPage->set_status($HTTPCode);
+
+        /* Display page headers */
+        $this->HTMLPage->add_styleIncludedFile($this->get_assetFilePath('Styles/Page.css'));
+        $this->HTMLPage->write_header();
 
         /* Display page header */
         $this->load_assetLayout('Page/Header');
