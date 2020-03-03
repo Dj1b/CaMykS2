@@ -1,0 +1,58 @@
+/**
+ * @brief CaMykSStyle theme admin CSS styles
+ * @details Plugin / Theme Styles
+ * @author JB Lebrun <jb.lebrun@ideogram-design.fr>
+ * @version 1.0.0
+ * @date Creation: Mar 2020
+ * @date Modification: Mar 2020
+ * @copyright 2020 Ideogram Design
+ */
+
+* {padding:0; margin:0; box-sizing: border-box; font-family: Arial; font-size: 14px; font-weight:normal; font-style:normal; color:#707070;}
+
+body {background:#f9f9f9;}
+p {padding: 8px 0;}
+a {}
+ul {margin:0px 28px; padding:0; list-style:url(img/bullet.gif);}
+ol {margin:0px 28px; padding:0;}
+li {margin:4px 4px;}
+blockquote {margin:8px 20px;}
+input, textarea, select {border:none; padding:0; background: white; color:#5A5A5A; font-weight:bold; border:solid 1px #AEAEAE;}
+select {padding:6px 12px;}
+input, textarea, option {padding:6px 16px; font-weight:bold; color:#5A5A5A;}
+textarea {resize: none; height:250px;}
+.inputs {width:200px;} select.inputs{width:205px;}
+.linputs {width:400px;} select.linputs{width:405px;}
+.sinputs {width:150px;} select.sinputs{width:155px;}
+.vsinputs {width:75px;} select.vsinputs{width:80px;}
+.vlinputs {width:100%;}
+form {margin:0; font-size:0;}
+.img {font-size:0}
+sup, sub{font-size:9px; color:inherit;}
+
+/* Structure */
+.innerContent {width:1400px; max-width:100%; margin:0 auto;}
+
+#PageHeader {position:fixed; top:0; width:100%; background:linear-gradient(to right, #4c3f7b, #4c3f7b 250px, #262334);}
+#PageHeader .background {height:100px; background-repeat:no-repeat; background-size:auto 100%; background-position:0% 50%;}
+#PageHeader .innerContent {display:flex; justify-content: flex-end;}
+#PageHeader .innerContent .infos {flex:1; max-width:300px; height:100px;}
+#PageHeader .innerContent .title {flex:2; padding: 20px; font-size:20px; text-transform:uppercase; color:white; text-align:right; font-weight:300;}
+#PageHeader .innerContent .logo {flex:1; max-width:200px; height:100px; background:yellow;}
+
+#PageContent {margin:100px 40px 24px;}
+#PageContent .innerContent {min-height:400px;}
+
+#PageFooter {position:fixed; bottom:0; width:100%; height:24px; background:#303030; padding:0 20px;}
+#PageFooter .innerContent {color:white; font-size:11px; padding:6px 20px;}
+
+/* Graphical elements */
+.CaMykSButton {display:inline-block; background:#fbc02a; color:white; line-height:20px; padding:8px 32px; transition:all 0.3s linear; text-transform:uppercase; text-decoration:none; border-radius:4px;}
+.CaMykSButton:hover {background:#262334;}
+
+/* Interface */
+.shortFrame {max-width:600px; margin:0 auto; text-align:center; padding:60px;}
+.interfaceTitle {font-size:24px; margin: 8px 0 16px; color:#262334;}
+.interfaceButtons {margin: 16px 0;}
+.largeContent {font-size:15px;}
+
