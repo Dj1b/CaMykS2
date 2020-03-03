@@ -2,7 +2,7 @@
 /**
  * @brief CaMykS complete error display.
  * @details Engine / Layout
- * @author CaMykS Team <CaMykS.contact@gmail.com>
+ * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0.1
  * @date Creation: Nov 2019
  * @date Modification: Dec 2019
