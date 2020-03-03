@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0a10.5
+ * @version 2.0a11
  * @date Creation: Feb 2017
  * @date Modification: Mar 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -374,6 +374,9 @@ final class CaMykS {
         if (in_array($this->mode, array(CAMYKS_MODE_VISIT, CAMYKS_MODE_ADMIN, CAMYKS_MODE_REQUEST)) and $this->get_configuration('Website_Status') == 0)
             $this->mode = CAMYKS_MODE_INSTALL;
 
+        /* Load first libraries */
+        $this->load_engineFirstLibraries();
+
         /* Load engine configuration */
         $this->load_configuration('Engine');
 
@@ -597,19 +600,13 @@ final class CaMykS {
      * @return void
      */
     private function load_configuration($configFile) {
+        $config = new ConfigurationFile();
+
         /* Load engine configuration file */
-        $file = 'Core/Configuration/'.$configFile.$this->libraryExtension;
-        if ($this->check_engineFileExists($file)) {
-            require_once($this->get_engineFileFullPath($file));
-            $this->engineConfiguration = array_merge($this->engineConfiguration, $configuration);
-        }
+        $this->engineConfiguration = array_merge($this->engineConfiguration, $config->load($configFile, 'Engine'));
 
         /* Load website configuration file */
-        $file = 'Configuration/'.$configFile.$this->libraryExtension;
-        if ($this->check_websiteFileExists($file)) {
-            require_once($this->get_websiteFileFullPath($file));
-            $this->websiteConfiguration = array_merge($this->websiteConfiguration, $configuration);
-        }
+        $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->load($configFile, 'Website'));
     }
 
     /**
@@ -659,6 +656,14 @@ final class CaMykS {
 
         /* Load library */
         require_once($this->get_engineFileFullPath($file));
+    }
+
+    /**
+     * Load engine libraries.
+     * @return void
+     */
+    private function load_engineFirstLibraries() {
+        $this->load_library('ConfigurationFile', 'Objects');
     }
 
     /**
@@ -1101,6 +1106,7 @@ final class CaMykS {
     /**
      * Return website file URL.
      * @param string $filePath
+     * @param string $URLMode
      * @return string
      */
     public function get_websiteFileURL($filePath, $URLMode=null) {
