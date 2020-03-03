@@ -3,10 +3,10 @@
  * @brief URL specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.2
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -83,6 +83,9 @@ function url_getAsComplete($url, $scheme='http') {
  * @return string
  */
 function url_getAsSmart($url) {
+    /* Remove tailing / char */
+    $url = preg_replace('#/$#', '', $url);
+
     /* Split URL scheme and host/path */
     $url = explode('://', trim($url));
 
