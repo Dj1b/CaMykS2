@@ -3,10 +3,10 @@
  * @brief Client specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Dec 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -42,6 +42,14 @@ function client_getIp() {
  */
 function client_isHTTPS() {
     return (!empty($_SERVER['HTTPS']));
+}
+
+/**
+ * Return current request URL.
+ * @return string
+ */
+function client_getCurrentURL() {
+    return 'http'.(client_isHTTPS() ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 }
 
 /**
