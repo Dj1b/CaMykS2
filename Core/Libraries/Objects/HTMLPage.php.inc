@@ -3,9 +3,9 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2020
+ * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -17,6 +17,12 @@ namespace CaMykS2;
  * HTMLPage class.
  */
 final class HTMLPage {
+    /**
+     * @var string $step
+     * @brief Page current step, values are init, body, done.
+     */
+    private $step = 'init';
+
     /**
      * @var integer $status
      * @brief Page status.
@@ -44,7 +50,7 @@ final class HTMLPage {
     private $HTMLVersion = 5;
 
     /**
-     * @var boolean $baseURL
+     * @var boolean $requiresBaseURL
      * @brief Does the page requires the HTML base url for the internal links.
      */
     private $requiresBaseURL = false;
@@ -65,7 +71,7 @@ final class HTMLPage {
      * @var string $description
      * @brief Description for page header.
      */
-    private $pdescription = '';
+    private $description = '';
 
     /**
      * @var string $language
@@ -106,7 +112,7 @@ final class HTMLPage {
      * @var array $JSFiles
      * @brief Client side script files to load.
      */
-    private $JSFile = array();
+    private $JSFiles = array();
 
     /**
      * @var array $JSScripts
@@ -147,7 +153,7 @@ final class HTMLPage {
     private $styleScripts = array();
 
     /**
-     * @var string $headExtra
+     * @var string $headExtras
      * @brief HTML head extras.
      */
     private $headExtras = '';
@@ -169,7 +175,7 @@ final class HTMLPage {
         $this->add_meta('charset', $CaMykS->get_configValue('Website_Encoding', 'UTF-8'), 'charset');
 
         /* Add generator meta */
-        if ($CaMykS->get_configValue('Website_DisplayCMSSignature'))
+        if ($CaMykS->get_configValue('Website_DisplayCMSSignature', true))
             $this->add_meta('generator', $CaMykS->name.' '.$CaMykS->version.' ('.$CaMykS->CMSWebsiteURL.')');
 
         /* Add author meta */
@@ -191,7 +197,7 @@ final class HTMLPage {
     /**
      * Insert page header.
      * @param string $name
-     * @parma string $value
+     * @param string $value
      * @return void
      */
     public function add_header($name, $value) {
@@ -297,6 +303,7 @@ final class HTMLPage {
      * Insert a new Javascript script.
      * @param string $script
      * @param boolean $unique
+     * @param string $event
      * @return void
      */
     public function add_JSScript($script='', $unique=false, $event='Main') {
@@ -415,11 +422,11 @@ final class HTMLPage {
      * @param integer $delay
      * @return void
      */
-    public function set_redirect($url, $time=0) {
-        if ($time = 0)
+    public function set_redirect($url, $delay=0) {
+        if ($delay = 0)
             $this->add_header('Location', $url);
         else
-            $this->add_meta('refresh', $time.';url='.$url, 'http-equiv');
+            $this->add_meta('refresh', $delay.';url='.$url, 'http-equiv');
     }
 
     /* Public writing methods */
@@ -429,6 +436,10 @@ final class HTMLPage {
      * @return void
      */
     public function write_header() {
+        /* Check step */
+        if ($this->step != 'init')
+            return;
+
         /* Send page headers */
         $this->send_headers();
 
@@ -453,20 +464,26 @@ final class HTMLPage {
 
         /* Write HTML body */
         $this->write_HTMLBody();
+
+        /* Update step */
+        $this->step = 'body';
     }
 
     /**
      * Write page footer.
-     * @reurn void
+     * @return void
      */
     public function write_footer() {
-        /* Check page is a HTML page */
-        if ($this->headers['Content-Type'] !== 'text/html')
+        /* Check current step and page is a HTML page */
+        if ($this->headers['Content-Type'] !== 'text/html' or $this->step != 'body')
             return;
 
         /* Write HTML page footer */
         echo "</body>\n";
         echo "</html>\n";
+
+        /* Update step */
+        $this->step = 'done';
     }
 
     /* Private special methods */
@@ -476,7 +493,7 @@ final class HTMLPage {
      * @return void
      */
     private function send_headers() {
-        /* Send status if different to 2OO */
+        /* Send status if different from 200 */
         if ($this->status !== 200) {
             $codes = http_getResponseCodeList();
             header('HTTP/1.1 '.$this->status.' '.$codes[$this->status]);
@@ -550,16 +567,19 @@ final class HTMLPage {
         $title = array();
 
         /* Insert site title */
-        $title[] = $CaMykS->get_configValue('Website_Title');
+        if ($CaMykS->get_configValue('Website_Title') == '')
+            $title[] = $CaMykS->get_configValue('Website_Title');
 
         /* If page is home page, display site title first, else display page title first */
-        if ($this->isHome)
-            $title[] = $this->title;
-        else
-            array_unshift($title, $this->title);
+        if ($this->title != '') {
+            if ($this->isHome)
+                $title[] = $this->title;
+            else
+                array_unshift($title, $this->title);
+        }
 
         /* Write title tag */
-        echo "<title>".implode(' - ', $ttitle)."</title>\n";
+        echo "<title>".implode(' - ', $title)."</title>\n";
     }
 
     /**
@@ -583,7 +603,7 @@ final class HTMLPage {
         foreach ($this->links as $link) {
             echo '<link';
             foreach ($link as $key => $value)
-                echo ' '.$key.'="'.$value.'"';
+                echo ' '.strtolower($key).'="'.$value.'"';
             echo " />\n";
         }
     }
@@ -650,21 +670,21 @@ final class HTMLPage {
      */
     private function write_JSPreScripts() {
         /* Check pre scripts */
-        if (count($this->JSScript['Pre']) == 0)
+        if (count($this->JSScripts['Pre']) == 0)
             return;
 
         /* Write script opening tag */
         echo "<script>\n";
 
         /* Add scripts */
-        foreach($this->JSScript['Pre'] as $script)
+        foreach($this->JSScripts['Pre'] as $script)
             echo $script."\n";
 
         /* Write script closing tag */
         echo "</script>\n";
 
         /* Unload scripts */
-        unset($this->JSScript['Pre']);
+        unset($this->JSScripts['Pre']);
     }
 
     /**
@@ -693,7 +713,7 @@ final class HTMLPage {
         echo "<script>\n";
 
         /* Read events' scripts */
-        foreach($this->JSScript as $event => $scripts) {
+        foreach($this->JSScripts as $event => $scripts) {
             /* Check scripts */
             if (count($scripts) == 0)
                 continue;
