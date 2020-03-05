@@ -3,14 +3,15 @@
  * @brief CaMykS website configuration file.
  * @details Skeleton / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Sep 2019
- * @date Modification: Feb 2020
+ * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 $configuration = array(
+    'Website_Name' => '',
     'Website_CaMykSPath' => '',
     'Website_CaMykSMode' => '',
     'Website_URL' => '',
