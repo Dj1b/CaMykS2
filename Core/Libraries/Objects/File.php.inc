@@ -3,10 +3,10 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Nov 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo File icon collections.
@@ -87,7 +87,7 @@ final class File extends CaMykSLibrary{
         parent::__construct(array());
 
         /* Define full path */
-        if (is_null($file))
+        if (is_null($file) or $file == '')
             $this->filePath = $path;
         else
             $this->filePath = $path.'/'.$file;
@@ -151,7 +151,10 @@ final class File extends CaMykSLibrary{
     public function is_writable() {
         if (!$this->is_accessible('Write'))
             return false;
-        return is_writable($this->filePath);
+
+        if (file_exists($this->filePath))
+            return is_writable($this->filePath);
+        return is_writable($this->path);
     }
 
     /**
@@ -385,14 +388,14 @@ final class File extends CaMykSLibrary{
         $type = $this->get_genericType();
 
         /* Load file URL from CaMykS */
-        $url = $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/'.$type.'.'.$collections[$collection]['FileExtension'], $URLMode);
+        $url = $CaMykS->get_assetFileURL('Images/Mimes/'.$collection.'/'.$size.'/'.$type.'.'.$collections[$collection]['FileExtension'], $URLMode);
 
         /* Check URL */
         if ($url != '')
             return $url;
 
         /* Load default file URL from CaMykS */
-        return $CaMykS->get_assetFileURL('Images/Flags/'.$collection.'/'.$size.'/default.'.$collections[$collection]['FileExtension'], $URLMode);
+        return $CaMykS->get_assetFileURL('Images/Mimes/'.$collection.'/'.$size.'/default.'.$collections[$collection]['FileExtension'], $URLMode);
     }
 
     /**
@@ -493,17 +496,18 @@ final class File extends CaMykSLibrary{
             return false;
 
         /* Write headers */
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Content-Type: application/octet-stream');
-        header('Content-Description: File Transfer');
-        header('Content-Length: '.$this->get_size());
+        $CaMykS->HTMLPage->add_header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $CaMykS->HTMLPage->add_header('Content-Type', 'application/octet-stream');
+        $CaMykS->HTMLPage->add_header('Content-Description', 'File Transfer');
+        $CaMykS->HTMLPage->add_header('Content-Length', $this->get_size());
         if (isset($title)) {
             if (pathinfo($title, PATHINFO_EXTENSION) === '')
                 $title .= '.'.$this->ext;
         } else {
             $title  = $this->file;
         }
-        header('Content-Disposition: attachment; filename="'.$title.'";');
+        $CaMykS->HTMLPage->add_header('Content-Disposition', 'attachment; filename="'.$title.'";');
+        $CaMykS->HTMLPage->write_header();
 
         /* Write file content */
         echo $this->get_contents();
@@ -525,14 +529,15 @@ final class File extends CaMykSLibrary{
             return false;
 
         /* Write headers */
-        header('Content-Type: '.$this->get_mime());
+        $CaMykS->HTMLPage->add_header('Content-Type', $this->get_mime());
         if (isset($title)) {
             if (pathinfo($title, PATHINFO_EXTENSION) === '')
                 $title .= '.'.$this->ext;
         } else {
             $title  = $this->file;
         }
-        header('Content-Disposition: inline; filename="'.$title.'"');
+        $CaMykS->HTMLPage->add_header('Content-Disposition', 'inline; filename="'.$title.'"');
+        $CaMykS->HTMLPage->write_header();
 
         /* Write file content */
         echo $this->get_contents();
