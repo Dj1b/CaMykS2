@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre12
+ * @version 2.0pre13
  * @date Creation: Feb 2017
  * @date Modification: Mar 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -636,6 +636,32 @@ final class CaMykS {
      */
     public function set_configValue($name, $value) {
         $this->websiteConfiguration[$name] = $value;
+    }
+
+    /* Session related method */
+
+    /**
+     * Save variable to session.
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function set_sessionValue($name, $value='') {
+        $_SESSION[$this->get_configValue('Website_Name').'_'.$name] = $value;
+    }
+
+    /**
+     * Return variable from session.
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_sessionValue($name, $default=null) {
+        /* Set up session variable */
+        $var = $this->get_configValue('Website_Name').'_'.$name;
+
+        /* Return value */
+        return isset($_SESSION[$var]) ? $_SESSION[$var] : $default;
     }
 
     /* Library related methods */
