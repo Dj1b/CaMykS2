@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, message layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -11,16 +11,16 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 ?>
-<div class="shortFrame">
-    <div class="interfaceTitle">
+<div class="loginFrame">
+    <div class="title">
         <?= $this->message['Title']; ?>
     </div>
 
-    <div class="largeContent">
+    <div class="content">
         <?= $this->message['Content']; ?>
     </div>
 
-    <div class="interfaceButtons">
+    <div class="buttons">
         <?php $this->theme->display_button(array(
             'Title' => $this->message['ButtonTitle'],
             'Link'  => $this->message['ButtonLink'],

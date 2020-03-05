@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -41,6 +41,18 @@ final class CaMykSManager extends Plugin {
     );
 
     /**
+     * @var Object $managerForm
+     * @brief Manager form object.
+     */
+    protected $managerForm;
+
+    /**
+     * @var integer $passwordEncodingLength
+     * @brief Password encoding used for manager master password.
+     */
+    private $passwordEncodingLength = 64;
+
+    /**
      * Class constructor.
      * @param string $location
      * @return void
@@ -63,6 +75,7 @@ final class CaMykSManager extends Plugin {
         parent::initialise($params);
 
         /* Override some website configuration variables */
+        $CaMykS->set_configValue('Website_Name', $this->libraryName);
         $CaMykS->set_configValue('Website_Title', 'Website Manager');
         $CaMykS->set_configValue('Website_URL', dirname(client_getCurrentURL()).'/');
 
@@ -90,6 +103,10 @@ final class CaMykSManager extends Plugin {
         switch ($this->action) {
             case 'DisplayMessage': /* Display message */
                 $this->update_selectedLayout('Message');
+                break;
+
+            case 'Login': /* Display login frame */
+                $this->initialise_login();
                 break;
 
             case 'Main': /* Main, default */
@@ -129,18 +146,29 @@ final class CaMykSManager extends Plugin {
             $this->action = 'DisplayMessage';
             $this->message['Title'] = $this->get_locale('Error_NoPasswordDefined_Title');
             $this->message['Content'] = $this->get_locale('Error_NoPasswordDefined_Content');
-            $this->message['ButtonTitle'] = $this->get_locale('Error_NoPasswordDefined_ButtonTitle');
-            $this->message['ButtonLink'] = '#';
+            $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
+            $this->message['ButtonLink'] = client_getCurrentURL();
             return true;
         }
 
         /* Check password is not encoded */
-        if (!preg_match('#^[0-9a-z]{8}\:[0-9a-z]{64}$#', $password)) {
+        if (!preg_match('#^[0-9a-z]{8}\:[0-9a-z]{'.$this->passwordEncodingLength.'}$#', $password)) {
             /* Encode password with hash */
             $salt = substr(session_id(), 1, 8);
-            $newPassword = $salt.':'.password_encode($password, 64, $salt);
+            $newPassword = $salt.':'.password_encode($password, $this->passwordEncodingLength, $salt);
 
             /* Save configuration */
+            $config = new ConfigurationFile();
+
+            if (!$config->save('Manager', 'Engine', array('Manager_Password'=>$newPassword))) {
+                /* Display error message page */
+                $this->action = 'DisplayMessage';
+                $this->message['Title'] = $this->get_locale('Error_CantSavePassword_Title');
+                $this->message['Content'] = $this->get_locale('Error_CantSavePassword_Content');
+                $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
+                $this->message['ButtonLink'] = client_getCurrentURL();
+                return true;
+            }
 
             /* Display login */
             $this->action = 'Login';
@@ -148,6 +176,8 @@ final class CaMykSManager extends Plugin {
             /* Return as success */
             return true;
         }
+
+        /* No action required */
         return false;
     }
 
@@ -156,19 +186,33 @@ final class CaMykSManager extends Plugin {
      * @return void
      */
     private function check_hasLoggedUser() {
-        /* Check user logged */
-        if (false)
-            return;
+        global $CaMykS;
+
+        /* Check user is logged */
+        if ($CaMykS->get_sessionValue('ManagerConnection') == 1)
+            return true;
 
         /* Check user is logging in */
-        if (false) {
+        if (($p = http_getStringRequest('ManagerPassword')) != '') {
 
+            /* Check password */
+            if (password_check($p, $CaMykS->get_configValue('Manager_Password'))) {
+                /* Set user ton session */
+                $CaMykS->set_sessionValue('ManagerConnection', 1);
+
+                /* Redirect to main page */
+                $CaMykS->HTMLPage->set_redirect(client_getCurrentURL());
+
+                /* Set up null action */
+                $this->action = 'Null';
+
+                /* Return success */
+                return true;
+            }
         }
 
         /* Display login page */
-        if (false) {
-
-        }
+        $this->action = 'Login';
     }
 
     /* Initialise methods */
@@ -179,6 +223,18 @@ final class CaMykSManager extends Plugin {
      */
     private function initialise_main() {
 
+    }
+
+    /**
+     * Initialise plugin in login mode.
+     * @return void
+     */
+    private function initialise_login() {
+        /* Build login form */
+        $this->managerForm = new HTMLForm(array('name'=>'LoginForm'));
+
+        /* Update layout */
+        $this->update_selectedLayout('Login');
     }
 
     /**
