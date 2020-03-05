@@ -3,7 +3,7 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -119,6 +119,12 @@ final class ConfigurationFile {
 
         /* Build file full path */
         $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.$CaMykS->libraryExtension), '', 'Write');
+
+        /* Check file is writable */
+        if ($file->is_writable() === false)
+            return false;
+
+        /* Write configuration */
         return $file->write($content, true);
     }
 
