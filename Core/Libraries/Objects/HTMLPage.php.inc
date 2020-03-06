@@ -3,7 +3,7 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Feb 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -233,7 +233,7 @@ final class HTMLPage {
      * @return void
      */
     public function set_pageInformation($title=null, $description=null, $keywords=null, $language=null, $isHome=null) {
-        if (!is_null($title)) $this->pageTitle = $title;
+        if (!is_null($title)) $this->title = $title;
         if (!is_null($description)) $this->description = $description;
         if (!is_null($keywords)) $this->keywords = $keywords;
         if (!is_null($language)) $this->language = $language;
@@ -423,7 +423,7 @@ final class HTMLPage {
      * @return void
      */
     public function set_redirect($url, $delay=0) {
-        if ($delay = 0)
+        if ($delay == 0)
             $this->add_header('Location', $url);
         else
             $this->add_meta('refresh', $delay.';url='.$url, 'http-equiv');
@@ -474,6 +474,10 @@ final class HTMLPage {
      * @return void
      */
     public function write_footer() {
+        /* Send page headers if page is still on init step */
+        if ($this->step == 'init')
+            $this->send_headers();
+
         /* Check current step and page is a HTML page */
         if ($this->headers['Content-Type'] !== 'text/html' or $this->step != 'body')
             return;
