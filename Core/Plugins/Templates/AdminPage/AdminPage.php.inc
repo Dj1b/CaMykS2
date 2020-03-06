@@ -3,9 +3,9 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2020
+ * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -19,6 +19,18 @@ namespace CaMykS2;
 final class AdminPage extends Template {
 
     /**
+     * @var boolean $actionBarStatus
+     * @brief Is the action bar displayed.
+     */
+    protected $actionBarStatus = false;
+
+    /**
+     * @var array $actionBarButtons
+     * @brief List of buttons to be displayed in action bar
+     */
+    protected $actionBarButtons = array();
+
+    /**
      * Class constructor.
      * @param string $location
      * @return void
@@ -28,7 +40,48 @@ final class AdminPage extends Template {
         parent::__construct($location);
     }
 
-    /* Specific methods */
+    /* Override Plugin methods */
+
+    /**
+     * Initialise object.
+     * @param array $params
+     * @return void
+     */
+    public function initialise($params=array()) {
+        global $CaMykS;
+        parent::initialise($params);
+
+        /* Load locales */
+        $this->load_locales();
+
+        /* Set up title on HTML page */
+        $CaMykS->HTMLPage->set_pageInformation($this->get_headerTitle());
+
+        /* Add scripts */
+        $this->add_JSFile('AdminPage.js', array('async'=>''));
+        $this->add_JSScript('AdminPage.initialise();', true, 'Load');
+    }
+
+    /* Public methods */
+
+    /**
+     * Enable action bar display.
+     * @return void
+     */
+    public function enable_actionBar() {
+        $this->actionBarStatus = true;
+    }
+
+    /**
+     * Add a button to action bar
+     * @param array $button
+     * @return void
+     */
+    public function add_actionBarButton($button) {
+        $this->actionBarButtons[] = $button;
+    }
+
+    /* Protected methods */
 
     /**
      * Check has a logo to display in header.
@@ -49,9 +102,45 @@ final class AdminPage extends Template {
 
         switch ($CaMykS->mode) {
             case 2: /* Admin mode */
-                return $CaMykS->get_locale('HeaderTitle', 'Admin', array($CaMykS->get_configValue('Website_Title')));
+                return $this->get_locale('HeaderTitle', array($CaMykS->get_configValue('Website_Title')));
             case 3: /* Manager mode */
                 return $CaMykS->get_locale('TemplateHeaderTitle', 'CaMykSManager');
+            case 4: /* Install mode */
+
+                break;
+        }
+    }
+
+    /**
+     * Return home link.
+     * @return string
+     */
+    protected function get_homeLink() {
+        global $CaMykS;
+
+        switch ($CaMykS->mode) {
+            case 2: /* Admin mode */
+
+            case 3: /* Manager mode */
+                return $CaMykS->manager->get_homeLink();
+            case 4: /* Install mode */
+
+                break;
+        }
+    }
+
+    /**
+     * Return logout link.
+     * @return string
+     */
+    protected function get_logoutLink() {
+        global $CaMykS;
+
+        switch ($CaMykS->mode) {
+            case 2: /* Admin mode */
+
+            case 3: /* Manager mode */
+                return $CaMykS->manager->get_logoutLink();
             case 4: /* Install mode */
 
                 break;

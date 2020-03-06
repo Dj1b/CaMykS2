@@ -3,9 +3,9 @@
  * @brief AdminPage Template main layout.
  * @details Plugin / Template layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2020
+ * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -41,3 +41,30 @@ global $CaMykS;
         </div>
     </div>
 </div>
+
+<?php if ($this->actionBarStatus) : ?>
+    <div id="ActionBar">
+        <div class="button home">
+            <a href="<?= $this->get_homeLink(); ?>" class="noSize">
+                <img src="<?= $this->get_fileURL('Images/ActionBarButtons/Home.png'); ?>" alt="<?= $this->get_locale('Home'); ?>" title="<?= $this->get_locale('Home'); ?>" />
+            </a>
+        </div>
+        <div class="button menu">
+            <a href="javascript:AdminPage.toggle_adminMenu();" class="noSize">
+                <img src="<?= $this->get_fileURL('Images/ActionBarButtons/Menu.png'); ?>" alt="<?= $this->get_locale('Menu'); ?>" title="<?= $this->get_locale('Menu'); ?>" />
+            </a>
+        </div>
+        <?php foreach ($this->actionBarButtons as $button) : ?>
+
+        <?php endforeach; ?>
+        <div class="button logout">
+            <a href="<?= $this->get_logoutLink(); ?>" class="noSize">
+                <img src="<?= $this->get_fileURL('Images/ActionBarButtons/LogOut.png'); ?>" alt="<?= $this->get_locale('LogOut'); ?>" title="<?= $this->get_locale('LogOut'); ?>" />
+            </a>
+        </div>
+    </div>
+
+    <div id="AdminMenu">
+        &nbsp;
+    </div>
+<?php endif; ?>

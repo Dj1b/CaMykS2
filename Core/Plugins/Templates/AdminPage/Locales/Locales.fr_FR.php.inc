@@ -1,7 +1,7 @@
 <?php
 /**
- * @brief Admin mode, french dictionnary.
- * @details Engine / Dictionnary
+ * @brief AdminPage template, french dictionnary.
+ * @details Plugin / Template Dictionnary
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0.0
  * @date Creation: Mar 2020
@@ -12,5 +12,10 @@
  */
 $locales = array(
     'HeaderTitle' => 'Administration du site <br />%s',
+
+    /* Action bar buttons */
+    'Home' => 'Accueil',
+    'Menu' => 'Menus &amp; r&eacute;glages',
+    'LogOut' => 'D&eacute;connexion',
 );
 ?>

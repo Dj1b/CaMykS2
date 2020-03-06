@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -77,10 +77,13 @@ final class CaMykSManager extends Plugin {
         /* Override some website configuration variables */
         $CaMykS->set_configValue('Website_Name', $this->libraryName);
         $CaMykS->set_configValue('Website_Title', 'Website Manager');
-        $CaMykS->set_configValue('Website_URL', dirname(client_getCurrentURL()).'/');
+        $CaMykS->set_configValue('Website_URL', dirname($this->get_homeLink()).'/');
 
         /* Load locales */
         $this->load_locales('', $CaMykS->currentLanguage);
+
+        /* Apply title */
+        $CaMykS->HTMLPage->set_pageInformation($this->get_locale('TemplateHeaderTitle'));
 
         /* Load theme */
         $this->theme = &$CaMykS->currentTheme;
@@ -107,6 +110,10 @@ final class CaMykSManager extends Plugin {
 
             case 'Login': /* Display login frame */
                 $this->initialise_login();
+                break;
+
+            case 'Logout': /* Close connection */
+                $this->initialise_logout();
                 break;
 
             case 'Main': /* Main, default */
@@ -147,7 +154,7 @@ final class CaMykSManager extends Plugin {
             $this->message['Title'] = $this->get_locale('Error_NoPasswordDefined_Title');
             $this->message['Content'] = $this->get_locale('Error_NoPasswordDefined_Content');
             $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
-            $this->message['ButtonLink'] = client_getCurrentURL();
+            $this->message['ButtonLink'] = $this->get_homeLink();
             return true;
         }
 
@@ -166,7 +173,7 @@ final class CaMykSManager extends Plugin {
                 $this->message['Title'] = $this->get_locale('Error_CantSavePassword_Title');
                 $this->message['Content'] = $this->get_locale('Error_CantSavePassword_Content');
                 $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
-                $this->message['ButtonLink'] = client_getCurrentURL();
+                $this->message['ButtonLink'] = $this->get_homeLink();
                 return true;
             }
 
@@ -197,17 +204,14 @@ final class CaMykSManager extends Plugin {
 
             /* Check password */
             if (password_check($p, $CaMykS->get_configValue('Manager_Password'))) {
-                /* Set user ton session */
+                /* Set user to session */
                 $CaMykS->set_sessionValue('ManagerConnection', 1);
 
                 /* Redirect to main page */
-                $CaMykS->HTMLPage->set_redirect(client_getCurrentURL());
+                $CaMykS->HTMLPage->set_redirect($this->get_homeLink());
 
-                /* Set up null action */
-                $this->action = 'Null';
-
-                /* Return success */
-                return true;
+                /* Close $CaMykS */
+                $CaMykS->close();
             }
         }
 
@@ -222,6 +226,10 @@ final class CaMykSManager extends Plugin {
      * @return void
      */
     private function initialise_main() {
+        global $CaMykS;
+
+        /* Enable action bar buttons */
+        $CaMykS->currentTemplate->enable_actionBar();
 
     }
 
@@ -238,11 +246,63 @@ final class CaMykSManager extends Plugin {
     }
 
     /**
+     * Initialise plugin in logout mode.
+     * @return void
+     */
+    private function initialise_logout() {
+        global $CaMykS;
+
+        /* Remove user from session */
+        $CaMykS->set_sessionValue('ManagerConnection', 0);
+
+        /* Redirect to main page */
+        $CaMykS->HTMLPage->set_redirect($this->get_homeLink());
+
+        /* Close $CaMykS */
+        $CaMykS->close();
+    }
+
+    /**
      * Initialise plugin in save manager configuration mode.
      * @return void
      */
     private function initialise_saveManagerConfiguration() {
 
+    }
+
+    /* Links methods */
+
+    /**
+     * Return manager home link.
+     * @return string
+     */
+    public function get_homeLink() {
+        return $this->get_actionLink();
+    }
+
+    /**
+     * Return manager logout link.
+     * @return string
+     */
+    public function get_logoutLink() {
+        return $this->get_actionLink('Logout');
+    }
+
+    /**
+     * Return manager action link.
+     * @param string $action
+     * @return string
+     */
+    public function get_actionLink($action='') {
+        /* Create link base url */
+        $link = client_getCurrentURL();
+
+        /* Add action */
+        if ($action !== '')
+            $link .= '?ManagerAction='.$action;
+
+        /* Return link */
+        return $link;
     }
 }
 ?>
