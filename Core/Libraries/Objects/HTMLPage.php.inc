@@ -3,7 +3,7 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Feb 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -697,9 +697,11 @@ final class HTMLPage {
      */
     private function write_JSFiles() {
         foreach ($this->JSFiles as $file => $params) {
-            echo "<script";
+            echo '<script src="'.$file.'"';
             foreach ($params as $key => $value)
-                echo ' '.$key.'="'.$value.'"';
+                echo ' '.$key;
+                if ($value != '')
+                    echo '="'.$value.'"';
             echo " ></script>\n";
         }
     }

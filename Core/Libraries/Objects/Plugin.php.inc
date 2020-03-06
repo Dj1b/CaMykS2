@@ -4,7 +4,7 @@
  * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Nov 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -402,6 +402,29 @@ abstract class Plugin extends CaMykSLibrary {
     }
 
     /* Javascript related methods */
+
+    /**
+     * Attach a javascript file to HTML page.
+     * @param string $file
+     * @param string $params
+     * @param string $URLMode
+     * @return void
+     */
+    protected function add_JSFile($file, $params=array(), $URLMode=null) {
+        global $CaMykS;
+        $CaMykS->HTMLPage->add_JSFile($this->get_fileURL('Scripts/'.$file, $URLMode), $params);
+    }
+
+    /**
+     * Add a script to HTML page.
+     * @param string $script
+     * @param string $condition
+     * @return void
+     */
+    public function add_JSScript($script='', $unique=false, $event=null) {
+        global $CaMykS;
+        $CaMykS->HTMLPage->add_JSScript($script, $unique, $event);
+    }
 
     /* Styles related methods */
 
