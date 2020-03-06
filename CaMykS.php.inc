@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre13
+ * @version 2.0pre13.1
  * @date Creation: Feb 2017
  * @date Modification: Mar 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -224,7 +224,7 @@ final class CaMykS {
      * @return mixed
      */
     public function __get($variableName) {
-        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension')))
+        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension', 'manager')))
             return $this->$variableName;
     }
 
