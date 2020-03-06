@@ -3,10 +3,10 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Nov 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Test and rewrite most of the methods.
@@ -169,7 +169,6 @@ function folder_move($source, $target) {
     return false;
 }
 
-
 /**
  * Return temporary folder path.
  * @return mixed
@@ -197,6 +196,35 @@ function folder_getTemporaryFolder() {
         }
     }
     return false;
+}
+
+/**
+ * List elements of a folder.
+ * @param string $folder
+ * @param array $params
+ * @return array
+ */
+function folder_listElements($folder, $params=array()) {
+    /* Update folder */
+    $folder = trim(preg_replace('#/$#', '', $folder));
+
+    /* Check folder is a directory */
+    if (!is_dir($folder))
+        return array();
+
+    /* Check folder is accessible */
+    if (folder_checkPathAccessibility($folder, 'Read') === false)
+        return false;
+
+    /* Default params */
+    $defaultParams = array(
+        'MaxDepth' => false,
+        'FoldersOnly' => false,
+    );
+    $params = array_merge($defaultParams, $params);
+
+    /* Execute sub command */
+    return _folder_listElements($folder, $params, 1);
 }
 
 /**
@@ -478,5 +506,42 @@ function folder_getSize($folder, $humanReadable=false, $hrFormat='Binary') {
     if (!$humanReadable)
         return $s;
     return util_getHumanReadableSize($s, $hrFormat);
+}
+
+/* Sub methods */
+
+/**
+ * List elements of a folder.
+ * @param string $folder
+ * @param array $params
+ * @param integer $depth
+ * @return array
+ */
+function _folder_listElements($folder, $params, $depth) {
+    /* Initialise elements list */
+    $elements = array('Path'=>$folder, 'Files'=>array(), 'Folders'=>array());
+
+    if ($dir = opendir($folder)) {
+        while (($item = readdir($dir)) !== false) {
+            if (is_dir($folder.'/'.$item)) {
+                /* Check sytem folders */
+                if (in_array($item, array('.', '..')))
+                    continue;
+
+                /* Check recursivity */
+                if ($params['MaxDepth'] !== false and $depth >= $params['MaxDepth'])
+                    $elements['Folders'][$item] = array('Path'=>$folder.'/'.$item, 'Files'=>array(), 'Folders'=>array());
+                else
+                    $elements['Folders'][$item] = _folder_listElements($folder.'/'.$item, $params, $depth+1);
+
+            } elseif (is_file($folder.'/'.$item)) {
+                /* Check for files loading */
+                if ($params['FoldersOnly'])
+                    continue;
+                $elements['Files'][$item] = array('Path'=>$folder.'/'.$item);
+            }
+        }
+    }
+    return $elements;
 }
 ?>
