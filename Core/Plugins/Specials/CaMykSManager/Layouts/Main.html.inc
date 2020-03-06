@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, main layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -11,3 +11,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 ?>
+
+<div class="mainFrame">
+    <?php $this->display_folderContent($this->folderTree, 0); ?>
+</div>

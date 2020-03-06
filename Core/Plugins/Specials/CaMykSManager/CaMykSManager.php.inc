@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -88,8 +88,13 @@ final class CaMykSManager extends Plugin {
         /* Load theme */
         $this->theme = &$CaMykS->currentTheme;
 
-        /* Check website is installed in standalone mode */
-        $this->check_isStandaloneMode();
+        /* Check manager is in a website installed in standalone mode */
+        if (!$this->check_isStandaloneMode())
+            return false;
+
+        /* Check manager security */
+        if (!$this->check_security())
+            return false;
 
         /* Load action to execute */
         $this->action = http_getStringRequest('ManagerAction', 'Main');
@@ -125,8 +130,26 @@ final class CaMykSManager extends Plugin {
     /* Pre-check methods */
 
     /**
-     * Check website is installed in standalone mode.
-     * @return void
+     * Check manager security.
+     * @return boolean result
+     */
+    private function check_security() {
+        global $CaMykS;
+
+        /* Check restrained IPs */
+        $ips = $CaMykS->get_configValue('Manager_RestrainedIPs');
+        if (is_array($ips) and count($ips) > 0) {
+            if (!in_array(client_getIp(), $ips))
+                return false;
+        }
+
+        /* By default, return OK */
+        return true;
+    }
+
+    /**
+     * Check manager is in a website installed in standalone mode.
+     * @return boolean result
      */
     private function check_isStandaloneMode() {
         /* Read website configuration */
@@ -135,11 +158,12 @@ final class CaMykSManager extends Plugin {
 
         /* Redirect visitor to website */
 
+        return true;
     }
 
     /**
      * Check manager has password defined.
-     * @return void
+     * @return boolean result
      */
     private function check_hasPasswordDefined() {
         global $CaMykS;
@@ -231,6 +255,11 @@ final class CaMykSManager extends Plugin {
         /* Enable action bar buttons */
         $CaMykS->currentTemplate->enable_actionBar();
 
+        /* Load folder tree */
+        $this->folderTree = $this->load_folderTree($CaMykS->get_configValue('Manager_WebsitesPath'), 0);
+
+        /* Update layout */
+        $this->update_selectedLayout('Main');
     }
 
     /**
@@ -303,6 +332,65 @@ final class CaMykSManager extends Plugin {
 
         /* Return link */
         return $link;
+    }
+
+    /* Folder tree methods */
+
+    /**
+     * Load folder tree for given path and level.
+     * @param string $path
+     * @param integer $level
+     * @return array
+     */
+    private function load_folderTree($path, $level) {
+        $content = folder_listElements($path, array('MaxDepth'=>1));
+
+        foreach ($content['Folders'] as &$folder) {
+            $folder['Type'] = $this->detect_folderType($folder['Path']);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Detect folder type.
+     * @param string $path
+     * @return string
+     */
+    private function detect_folderType($path) {
+        /* Check CaMykS v2 site */
+
+
+        /* Check CaMykS v1 site */
+        if (file_exists($path.'/etc/site.php.inc'))
+            return 'CaMykSv1Site';
+
+        /* Check CaMykS v2 engine */
+        if (file_exists($path.'/CaMykS.php.inc'))
+            return 'CaMykSv2Engine';
+
+        /* Check CaMykS v1 engine */
+        if (file_exists($path.'/Camyks.php.inc'))
+            return 'CaMykSv1Engine';
+
+        /* Check other website */
+        if (file_exists($path.'/index.php') or file_exists($path.'/index.htm'))
+            return 'NoCaMykSSite';
+
+        /* By default return Folder */
+        return 'Folder';
+    }
+
+    /**
+     * Display folder content.
+     * @param array $folder
+     * @param integer $level
+     * @return void
+     */
+    protected function display_folderContent($folder, $level) {
+        $this->currentFolder = $folder;
+        $this->currentLevel = $level;
+        $this->load_layout('Main/FolderContent');
     }
 }
 ?>

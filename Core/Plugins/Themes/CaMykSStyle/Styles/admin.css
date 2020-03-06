@@ -2,7 +2,7 @@
  * @brief CaMykSStyle theme admin CSS styles
  * @details Plugin / Theme Styles
  * @author JB Lebrun <jb.lebrun@ideogram-design.fr>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 Ideogram Design
@@ -46,15 +46,6 @@ sup, sub{font-size:9px; color:inherit;}
 .CaMykSButton {display:inline-block; background:#fbc02a; color:white; line-height:20px; padding:8px 32px; transition:background 0.3s linear; text-transform:uppercase; text-decoration:none; border-radius:4px;}
 .CaMykSButton:hover {background:#262334;}
 
-/* Login interface */
-.loginFrame {max-width:600px; margin:0 auto; text-align:center; padding:60px;}
-.loginFrame .title {font-size:24px; margin: 8px 0 16px; color:#262334;}
-.loginFrame .buttons {margin: 16px 0;}
-.loginFrame .content {font-size:15px;}
-.loginFrame .warning {margin: 32px 0; font-style:italic;}
-.loginFrame .input {margin: 32px 0;}
-.loginFrame .input input {font-size:16px; background:white; padding:12px; text-align:center; width:350px; border:solid 1px #DCDCDC;}
-
 /* Action bar */
 #ActionBar {background:#262334; position:fixed; left:0; top:100px; bottom:24px; z-index:5;}
 #ActionBar .button img {opacity:0.5; transition: opacity 0.3s linear;}
@@ -65,3 +56,18 @@ sup, sub{font-size:9px; color:inherit;}
 /* Admin menu */
 #AdminMenu {background:#fbc02a; position:fixed; left:-250px;; top:100px; bottom:24px; width:250px; z-index:4; transition:all 0.3s ease-in;}
 #AdminMenu.opened {left:60px;}
+
+/* Login interface */
+.loginFrame {max-width:600px; margin:0 auto; text-align:center; padding:60px;}
+.loginFrame .title {font-size:24px; margin: 8px 0 16px; color:#262334;}
+.loginFrame .buttons {margin: 16px 0;}
+.loginFrame .content {font-size:15px;}
+.loginFrame .warning {margin: 32px 0; font-style:italic;}
+.loginFrame .input {margin: 32px 0;}
+.loginFrame .input input {font-size:16px; background:white; padding:12px; text-align:center; width:350px; border:solid 1px #DCDCDC;}
+
+/* Main interface */
+.mainFrame {background:white; padding:50px 20px;}
+.mainFrame .listLine {border-bottom:solid 1px #DCDCDC; display:flex;}
+.mainFrame .listLine:hover {background:#efefef;}
+.mainFrame .listLine .cell {flex:2; padding:4px;}
