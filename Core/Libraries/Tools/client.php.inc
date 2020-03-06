@@ -3,7 +3,7 @@
  * @brief Client specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -49,7 +49,7 @@ function client_isHTTPS() {
  * @return string
  */
 function client_getCurrentURL() {
-    return 'http'.(client_isHTTPS() ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    return 'http'.(client_isHTTPS() ? 's' : '').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER["REQUEST_URI"], '?');
 }
 
 /**
