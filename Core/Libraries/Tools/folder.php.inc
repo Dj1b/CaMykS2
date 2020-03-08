@@ -3,7 +3,7 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Nov 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -542,6 +542,12 @@ function _folder_listElements($folder, $params, $depth) {
             }
         }
     }
+
+    /* Sort files and folders */
+    ksort($elements['Files']);
+    ksort($elements['Folders']);
+
+    /* Return folder content */
     return $elements;
 }
 ?>
