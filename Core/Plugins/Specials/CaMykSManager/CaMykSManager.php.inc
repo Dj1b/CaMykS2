@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -256,7 +256,7 @@ final class CaMykSManager extends Plugin {
         $CaMykS->currentTemplate->enable_actionBar();
 
         /* Load folder tree */
-        $this->folderTree = $this->load_folderTree($CaMykS->get_configValue('Manager_WebsitesPath'), 0);
+        $this->folderTree = $this->load_folderTree($CaMykS->get_configValue('Manager_WebsitesPath'), 1);
 
         /* Update layout */
         $this->update_selectedLayout('Main');
@@ -343,10 +343,14 @@ final class CaMykSManager extends Plugin {
      * @return array
      */
     private function load_folderTree($path, $level) {
+        global $CaMykS;
+
         $content = folder_listElements($path, array('MaxDepth'=>1));
 
         foreach ($content['Folders'] as &$folder) {
             $folder['Type'] = $this->detect_folderType($folder['Path']);
+            if ($folder['Type'] == 'Folder' and $level < $CaMykS->get_configValue('Manager_WebsitesSearchLevel'))
+                $folder = array_merge($folder, $this->load_folderTree($folder['Path'], $level+1));
         }
 
         return $content;
@@ -359,18 +363,19 @@ final class CaMykSManager extends Plugin {
      */
     private function detect_folderType($path) {
         /* Check CaMykS v2 site */
-
+        if (file_exists($path.'/Configuration/Website.php.inc'))
+            return 'CaMykSv2Site';
 
         /* Check CaMykS v1 site */
         if (file_exists($path.'/etc/site.php.inc'))
             return 'CaMykSv1Site';
 
         /* Check CaMykS v2 engine */
-        if (file_exists($path.'/CaMykS.php.inc'))
+        if (file_exists($path.'/CaMykS.php.inc') and file_exists($path.'/Core'))
             return 'CaMykSv2Engine';
 
         /* Check CaMykS v1 engine */
-        if (file_exists($path.'/Camyks.php.inc'))
+        if (file_exists($path.'/Camyks.php.inc') and file_exists($path.'/engine'))
             return 'CaMykSv1Engine';
 
         /* Check other website */

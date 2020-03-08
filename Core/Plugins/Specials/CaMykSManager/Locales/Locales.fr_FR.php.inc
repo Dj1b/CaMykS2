@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionnary.
  * @details Plugin / Dictionnary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -20,6 +20,15 @@ $locales = array(
     /* Buttons */
     'Error_Button_Retry' => 'R&eacute;essayer',
 
+    /* Folder types */
+    'File' => 'Fichier',
+    'Folder' => 'Dossier',
+    'CaMykSv1Engine' => 'CaMykS v1',
+    'CaMykSv2Engine' => 'CaMykS v2',
+    'CaMykSv1Site' => 'Site CaMykS v1',
+    'CaMykSv2Site' => 'Site CaMykS v2',
+    'NoCaMykSSite' => 'Autre site',
+
     /* No password defined error interface */
     'Error_NoPasswordDefined_Title' => 'Aucun mot de passe d&eacute;fini !',
     'Error_NoPasswordDefined_Content' => 'Par s&eacute;curit&eacute;, le gestionnaire de site n\'est pas accessible tant qu\'un mot de passe n\'a pas &eacute;t&eacute; d&eacute;fini. Ouvrez le fichier de configuration "Manager" situ&eacute; dans le dossier "Configuration" et ins&eacute;rez un mot de passe dans la variable "Manager_Password", puis rechargez la page.',
@@ -33,5 +42,9 @@ $locales = array(
     'Login_Content' => '',
     'Login_Access' => 'Acc&eacute;der',
     'Login_ConnectionNotScured' => 'Attention : Votre connexion n\'est pas s&eacute;curis&eacute;e. Vous prenez un risque en vous connectant, votre mot de passe sera transmis en clair vers le serveur.',
+
+
+    /* Site list interface */
+    'SiteList_ServerNameX' => 'Serveur %s',
 );
 ?>
