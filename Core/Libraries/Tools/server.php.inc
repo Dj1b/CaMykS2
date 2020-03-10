@@ -3,10 +3,10 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Dec 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -52,6 +52,20 @@ function server_checkModuleAvailability($module='') {
 
     /* For other software, trust installation */
     return true;
+}
+
+/**
+ * Return server document root.
+ * @return string
+ */
+function server_getDocumentRoot() {
+    /* Do the check for Apache httpd */
+    switch (server_getSoftwareName()) {
+        case 'Apache': return getEnv('DOCUMENT_ROOT');
+    }
+
+    /* No software found, return defaut value */
+    return '';
 }
 
 ?>
