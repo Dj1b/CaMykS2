@@ -4,7 +4,7 @@
  * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Nov 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -421,7 +421,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $condition
      * @return void
      */
-    public function add_JSScript($script='', $unique=false, $event=null) {
+    public function add_JSScript($script='', $unique=false, $event='Main') {
         global $CaMykS;
         $CaMykS->HTMLPage->add_JSScript($script, $unique, $event);
     }
