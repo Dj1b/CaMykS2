@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionnary.
  * @details Plugin / Dictionnary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -18,7 +18,12 @@ $locales = array(
     'Password' => 'Mot de passe',
 
     /* Buttons */
-    'Error_Button_Retry' => 'R&eacute;essayer',
+    'Action_Retry' => 'R&eacute;essayer',
+    'Action_ConfigureCaMykS2' => 'Configurer CaMykS 2',
+    'Action_CloseWindow' => 'Fermer la fen&ecirc;tre',
+    'Action_BackToSiteList' => 'Retour &agrave; la liste des sites',
+    'Action_Update' => 'Mettre &agrave; jour',
+    'Action_CheckIntegrity' => 'V&eacute;rifier l\'int&eacute;grit&eacute;',
 
     /* Folder types */
     'File' => 'Fichier',
@@ -37,14 +42,37 @@ $locales = array(
     'Error_CantSavePassword_Title' => 'Erreur lors de l\'enregistrement du mot de passe.',
     'Error_CantSavePassword_Content' => 'V&eacute;rifiez que votre serveur web dispose des autorisations pour &eacute;crire les fichiers de configuration, avant de r&eacute;essayer.',
 
+    /*  Error on visiting or openin admin website */
+    'Error_CantVisitNonCaMykSWebsites_Title' => 'Impossible de visiter le site',
+    'Error_CantVisitNonCaMykSWebsites_Content' => 'Pour visiter le site, le dossier indiqu&eacute; doit &ecirc;tre valide et correspondre &agrave; un site g&eacute;rer gr&acirc;ce &agrave; CaMykS (version 1 ou 2).',
+
     /* Login interface */
     'Login_Title' => 'Connexion',
     'Login_Content' => '',
     'Login_Access' => 'Acc&eacute;der',
     'Login_ConnectionNotScured' => 'Attention : Votre connexion n\'est pas s&eacute;curis&eacute;e. Vous prenez un risque en vous connectant, votre mot de passe sera transmis en clair vers le serveur.',
 
-
     /* Site list interface */
     'SiteList_ServerNameX' => 'Serveur %s',
+    'SiteList_NewCaMykSv2WebsiteInX' => 'Nouveau site CaMykS 2 dans %s',
+    'SiteList_NewFolderInX' => 'Nouveau dossier dans %s',
+    'SiteList_VisitWebsite' => 'Visiter le site internet',
+    'SiteList_AccessWebsiteAdmin' => 'Acc&eacute;der &agrave; l\'administration du site internet',
+
+    /* Configuration panel interface */
+    'Configuration_ManagerSettings' => 'R&eacute;glages du gestionnaire',
+    'Configuration_WebsitesSettings' => 'Configuration des r&eacute;glages par d&eacute;faut',
+    'Configuration_EngineSettings' => 'Moteur CaMykS',
+    'Configuration_VisitSettings' => 'Mode visiteur',
+    'Configuration_AdminSettings' => 'Mode administration',
+    'Configuration_DatabaseSettings' => 'Base de donn&eacute;es',
+    'Configuration_GDPRSettings' => 'RGPD',
+    'Configuration_PluginSettings' => 'Plugins par d&eacute;faut',
+    'Configuration_CurrentVersion' => 'Version courante',
+    'Configuration_LatestVersion' => 'Derni&egrave;re version',
+    'Configuration_Server' => 'Serveur',
+    'Configuration_WebServer' => 'Serveur internet',
+    'Configuration_PHP' => 'PHP',
+    'Configuration_AvailableDatabaseDrivers' => 'Connecteurs de base de donn&eacute;es disponibles',
 );
 ?>

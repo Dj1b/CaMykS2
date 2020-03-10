@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.6
+ * @version 1.0.7
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -97,7 +97,7 @@ final class CaMykSManager extends Plugin {
             return false;
 
         /* Load action to execute */
-        $this->action = http_getStringRequest('ManagerAction', 'Main');
+        $this->action = http_getStringRequest('ManagerAction', 'SiteList');
 
         /* Check manager has password defined */
         if ($this->check_hasPasswordDefined()) {
@@ -114,16 +114,28 @@ final class CaMykSManager extends Plugin {
                 break;
 
             case 'Login': /* Display login frame */
-                $this->initialise_login();
+                $this->initialise_Login();
                 break;
 
             case 'Logout': /* Close connection */
-                $this->initialise_logout();
+                $this->initialise_Logout();
                 break;
 
-            case 'Main': /* Main, default */
+            case 'OpenSiteVisit':
+                $this->initialise_OpenSiteVisit();
+                break;
+
+            case 'OpenSiteAdmin':
+                $this->initialise_OpenSiteAdmin();
+                break;
+
+            case 'DisplayConfigurationPanel':
+                $this->initialise_DisplayConfigurationPanel();
+                break;
+
+            case 'SiteList': /* Main, default */
             default:
-                $this->initialise_main();
+                $this->initialise_SiteList();
         }
     }
 
@@ -177,7 +189,7 @@ final class CaMykSManager extends Plugin {
             $this->action = 'DisplayMessage';
             $this->message['Title'] = $this->get_locale('Error_NoPasswordDefined_Title');
             $this->message['Content'] = $this->get_locale('Error_NoPasswordDefined_Content');
-            $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
+            $this->message['ButtonTitle'] = $this->get_locale('Action_Retry');
             $this->message['ButtonLink'] = $this->get_homeLink();
             return true;
         }
@@ -186,17 +198,20 @@ final class CaMykSManager extends Plugin {
         if (!preg_match('#^[0-9a-z]{8}\:[0-9a-z]{'.$this->passwordEncodingLength.'}$#', $password)) {
             /* Encode password with hash */
             $salt = substr(session_id(), 1, 8);
-            $newPassword = $salt.':'.password_encode($password, $this->passwordEncodingLength, $salt);
+            $data = array('Manager_Password'=> $salt.':'.password_encode($password, $this->passwordEncodingLength, $salt));
+
+            /* Check for document root setting */
+            if ($CaMykS->get_configValue('Manager_SiteListPath') == '')
+                $data['Manager_SiteListPath'] = server_getDocumentRoot().'/';
 
             /* Save configuration */
             $config = new ConfigurationFile();
-
-            if (!$config->save('Manager', 'Engine', array('Manager_Password'=>$newPassword))) {
+            if (!$config->save('Manager', 'Engine', $data)) {
                 /* Display error message page */
                 $this->action = 'DisplayMessage';
                 $this->message['Title'] = $this->get_locale('Error_CantSavePassword_Title');
                 $this->message['Content'] = $this->get_locale('Error_CantSavePassword_Content');
-                $this->message['ButtonTitle'] = $this->get_locale('Error_Button_Retry');
+                $this->message['ButtonTitle'] = $this->get_locale('Action_Retry');
                 $this->message['ButtonLink'] = $this->get_homeLink();
                 return true;
             }
@@ -246,39 +261,22 @@ final class CaMykSManager extends Plugin {
     /* Initialise methods */
 
     /**
-     * Initialise plugin in main mode.
+     * Initialise plugin in Login mode.
      * @return void
      */
-    private function initialise_main() {
-        global $CaMykS;
-
-        /* Enable action bar buttons */
-        $CaMykS->currentTemplate->enable_actionBar();
-
-        /* Load folder tree */
-        $this->folderTree = $this->load_folderTree($CaMykS->get_configValue('Manager_WebsitesPath'), 1);
-
-        /* Update layout */
-        $this->update_selectedLayout('Main');
-    }
-
-    /**
-     * Initialise plugin in login mode.
-     * @return void
-     */
-    private function initialise_login() {
+    private function initialise_Login() {
         /* Build login form */
-        $this->managerForm = new HTMLForm(array('name'=>'LoginForm'));
+        $this->managerForm = new HTMLForm(array('Name'=>'LoginForm'));
 
         /* Update layout */
         $this->update_selectedLayout('Login');
     }
 
     /**
-     * Initialise plugin in logout mode.
+     * Initialise plugin in Logout mode.
      * @return void
      */
-    private function initialise_logout() {
+    private function initialise_Logout() {
         global $CaMykS;
 
         /* Remove user from session */
@@ -289,6 +287,133 @@ final class CaMykSManager extends Plugin {
 
         /* Close $CaMykS */
         $CaMykS->close();
+    }
+
+    /**
+     * Initialise plugin in SiteList mode.
+     * @return void
+     */
+    private function initialise_SiteList() {
+        global $CaMykS;
+
+        /* Enable action bar buttons */
+        $CaMykS->currentTemplate->enable_actionBar();
+
+        /* Load folder tree */
+        $this->folderTree = array(
+            'Files'=>array(),
+            'Folders'=> array('/' => array_merge(
+                array('Path' => '/', 'Files' => array(), 'Folders' => Array (), 'Type' => 'Folder', 'Id' => 'Root', 'Class' => 'opened'),
+                $this->load_folderTree('', 1)
+            )),
+        );
+
+        /* Build external link HTML form */
+        $this->externalLinksForm = new HTMLForm(array('Name'=>'ExternalLinks', 'Target'=>'_blank', 'Action'=>$this->get_homeLink()));
+        $this->externalLinksForm->add_hidden('ManagerAction', '');
+        $this->externalLinksForm->add_hidden('Folder', '');
+
+        /* Load scripts */
+        $this->add_JSFile('SiteList.js', array('async'=>''));
+        $this->add_JSScript('SiteList.set_param("form", "'.$this->externalLinksForm->get_name().'");', false, 'Load');
+        $this->add_JSScript('SiteList.initialise();', true, 'Load');
+
+        /* Update layout */
+        $this->update_selectedLayout('SiteList');
+    }
+
+    /**
+     * Initialise plugin in OpenSiteVisit mode.
+     * @param boolean $adminMode
+     * @return void
+     */
+    private function initialise_OpenSiteVisit($adminMode=false) {
+        global $CaMykS;
+
+        /* Load folder */
+        $folder = http_getStringRequest('Folder', 'null');
+
+        /* Check folder */
+        if (file_exists($CaMykS->get_configValue('Manager_SiteListPath').$folder)) {
+
+            /* Load folder type */
+            $type = $this->detect_folderType($folder);
+
+            /* Check folder type */
+            switch ($type) {
+                case 'CaMykSv1Site':
+                    /* Load website configuration */
+                    include $CaMykS->get_configValue('Manager_SiteListPath').$folder.'/etc/site.php.inc';
+
+                    /* Check configuration */
+                    if (isset($conf) and isset($conf['url'])) {
+                        $url = preg_replace('#/$#', '', $conf['url']);
+
+                        /* Check admin mode */
+                        if ($adminMode)
+                            $url .= '/'.(isset($conf['admin_entry']) ? $conf['admin_entry'] : 'admin.php');
+
+                        /* Redirect to main page */
+                        $CaMykS->HTMLPage->set_redirect($url);
+
+                        /* Close $CaMykS */
+                        $CaMykS->close();
+
+                        /* End action */
+                        return;
+                    }
+                    break;
+                case 'CaMykSv2Site':
+                    /* Load website configuration */
+
+                    /* Check website configuration */
+
+                    /* End action */
+                    return;
+            }
+        }
+
+        /* Folder is not valid or not a CaMykS website, return error */
+        $this->action = 'DisplayMessage';
+        $this->message['Title'] = $this->get_locale('Error_CantVisitNonCaMykSWebsites_Title');
+        $this->message['Content'] = $this->get_locale('Error_CantVisitNonCaMykSWebsites_Content');
+        $this->message['ButtonTitle'] = $this->get_locale('Action_CloseWindow');
+        $this->message['ButtonLink'] = 'javascript:window.close();';
+
+        /* Update layout */
+        $this->update_selectedLayout('Message');
+
+        /* End action  */
+        return;
+    }
+
+    /**
+     * Initialise plugin in OpenSiteAdmin mode.
+     * @return void
+     */
+    private function initialise_OpenSiteAdmin() {
+        return $this->initialise_OpenSiteVisit(true);
+    }
+
+    /**
+     * Initialise plugin in DisplayConfigurationPanel mode.
+     * @return void
+     */
+    private function initialise_DisplayConfigurationPanel() {
+        global $CaMykS;
+
+        /* Enable action bar buttons */
+        $CaMykS->currentTemplate->enable_actionBar();
+
+
+        /* Load available database drivers */
+        $this->dbDrivers = DatabaseConnector::get_availableDriverList();
+
+        /* Update layout */
+        $this->update_selectedLayout('ConfigurationPanel');
+
+        /* End action  */
+        return;
     }
 
     /**
@@ -334,7 +459,7 @@ final class CaMykSManager extends Plugin {
         return $link;
     }
 
-    /* Folder tree methods */
+    /* Site list methods */
 
     /**
      * Load folder tree for given path and level.
@@ -345,12 +470,22 @@ final class CaMykSManager extends Plugin {
     private function load_folderTree($path, $level) {
         global $CaMykS;
 
-        $content = folder_listElements($path, array('MaxDepth'=>1));
+        $content = folder_listElements($CaMykS->get_configValue('Manager_SiteListPath').$path, array(
+            'MaxDepth'              => 1,
+            'ExcludeHiddenFolders'  => $CaMykS->get_configValue('Manager_SiteListHideHiddenFolders'),
+            'ExcludeHiddenFiles'    => $CaMykS->get_configValue('Manager_SiteListHideHiddenFiles'),
+        ));
 
-        foreach ($content['Folders'] as &$folder) {
+        foreach ($content['Files'] as $name => &$file)
+            $file['Path'] = $path.'/'.$name;
+
+        foreach ($content['Folders'] as $name => &$folder) {
+            $folder['Path'] = $path.'/'.$name;
             $folder['Type'] = $this->detect_folderType($folder['Path']);
-            if ($folder['Type'] == 'Folder' and $level < $CaMykS->get_configValue('Manager_WebsitesSearchLevel'))
-                $folder = array_merge($folder, $this->load_folderTree($folder['Path'], $level+1));
+            $folder['Id'] = preg_replace('#([^a-zA-Z0-9\-_]){1}#', '_', $folder['Path']);
+            $folder['Class'] = '';
+            if ($folder['Type'] == 'Folder' and $level < $CaMykS->get_configValue('Manager_SiteListSearchLevel'))
+                $folder = array_merge($folder, $this->load_folderTree($folder['Path'], $level+1), array('Path'=>$path.'/'.$name));
         }
 
         return $content;
@@ -362,6 +497,10 @@ final class CaMykSManager extends Plugin {
      * @return string
      */
     private function detect_folderType($path) {
+        global $CaMykS;
+
+        $path = $CaMykS->get_configValue('Manager_SiteListPath').$path;
+
         /* Check CaMykS v2 site */
         if (file_exists($path.'/Configuration/Website.php.inc'))
             return 'CaMykSv2Site';
@@ -379,7 +518,7 @@ final class CaMykSManager extends Plugin {
             return 'CaMykSv1Engine';
 
         /* Check other website */
-        if (file_exists($path.'/index.php') or file_exists($path.'/index.htm'))
+        if (file_exists($path.'/index.php') or file_exists($path.'/index.htm') or file_exists($path.'/index.html'))
             return 'NoCaMykSSite';
 
         /* By default return Folder */
@@ -395,7 +534,22 @@ final class CaMykSManager extends Plugin {
     protected function display_folderContent($folder, $level) {
         $this->currentFolder = $folder;
         $this->currentLevel = $level;
-        $this->load_layout('Main/FolderContent');
+        $this->load_layout('SiteList/FolderContent');
+    }
+
+    /**
+     * Return file description.
+     * @param string $filePath
+     * @return string
+     */
+    protected function get_fileDescription($filePath) {
+        global $CaMykS;
+
+        $file = new File($CaMykS->get_configValue('Manager_SiteListPath').$filePath);
+        if (!$file->is_accessible())
+            return '';
+
+        return $file->get_description(array('AddSize'=>true));
     }
 }
 ?>

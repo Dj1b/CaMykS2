@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, message layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -24,6 +24,7 @@
         <?php $this->theme->display_button(array(
             'Title' => $this->message['ButtonTitle'],
             'Link'  => $this->message['ButtonLink'],
+            'Size'  => 'Large',
         )); ?>
     </div>
 </div>
