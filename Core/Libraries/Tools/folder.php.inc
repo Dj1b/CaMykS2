@@ -3,7 +3,7 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Nov 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -218,8 +218,10 @@ function folder_listElements($folder, $params=array()) {
 
     /* Default params */
     $defaultParams = array(
-        'MaxDepth' => false,
-        'FoldersOnly' => false,
+        'MaxDepth'              => false,
+        'FoldersOnly'           => false,
+        'ExcludeHiddenFiles'    => false,
+        'ExcludeHiddenFolders'  => false,
     );
     $params = array_merge($defaultParams, $params);
 
@@ -528,6 +530,10 @@ function _folder_listElements($folder, $params, $depth) {
                 if (in_array($item, array('.', '..')))
                     continue;
 
+                /* Check for hidden files insertion */
+                if ($params['ExcludeHiddenFolders'] and substr($item, 0, 1) == '.')
+                    continue;
+
                 /* Check recursivity */
                 if ($params['MaxDepth'] !== false and $depth >= $params['MaxDepth'])
                     $elements['Folders'][$item] = array('Path'=>$folder.'/'.$item, 'Files'=>array(), 'Folders'=>array());
@@ -538,14 +544,20 @@ function _folder_listElements($folder, $params, $depth) {
                 /* Check for files loading */
                 if ($params['FoldersOnly'])
                     continue;
+
+                /* Check for hidden files insertion */
+                if ($params['ExcludeHiddenFiles'] and substr($item, 0, 1) == '.')
+                    continue;
+
+                /* Add file */
                 $elements['Files'][$item] = array('Path'=>$folder.'/'.$item);
             }
         }
     }
 
     /* Sort files and folders */
-    ksort($elements['Files']);
-    ksort($elements['Folders']);
+    uksort($elements['Files'], 'strcasecmp');
+    uksort($elements['Folders'], 'strcasecmp');
 
     /* Return folder content */
     return $elements;
