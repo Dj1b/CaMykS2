@@ -3,7 +3,7 @@
  * @brief CaMykS manager configuration file.
  * @details Engine / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Sep 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -18,7 +18,7 @@ $configuration = array(
     'Manager_DefaultLanguage' => '',
     'Manager_Theme' => 'CaMykSStyle',
     'Manager_IndexRedirectURL' => '',
-    'Manager_SiteListPath' => '../',
+    'Manager_SiteListPath' => '',
     'Manager_SiteListSearchLevel' => 1,
     'Manager_SiteListHideHiddenFiles' => false,
     'Manager_SiteListHideHiddenFolders' => false,
