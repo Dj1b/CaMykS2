@@ -3,7 +3,7 @@
  * @brief HTML Form.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -84,7 +84,7 @@ class HTMLForm extends CaMykSLibrary {
      */
     public function __construct($params=array()) {
         /* Default params */
-        $defaultParams = array('id'=>'', 'name'=>'form', 'action'=>'', 'method'=>'POST', 'onSubmit'=>'', 'target'=>'');
+        $defaultParams = array('Id'=>'', 'Name'=>'form', 'Action'=>'', 'Method'=>'POST', 'OnSubmit'=>'', 'Target'=>'');
         $params = array_merge($defaultParams, $params);
 
         /* Parent construct */
@@ -158,7 +158,7 @@ class HTMLForm extends CaMykSLibrary {
      * @return string
      */
     public function get_name() {
-        return $this->params['name'];
+        return $this->params['Name'];
     }
 
     /**
@@ -189,17 +189,17 @@ class HTMLForm extends CaMykSLibrary {
             return '';
 
         /* Build tag */
-        $tag = '<form ';
+        $tag = '<form';
         $tag .= ' id="'.$this->get_id().'"';
-        $tag .= ' name="'.$this->params['name'].'"';
-        $tag .= ' action="'.$this->params['action'].'"';
-        $tag .= ' method="'.$this->params['method'].'"';
+        $tag .= ' name="'.$this->params['Name'].'"';
+        $tag .= ' action="'.$this->params['Action'].'"';
+        $tag .= ' method="'.$this->params['Method'].'"';
         if ($this->uploadLimit > 0)
             $tag .= ' enctype="multipart/form-data"';
-        if ($this->params['target'] != '')
-            $tag .= ' target="'.$this->params['target'].'"';
-        if ($this->params['onSubmit'] != '')
-            $tag .= ' onSubmit="'.$this->params['onSubmit'].'"';
+        if ($this->params['Target'] != '')
+            $tag .= ' target="'.$this->params['Target'].'"';
+        if ($this->params['OnSubmit'] != '')
+            $tag .= ' onsubmit="'.$this->params['OnSubmit'].'"';
         $tag .= '>';
 
         /* Display tag */
@@ -311,7 +311,7 @@ class HTMLForm extends CaMykSLibrary {
      * @return string
      */
     protected function get_id() {
-        return ($this->params['id'] != '' ? $this->params['id'] : $this->params['name']);
+        return ($this->params['Id'] != '' ? $this->params['Id'] : $this->params['Name']);
     }
 
     /**
