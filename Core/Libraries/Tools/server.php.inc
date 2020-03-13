@@ -3,7 +3,7 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -11,8 +11,10 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/* Server software related methods */
+
 /**
- * Return server software name.
+ * Return server software description.
  * @return array
  */
 function server_getSoftware() {
@@ -68,4 +70,29 @@ function server_getDocumentRoot() {
     return '';
 }
 
+/* Server operating system related methods */
+
+/**
+ * Return server operating system description.
+ * @return array
+ */
+function server_getOperatingSystem() {
+    return server_getOperatingSystemName().' '.server_getOperatingSystemVersion();
+}
+
+/**
+ * Return server operating system name.
+ * @return string
+ */
+function server_getOperatingSystemName() {
+    return php_uname('s');
+}
+
+/**
+ * Return server operating system version.
+ * @return string
+ */
+function server_getOperatingSystemVersion() {
+    return php_uname('r').' ('.php_uname('m').')';
+}
 ?>
