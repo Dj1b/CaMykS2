@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, folder content sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -62,7 +62,7 @@ $currentLevel = $this->currentLevel;
         <div class="cell description">
             <?= $this->get_locale($folderInfo['Type']); ?>
         </div>
-        <?php if ($folderInfo['Type'] == 'Folder' and $currentLevel <= $CaMykS->get_configValue('Manager_SiteListSearchLevel')) : ?>
+        <?php if ($folderInfo['Type'] == 'Folder' and $currentLevel < $CaMykS->get_configValue('Manager_SiteListSearchLevel')) : ?>
             <div class="cell action">
                 <a href="#" class="img">
                     <img src="<?= $this->get_fileURL('Images/SiteList/AddSite.png'); ?>" alt="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" />
@@ -105,7 +105,9 @@ $currentLevel = $this->currentLevel;
                 </a>
             </div>
             <div class="cell action">
-                &nbsp;
+                <a href="javascript:SiteList.toggle_websiteInfoPanelDisplay();" class="img">
+                    <img src="<?= $this->get_fileURL('Images/SiteList/Info.png'); ?>" alt="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" title="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" />
+                </a>
             </div>
         <?php else : ?>
             <div class="cell action">

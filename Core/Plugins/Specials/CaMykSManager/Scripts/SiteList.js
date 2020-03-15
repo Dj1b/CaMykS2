@@ -2,7 +2,7 @@
  * @brief CaMykSManager plugin, site list mode, client side scripts.
  * @details Plugin / Input Javascripts
  * @author CaMykS Team
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS
@@ -56,7 +56,7 @@ var SiteList = {
     },
 
     /**
-     * Toggle admin menu display.
+     * Toggle folder content display.
      * @return void
      */
     toggle_folderContentDisplay: function(folder) {
@@ -82,5 +82,15 @@ var SiteList = {
         this.get_param('form').ManagerAction.value = action;
         this.get_param('form').Folder.value = folder;
         this.get_param('form').submit();
+    },
+
+    /**
+     * Toggle website information display.
+     * @return void
+     */
+    toggle_websiteInfoPanelDisplay: function() {
+        if (!this.loaded)
+            return;
+        document.getElementById('WebsiteInfoPanel').classList.toggle('opened');
     }
 }

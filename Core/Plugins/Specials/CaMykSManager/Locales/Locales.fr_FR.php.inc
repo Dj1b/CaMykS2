@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionnary.
  * @details Plugin / Dictionnary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -58,6 +58,29 @@ $locales = array(
     'SiteList_NewFolderInX' => 'Nouveau dossier dans %s',
     'SiteList_VisitWebsite' => 'Visiter le site internet',
     'SiteList_AccessWebsiteAdmin' => 'Acc&eacute;der &agrave; l\'administration du site internet',
+    'SiteList_ViewWebsiteInfo' => 'Afficher les informations du site internet',
+
+    /* Site list information panel */
+    'SiteList_InfoPanel_GeneralInfo' => 'Informations g&eacute;n&eacute;rales',
+    'SiteList_InfoPanel_Title' => 'Titre',
+    'SiteList_InfoPanel_Version' => 'Version',
+    'SiteList_InfoPanel_URL' => 'URL',
+    'SiteList_InfoPanel_Engine' => 'Moteur',
+    'SiteList_InfoPanel_InstallationMode' => 'Mode d\'installation',
+    'SiteList_InfoPanel_Status' => '&Eacute;tat',
+    'SiteList_InfoPanel_Author' => 'Auteur',
+    'SiteList_InfoPanel_VisitMode' => 'Visite',
+    'SiteList_InfoPanel_SSL' => 'SSL',
+    'SiteList_InfoPanel_Languages' => 'Langues',
+    'SiteList_InfoPanel_AdminMode' => 'Administration',
+    'SiteList_InfoPanel_EntryPoint' => 'Point d\'entr&eacute;e',
+    'SiteList_InfoPanel_EditionLanguages' => 'Langues en &eacute;dition',
+    'SiteList_InfoPanel_Database' => 'Base de donn&eacute;es',
+    'SiteList_InfoPanel_DatabaseDriver' => 'Driver',
+    'SiteList_InfoPanel_DatabaseName' => 'Nom',
+    'SiteList_InfoPanel_DatabaseServer' => 'Serveur',
+    'SiteList_InfoPanel_DatabaseUser' => 'Utilisateur',
+    'SiteList_InfoPanel_DatabasePrefix' => 'Pr&eacute;fixe des tables',
 
     /* Configuration panel interface */
     'Configuration_ManagerSettings' => 'R&eacute;glages du gestionnaire',
@@ -67,7 +90,7 @@ $locales = array(
     'Configuration_AdminSettings' => 'Mode administration',
     'Configuration_DatabaseSettings' => 'Base de donn&eacute;es',
     'Configuration_GDPRSettings' => 'RGPD',
-    'Configuration_PluginSettings' => 'Plugins par d&eacute;faut',
+    'Configuration_PluginsSettings' => 'Plugins par d&eacute;faut',
     'Configuration_CurrentVersion' => 'Version courante',
     'Configuration_LatestVersion' => 'Derni&egrave;re version',
     'Configuration_Server' => 'Serveur',

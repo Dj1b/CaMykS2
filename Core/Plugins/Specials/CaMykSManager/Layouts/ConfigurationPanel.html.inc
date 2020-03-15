@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, configuration panel layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -39,9 +39,10 @@ global $CaMykS;
                 <?= $this->get_locale('TemplateHeaderTitle'); ?>
             </h3>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Manager.png'); ?>" alt="<?= $this->get_locale('Configuration_ManagerSettings'); ?>" />
                 <?= $this->get_locale('Configuration_ManagerSettings'); ?>
-            </div>
+            </a>
 
             <div class="">
                 &nbsp;
@@ -51,29 +52,35 @@ global $CaMykS;
                 <?= $this->get_locale('Configuration_WebsitesSettings'); ?>
             </h3>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Engine.png'); ?>" alt="<?= $this->get_locale('Configuration_EngineSettings'); ?>" />
                 <?= $this->get_locale('Configuration_EngineSettings'); ?>
-            </div>
+            </a>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Visit.png'); ?>" alt="<?= $this->get_locale('Configuration_VisitSettings'); ?>" />
                 <?= $this->get_locale('Configuration_VisitSettings'); ?>
-            </div>
+            </a>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Admin.png'); ?>" alt="<?= $this->get_locale('Configuration_AdminSettings'); ?>" />
                 <?= $this->get_locale('Configuration_AdminSettings'); ?>
-            </div>
+            </a>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Database.png'); ?>" alt="<?= $this->get_locale('Configuration_DatabaseSettings'); ?>" />
                 <?= $this->get_locale('Configuration_DatabaseSettings'); ?>
-            </div>
+            </a>
 
-            <div class="configButton">
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/GDPR.png'); ?>" alt="<?= $this->get_locale('Configuration_GDPRSettings'); ?>" />
                 <?= $this->get_locale('Configuration_GDPRSettings'); ?>
-            </div>
+            </a>
 
-            <div class="configButton">
-                <?= $this->get_locale('Configuration_PluginSettings'); ?>
-            </div>
+            <a href="#" class="configButton">
+                <img src="<?= $this->get_fileURL('Images/ConfigurationPanel/Plugins.png'); ?>" alt="<?= $this->get_locale('Configuration_PluginsSettings'); ?>" />
+                <?= $this->get_locale('Configuration_PluginsSettings'); ?>
+            </a>
 
         </div>
         <div class="column half">
