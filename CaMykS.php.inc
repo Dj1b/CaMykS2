@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre13.1
+ * @version 2.0pre14
  * @date Creation: Feb 2017
  * @date Modification: Mar 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -1204,7 +1204,7 @@ final class CaMykS {
         /* Check file in CaMykS */
         $file = 'Core/'.$file;
         if ($this->check_engineFileExists($file))
-            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$asset;
+            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$file;
 
         /* Default for files that don't exists */
         return '';
@@ -1234,6 +1234,38 @@ final class CaMykS {
 
         /* Default for files that don't exists */
         return '';
+    }
+
+    /* Scripts assets related methods */
+
+    /**
+     * Load engine script.
+     * @param string $file
+     * @param string $folder
+     * @param array $params
+     * @param string $URLMode
+     */
+    public function load_engineJSScript($file, $folder, $params=array(), $URLMode=null) {
+        /* Default params */
+        $defaultParams = array('async'=>'');
+        $params = array_merge($defaultParams, $params);
+
+        /* Attach script to HTML Page */
+        if (isset($this->HTMLPage))
+            $this->HTMLPage->add_JSFile($this->get_assetFileURL('Scripts/'.$folder.'/'.$file, $URLMode), $params);
+    }
+
+    /**
+     * Load CaMykS client-side object.
+     * @return void
+     */
+    public function load_CaMykSJSScript() {
+        /* Load object script */
+        $this->load_engineJSScript('CaMykS.js', 'Objects');
+
+        /* Add object initialisation */
+        if (isset($this->HTMLPage))
+            $this->HTMLPage->add_JSScript('CaMykS.initialise();', true, 'load');
     }
 
     /* Language related methods */
