@@ -3,7 +3,7 @@
  * @brief HTML Form.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -146,7 +146,7 @@ class HTMLForm extends CaMykSLibrary {
         $this->useJS = true;
 
         /* Load master script file */
-        $CaMykS->HTMLPage->add_styleFile($CaMykS->get_assetFileURL('Scripts/Objects/HTMLForm.js'));
+        $CaMykS->load_engineJSFile('HTMLForm.js', 'Objects', array('async'=>''));
 
         /* Declare form : to do */
     }
@@ -200,7 +200,7 @@ class HTMLForm extends CaMykSLibrary {
             $tag .= ' target="'.$this->params['Target'].'"';
         if ($this->params['OnSubmit'] != '')
             $tag .= ' onsubmit="'.$this->params['OnSubmit'].'"';
-        $tag .= '>';
+        $tag .= ">\n";
 
         /* Display tag */
         echo $tag;
