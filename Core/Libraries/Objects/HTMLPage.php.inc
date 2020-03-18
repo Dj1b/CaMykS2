@@ -3,7 +3,7 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @date Creation: Feb 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -120,11 +120,11 @@ final class HTMLPage {
      */
     private $JSScripts = array(
         /**< Scripts displayed before JS files loading. */
-        'Pre'   => array(),
+        'pre'   => array(),
         /**< Main scripts. */
-        'Main'  => array(),
+        'main'  => array(),
         /**< Scripts displayed in on page load event. */
-        'Load'  => array(),
+        'load'  => array(),
         /**< Other page events can be inserted. */
     );
 
@@ -306,7 +306,7 @@ final class HTMLPage {
      * @param string $event
      * @return void
      */
-    public function add_JSScript($script='', $unique=false, $event='Main') {
+    public function add_JSScript($script='', $unique=false, $event='main') {
         /* Trim script */
         $script = trim($script);
 
@@ -315,6 +315,7 @@ final class HTMLPage {
             return;
 
         /* Check event exists */
+        $event = strtolower($event);
         if (!isset($this->JSScripts[$event]))
             $this->JSScripts[$event] = array();
 
@@ -674,21 +675,21 @@ final class HTMLPage {
      */
     private function write_JSPreScripts() {
         /* Check pre scripts */
-        if (count($this->JSScripts['Pre']) == 0)
+        if (count($this->JSScripts['pre']) == 0)
             return;
 
         /* Write script opening tag */
         echo "<script>\n";
 
         /* Add scripts */
-        foreach($this->JSScripts['Pre'] as $script)
+        foreach($this->JSScripts['pre'] as $script)
             echo $script."\n";
 
         /* Write script closing tag */
         echo "</script>\n";
 
         /* Unload scripts */
-        unset($this->JSScripts['Pre']);
+        unset($this->JSScripts['pre']);
     }
 
     /**
@@ -702,7 +703,7 @@ final class HTMLPage {
                 echo ' '.$key;
                 if ($value != '')
                     echo '="'.$value.'"';
-            echo " ></script>\n";
+            echo "></script>\n";
         }
     }
 
@@ -725,15 +726,15 @@ final class HTMLPage {
                 continue;
 
             /* Open event */
-            if ($event != 'Main')
-                echo "window.on".strtolower($event)." = function() {\n";
+            if ($event != 'main')
+                echo "window.on".$event." = function() {\n";
 
             /* Add scripts */
             foreach ($scripts as $script)
                 echo $script."\n";
 
             /* Close event */
-            if ($event != 'Main')
+            if ($event != 'main')
                 echo "}\n";
         }
 
