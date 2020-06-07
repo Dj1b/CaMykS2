@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.7
+ * @version 1.0.7.1
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -313,7 +313,7 @@ final class CaMykSManager extends Plugin {
         $this->externalLinksForm->add_hidden('ManagerAction', '');
         $this->externalLinksForm->add_hidden('Folder', '');
 
-        /* Load scripts */
+        /* Load plugin scripts */
         $this->add_JSFile('SiteList.js', array('async'=>''));
         $this->add_JSScript('SiteList.set_param("form", "'.$this->externalLinksForm->get_name().'");', false, 'Load');
         $this->add_JSScript('SiteList.initialise();', true, 'Load');

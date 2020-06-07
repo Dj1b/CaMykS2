@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionnary.
  * @details Plugin / Dictionnary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -95,6 +95,7 @@ $locales = array(
     'Configuration_LatestVersion' => 'Derni&egrave;re version',
     'Configuration_Server' => 'Serveur',
     'Configuration_WebServer' => 'Serveur internet',
+    'Configuration_Modules' => 'Modules',
     'Configuration_PHP' => 'PHP',
     'Configuration_AvailableDatabaseDrivers' => 'Connecteurs de base de donn&eacute;es disponibles',
 );

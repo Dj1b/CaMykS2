@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, configuration panel layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Mar 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -120,6 +120,27 @@ global $CaMykS;
                 <li>
                     <?= $server['Name'].' '.$server['Version']; ?>
                 </li>
+
+                <?php $modules = server_getSoftwareModules(); ?>
+                <?php if (count($modules) > 0) : ?>
+                <li>
+                    <?= $this->get_locale('Configuration_Modules'); ?> <br />
+                    <ul>
+                        <?php foreach ($modules as $module) : ?>
+                            <li>
+                                <?= $module; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+                <?php endif; ?>
+            </ul>
+
+            <div class="">
+                &nbsp;
+            </div>
+
+            <ul>
                 <li>
                     <?= $this->get_locale('Configuration_PHP'); ?> <?= phpversion(); ?>
                 </li>
