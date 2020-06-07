@@ -3,7 +3,7 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.2
  * @date Creation: Feb 2020
  * @date Modification: Mar 2020
  * @copyright 2020 CaMykS Team
@@ -57,7 +57,10 @@ final class AdminPage extends Template {
         /* Set up title on HTML page */
         $CaMykS->HTMLPage->set_pageInformation($this->get_headerTitle());
 
-        /* Add scripts */
+        /* Load master scripts */
+        $CaMykS->load_CaMykSJSScript();
+
+        /* Load plugin scripts */
         $this->add_JSFile('AdminPage.js', array('async'=>''));
         $this->add_JSScript('AdminPage.initialise();', true, 'Load');
     }
