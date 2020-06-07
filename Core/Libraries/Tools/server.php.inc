@@ -3,7 +3,7 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Dec 2019
  * @date Modification: Mar 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -39,6 +39,20 @@ function server_getSoftwareName() {
 function server_getSoftwareVersion() {
     $data = server_getSoftware();
     return $data['Version'];
+}
+
+/**
+ * Return server software module list.
+ * @return array
+ */
+function server_getSoftwareModules() {
+    /* Do the check for Apache httpd */
+    if (server_getSoftwareName() == 'Apache') {
+        return apache_get_modules();
+    }
+
+    /* For other software, return empty list */
+    return array();
 }
 
 /**
