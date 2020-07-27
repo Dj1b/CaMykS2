@@ -3,9 +3,9 @@
  * @brief HTML Form.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.2.1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
+ * @date Modification: Jul 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -317,23 +317,25 @@ class HTMLForm extends CaMykSLibrary {
     /**
      * Check max input vars limit.
      * @param integer $items
+     * @param string $name
      * @return boolean result
      */
-    protected function check_inputsLimit($items=1, $name=false) {
+    protected function check_inputsLimit($items=1, $name=null) {
         global $camyks;
 
         /* Check if limit has already been reached */
         if ($this->inputsLimitReached)
             return false;
 
-
         /* Update count value */
         $this->inputsCount += $items;
 
         /* Check count value */
         if ($this->inputsLimit !== false and $this->inputsCount >= $this->inputsLimit) {
-            /* Send error */
+            /* Send error with input name */
 
+
+            /* Return failure */
             return false;
         }
 

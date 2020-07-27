@@ -3,9 +3,9 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.0.1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
+ * @date Modification: Jul 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -150,7 +150,7 @@ class HTMLFormInput extends CaMykSLibrary {
 
     /**
      * Display generic input.
-     * @eturn void
+     * @return void
      */
     protected function display_generic() {
         /* Build html */
