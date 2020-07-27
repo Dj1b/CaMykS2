@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre14
+ * @version 2.0pre15
  * @date Creation: Feb 2017
- * @date Modification: Mar 2020
+ * @date Modification: Jul 2020
  * @copyright 2017 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -1060,8 +1060,10 @@ final class CaMykS {
         );
 
         /* Read/write permission on CaMykS configuration in manager mode */
-        if ($this->mode === CAMYKS_MODE_MANAGER)
+        if ($this->mode === CAMYKS_MODE_MANAGER) {
             $this->accessibilityFolders[$this->get_engineFileFullPath('Core/Configuration')] = array('Read', 'Write');
+            $this->accessibilityFolders[$this->get_configValue('Manager_WebsitesPath')] = array('Read', 'Write');
+        }
     }
 
     /* URL related methods */
