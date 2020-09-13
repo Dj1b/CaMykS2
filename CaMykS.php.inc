@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre15
+ * @version 2.0pre16
  * @date Creation: Feb 2017
- * @date Modification: Jul 2020
+ * @date Modification: Sep 2020
  * @copyright 2017 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -488,6 +488,7 @@ final class CaMykS {
         /* Load theme */
         $this->currentTheme = &$this->get_theme($this->get_configValue('Manager_Theme'), true);
         $this->currentTheme->initialise();
+        $this->currentTheme->load_adminStyleFiles();
 
         /* Initialise manager */
         $this->manager->initialise();
