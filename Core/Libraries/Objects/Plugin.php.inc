@@ -4,7 +4,7 @@
  * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5.1
+ * @version 1.0.6
  * @date Creation: Nov 2019
  * @date Modification: Jul 2020
  * @copyright 2019 - 2020 CaMykS Team
@@ -76,8 +76,16 @@ abstract class Plugin extends CaMykSLibrary {
      * @var array $styleFiles.
      * @brief List of styles to be attached.
      * @note Style files are indicated like "file.js" => "media and condition"
+     * @note Optionaly, version can be added to file name like "file.js?v=1.0.0"
      */
     protected $styleFiles = array();
+
+    /**
+     * @var array $adminStyleFiles.
+     * @brief List of styles to be attached in admin mode.
+     * @note Same as visitStyleFiles.
+     */
+    protected $adminStyleFiles = array();
 
     /**
      * Class constructor.
@@ -114,10 +122,6 @@ abstract class Plugin extends CaMykSLibrary {
     public function initialise($params=array()) {
         /* Merge params */
         $this->update_params($params);
-
-        /* Attach style files to HTML page */
-        foreach ($this->styleFiles as $file => $condition)
-            $this->add_styleFile($file, $condition);
 
         /* Return success */
         return true;
@@ -306,6 +310,10 @@ abstract class Plugin extends CaMykSLibrary {
         /* Complete file path */
         $filePath = $this->pluginFolder.$filePath;
 
+        /* Remove QueryString for versioned files */
+        $f = explode('?', $filePath);
+        $filePath = $f[0];
+
         /* Check in website folder */
         if ($CaMykS->check_websiteFileExists($filePath))
             return $CaMykS->get_websiteFileFullPath($filePath);
@@ -342,9 +350,18 @@ abstract class Plugin extends CaMykSLibrary {
         /* Complete file path */
         $filePath = $this->pluginFolder.$filePath;
 
+        /* Keep back QueryString for versioned files */
+        $f = explode('?', $filePath);
+        if (count($f) == 2) {
+            $filePath = $f[0];
+            $queryString = '?'.$f[1];
+        } else {
+            $queryString = '';
+        }
+
         /* Check in website folder */
         if ($CaMykS->check_websiteFileExists($filePath))
-            return $CaMykS->get_websiteFileURL($filePath, $URLMode);
+            return $CaMykS->get_websiteFileURL($filePath.$queryString, $URLMode);
 
         /* Check plugin is located in website folder */
         if ($this->pluginLocation == 'Website')
@@ -352,7 +369,7 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Check in shared folder */
         if ($CaMykS->check_engineFileExists($filePath))
-            return $CaMykS->get_sharedPluginFileURL($filePath, $URLMode);
+            return $CaMykS->get_sharedPluginFileURL($filePath.$queryString, $URLMode);
 
         /* Check plugin is located in shared folder */
         if ($this->pluginLocation == 'Shared')
@@ -360,7 +377,7 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Check in system folder */
         if ($CaMykS->check_engineFileExists('Core/'.$filePath))
-            return $CaMykS->get_corePluginFileURL($filePath, $URLMode);
+            return $CaMykS->get_corePluginFileURL($filePath.$queryString, $URLMode);
 
         /* File not found, return default value */
         return '';
@@ -428,6 +445,26 @@ abstract class Plugin extends CaMykSLibrary {
     }
 
     /* Styles related methods */
+
+    /**
+     * Load generic styles files.
+     * @return void
+     */
+    public function load_styleFiles() {
+        /* Attach style files to HTML page */
+        foreach ($this->styleFiles as $file => $condition)
+            $this->add_styleFile($file, $condition);
+    }
+
+    /**
+     * Load admin specific styles files.
+     * @return void
+     */
+    public function load_adminStyleFiles() {
+        /* Attach admin style files to HTML page */
+        foreach ($this->adminStyleFiles as $file => $condition)
+            $this->add_styleFile($file, $condition);
+    }
 
     /**
      * Attach a style file to HTML page.
