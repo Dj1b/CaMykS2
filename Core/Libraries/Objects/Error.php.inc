@@ -3,10 +3,10 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0.3
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Dec 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -39,13 +39,13 @@ final class Error {
      * @var string $file
      * @brief File where error was initiated.
      */
-    private $file;
+    private $file = '';
 
     /**
      * @var integer $line
      * @brief Line where error was initiated.
      */
-    private $line;
+    private $line = 0;
 
     /**
      * @var string $message
@@ -60,17 +60,27 @@ final class Error {
     private $details;
 
     /**
+     * var integer $count
+     * @brief Count error occurences.
+     */
+    private $count = 1;
+
+    /**
+     * var array $backtrace
+     * @brief Stored generated backtrace.
+     */
+    private $backtrace;
+
+    /**
      * Object constructor.
      * @param string $origin
      * @param string $type
      * @param integer $code
-     * @param string $file
-     * @param integer $line
      * @param string $message
      * @param string $details
      * @return void
      */
-    public function __construct($origin, $type, $code=0, $file='', $line=0, $message='', $details='') {
+    public function __construct($origin, $type, $code=0, $file='', $line=0, $message='', $details='', $backtrace=array()) {
         $this->origin = $origin;
         $this->type = $type;
         $this->code = $code;
@@ -78,7 +88,10 @@ final class Error {
         $this->line = $line;
         $this->message = trim($message);
         $this->details = trim($details);
+        $this->backtrace = $backtrace;
     }
+
+    /* Data related methods */
 
     /**
      * Return error header value.
@@ -93,6 +106,8 @@ final class Error {
             if ($this->code > 0)
                 $s .= ' ['.$this->code.']';
         }
+        if ($this->count > 1)
+            $s .= ' x'.$this->count;
         return $s;
     }
 
@@ -144,15 +159,108 @@ final class Error {
     }
 
     /**
+     * Check error has a backtrace.
+     * @return boolean result
+     */
+    public function has_backtrace() {
+        return (count($this->backtrace) > 0);
+    }
+
+    /**
+     * Return error trace value.
+     * @param boolean $HTMLFormat
+     * @return string
+     */
+    public function get_backtrace($HTMLFormat=false) {
+
+        $lines = array();
+
+        $cnt = 0;
+        foreach($this->backtrace as $trace) {
+            $m = ++$cnt.'/ ';
+            if (isset($trace['file'])) {
+                $m .= $trace['file'].' ';
+                if (isset($trace['line']))
+                    $m .= '(Line '.$trace['line'].') ';
+                $m .= '- ';
+            }
+
+            if (isset($trace['class']))
+                $m .= $trace['class'].' '.$trace['type'];
+
+            if (isset($trace['function']))
+                $m .= $trace['function'];
+
+            if (isset($trace['args']))
+                $m .= '('.implode(', ', $trace['args']).')';
+
+            $lines[] = $m;
+        }
+
+        if ($HTMLFormat)
+            return '<br />&nbsp;&nbsp;&nbsp;&nbsp;'.implode('<br />&nbsp;&nbsp;&nbsp;&nbsp;', $lines);
+        return "\n\t".implode("\n\t", $lines);
+    }
+
+    /**
+     * Update error count.
+     * return void
+     */
+    public function update_count() {
+        $this->count ++;
+    }
+
+    /* Check methods */
+
+    /**
+     * Check error is similar.
+     * @param string $origin
+     * @param string $type
+     * @param integer $code
+     * @param string $file
+     * @param integer $line
+     * @param string $message
+     * @return boolean success
+     */
+    public function is_similar($origin, $type, $code=0, $file='', $line=0, $message='') {
+        if ($this->origin != $origin)
+            return false;
+
+        if ($this->type != $type)
+            return false;
+
+        if ($this->code != $code)
+            return false;
+
+        if ($this->file != $file)
+            return false;
+
+        if ($this->line != $line)
+            return false;
+
+        if ($this->message != trim($message))
+            return false;
+
+        /* All test failed, return error is similar */
+        return true;
+    }
+
+    /* Export methods */
+
+    /**
      * Export error as HTML.
      * @return string
      */
     public function export_asHTML() {
-        $s = '<strong style="color:inherit;">'.$this->get_header().'</strong>';
-        if ($this->has_location())
+        $s = '<strong style="color:inherit;">'.$this->get_header();
+        if (!$this->has_backtrace() and $this->has_location())
             $s .= ' - <em style="color:inherit;">'.$this->get_location().'</em>';
         if ($this->has_message())
             $s .= ' - '.$this->get_message(true);
+        $s .= '</strong>';
+        if ($this->has_backtrace())
+            $s .= $this->get_backtrace(true);
+
         return $s;
     }
 

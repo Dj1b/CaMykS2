@@ -3,10 +3,10 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0.6
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Dec 2020
+ * @copyright 2019 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,7 +21,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @var array $params
      * @brief ErrorHandler parameters.
      */
-    protected $params = array('output'    => 'auto');
+    protected $params = array('output'  => 'auto');
 
     /**
      * @var array $errors
@@ -66,10 +66,7 @@ final class ErrorHandler extends CaMykSLibrary {
         $type = $this->get_typeFromCode($code);
 
         /* Create error */
-        $error = new Error('PHP', $type, $code, $file, $line, $message);
-
-        /* Save new error */
-        $this->errors[] = $error;
+        $this->add_error('PHP', $type, $code, $file, $line, $message);
 
         /* Check for fatal errors */
         if (in_array($code, array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_STRICT)))
@@ -82,18 +79,8 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      */
     public function handle_PHPException($exception) {
-        /* Create error */
-        $error = new Error(
-            'PHP',
-            'Exception',
-            $exception->getCode(),
-            $exception->getFile(),
-            $exception->getLine(),
-            $exception->getMessage()
-        );
-
-        /* Save new error */
-        $this->errors[] = $error;
+        /* Save error */
+        $this->add_error('PHP', 'Exception', $exception->getCode(), $exception->getFile(), $exception->getLine(), $exception->getMessage(), $exception->getTrace());
     }
 
     /**
@@ -108,11 +95,8 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      */
     public function handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal) {
-        /* Create error */
-        $error = new Error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
-
-        /* Save new error */
-        $this->errors[] = $error;
+        /* Save error */
+        $this->add_error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
 
         /* Check for fatal errors */
         if ($isFatal)
@@ -125,15 +109,50 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param string $message
      * @param string $details
      * @param string $file
-     * @param integer $line
+     * @param int $line
      * @return void
      */
     public function handle_CaMykSDatabaseError($code, $message, $details, $file, $line) {
-        /* Save new error */
-        $this->errors[] = new Error('CaMykS', 'Database Error', $code, $file, $line, $message, $details);
+        /* Save error */
+        $this->add_error('CaMykS', 'Database Error', $code, $file, $line, $message, $details);
     }
 
-    /* Exportation method */
+    /* Management methods */
+
+    /**
+     * Add error to error list.
+     * @param string $origin
+     * @param string $type
+     * @param integer $code
+     * @param string $file
+     * @param int $line
+     * @param string $message
+     * @param string $details
+     * @param array $backtrace
+     * @return void
+     */
+    public function add_error($origin, $type, $code, $file, $line, $message, $details='', $backtrace=null) {
+        /* Check error exists */
+        foreach ($this->errors as $error) {
+            if ($error->is_similar($origin, $type, $code, $file, $line, $message)) {
+                $error->update_count();
+                return;
+            }
+        }
+
+        /* Store backtrace */
+        if ($backtrace == null)
+            $backtrace = debug_backtrace();
+
+        /* Remove this trace step */
+        array_shift($backtrace);
+
+        /* Create error in error list */
+        $this->errors[] = new Error($origin, $type, $code, $file, $line, $message, $details, $backtrace);
+    }
+
+
+    /* Exportation methods */
 
     /**
      * Export results.
@@ -285,8 +304,8 @@ final class ErrorHandler extends CaMykSLibrary {
             $message = implode(' - ', $message);
 
             $messages[] = array(
-                'action' => $error->get_header(),
-                'message' => $message,
+                'action'    => $error->get_header(),
+                'message'   => $message,
             );
         }
 
@@ -306,7 +325,7 @@ final class ErrorHandler extends CaMykSLibrary {
         /* @to do */
 
         /* Display results as HTML */
-        echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; margin:0 auto; background:#57488e; color:white; border:solid 1px white; padding:12px; font-family:arial; font-size:12px; line-height:16px; ">'."\n";
+        echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; max-height:100%; overflow:auto; margin:0 auto; background:#57488e; color:white; border:solid 1px white; padding:12px; font-family:arial; font-size:12px; line-height:16px; z-index:9999999;">'."\n";
         foreach ($this->errors as $error) {
             echo $error->export_asHTML()."<br />\n";
         }
