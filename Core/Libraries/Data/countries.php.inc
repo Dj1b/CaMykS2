@@ -3,10 +3,10 @@
  * @brief CaMykS countries data stored by 2-letters codes (ISO 3166-1).
  * @details Engine / Data Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0.1.1
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Oct 2020
+ * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -2292,17 +2292,6 @@ $cCountries = array(
         'Currency'              => 'srd',
         'Parent'                => null,
     ),
-    'st' => array( // São Tomé and Príncipe
-        'Type'                  => 'country',
-        'OfficialLanguages'     => array('pt'),
-        'UnofficialLanguages'   => array(),
-        '3LettersCode'          => 'stp',
-        'PhoneIndex'            => '239',
-        'Timezones'             => array(),
-        'ZipCodeCheck'          => '', // no codes
-        'Currency'              => 'std',
-        'Parent'                => null,
-    ),
     'ss' => array( // South Sudan
         'Type'                  => 'country',
         'OfficialLanguages'     => array('en'),
@@ -2312,6 +2301,17 @@ $cCountries = array(
         'Timezones'             => array(),
         'ZipCodeCheck'          => '', // no data
         'Currency'              => 'ssp',
+        'Parent'                => null,
+    ),
+    'st' => array( // São Tomé and Príncipe
+        'Type'                  => 'country',
+        'OfficialLanguages'     => array('pt'),
+        'UnofficialLanguages'   => array(),
+        '3LettersCode'          => 'stp',
+        'PhoneIndex'            => '239',
+        'Timezones'             => array(),
+        'ZipCodeCheck'          => '', // no codes
+        'Currency'              => 'std',
         'Parent'                => null,
     ),
     'sv' => array( // El Salvador
