@@ -3,9 +3,9 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.0.1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2020
+ * @date Modification: Dec 2020
  * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,11 +36,10 @@ final class CaMykSStyle extends Theme {
     protected $supportVisitMode = false;
 
     /**
-     * @var array $styleFiles.
-     * @brief List of styles to be attached.
-     * @note Style files are indicated like "file.js" => "media and condition"
+     * @var array $adminStyleFiles.
+     * @brief List of styles to be attached in admin mode.
      */
-    protected $styleFiles = array('admin.css'=>'');
+    protected $adminStyleFiles = array('admin.css?v=1.0.7'=>'');
 
     /**
      * Class constructor.
