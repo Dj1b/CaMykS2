@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre16
+ * @version 2.0pre16.1
  * @date Creation: Feb 2017
- * @date Modification: Sep 2020
+ * @date Modification: Dec 2020
  * @copyright 2017 - 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -1404,7 +1404,13 @@ final class CaMykS {
      * @param string $default
      * @return string
      */
-    public function get_locale($key, $prefix='', $data=null, $default=null) {
+    public function get_locale($key, $prefix='', $data=array(), $default=null) {
+        /* Check data value */
+        if (is_string($data))
+            $data = array($data);
+        elseif (is_null($data))
+            $data = array();
+
         /* Search and return locale from key with prefix */
         if ($prefix != '' and isset($this->locales[$prefix.'_'.$key]))
             return vsprintf($this->locales[$prefix.'_'.$key], $data);
