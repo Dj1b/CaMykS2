@@ -2,9 +2,9 @@
  * @brief CaMykS client side master script
  * @details Engine / Javascript
  * @author CaMykS Team
- * @version 1.0.0
+ * @version 1.0p1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
+ * @date Modification: Dec 2020
  * @copyright 2020 Ideogram Design
  */
 var CaMykS = {
@@ -70,5 +70,29 @@ var CaMykS = {
     initialise: function() {
         /* Set object as loaded */
         this.loaded = true;
-    }
+    },
+
+    /* DOM related tool methods */
+
+    /**
+     * Check if given element is HTMLElement.
+     * @param HTMLElement element
+     * @return boolean result
+     */
+    is_HTMLElement: function(element) {
+        return element instanceof HTMLElement;
+    },
+
+    /**
+     * Add element to body.
+     * @param HTMLElement element
+     * @return boolean success
+     */
+    add_HTMLElementToBody: function(element) {
+        if (this.is_HTMLElement(element)) {
+            document.getElementsByTagName('body')[0].appendChild(element);
+            return true;
+        }
+        return false;
+    },
 }
