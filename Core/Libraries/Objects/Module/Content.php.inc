@@ -1,13 +1,13 @@
 <?php
 /**
- * @brief Module object.
- * <br />Module abstract library, extends Plugin.
+ * @brief ContentModule object.
+ * <br />Sub module abstract library for content modules.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
- * @date Creation: Dec 2019
+ * @version 1.0pre0
+ * @date Creation: Dec 2020
  * @date Modification: Dec 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @copyright 2020 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -15,14 +15,9 @@
 namespace CaMykS2;
 
 /**
- * Module class.
+ * ContentModule class.
  */
-abstract class Module extends Plugin {
-	/**
-     * @var string $moduleType
-     * @brief Module type, values are "Admin", "Content", "Tool".
-     */
-    protected $moduleType;
+abstract class ContentModule extends Module {
 
     /**
      * Class constructor.
@@ -30,11 +25,11 @@ abstract class Module extends Plugin {
      * @return void
      */
     public function __construct($location) {
-        /* Override Plugin variables */
-        $this->pluginType = 'Module';
-
         /* Execute parent construct */
         parent::__construct($location);
+        
+        /* Override Module variables */
+        $this->moduleType = 'Content';
     }
 }
 ?>

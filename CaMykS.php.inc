@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre17
+ * @version 2.0pre18
  * @date Creation: Feb 2017
  * @date Modification: Dec 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -236,7 +236,7 @@ final class CaMykS {
      * @return mixed
      */
     public function __get($variableName) {
-        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension', 'manager')))
+        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension', 'manager', 'localStorage')))
             return $this->$variableName;
     }
 
@@ -748,6 +748,9 @@ final class CaMykS {
         $this->load_library('HTMLPage', 'Objects');
         $this->load_library('LocalStorage', 'Objects');
         $this->load_library('Module', 'Objects');
+        $this->load_library('Module/Admin', 'Objects');
+        $this->load_library('Module/Content', 'Objects');
+        $this->load_library('Module/Tool', 'Objects');
         $this->load_library('RequestAnswer', 'Objects');
         $this->load_library('Template', 'Objects');
         $this->load_library('Theme', 'Objects');
@@ -910,14 +913,18 @@ final class CaMykS {
 
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
+        
+        /* Check plugin name and sub type */
+        $pluginName = explode('/', $name);
+        $pluginName = isset($pluginName[1]) ? $pluginName[1] : $pluginName[0];
 
         /* Check is in loaded plugin */
-        if (isset($this->plugins[$folder][$name]))
-            return $this->plugins[$folder][$name];
+        if (isset($this->plugins[$folder][$pluginName]))
+            return $this->plugins[$folder][$pluginName];
 
         /* Try to load plugin */
         if ($autoLoad and $this->load_plugin($name, $type, $location))
-            return $this->plugins[$folder][$name];
+            return $this->plugins[$folder][$pluginName];
 
         /* Return failure */
         return $this->falseRef;
@@ -1524,7 +1531,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_message($object, $action, $message='') {
-        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        $logManager = $this->get_module('Admin/SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_message($object, $action, $message);
@@ -1537,7 +1544,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_messages($object, $messages=array()) {
-        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        $logManager = $this->get_module('Admin/SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_messages($object, $messages);
@@ -1549,7 +1556,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_error($error) {
-        $logManager = $this->get_module('Admin_SystemLogManager', true);
+        $logManager = $this->get_module('Admin/SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_error($error);
