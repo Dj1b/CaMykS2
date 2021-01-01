@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre16.1
+ * @version 2.0pre17
  * @date Creation: Feb 2017
  * @date Modification: Dec 2020
  * @copyright 2017 - 2020 CaMykS Team
@@ -117,16 +117,18 @@ final class CaMykS {
     );
 
     /**
-     * @var Object $bench
-     * @brief CaMykS internal bench object.
+     * @var array $accessibilityFolders
+     * @brief List of accessible folders.
      */
-    private $bench = false;
+    private $accessibilityFolders;
 
     /**
-     * @var Object $errorHandler
-     * @brief CaMykS internal error handler.
+     * @var boolean $falseRef
+     * @brief CaMykS false value as reference.
      */
-    private $errorHandler = false;
+    private $falseRef = false;
+    
+    /* URLs and paths */
 
     /**
      * @var string $CaMykSPath
@@ -147,42 +149,6 @@ final class CaMykS {
     private $websiteURL;
 
     /**
-     * @var array $accessibilityFolders
-     * @brief List of accessible folders.
-     */
-    private $accessibilityFolders;
-
-    /**
-     * @var boolean $falseRef
-     * @brief CaMykS false value as reference.
-     */
-     private $falseRef = false;
-
-    /**
-     * @var Object $currentTheme
-     * @brief Link to current theme used in CaMykS.
-     */
-    private $currentTheme;
-
-    /**
-     * @var Object $currentTemplate
-     * @brief Link to current template used in CaMykS.
-     */
-    private $currentTemplate;
-
-    /**
-     * @var Object $HTMLPage
-     * @brief Main HTML page.
-     */
-    private $HTMLPage;
-
-    /**
-     * @var Object $manager
-     * @brief Link to manager special plugin.
-     */
-    private $manager;
-
-    /**
      * @var string $corePluginLink
      * @brief Symbolic link to core plugin folder
      */
@@ -199,6 +165,52 @@ final class CaMykS {
      * @brief Symbolic link to core asset folder
      */
     private $coreAssetLink = 'CoreAssets';
+    
+    /* Links to internal object libraries */
+
+    /**
+     * @var Object $bench
+     * @brief CaMykS internal bench object.
+     */
+    private $bench = false;
+
+    /**
+     * @var Object $errorHandler
+     * @brief CaMykS internal error handler.
+     */
+    private $errorHandler = false;
+    
+    /**
+     * @var Object $HTMLPage
+     * @brief Main HTML page.
+     */
+    private $HTMLPage;
+    
+    /**
+     * @var Object $localStorage
+     * @brief Local storage object.
+     */
+    private $localStorage;
+    
+    /* Links to plugins */
+
+    /**
+     * @var Object $currentTheme
+     * @brief Link to current theme used in CaMykS.
+     */
+    private $currentTheme;
+
+    /**
+     * @var Object $currentTemplate
+     * @brief Link to current template used in CaMykS.
+     */
+    private $currentTemplate;
+
+    /**
+     * @var Object $manager
+     * @brief Link to manager special plugin.
+     */
+    private $manager;
 
     /**
      * Class constructor.
@@ -734,10 +746,14 @@ final class CaMykS {
         $this->load_library('HTMLForm', 'Objects');
         $this->load_library('HTMLFormInput', 'Objects');
         $this->load_library('HTMLPage', 'Objects');
+        $this->load_library('LocalStorage', 'Objects');
         $this->load_library('Module', 'Objects');
         $this->load_library('RequestAnswer', 'Objects');
         $this->load_library('Template', 'Objects');
         $this->load_library('Theme', 'Objects');
+        
+        /* Build object from libraries */
+        $this->localStorage = new LocalStorage();
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
