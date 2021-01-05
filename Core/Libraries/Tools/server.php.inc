@@ -3,10 +3,10 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0pre4
  * @date Creation: Dec 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -46,7 +46,7 @@ function server_getSoftwareVersion() {
  * @return array
  */
 function server_getSoftwareModules() {
-    /* Do the check for Apache httpd */
+    /* Return Apache httpd modules */
     if (server_getSoftwareName() == 'Apache') {
         return apache_get_modules();
     }
@@ -68,6 +68,56 @@ function server_checkModuleAvailability($module='') {
 
     /* For other software, trust installation */
     return true;
+}
+
+/**
+ * Check if required modules are available on server software.
+ * @return array
+ */
+function server_checkModuleRequirements() {
+    /* Do the check for Apache httpd */
+    if (server_getSoftwareName() == 'Apache') {
+        /* Load available modules */
+        $availableModules = apache_get_modules();
+
+        /* Define CaMykS requirements */
+        $requirements = array(
+            'Required' => array(
+                array('name' => 'mod_php', 'alternatives'=>array('mod_php7')),
+                array('name' => 'mod_rewrite', 'alternatives'=>array()),
+            ),
+            'Recommended' => array(
+                array('name' => 'mod_headers', 'alternatives'=>array()),
+            ),
+        );
+
+        /* Initialise result */
+        $result = array();
+
+        /* Build result */
+        foreach ($requirements as $level => $modules) {
+            $result[$level] = array();
+            foreach ($modules as $module) {
+                if (in_array($module['name'], $availableModules))
+                    $result[$level][$module['name']] = true;
+                else {
+                    foreach ($module['alternatives'] as $alternative) {
+                        if (in_array($alternative, $availableModules)) {
+                            $result[$level][$alternative] = true;
+                            continue 2;
+                        }
+                    }
+                    $result[$level][$module['name']] = false;
+                }
+            }
+        }
+
+        /* Return result */
+        return $result;
+    }
+
+    /* For other software, return empty list */
+    return array();
 }
 
 /**
