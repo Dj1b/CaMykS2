@@ -17,7 +17,7 @@ namespace CaMykS2;
 /**
  * File class.
  */
-final class File extends CaMykSLibrary{
+final class File extends CaMykSLibrary {
     /**
      * @var string $file
      * @brief File name.
