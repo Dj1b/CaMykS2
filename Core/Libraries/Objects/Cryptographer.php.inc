@@ -3,10 +3,10 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0pre5
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -140,7 +140,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @return boolean result
      */
     private function _OpenSSL_check_configuration() {
-        if (!function_exists('openssl_encrypt'))
+        if (!extension_loaded('openssl'))
             return $this->add_error(2, 'OpenSSL', __FILE__, __LINE__);
 
         if (!in_array($this->params['cipher'], openssl_get_cipher_methods()))
@@ -190,7 +190,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @return boolean result
      */
     private function _Mcrypt_check_configuration() {
-        if (!function_exists('mcrypt_encrypt'))
+        if (!extension_loaded('mcrypt'))
             return $this->add_error(2, 'MCrypt', __FILE__, __LINE__);
 
         if (!in_array($this->params['cipher'], mcrypt_list_algorithms()))
@@ -242,7 +242,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @return boolean result
      */
     private function _Sodium_check_configuration() {
-        if (!function_exists('sodium_crypto_secretbox'))
+        if (!extension_loaded('sodium'))
             return $this->add_error(2, 'Sodium', __FILE__, __LINE__, true);
 
         if ($this->params['key'] == '')
