@@ -4,7 +4,7 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2021
  * @date Modification: Jan 2021
  * @copyright 2021 CaMykS Team
@@ -18,7 +18,7 @@ namespace CaMykS2;
  * ModuleLibrary class.
  */
 abstract class ModuleLibrary extends PluginLibrary {
-	/**
+    /**
      * @var integer $objectId
      * @brief Object identifier.
      */
@@ -33,23 +33,22 @@ abstract class ModuleLibrary extends PluginLibrary {
     public function __construct(&$parent, $id=0) {
         /* Execute parent construct */
         parent::__construct($parent);
-        
+
         /* Define library variables */
         $this->objectId = $id;
     }
-    
+
     /* Data management methods */
-    
+
     /**
      * Load object.
      * @return boolean success
      */
     public function load() {
-    	
+
     }
-    
+
     /* Multi object management methods */
-    
 
 }
 ?>

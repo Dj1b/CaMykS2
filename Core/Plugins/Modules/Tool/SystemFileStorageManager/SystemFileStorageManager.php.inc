@@ -4,10 +4,10 @@
  * <br />Module to manage in-database local storage.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2021
  * @date Modification: Jan 2021
- * @copyright 2020 CaMykS Team
+ * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -28,28 +28,28 @@ final class SystemFileStorageManager extends ToolModule {
         /* Execute parent construct */
         parent::__construct($location);
     }
-    
+
     /* Override Module methods */
-    
+
     /**
      * Load module.
      * @return void
      */
     protected function load() {
-    	/* Check is already loaded */
-    	if ($this->moduleLoaded)
-    		return;
-    	
-    	/* Load libraries */
-    	
-    	/* Create internal object */
-    	
-    	/* Mark module as loaded */
-    	$this->moduleLoaded = true;
+        /* Check is already loaded */
+        if ($this->moduleLoaded)
+            return;
+
+        /* Load libraries */
+
+        /* Create internal object */
+
+        /* Mark module as loaded */
+        $this->moduleLoaded = true;
     }
-    
+
     /* Documents related methods */
-    
+
     /**
      * Return documents URL.
      * @param string $plugin
@@ -59,9 +59,9 @@ final class SystemFileStorageManager extends ToolModule {
      * @return mixed
      */
     public function get_documentsURL($plugin, $path, $files=array(), $URLMode=null) {
-    	
+
     }
-    
+
     /**
      * Save documents.
      * @param string $plugin
@@ -70,11 +70,11 @@ final class SystemFileStorageManager extends ToolModule {
      * @return mixed
      */
     public function save_uploadedDocuments($plugin, $path, $files=array()) {
-    
+
     }
-    
+
     /* Configuration related methods */
-    
+
     /**
      * Return configuration data.
      * @param string $plugin
@@ -83,9 +83,9 @@ final class SystemFileStorageManager extends ToolModule {
      * @return array
      */
     public function get_configuration($plugin, $type, $name) {
-    	
+
     }
-    
+
     /**
      * Save configuration data.
      * @param string $plugin
@@ -95,25 +95,25 @@ final class SystemFileStorageManager extends ToolModule {
      * @return boolean success
      */
     public function save_configuration($plugin, $type, $name, $data) {
-    	
+
     }
-    
+
     /* Event related methods */
-    
+
     /**
      * Enable database storage
      * @return void
      */
     public function enable_databaseStorage() {
-    
+
     }
-    
+
     /**
      * Disable database storage
      * @return void
      */
     public function disable_databaseStorage() {
-    
+
     }
 }
 ?>

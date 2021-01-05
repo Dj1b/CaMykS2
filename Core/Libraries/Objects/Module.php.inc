@@ -4,7 +4,7 @@
  * <br />Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Dec 2019
  * @date Modification: Jan 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -18,7 +18,7 @@ namespace CaMykS2;
  * Module class.
  */
 abstract class Module extends Plugin {
-	/**
+    /**
      * @var string $moduleType
      * @brief Module type, values are "Admin", "Content", "Tool".
      */
@@ -48,7 +48,7 @@ abstract class Module extends Plugin {
      * @return void
      */
     protected function load() {
-    	$this->moduleLoaded = true;
+        $this->moduleLoaded = true;
     }
 }
 ?>
