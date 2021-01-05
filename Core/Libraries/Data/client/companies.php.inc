@@ -3,10 +3,10 @@
  * @brief CaMykS companies data for client library.
  * @details Engine / Data Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0pre1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -70,7 +70,7 @@ $cClientCompanies = array(
     /* Mozilla foundation */
     'mozilla' => array(
         'Name'      => 'Mozilla foundation',
-        'Link'      => 'https://www.apple.com',
+        'Link'      => 'https://www.mozilla.org',
         'Country'   => 'us',
         'Status'    => 'Active',
         'Parent'    => null,
@@ -79,7 +79,7 @@ $cClientCompanies = array(
     /* Opera Software */
     'opera' => array(
         'Name'      => 'Opera Software',
-        'Link'      => 'https://www.apple.com',
+        'Link'      => 'https://www.opera.com',
         'Country'   => 'no',
         'Status'    => 'Active',
         'Parent'    => null,
