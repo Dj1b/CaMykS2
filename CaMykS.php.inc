@@ -3,10 +3,10 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre18
+ * @version 2.0pre19
  * @date Creation: Feb 2017
- * @date Modification: Dec 2020
- * @copyright 2017 - 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -127,7 +127,7 @@ final class CaMykS {
      * @brief CaMykS false value as reference.
      */
     private $falseRef = false;
-    
+
     /* URLs and paths */
 
     /**
@@ -165,7 +165,7 @@ final class CaMykS {
      * @brief Symbolic link to core asset folder
      */
     private $coreAssetLink = 'CoreAssets';
-    
+
     /* Links to internal object libraries */
 
     /**
@@ -179,19 +179,19 @@ final class CaMykS {
      * @brief CaMykS internal error handler.
      */
     private $errorHandler = false;
-    
+
     /**
      * @var Object $HTMLPage
      * @brief Main HTML page.
      */
     private $HTMLPage;
-    
+
     /**
      * @var Object $localStorage
      * @brief Local storage object.
      */
     private $localStorage;
-    
+
     /* Links to plugins */
 
     /**
@@ -733,6 +733,7 @@ final class CaMykS {
         /* Load parent object libraries */
         $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('Plugin', 'Objects');
+        $this->load_library('PluginLibrary', 'Objects');
 
         /* Load object libraries */
         $this->load_library('Bench', 'Objects');
@@ -751,10 +752,12 @@ final class CaMykS {
         $this->load_library('Module/Admin', 'Objects');
         $this->load_library('Module/Content', 'Objects');
         $this->load_library('Module/Tool', 'Objects');
+        $this->load_library('ModuleLibrary', 'Objects');
+        $this->load_library('PluginConfig', 'Objects');
         $this->load_library('RequestAnswer', 'Objects');
         $this->load_library('Template', 'Objects');
         $this->load_library('Theme', 'Objects');
-        
+
         /* Build object from libraries */
         $this->localStorage = new LocalStorage();
 
@@ -913,7 +916,7 @@ final class CaMykS {
 
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
-        
+
         /* Check plugin name and sub type */
         $pluginName = explode('/', $name);
         $pluginName = isset($pluginName[1]) ? $pluginName[1] : $pluginName[0];
