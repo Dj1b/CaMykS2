@@ -4,10 +4,10 @@
  * <br />Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Dec 2019
- * @date Modification: Dec 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -25,6 +25,12 @@ abstract class Module extends Plugin {
     protected $moduleType;
 
     /**
+     * @var boolean $moduleLoaded
+     * @brief Module status.
+     */
+    protected $moduleLoaded = false;
+
+    /**
      * Class constructor.
      * @param string $location
      * @return void
@@ -35,6 +41,14 @@ abstract class Module extends Plugin {
 
         /* Execute parent construct */
         parent::__construct($location);
+    }
+
+    /**
+     * Load module.
+     * @return void
+     */
+    protected function load() {
+    	$this->moduleLoaded = true;
     }
 }
 ?>
