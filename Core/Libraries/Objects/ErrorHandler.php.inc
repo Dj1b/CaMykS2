@@ -3,10 +3,10 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
- * @date Modification: Dec 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -80,7 +80,7 @@ final class ErrorHandler extends CaMykSLibrary {
      */
     public function handle_PHPException($exception) {
         /* Save error */
-        $this->stack_error('PHP', 'Exception', $exception->getCode(), $exception->getFile(), $exception->getLine(), $exception->getMessage(), $exception->getTrace());
+        $this->stack_error('PHP', 'Exception', $exception->getCode(), $exception->getFile(), $exception->getLine(), $exception->getMessage(), '', $exception->getTrace());
     }
 
     /**
