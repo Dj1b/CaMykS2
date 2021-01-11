@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre20
+ * @version 2.0pre21
  * @date Creation: Feb 2017
  * @date Modification: Jan 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -72,24 +72,6 @@ final class CaMykS {
     private $plugins = array('Components'=>array(), 'Modules'=>array(), 'Templates'=>array(), 'Themes'=>array());
 
     /**
-     * @var array $currentLanguage
-     * @brief Optimised language currently used.
-     */
-    private $currentLanguage = 'fr_FR';
-
-    /**
-     * @var array $locales
-     * @brief List of all available locales.
-     */
-    private $locales = array();
-
-    /**
-     * @var array $loadedLocales
-     * @brief List all loaded locale files.
-     */
-    private $loadedLocales = array();
-
-    /**
      * @var integer $startMicroTime
      * @brief Store CaMykS starting microtime
      */
@@ -127,6 +109,34 @@ final class CaMykS {
      * @brief CaMykS false value as reference.
      */
     private $falseRef = false;
+
+    /* Language variables */
+
+    /**
+     * @var array $currentLanguage
+     * @brief Optimised language currently used.
+     */
+    private $currentLanguage = 'fr_FR';
+
+    /**
+     * @var array $locales
+     * @brief List of all available locales.
+     */
+    private $locales = array();
+
+    /**
+     * @var array $loadedLocales
+     * @brief List all loaded locale files.
+     */
+    private $loadedLocales = array();
+
+    /* Data */
+
+    /**
+     * @var array $assetData
+     * @brief Stores loaded asset data.
+     */
+    private $assetData = array();
 
     /* URLs and paths */
 
@@ -1264,6 +1274,35 @@ final class CaMykS {
 
         /* Default for files that don't exists */
         return '';
+    }
+
+    /**
+     * Return asset data.
+     * @param string $data
+     * @return mixed
+     */
+    public function get_assetData($data) {
+        /* Load data if not present */
+        if (!isset($this->assetData[$data])) {
+            $dataFile = new File($this->get_assetFilePath('Data/'.$data.'.json.inc'));
+            $assetData = $dataFile->get_JSONData();
+            if ($assetData === false)
+                return array();
+            $this->assetData[$data] = $assetData;
+        }
+
+        /* Return data */
+        return $this->assetData[$data];
+    }
+
+    /**
+     * Unload asset data.
+     * @param string $data
+     * @return void
+     */
+    public function unload_assetData($data) {
+        if (isset($this->assetData[$data]))
+            unset($this->assetData[$data]);
     }
 
     /* Scripts assets related methods */

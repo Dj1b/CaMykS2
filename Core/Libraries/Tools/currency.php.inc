@@ -3,10 +3,10 @@
  * @brief CaMykS currency(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre1
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Add short title (US$, GB£, JP¥, €, ... ) to data, and write methods to read them (list & single)
@@ -15,27 +15,13 @@
 /* Currency data related methods */
 
 /**
- * Load currencies data.
- * @return void
- */
-function currency_loadCurrenciesData() {
-    global $CaMykS;
-
-    $CaMykS->load_library('currencies', 'Data');
-}
-
-/**
  * Return currencies data.
  * @return array
  */
 function currency_getCurrenciesData() {
-    global $cCurrencies;
+    global $CaMykS;
 
-    /* Load data file */
-    currency_loadCurrenciesData();
-
-    /* Return languages data */
-    return $cCurrencies;
+    return $CaMykS->get_assetData('currencies');
 }
 
 /* Currency locale related methods */
@@ -58,13 +44,13 @@ function currency_loadCurrenciesLocale($language=null) {
  * @return array
  */
 function currency_getLocalisedTitles($params=array(), $language=null) {
-    global $cCurrencies, $CaMykS;
+    global $CaMykS;
 
     /* Define default params and merge with params */
     $params = array_merge(array('ShortList'=>array()), $params);
 
     /* Load data file */
-    language_getCurrenciesData();
+    $currenciesData = language_getCurrenciesData();
 
     /* Load locales */
     currency_loadCurrenciesLocale($language);
@@ -75,11 +61,11 @@ function currency_getLocalisedTitles($params=array(), $language=null) {
     if (is_array($params['ShortList']) and count($params['ShortList'])) {
         /* Add currencies from the short list */
         foreach ($params['ShortList'] as $c)
-            if (isset($cCurrencies[$c]))
+            if (isset($currenciesData[$c]))
                 $result[$c] = $CaMykS->get_locale('currency_'.$c);
     } else {
         /* Add all currencies */
-        foreach ($cCurrencies as $c => $data)
+        foreach ($currenciesData as $c => $data)
             $result[$c] = $CaMykS->get_locale('currency_'.$c);
     }
 
@@ -94,13 +80,13 @@ function currency_getLocalisedTitles($params=array(), $language=null) {
  * @return array
  */
 function currency_getLocalisedTitle($currency, $language=null) {
-    global $cCurrencies, $CaMykS;
+    global $CaMykS;
 
     /* Load data file */
-    language_getCurrenciesData();
+    $currenciesData = language_getCurrenciesData();
 
     /* Check currency */
-    if (!isset($cCurrencies[$currency]))
+    if (!isset($currenciesData[$currency]))
         return '';
 
     /* Load locales */

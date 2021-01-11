@@ -3,10 +3,10 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.6
+ * @version 1.0pre7
  * @date Creation: Nov 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo File icon collections.
@@ -628,6 +628,25 @@ final class File extends CaMykSLibrary {
         return 'data:'.$this->get_mime().';base64,'.base64_encode($this->get_contents());
     }
 
+    /**
+     * Return file json content data.
+     * @return array
+     */
+    public function get_JSONData() {
+        /* Load file content */
+        $data = $this->get_contents();
+
+        /* Read JSON */
+        $data = json_decode($data, true);
+        if (json_last_error() !== JSON_ERROR_NONE or !is_array($data)) {
+            $this->add_error(json_last_error(), json_last_error_msg(), __FILE__, __LINE__);
+            return false;
+        }
+
+        /* Return decoded content */
+        return $data;
+    }
+
     /* Picture related methods */
 
     /**
@@ -797,15 +816,14 @@ final class File extends CaMykSLibrary {
      * @return boolean success
      */
     private function load_mimeInformationFromExtension() {
-        global $CaMykS, $cMimes;
+        global $CaMykS;
 
-        /* Check for mimes list */
-        if (is_null($cMimes))
-            $CaMykS->load_library('fileMimes', 'Data');
+        /* Load for mimes list */
+        $mimesData = $CaMykS->get_assetData('fileMimes');
 
         /* Check ext in mimes */
-        if (isset($cMimes[$this->ext]))
-            $this->stats['mime'] = $cMimes[$this->ext];
+        if (isset($mimesData[$this->ext]))
+            $this->stats['mime'] = $mimesData[$this->ext];
         else
             $this->stats['mime'] = 'application/octet-stream';
 

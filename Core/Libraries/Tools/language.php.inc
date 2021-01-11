@@ -3,10 +3,10 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0pre4
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Jan 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @note CaMykS use the following formats for languages
@@ -17,27 +17,13 @@
 /* Language data related methods */
 
 /**
- * Load languages data.
- * @return void
- */
-function language_loadLanguagesData() {
-    global $CaMykS;
-
-    $CaMykS->load_library('languages', 'Data');
-}
-
-/**
  * Return languages data.
  * @return array
  */
 function language_getLanguagesData() {
-    global $cLanguages;
+    global $CaMykS;
 
-    /* Load data file */
-    language_loadLanguagesData();
-
-    /* Return languages data */
-    return $cLanguages;
+    return $CaMykS->get_assetData('languages');
 }
 
 /* Language structure related method */
@@ -48,8 +34,6 @@ function language_getLanguagesData() {
  * @return array
  */
 function language_read($language) {
-    global $cLanguages;
-
     /* Check if language is already optimised */
     if (is_array($language)) {
         if (array_keys($language) == array('Language', 'Country'))
@@ -59,11 +43,11 @@ function language_read($language) {
     }
 
     /* Load data file */
-    language_loadLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Check for full format language */
     if (preg_match('/^([a-z]{2})_([a-z]{2})$/i', $language, $matches)) {
-        if (!isset($cLanguages[strtolower($matches[1])]))
+        if (!isset($languagesData[strtolower($matches[1])]))
             return false;
         return array(
             'Language'  => strtolower($matches[1]),
@@ -73,11 +57,11 @@ function language_read($language) {
 
     /* Check for short format language */
     elseif (preg_match('/^([a-z]{2})$/i', $language, $matches)) {
-        if (!isset($cLanguages[strtolower($matches[1])]))
+        if (!isset($languagesData[strtolower($matches[1])]))
             return false;
         return array(
             'Language'  => strtolower($matches[1]),
-            'Country'   => $cLanguages[strtolower($matches[1])]['DefaultCountry'],
+            'Country'   => $languagesData[strtolower($matches[1])]['DefaultCountry'],
         );
     }
 
@@ -111,13 +95,13 @@ function language_export($language, $noCountry=false) {
  * @return array
  */
 function language_getTitles($params=array()) {
-    global $cLanguages, $CaMykS;
+    global $CaMykS;
 
     /* Define default params and merge with params */
     $params = array_merge(array('ShortList'=>array()), $params);
 
     /* Load data file */
-    language_getLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Initialise result */
     $result = array();
@@ -125,11 +109,11 @@ function language_getTitles($params=array()) {
     if (is_array($params['ShortList']) and count($params['ShortList'])) {
         /* Add languages from the short list */
         foreach ($params['ShortList'] as $c)
-            if (isset($cLanguages[$c]))
+            if (isset($languagesData[$c]))
                 $result[$c] = $c['Title'];
     } else {
         /* Add all languages */
-        foreach ($cLanguages as $c => $data)
+        foreach ($languagesData as $c => $data)
             $result[$c] = $c['Title'];
     }
 
@@ -144,14 +128,12 @@ function language_getTitles($params=array()) {
  * @return string
  */
 function language_getTitle($language) {
-    global $cLanguages;
-
     /* Load data file */
-    language_loadLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Check language */
-    if (isset($cLanguages[$language]))
-        return $cLanguages[$language]['Title'];
+    if (isset($languagesData[$language]))
+        return $languagesData[$language]['Title'];
 
     /* Not found */
     return '';
@@ -177,13 +159,13 @@ function language_loadLanguagesLocale($language=null) {
  * @return array
  */
 function language_getLocalisedTitles($params=array(), $language=null) {
-    global $cLanguages, $CaMykS;
+    global $CaMykS;
 
     /* Define default params and merge with params */
     $params = array_merge(array('ShortList'=>array()), $params);
 
     /* Load data file */
-    language_getLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Load locales */
     language_loadLanguagesLocale($language);
@@ -194,11 +176,11 @@ function language_getLocalisedTitles($params=array(), $language=null) {
     if (is_array($params['ShortList']) and count($params['ShortList'])) {
         /* Add languages from the short list */
         foreach ($params['ShortList'] as $c)
-            if (isset($cLanguages[$c]))
+            if (isset($languagesData[$c]))
                 $result[$c] = $CaMykS->get_locale($c, 'language');
     } else {
         /* Add all languages */
-        foreach ($cLanguages as $c => $data)
+        foreach ($languagesData as $c => $data)
             $result[$c] = $CaMykS->get_locale($c, 'language');
     }
 
@@ -214,13 +196,13 @@ function language_getLocalisedTitles($params=array(), $language=null) {
  * @return string
  */
 function language_getLocalisedTitle($requestLanguage, $resultLanguage=null) {
-    global $cLanguages, $CaMykS;
+    global $CaMykS;
 
     /* Load data file */
-    language_loadLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Check request language */
-    if (!isset($cLanguages[$requestLanguage]))
+    if (!isset($languagesData[$requestLanguage]))
         return '';
 
     /* Load locales */
@@ -238,14 +220,12 @@ function language_getLocalisedTitle($requestLanguage, $resultLanguage=null) {
  * @return string
  */
 function language_getDefaultCountryCode($language) {
-    global $cLanguages;
-
     /* Load data file */
-    language_loadLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Check language */
-    if (isset($cLanguages[$language]))
-        return $cLanguages[$language]['DefaultCountry'];
+    if (isset($languagesData[$language]))
+        return $languagesData[$language]['DefaultCountry'];
 
     /* Not found */
     return null;
@@ -259,14 +239,12 @@ function language_getDefaultCountryCode($language) {
  * @return string
  */
 function language_getWrittingDirection($language) {
-    global $cLanguages;
-
     /* Load data file */
-    language_loadLanguagesData();
+    $languagesData = language_getLanguagesData();
 
     /* Check language */
-    if (isset($cLanguages[$language]))
-        return $cLanguages[$language]['Direction'];
+    if (isset($languagesData[$language]))
+        return $languagesData[$language]['Direction'];
 
     /* Not found */
     return 'ltr';
