@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre1.1
  * @date Creation: Jan 2021
  * @date Modification: Jan 2021
  * @copyright 2021 CaMykS Team
@@ -38,7 +38,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
 
     /**
      * Class constructor.
-     * @param string $location
+     * @param Object $parent
      * @return void
      */
     public function __construct(&$parent) {
