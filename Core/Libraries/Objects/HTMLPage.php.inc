@@ -3,10 +3,10 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0pre5
  * @date Creation: Feb 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -176,7 +176,7 @@ final class HTMLPage {
 
         /* Add generator meta */
         if ($CaMykS->get_configValue('Website_DisplayCMSSignature', true))
-            $this->add_meta('generator', $CaMykS->name.' '.$CaMykS->version.' ('.$CaMykS->CMSWebsiteURL.')');
+            $this->add_meta('generator', CAMYKS_NAME.' '.CAMYKS_VERSION.' ('.CAMYKS_WEBSITEURL.')');
 
         /* Add author meta */
         if (($author = $CaMykS->get_configValue('Website_Author')) != '')

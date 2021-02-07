@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre21
+ * @version 2.0pre22
  * @date Creation: Feb 2017
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,11 +42,6 @@ define('CAMYKS_MODE_INSTALL',   4);
  * CaMykS class.
  */
 final class CaMykS {
-    /**
-     * @brief Declare CaMykS variables that are set in CaMykS configuration file.
-     */
-    protected $name, $version, $versionMajor, $versionMinor, $lastModificationDate, $PHPMinVersion, $libraryExtension, $layoutExtension, $CMSWebsiteURL, $defaultLanguage;
-
     /**
      * @var integer $mode
      * @brief CaMykS current mode.
@@ -246,7 +241,13 @@ final class CaMykS {
      * @return mixed
      */
     public function __get($variableName) {
-        if (in_array($variableName, array('name', 'mode', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'libraryExtension', 'layoutExtension', 'manager', 'localStorage')))
+        /* Temporary edit to find occurences */
+        if (in_array($variableName, array('name', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'libraryExtension', 'layoutExtension'))) {
+            $this->trigger_error('CaMykS', 0, $variableName.' is unknown', '');
+            return null;
+        }
+
+        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'localStorage')))
             return $this->$variableName;
     }
 
@@ -774,7 +775,7 @@ final class CaMykS {
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
-            foreach (glob($this->websitePath.'./Assets/Libraries/*'.$this->libraryExtension) as $file)
+            foreach (glob($this->websitePath.'./Assets/Libraries/*'.CAMYKS_LIBRARYEXTENSION) as $file)
                 require_once($file);
         }
 
@@ -833,19 +834,19 @@ final class CaMykS {
             return true;
 
         /* Check is in system plugins */
-        if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
             $location = 'System';
             $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in shared plugins */
-        elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
             $location = 'Shared';
             $path = $CaMykS->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
 
         /* Check is in website plugins */
-        elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.$this->libraryExtension))) {
+        elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
             $location = 'Website';
             $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
         }
@@ -860,7 +861,7 @@ final class CaMykS {
 
         /* Load plugin */
         try {
-            require_once $path.$name.$this->libraryExtension;
+            require_once $path.$name.CAMYKS_LIBRARYEXTENSION;
             $class = 'CaMykS2\\'.$name;
             $this->plugins[$folder][$name] = new $class($location);
 
@@ -1261,7 +1262,7 @@ final class CaMykS {
         $this->layoutContext = $context;
 
         /* Check file in website */
-        $file = 'Assets/Layouts/'.$layout.$this->layoutExtension;
+        $file = 'Assets/Layouts/'.$layout.CAMYKS_LAYOUTEXTENSION;
         if ($this->mode < 3) {
             if (file_exists($file))
                 include $file;
@@ -1520,7 +1521,7 @@ final class CaMykS {
      */
     private function load_localeFile($file, $prefix, $language) {
         /* Build path */
-        $path = $file .'/Locales.'.$language.$this->libraryExtension;
+        $path = $file .'/Locales.'.$language.CAMYKS_LIBRARYEXTENSION;
 
         /* Check if file exists */
         if (!file_exists($path))

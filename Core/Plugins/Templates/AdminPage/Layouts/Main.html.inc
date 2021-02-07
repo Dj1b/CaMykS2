@@ -3,10 +3,10 @@
  * @brief AdminPage Template main layout.
  * @details Plugin / Template layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Feb 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -37,7 +37,7 @@ global $CaMykS;
     </div>
     <div id="PageFooter">
         <div class="innerContent">
-            CaMykS version <?= $CaMykS->version; ?>
+            <?= CAMYKS_NAME; ?> version <?= CAMYKS_VERSION; ?>
         </div>
     </div>
 </div>

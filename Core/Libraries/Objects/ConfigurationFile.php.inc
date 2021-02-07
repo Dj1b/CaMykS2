@@ -3,10 +3,10 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -64,7 +64,7 @@ final class ConfigurationFile {
         global $CaMykS;
 
         /* Load engine configuration file */
-        $file = 'Core/Configuration/'.$file.$CaMykS->libraryExtension;
+        $file = 'Core/Configuration/'.$file.CAMYKS_LIBRARYEXTENSION;
         if ($CaMykS->check_engineFileExists($file)) {
             require $CaMykS->get_engineFileFullPath($file);
             if (isset($configuration) and is_array($configuration))
@@ -84,7 +84,7 @@ final class ConfigurationFile {
         global $CaMykS;
 
         /* Load website configuration file */
-        $file = 'Configuration/'.$file.$CaMykS->libraryExtension;
+        $file = 'Configuration/'.$file.CAMYKS_LIBRARYEXTENSION;
         if ($CaMykS->check_websiteFileExists($file)) {
             require $CaMykS->get_websiteFileFullPath($file);
             if (isset($configuration) and is_array($configuration))
@@ -118,7 +118,7 @@ final class ConfigurationFile {
         $content .= "?>\n";
 
         /* Build file full path */
-        $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.$CaMykS->libraryExtension), '', 'Write');
+        $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.CAMYKS_LIBRARYEXTENSION), '', 'Write');
 
         /* Check file is writable */
         if ($file->is_writable() === false)

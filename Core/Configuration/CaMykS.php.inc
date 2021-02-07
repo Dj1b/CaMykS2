@@ -3,72 +3,72 @@
  * @brief CaMykS static description file.
  * @details Engine / Description File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0pre5
  * @date Creation: Oct 2019
- * @date Modification: Feb 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 /**
- * @var string $this->name
+ * @def CAMYKS_NAME
  * @brief CaMykS name.
  */
-$this->name = 'CaMykS';
+define('CAMYKS_NAME',                   'CaMykS');
 
 /**
- * @var string $this->version
+ * @def CAMYKS_VERSION
  * @brief CaMykS full version
  */
-$this->version = '2.0p0';
+define('CAMYKS_VERSION',                '2.0pre0');
 
 /**
- * @var string $this->versionMajor
+ * @def CAMYKS_VERSIONMAJOR
  * @brief CaMykS major version
  */
-$this->versionMajor = '2.0';
+define('CAMYKS_VERSIONMAJOR',           '2.0');
 
 /**
- * @var string $this->versionMinor
+ * @def CAMYKS_VERSIONMINOR
  * @brief CaMykS minor version
  */
-$this->versionMinor = 'p0';
+define('CAMYKS_VERSIONMINOR',           'pre0');
 
 /**
- * @var string $this->lastModificationDate
+ * @def CAMYKS_LASTMODIFICATIONDATE
  * @brief CaMykS last modification date
  */
-$this->lastModificationDate = 'Thu, 3 Oct 2019 18:00:00 +0200';
+define('CAMYKS_LASTMODIFICATIONDATE',   'Thu, 3 Oct 2019 18:00:00 +0200');
 
 /**
- * @var string $this->PHPMinVersion
+ * @def CAMYKS_PHPMINVERSION
  * @brief PHP minimal version to run CaMykS
  */
-$this->PHPMinVersion = '5.3.26';
+define('CAMYKS_PHPMINVERSION',          '5.3.26');
 
 /**
- * @var string $this->libraryExtension
+ * @def CAMYKS_LIBRARYEXTENSION
  * @brief CaMykS libraries extension
  */
-$this->libraryExtension = '.php.inc';
+define('CAMYKS_LIBRARYEXTENSION',       '.php.inc');
 
 /**
- * @var string $this->layoutExtension
+ * @def CAMYKS_LAYOUTEXTENSION
  * @brief CaMykS layouts extension
  */
-$this->layoutExtension = '.html.inc';
+define('CAMYKS_LAYOUTEXTENSION',        '.html.inc');
 
 /**
- * @var string $this->CMSWebsiteURL
- * @brief CaMykS Website
- */
-$this->CMSWebsiteURL = 'https://www.camyks.net';
-
-/**
- * @var string $this->defaultLanguage
+ * @def CAMYKS_DEFAULTLANGUAGE
  * @brief CaMykS default language
  */
-$this->defaultLanguage = 'en_GB';
+define('CAMYKS_DEFAULTLANGUAGE',        'en_GB');
+
+/**
+ * @def CAMYKS_WEBSITEURL
+ * @brief CaMykS Website
+ */
+define('CAMYKS_WEBSITEURL',             'https://www.camyks.net');
 
 ?>
