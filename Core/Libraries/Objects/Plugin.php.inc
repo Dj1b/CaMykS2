@@ -4,10 +4,10 @@
  * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.6
+ * @version 1.0pre7
  * @date Creation: Nov 2019
- * @date Modification: Jul 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,6 +18,12 @@ namespace CaMykS2;
  * Plugin class.
  */
 abstract class Plugin extends CaMykSLibrary {
+    /**
+     * var string $pluginStatus
+     * @brief Plugin status.
+     */
+    protected $pluginStatus = 'initiated';
+
     /**
      * @var string $pluginVersion
      * @brief Plugin version.
@@ -95,36 +101,55 @@ abstract class Plugin extends CaMykSLibrary {
     public function __construct($location=null) {
         parent::__construct();
 
+        /* Save plugin location */
+        $this->pluginLocation = $location;
+    }
+
+    /* System methods */
+
+    /**
+     * Load plugin.
+     * @return void
+     */
+    protected function load() {
+        /* Check is already loaded */
+        if ($this->pluginStatus === 'loaded')
+            return;
+
         /* Set location and path */
-        $this->define_locationAndPath($location);
+        $this->define_locationAndPath();
 
-        /* Check dependencies */
+        /* Check plugin dependencies */
+        $this->check_dependencies();
 
-        /* Declare extensions */
+        /* Load plugin data */
+        $this->load_data();
 
+        /* Set module as loaded */
+        $this->pluginStatus = 'loaded';
+    }
+
+    /**
+     * Load plugin data.
+     * @return void
+     */
+    protected function load_data() {
+        /* To be override by PluginType libraries or plugin themselfs */
     }
 
     /* Main methods */
 
     /**
-     * Prepare plugin.
-     * @return boolean success
-     */
-    public function prepare() {
-        return true;
-    }
-
-    /**
      * Initialise plugin.
      * @param array $params
-     * @return boolean success
+     * @return void
      */
     public function initialise($params=array()) {
+        /* Load plugin */
+        $this->load();
+
         /* Merge params */
         $this->update_params($params);
-
-        /* Return success */
-        return true;
     }
 
     /**
@@ -139,10 +164,9 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * Set up plugin location value and path.
-     * @param string $location
      * @return void
      */
-    private function define_locationAndPath($location=null) {
+    private function define_locationAndPath() {
         global $CaMykS;
 
         /* Load type folder */
@@ -151,27 +175,25 @@ abstract class Plugin extends CaMykSLibrary {
         /* Define plugin folder */
         $this->pluginFolder = 'Plugins/'.$typeFolder.'/'.$this->libraryName.'/';
 
-        /* Check is in shared plugins */
-        if ($location == 'Shared' or ($location === null and __FILE__ == $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
-            $this->pluginLocation = 'Shared';
-            $this->pluginPath = $CaMykS->get_engineFileFullPath($this->pluginFolder);
+        /* Search plugin if location is not defined */
+        if (is_null($this->pluginLocation)) {
+            if (__FILE__ == $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+                $this->pluginLocation = 'Shared';
+            elseif (__FILE__ == $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+                $this->pluginLocation = 'System';
+            elseif ($CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+                $this->pluginLocation = 'Website';
+            else {
+                /* Plugin not found throw fatal error */
+                $camyks->trigger_error('Core', 0, 'Plugin '.$this->libraryName.' not found.', '', __FILE__, __LINE__, true);
+            }
         }
 
-        /* Check is in system plugins */
-        elseif ($location == 'System' or ($location === null and __FILE__ == $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
-            $this->pluginLocation = 'System';
-            $this->pluginPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginFolder);
-        }
-
-        /* Check is in website plugins */
-        elseif ($location == 'Website' or ($location === null and __FILE__ == $CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.$CaMykS->libraryExtension))) {
-            $this->pluginLocation = 'Website';
-            $this->pluginPath = $CaMykS->get_websiteFileFullPath($this->pluginFolder);
-        }
-
-        /* Plugin not found */
-        else {
-            /* @todo */
+        /* Define plugin path */
+        switch ($this->pluginLocation) {
+            case 'Shared'   : $this->pluginPath = $CaMykS->get_engineFileFullPath($this->pluginFolder); break;
+            case 'System'   : $this->pluginPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginFolder); break;
+            case 'Website'  : $this->pluginPath = $CaMykS->get_websiteFileFullPath($this->pluginFolder); break;
         }
     }
 
@@ -204,7 +226,7 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* build file path */
-        $filePath = $this->pluginPath.'/Libraries/'.$library.$CaMykS->libraryExtension;
+        $filePath = $this->pluginPath.'/Libraries/'.$library.CAMYKS_LIBRARYEXTENSION;
 
         /* load file if exists */
         if (file_exists($filePath))
@@ -254,6 +276,14 @@ abstract class Plugin extends CaMykSLibrary {
     /* Extensions related methods */
 
     /* Dependencies related methods */
+
+    /**
+     * Check Plugin dependencies.
+     * @return @todo
+     */
+    protected function check_dependencies() {
+
+    }
 
     /* Request mode methods */
 
@@ -413,9 +443,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @return boolean result
      */
     protected function load_layout($file) {
-        global $CaMykS;
-
-        return $this->load_file('Layouts/'.$file.$CaMykS->layoutExtension);
+        return $this->load_file('Layouts/'.$file.CAMYKS_LAYOUTEXTENSION);
     }
 
     /* Javascript related methods */
