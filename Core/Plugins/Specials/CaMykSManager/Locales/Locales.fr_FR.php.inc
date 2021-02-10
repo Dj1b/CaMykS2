@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief CaMykSManager plugin, french dictionnary.
- * @details Plugin / Dictionnary
+ * @brief CaMykSManager plugin, french dictionary.
+ * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0pre6
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -20,10 +20,12 @@ $locales = array(
     /* Buttons */
     'Action_Retry' => 'R&eacute;essayer',
     'Action_ConfigureCaMykS2' => 'Configurer CaMykS 2',
+    'Action_CaMykS2Information' => 'Serveur CaMykS 2',
     'Action_CloseWindow' => 'Fermer la fen&ecirc;tre',
     'Action_BackToSiteList' => 'Retour &agrave; la liste des sites',
     'Action_Update' => 'Mettre &agrave; jour',
     'Action_CheckIntegrity' => 'V&eacute;rifier l\'int&eacute;grit&eacute;',
+    'Action_ResetOpcodeCache' => 'Vider les caches OpCode',
 
     /* Folder types */
     'File' => 'Fichier',
@@ -82,21 +84,29 @@ $locales = array(
     'SiteList_InfoPanel_DatabaseUser' => 'Utilisateur',
     'SiteList_InfoPanel_DatabasePrefix' => 'Pr&eacute;fixe des tables',
 
+    /* Information panel interface */
+    'Information_CurrentVersion' => 'Version courante',
+    'Information_LatestVersion' => 'Derni&egrave;re version',
+    'Information_Server' => 'Serveur',
+    'Information_WebServer' => 'Serveur internet',
+    'Information_Modules_Required' => 'Modules Requis',
+    'Information_Modules_Recommended' => 'Modules Recommand&eacute;s',
+    'Information_Modules_Dependences' => 'Modules d&eacute;pendants pour les librairies',
+    'Information_PHP' => 'PHP',
+    'Information_AvailableDatabaseDrivers' => 'Connecteurs de base de donn&eacute;es',
+
     /* Configuration panel interface */
-    'Configuration_ManagerSettings' => 'R&eacute;glages du gestionnaire',
-    'Configuration_WebsitesSettings' => 'Configuration des r&eacute;glages par d&eacute;faut',
+    'Configuration_ManagerSettings' => 'Gestionnaire de sites',
     'Configuration_EngineSettings' => 'Moteur CaMykS',
     'Configuration_VisitSettings' => 'Mode visiteur',
     'Configuration_AdminSettings' => 'Mode administration',
     'Configuration_DatabaseSettings' => 'Base de donn&eacute;es',
     'Configuration_GDPRSettings' => 'RGPD',
     'Configuration_PluginsSettings' => 'Plugins par d&eacute;faut',
-    'Configuration_CurrentVersion' => 'Version courante',
-    'Configuration_LatestVersion' => 'Derni&egrave;re version',
-    'Configuration_Server' => 'Serveur',
-    'Configuration_WebServer' => 'Serveur internet',
-    'Configuration_Modules' => 'Modules',
-    'Configuration_PHP' => 'PHP',
-    'Configuration_AvailableDatabaseDrivers' => 'Connecteurs de base de donn&eacute;es disponibles',
+    'Configuration_NoneTitle' => 'S&eacute;lectionnez une section &agrave; configurer.',
+
+    /* ResetOpcodeCache */
+    'ResetOpcodeCache_Success' => 'Le cache OpCode a &eacute;t&eacute; vid&eacute; avec succ&egrave;s.',
+    'ResetOpcodeCache_Error' => 'Une erreur est survenue lors de la suppression du cache OpCode.',
 );
 ?>

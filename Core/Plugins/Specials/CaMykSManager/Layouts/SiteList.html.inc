@@ -3,15 +3,14 @@
  * @brief CaMykSManager plugin, site list layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0pre5
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 ?>
-
 <div class="mainFrame">
     <?php $this->externalLinksForm->display_header(); ?>
     <?php $this->externalLinksForm->display_hiddens(); ?>
@@ -21,6 +20,10 @@
         <?php $this->theme->display_button(array(
             'Title' => $this->get_locale('Action_ConfigureCaMykS2'),
             'Link'  => $this->get_actionLink('DisplayConfigurationPanel'),
+        )); ?>
+        <?php $this->theme->display_button(array(
+            'Title' => $this->get_locale('Action_CaMykS2Information'),
+            'Link'  => $this->get_actionLink('DisplayInformationPanel'),
         )); ?>
     </div>
 

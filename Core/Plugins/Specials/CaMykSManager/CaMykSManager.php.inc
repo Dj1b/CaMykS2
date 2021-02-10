@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.7.1
+ * @version 1.0pre8
  * @date Creation: Dec 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -51,6 +51,18 @@ final class CaMykSManager extends Plugin {
      * @brief Password encoding used for manager master password.
      */
     private $passwordEncodingLength = 64;
+
+    /**
+     * @var array $configurationSections
+     * @brief List sections available to configure.
+     */
+    protected $configurationSections = array('Manager', 'Engine', 'Visit', 'Admin', 'Database', 'GDPR', 'Plugins'/*, 'Request'*/);
+
+    /**
+     * @var string $section
+     * @brief Current section to configure.
+     */
+    protected $section;
 
     /**
      * Class constructor.
@@ -131,6 +143,14 @@ final class CaMykSManager extends Plugin {
 
             case 'DisplayConfigurationPanel':
                 $this->initialise_DisplayConfigurationPanel();
+                break;
+
+            case 'DisplayInformationPanel':
+                $this->initialise_DisplayInformationPanel();
+                break;
+
+            case 'ResetOpcodeCache':
+                $this->initialise_ResetOpcodeCache();
                 break;
 
             case 'SiteList': /* Main, default */
@@ -249,7 +269,7 @@ final class CaMykSManager extends Plugin {
                 /* Redirect to main page */
                 $CaMykS->HTMLPage->set_redirect($this->get_homeLink());
 
-                /* Close $CaMykS */
+                /* Close CaMykS */
                 $CaMykS->close();
             }
         }
@@ -285,7 +305,7 @@ final class CaMykSManager extends Plugin {
         /* Redirect to main page */
         $CaMykS->HTMLPage->set_redirect($this->get_homeLink());
 
-        /* Close $CaMykS */
+        /* Close CaMykS */
         $CaMykS->close();
     }
 
@@ -301,9 +321,9 @@ final class CaMykSManager extends Plugin {
 
         /* Load folder tree */
         $this->folderTree = array(
-            'Files'=>array(),
-            'Folders'=> array('/' => array_merge(
-                array('Path' => '/', 'Files' => array(), 'Folders' => Array (), 'Type' => 'Folder', 'Id' => 'Root', 'Class' => 'opened'),
+            'Files'     =>array(),
+            'Folders'   => array('/' => array_merge(
+                array('Path' => '/', 'Files' => array(), 'Folders' => array(), 'Type' => 'Folder', 'Id' => 'Root', 'Class' => 'opened'),
                 $this->load_folderTree('', 1)
             )),
         );
@@ -356,7 +376,7 @@ final class CaMykSManager extends Plugin {
                         /* Redirect to main page */
                         $CaMykS->HTMLPage->set_redirect($url);
 
-                        /* Close $CaMykS */
+                        /* Close CaMykS */
                         $CaMykS->close();
 
                         /* End action */
@@ -396,6 +416,26 @@ final class CaMykSManager extends Plugin {
     }
 
     /**
+     * Initialise plugin in DisplayInformationPanel mode.
+     * @return void
+     */
+    private function initialise_DisplayInformationPanel() {
+        global $CaMykS;
+
+        /* Enable action bar buttons */
+        $CaMykS->currentTemplate->enable_actionBar();
+
+        /* Load available database drivers */
+        $this->dbDrivers = DatabaseConnector::get_availableDriverList();
+
+        /* Update layout */
+        $this->update_selectedLayout('InformationPanel');
+
+        /* End action  */
+        return;
+    }
+
+    /**
      * Initialise plugin in DisplayConfigurationPanel mode.
      * @return void
      */
@@ -405,9 +445,17 @@ final class CaMykSManager extends Plugin {
         /* Enable action bar buttons */
         $CaMykS->currentTemplate->enable_actionBar();
 
+        /* Load section to configure */
+        if (isset($_REQUEST['Section']) and in_array($_REQUEST['Section'], $this->configurationSections)) {
+            $this->section = $_REQUEST['Section'];
 
-        /* Load available database drivers */
-        $this->dbDrivers = DatabaseConnector::get_availableDriverList();
+            /* Load configuration */
+
+            /* Build login form */
+            $this->managerForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
+
+        } else
+            $this->section ='None';
 
         /* Update layout */
         $this->update_selectedLayout('ConfigurationPanel');
@@ -417,10 +465,30 @@ final class CaMykSManager extends Plugin {
     }
 
     /**
-     * Initialise plugin in save manager configuration mode.
+     * Initialise plugin in ResetOpcodeCache mode.
      * @return void
      */
-    private function initialise_saveManagerConfiguration() {
+    private function initialise_ResetOpcodeCache() {
+        global $CaMykS;
+
+        /* Try to delete OpCode cache */
+        if (opcache_reset())
+            $CaMykS->set_sessionValue('AdminInterface-Message', $this->get_locale('ResetOpcodeCache_Success'));
+        else
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('ResetOpcodeCache_Error'));
+
+        /* Redirect to main page */
+        $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayInformationPanel'));
+
+        /* Close CaMykS */
+        $CaMykS->close();
+    }
+
+    /**
+     * Initialise plugin in save configuration section mode.
+     * @return void
+     */
+    private function initialise_SaveConfigurationSection() {
 
     }
 
@@ -445,15 +513,23 @@ final class CaMykSManager extends Plugin {
     /**
      * Return manager action link.
      * @param string $action
+     * @param array $params
      * @return string
      */
-    public function get_actionLink($action='') {
+    public function get_actionLink($action='', $params=array()) {
         /* Create link base url */
         $link = client_getCurrentURL();
 
         /* Add action */
-        if ($action !== '')
+        if ($action !== '') {
             $link .= '?ManagerAction='.$action;
+
+            /* Add params */
+            if (is_array($params) and count($params) > 0) {
+                foreach ($params as $name => $value)
+                    $link .= '&'.$name.'='.$value;
+            }
+        }
 
         /* Return link */
         return $link;
