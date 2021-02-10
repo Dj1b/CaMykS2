@@ -3,10 +3,10 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4
+ * @version 1.0.4.1
  * @date Creation: Oct 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -65,21 +65,21 @@ final class DatabaseConnector extends CaMykSLibrary {
             $driver = 'PDODBConnection';
         } else {
             /* Preload SQL interface for SQL drivers */
-            if (preg_match('/sql/', $this->params['Driver']))
+            if (preg_match('/sql/i', $this->params['Driver']))
                 $CaMykS->load_library('DatabaseDrivers/SQLDatabaseDriverInterface', 'Objects');
 
             /* Define driver library */
             switch ($this->params['Driver']) {
-                case 'sqlite3':
+                case 'SQLite3':
                     $driver = 'SQLite3DatabaseDriver';
                     break;
-                case 'pgsql':
+                case 'PgSQL':
                     $driver = 'PgSQLDatabaseDriver';
                     break;
-                case 'mysqli':
+                case 'MySQLi':
                     $driver = 'MySQLiDatabaseDriver';
                     break;
-                case 'mysql':
+                case 'MySQL':
                     $driver = 'MySQLDatabaseDriver';
                     break;
                 default :
