@@ -3,10 +3,10 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0.1
+ * @version 1.0.0.2
  * @date Creation: Feb 2020
- * @date Modification: Dec 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -39,7 +39,7 @@ final class CaMykSStyle extends Theme {
      * @var array $adminStyleFiles.
      * @brief List of styles to be attached in admin mode.
      */
-    protected $adminStyleFiles = array('admin.css?v=1.0.7'=>'');
+    protected $adminStyleFiles = array('admin.css?v=1.0pre8'=>'');
 
     /**
      * Class constructor.

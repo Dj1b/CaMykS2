@@ -2,10 +2,10 @@
  * @brief CaMykSStyle theme admin CSS styles
  * @details Plugin / Theme Styles
  * @author JB Lebrun <jb.lebrun@ideogram-design.fr>
- * @version 1.0.7
+ * @version 1.0pre8
  * @date Creation: Mar 2020
- * @date Modification: Dec 2020
- * @copyright 2020 Ideogram Design
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 Ideogram Design
  */
 
 * {padding:0; margin:0; box-sizing: border-box; font-family: Arial; font-size: 14px; font-weight:normal; font-style:normal; color:#707070;}
@@ -14,6 +14,7 @@ body {background:#f9f9f9;}
 p {padding: 8px 0;}
 a {text-decoration:none;}
 ul {margin:0px 28px; padding:0; list-style:url(img/bullet.gif);}
+ul.noDot {list-style:none; margin:0px 16px;}
 ol {margin:0px 28px; padding:0;}
 li {margin:4px 4px;}
 blockquote {margin:8px 20px;}
@@ -47,6 +48,9 @@ sup, sub{font-size:9px; color:inherit;}
 .rightFloated {float:right;}
 .clear {clear:both;}
 
+.valid {font-weight:bold; color:#aed503;}
+.invalid {font-weight:bold; color:#cc3333;}
+
 /* Graphical elements */
 .CaMykSButton {display:inline-block; background:#fbc02a; color:white; font-size:13px; line-height:18px; padding:6px 28px; transition:background 0.3s linear; text-transform:uppercase; text-decoration:none; border-radius:4px;}
 .CaMykSButton.Large {font-size:14px; line-height:20px; padding:8px 32px;}
@@ -57,7 +61,9 @@ sup, sub{font-size:9px; color:inherit;}
 /* Editor styles */
 .title1 {font-size:28px; color:#4c3f7b;}
 .title2 {font-size:24px; color:#262334;}
-.title3 {font-size:20px; color:#4c3f7b; font-weight:bold;}
+.title3 {font-size:20px; color:#4c3f7b; font-weight:bold; margin:16px 0 4px; position:relative; overflow:hidden;}
+.title3:after {content: ""; position:absolute; top:17px; width:100%; background: #4c3f7b; height:1px; font-size:0; margin-left:6px;}
+.title4 {font-size:15px; color:#4c3f7b; text-transform:uppercase; margin:4px 0;}
 
 /* Action bar */
 #ActionBar {background:#262334; position:fixed; left:0; top:100px; bottom:24px; z-index:5;}
@@ -69,6 +75,11 @@ sup, sub{font-size:9px; color:inherit;}
 /* Admin menu */
 #AdminMenu {background:#fbc02a; position:fixed; left:-250px;; top:100px; bottom:24px; width:250px; z-index:4; transition:all 0.3s ease-in;}
 #AdminMenu.opened {left:60px;}
+
+/* Admin interface messages */
+.interfaceError {text-align:center; font-size:15px; background:#f5d8d8; color:#cc3333; font-weight:bold; padding:8px 40px; margin: 0;}
+.interfaceMessage {text-align:center; font-size:15px; background:#d4eed7; color:#1da72e; font-weight:bold; padding:8px 40px; margin: 0;}
+.interfaceWarning {text-align:center; font-size:15px; background:#fcac71; color:#f56800; font-weight:bold; padding:8px 40px; margin: 0;}
 
 /* Login interface */
 .loginFrame {max-width:600px; margin:0 auto; text-align:center; padding:60px;}
@@ -139,3 +150,4 @@ sup, sub{font-size:9px; color:inherit;}
 
 .configurationPanel .configurationForm {}
 .configurationPanel .configurationForm .noneSection {text-align:center; margin:40px 0 0;}
+.configurationPanel .configurationForm .noneSection:after {background:none;}
