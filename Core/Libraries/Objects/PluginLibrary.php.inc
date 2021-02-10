@@ -15,7 +15,7 @@
 namespace CaMykS2;
 
 /**
- * ModuleLibrary class.
+ * PluginLibrary class.
  */
 abstract class PluginLibrary extends CaMykSLibrary {
     /**
@@ -29,12 +29,6 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @brief Library attributes.
      */
     protected $libraryAttributes = array();
-
-    /**
-     * @var array $libraryValues
-     * @brief Values loaded from attributes.
-     */
-    protected $libraryValues = array();
 
     /**
      * Class constructor.
@@ -56,9 +50,9 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
-        if (isset($this->libraryValues[$name]))
-            return $this->libraryValues[$name];
+    public function &__get($name) {
+        if (isset($this->libraryAttributes[$name]))
+            return $this->libraryAttributes[$name]->value;
     }
 
     /**
@@ -69,8 +63,28 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function __set($name, $value) {
         if (isset($this->libraryValues[$name]))
-            $this->libraryValues[$name] = $value;
+            $this->libraryAttributes[$name]->value = $value;
     }
+
+    /* Installation methods */
+
+    /**
+     * Install object.
+     * @return boolean success
+     */
+    abstract public function install();
+
+    /**
+     * Uninstall object.
+     * @return boolean success
+     */
+    abstract public function uninstall();
+
+    /**
+     * Check object installation.
+     * @return boolean result
+     */
+    abstract public function is_installed();
 
     /* Data management methods */
 
@@ -80,26 +94,63 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function initialise() {
         foreach ($this->libraryAttributes as $attribute) {
-            $this->update_fromArray($attribute->get_defaultValue());
+            $attribute->initialise();
         }
     }
 
     /**
-     * Load values from array.
-     * @param array $values
+     * Load object from its main source.
+     * @return boolean success
+     */
+    abstract public function load();
+
+    /**
+     * Save object to its main source.
+     * @return boolean success
+     */
+    abstract public function save();
+
+    /**
+     * Delete object source.
+     * @return boolean success
+     */
+    abstract public function delete();
+
+    /* Values related methods */
+
+    /**
+     * Return values as array.
      * @return void
      */
-    public function load_fromArray($values=array()) {
-        $this->libraryValues = $values;
+    public function toArray() {
+        $result = array();
+        foreach ($this->libraryAttributes as $attribute)
+            $result = array_merge($result, $attribute->get_asArray());
+        return $result;
     }
 
     /**
-     * Update values from array.
-     * @param array $values
+     * Load values from array.
+     * @param array $array
+     * @param boolean $update
      * @return void
      */
-    public function update_fromArray($values=array()) {
-        $this->libraryValues = array_merge($this->libraryValues, $values);
+    public function load_fromArray($array=array(), $update=false) {
+        foreach ($this->libraryAttributes as $attribute) {
+            $attribute->load_fromArray($array, $update);
+        }
+    }
+
+    /**
+     * Load values from header.
+     * @param string $prefix
+     * @param boolean $update
+     * @return void
+     */
+    public function load_fromHeader($prefix='', $update=false) {
+        foreach ($this->libraryAttributes as $attribute) {
+            $attribute->load_fromHeader($prefix, $update);
+        }
     }
 
     /**
@@ -110,7 +161,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
     public function load_fromSession($name) {
         global $CaMykS;
         if (!is_null($values = $CaMykS->get_sessionValue($name)))
-            $this->libraryValues = $values;
+            $this->load_fromArray($values);
         else
             $this->initialise();
     }
@@ -122,7 +173,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function save_toSession($name) {
         global $CaMykS;
-        $CaMykS->set_sessionValue($name, $this->libraryValues);
+        $CaMykS->set_sessionValue($name, $this->toArray());
     }
 
     /* Override locales related methods */

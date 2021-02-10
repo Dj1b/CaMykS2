@@ -38,14 +38,76 @@ abstract class PluginConfig extends PluginLibrary {
         $this->objectName = $name;
     }
 
+    /* Installation methods */
+
+    /**
+     * Install object.
+     * @return boolean success
+     */
+    public function install() {
+
+    }
+
+    /**
+     * Uninstall object.
+     * @return boolean success
+     */
+    public function uninstall() {
+
+    }
+
+    /**
+     * Check object installation.
+     * @return boolean result
+     */
+    public function is_installed() {
+
+    }
+
     /* Data management methods */
 
     /**
-     * Load object.
+     * Load object from its main source.
      * @return boolean success
      */
     public function load() {
+        global $CaMykS;
 
+        /* Load default values */
+        $this->initialise();
+
+        /* Load saved values */
+        $values = $CaMykS->LocalStorage->get_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName);
+        if ($values === false)
+            return false;
+
+        /* Update values */
+        $this->libraryValues = $this->update_fromArray($values);
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Save object to its main source.
+     * @return boolean success
+     */
+    public function save() {
+        global $CaMykS;
+
+        /* Save data in LocalStorage */
+        return $CaMykS->LocalStorage->save_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName, $this->libraryValues);
+    }
+
+    /**
+     * Delete object source.
+     * @return boolean success
+     */
+    public function delete() {
+        global $camyks;
+
+        /* Delete data from LocalStorage */
+        return $CaMykS->LocalStorage->delete_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName);
     }
 }
 ?>
