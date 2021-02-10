@@ -3,7 +3,7 @@
  * @brief AdminPage Template main layout.
  * @details Plugin / Template layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2020
  * @date Modification: Feb 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -31,6 +31,27 @@ global $CaMykS;
         </div>
     </div>
     <div id="PageContent">
+        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Message', '')) !== '') : ?>
+            <div class="interfaceMessage">
+                <?= $v; ?>
+            </div>
+            <?php $CaMykS->set_sessionValue('AdminInterface-Message', ''); ?>
+        <?php endif; ?>
+
+        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Error', '')) !== '') : ?>
+            <div class="interfaceError">
+                <?= $v; ?>
+            </div>
+            <?php $CaMykS->set_sessionValue('AdminInterface-Error', ''); ?>
+        <?php endif; ?>
+
+        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Warning', '')) !== '') : ?>
+            <div class="interfaceWarning">
+                <?= $v; ?>
+            </div>
+            <?php $CaMykS->set_sessionValue('AdminInterface-Warning', ''); ?>
+        <?php endif; ?>
+
         <div class="innerContent">
             <?= $this->display_slotContent(1); ?>
         </div>
