@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief AdminPage template, french dictionnary.
- * @details Plugin / Template Dictionnary
+ * @brief AdminPage template, french dictionary.
+ * @details Plugin / Template Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.0.1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
