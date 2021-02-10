@@ -4,9 +4,9 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Dec 2020
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -75,24 +75,24 @@ final class LocalStorage extends CaMykSLibrary {
     /**
      * Return configuration data.
      * @param string $plugin
-     * @param string $type
+     * @param string $library
      * @param string $name
      * @return array
      */
-    public function get_configuration($plugin, $type, $name) {
+    public function get_configuration($plugin, $library, $name) {
         $this->load_storageMode();
 
         if ($this->storageMode === 'database') {
             /* Load data from database */
-            $data = $this->storageManager->get_configuration($plugin, $type, $name);
+            $data = $this->storageManager->get_configuration($plugin, $library, $name);
         } else {
             /* Load data from files */
-            $data = $this->get_configurationFile($plugin, $type, $name);
+            $data = $this->get_configurationFile($plugin, $library, $name);
         }
 
         /* Check data */
         if ($data === false)
-            return array();
+            return false;
 
         /* Return decoded JSON data */
         return json_decode($data);
@@ -101,12 +101,12 @@ final class LocalStorage extends CaMykSLibrary {
     /**
      * Save configuration data.
      * @param string $plugin
-     * @param string $type
+     * @param string $library
      * @param string $name
      * @param array $data
      * @return boolean success
      */
-    public function save_configuration($plugin, $type, $name, $data) {
+    public function save_configuration($plugin, $library, $name, $data) {
         $this->load_storageMode();
 
         /* Encode data */
@@ -114,10 +114,29 @@ final class LocalStorage extends CaMykSLibrary {
 
         if ($this->storageMode === 'database') {
             /* Save data to database */
-            return $this->storageManager->save_configuration($plugin, $type, $name, $data);
+            return $this->storageManager->save_configuration($plugin, $library, $name, $data);
         } else {
             /* Save data to files */
-            return $this->save_configurationFile($plugin, $type, $name, $data);
+            return $this->save_configurationFile($plugin, $library, $name, $data);
+        }
+    }
+
+    /**
+     * Delete configuration data.
+     * @param string $plugin
+     * @param string $library
+     * @param string $name
+     * @return boolean success
+     */
+    public function delete_configuration($plugin, $library, $name) {
+        $this->load_storageMode();
+
+        if ($this->storageMode === 'database') {
+            /* Save data to database */
+            return $this->storageManager->delete_configuration($plugin, $library, $name, $data);
+        } else {
+            /* Save data to files */
+            return $this->delete_configurationFile($plugin, $library, $name, $data);
         }
     }
 
@@ -165,26 +184,38 @@ final class LocalStorage extends CaMykSLibrary {
     /**
      * Return configuration data from file.
      * @param string $plugin
-     * @param string $type
+     * @param string $library
      * @param string $name
      * @return array
      */
-    private function get_configurationFile($plugin, $type, $name) {
-        $file = new File($this->storageFolder.'/'.$plugin.'/'.$type, $name.'.json.inc');
+    private function get_configurationFile($plugin, $library, $name) {
+        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
         return $file->get_contents();
     }
 
     /**
      * Save configuration data in file.
      * @param string $plugin
-     * @param string $type
+     * @param string $library
      * @param string $name
      * @param array $data
      * @return boolean success
      */
-    private function save_configurationFile($plugin, $type, $name, $data) {
-        $file = new File($this->storageFolder.'/'.$plugin.'/'.$type, $name.'.json.inc', 'Write');
+    private function save_configurationFile($plugin, $library, $name, $data) {
+        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc', 'Write');
         return $file->write($data);
+    }
+
+    /**
+     * Delete configuration file.
+     * @param string $plugin
+     * @param string $library
+     * @param string $name
+     * @return boolean success
+     */
+    private function delete_configurationFile($plugin, $library, $name) {
+        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
+        return $file->delete();
     }
 
     /* Private specific tool methods */
