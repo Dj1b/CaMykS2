@@ -4,7 +4,7 @@
  * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
  * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -324,7 +324,30 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* Load locales in plugin folder */
-        return $CaMykS->load_locales($this->pluginPath.'/Locales'.($folder != ''? '/'.$folder : ''), $this->libraryName, $language);
+        return $CaMykS->load_locales($this->pluginPath.'Locales'.($folder != ''? '/'.$folder : ''), $this->libraryName, $language);
+    }
+
+    /**
+     * Return available locale languages for plugin.
+     * @param string $folder
+     * @return array
+     */
+    public function get_availableLocaleLanguages($folder='') {
+        /* Load file list */
+        $files = glob($this->pluginPath.'Locales'.($folder != ''? '/'.$folder : '').'/*');
+
+        /* Initialise result list */
+        $result = array();
+
+        /* Add languages to list */
+        foreach ($files as $file) {
+            $file = basename($file);
+            if (preg_match('/Locales.(.*).php.inc/', $file, $match))
+                $result[] = $match[1];
+        }
+
+        /* Return result */
+        return $result;
     }
 
     /* Files related methods */

@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre24
+ * @version 2.0pre25
  * @date Creation: Feb 2017
  * @date Modification: Feb 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -411,6 +411,9 @@ final class CaMykS {
 
         /* Load libraries */
         $this->load_engineLibraries();
+
+        /* Load main dictionary */
+        $this->load_engineLocales('');
 
         /* Load errorhandler object */
         $this->errorHandler = new ErrorHandler();
@@ -1368,6 +1371,9 @@ final class CaMykS {
 
         /* Define language to website default language */
 
+        /* Define language to CaMykS default language */
+        $language = CAMYKS_DEFAULTLANGUAGE;
+
         /* Apply language */
         $this->set_currentLanguage($language);
     }
@@ -1386,7 +1392,7 @@ final class CaMykS {
         /* Store language */
         $this->currentLanguage = $language;
 
-        /* Change systeme language */
+        /* Change system language */
         if (setlocale(LC_ALL, language_getSystemLanguages($language)) === false)
             return false;
 
@@ -1534,6 +1540,9 @@ final class CaMykS {
         /* Build path */
         $path = $file .'/Locales.'.$language.CAMYKS_LIBRARYEXTENSION;
 
+        /* Update locale files list */
+        $this->loadedLocales[$file] = $language;
+
         /* Check if file exists */
         if (!file_exists($path))
             return false;
@@ -1551,9 +1560,6 @@ final class CaMykS {
 
         /* Add locales to existing locales list */
         $this->locales = array_merge($this->locales, $locales);
-
-        /* Update locale files list */
-        $this->loadedLocales[$file] = $language;
 
         /* Return success */
         return true;

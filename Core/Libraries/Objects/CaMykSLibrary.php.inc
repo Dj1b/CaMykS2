@@ -3,10 +3,10 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.7
+ * @version 1.0pre8
  * @date Creation: Oct 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -161,8 +161,7 @@ abstract class CaMykSLibrary {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
-        if (!$this->load_locales())
-            return $locale;
+        $this->load_locales();
 
         /* Return locale from CaMykS object */
         return $CaMykS->get_locale($locale, $this->libraryName, $data);

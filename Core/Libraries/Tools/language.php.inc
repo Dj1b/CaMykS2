@@ -34,12 +34,17 @@ function language_getLanguagesData() {
  * @return array
  */
 function language_read($language) {
+    $default = array(
+        'Language'  => null,
+        'Country'   => null,
+    );
+
     /* Check if language is already optimised */
     if (is_array($language)) {
         if (array_keys($language) == array('Language', 'Country'))
             return $language;
         else
-            return false;
+            return $default;
     }
 
     /* Load data file */
@@ -48,7 +53,7 @@ function language_read($language) {
     /* Check for full format language */
     if (preg_match('/^([a-z]{2})_([a-z]{2})$/i', $language, $matches)) {
         if (!isset($languagesData[strtolower($matches[1])]))
-            return false;
+            return $default;
         return array(
             'Language'  => strtolower($matches[1]),
             'Country'   => strtoupper($matches[2]),
@@ -58,7 +63,7 @@ function language_read($language) {
     /* Check for short format language */
     elseif (preg_match('/^([a-z]{2})$/i', $language, $matches)) {
         if (!isset($languagesData[strtolower($matches[1])]))
-            return false;
+            return $default;
         return array(
             'Language'  => strtolower($matches[1]),
             'Country'   => $languagesData[strtolower($matches[1])]['DefaultCountry'],
@@ -66,7 +71,7 @@ function language_read($language) {
     }
 
     /* No format found */
-    return false;
+    return $default;
 }
 
 /**
@@ -108,13 +113,15 @@ function language_getTitles($params=array()) {
 
     if (is_array($params['ShortList']) and count($params['ShortList'])) {
         /* Add languages from the short list */
-        foreach ($params['ShortList'] as $c)
-            if (isset($languagesData[$c]))
-                $result[$c] = $c['Title'];
+        foreach ($params['ShortList'] as $c) {
+            $l = language_read($c);
+            if (isset($languagesData[$l['Language']]))
+                $result[$c] = $languagesData[$l['Language']]['Title'];
+        }
     } else {
         /* Add all languages */
         foreach ($languagesData as $c => $data)
-            $result[$c] = $c['Title'];
+            $result[$c] = $data['Title'];
     }
 
     /* Return result */
@@ -175,9 +182,11 @@ function language_getLocalisedTitles($params=array(), $language=null) {
 
     if (is_array($params['ShortList']) and count($params['ShortList'])) {
         /* Add languages from the short list */
-        foreach ($params['ShortList'] as $c)
-            if (isset($languagesData[$c]))
+        foreach ($params['ShortList'] as $c) {
+            $l = language_read($c);
+            if (isset($languagesData[$l['Language']]))
                 $result[$c] = $CaMykS->get_locale($c, 'language');
+        }
     } else {
         /* Add all languages */
         foreach ($languagesData as $c => $data)
@@ -311,15 +320,17 @@ function language_getLocaleLoadingSequence($language) {
     $language = language_read($language);
 
     /* Check for given language */
-    if ($language['Country'] != null)
+    if (!is_null($language['Country']))
         $result[] = language_export($language);
 
     /* Check for default language */
-    $default = language_read($language['Language']);
-    if ($default['Country'] != null and $default['Country'] != $language['Country'])
-        $result[] = language_export($default);
+    if (!is_null($language['Language'])) {
+        $default = language_read($language['Language']);
+        if (!is_null($default['Country']) and $default['Country'] != $language['Country'])
+            $result[] = language_export($default);
+    }
 
-    /* Add no country language */
+    /* Add no country language *
     $result[] = language_export($language, true);
 
     /* Return sequence */
