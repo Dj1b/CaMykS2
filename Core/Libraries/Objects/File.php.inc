@@ -3,9 +3,9 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -606,7 +606,7 @@ final class File extends CaMykSLibrary {
         return @unlink($this->filePath);
     }
 
-    /* Content related methods */
+    /* Content reading related methods */
 
     /**
      * Return file content.
@@ -630,21 +630,46 @@ final class File extends CaMykSLibrary {
 
     /**
      * Return file json content data.
+     * @param mixed $default
      * @return array
      */
-    public function get_JSONData() {
+    public function get_JSONData($default=null) {
         /* Load file content */
         $data = $this->get_contents();
+
+        /* Check data */
+        if ($data === false)
+            return $default;
 
         /* Read JSON */
         $data = json_decode($data, true);
         if (json_last_error() !== JSON_ERROR_NONE or !is_array($data)) {
             $this->add_error(json_last_error(), json_last_error_msg(), __FILE__, __LINE__);
-            return false;
+            return $default;
         }
 
         /* Return decoded content */
         return $data;
+    }
+
+    /* Content writing related methods */
+
+    /**
+     * Write data as JSON in file.
+     * @param array $data
+     * @param boolean $deleteOPCache
+     * @return boolean success
+     */
+    public function write_JSONData($data=array(), $deleteOPCache=false) {
+        /* Encode data */
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->add_error(json_last_error(), json_last_error_msg(), __FILE__, __LINE__);
+            return false;
+        }
+
+        /* Write data */
+        return $this->write($data, $deleteOPCache);
     }
 
     /* Picture related methods */

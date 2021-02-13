@@ -3,7 +3,7 @@
  * @brief CaMykS static description file.
  * @details Engine / Description File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
  * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -60,10 +60,16 @@ define('CAMYKS_LIBRARYEXTENSION',       '.php.inc');
 define('CAMYKS_LAYOUTEXTENSION',        '.html.inc');
 
 /**
+ * @def CAMYKS_ASSETDATAEXTENSION
+ * @brief CaMykS asset data extension
+ */
+define('CAMYKS_ASSETDATAEXTENSION',     '.json.inc');
+
+/**
  * @def CAMYKS_DEFAULTLANGUAGE
  * @brief CaMykS default language
  */
-define('CAMYKS_DEFAULTLANGUAGE',        'en_GB');
+define('CAMYKS_DEFAULTLANGUAGE',        'fr_FR');
 
 /**
  * @def CAMYKS_WEBSITEURL

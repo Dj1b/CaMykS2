@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre23
+ * @version 2.0pre24
  * @date Creation: Feb 2017
  * @date Modification: Feb 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -630,7 +630,8 @@ final class CaMykS {
         $this->engineConfiguration = array_merge($this->engineConfiguration, $config->load($configFile, 'Engine'));
 
         /* Load website configuration file */
-        $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->load($configFile, 'Website'));
+        if ($this->mode != CAMYKS_MODE_MANAGER)
+            $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->load($configFile, 'Website'));
     }
 
     /**
@@ -713,7 +714,13 @@ final class CaMykS {
      * @return void
      */
     private function load_engineFirstLibraries() {
+        /* Load tool libraries */
+        $this->load_library('folder', 'Tools');
+
+        /* Load object libraries */
+        $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('ConfigurationFile', 'Objects');
+        $this->load_library('File', 'Objects');
     }
 
     /**
@@ -743,7 +750,6 @@ final class CaMykS {
         $this->load_library('util', 'Tools');
 
         /* Load parent object libraries */
-        $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('Plugin', 'Objects');
         $this->load_library('PluginLibrary', 'Objects');
         $this->load_library('PluginLibraryAttribute', 'Objects');
@@ -756,7 +762,6 @@ final class CaMykS {
         $this->load_library('Component', 'Objects');
         $this->load_library('Error', 'Objects');
         $this->load_library('ErrorHandler', 'Objects');
-        $this->load_library('File', 'Objects');
         $this->load_library('HTMLForm', 'Objects');
         $this->load_library('HTMLFormInput', 'Objects');
         $this->load_library('HTMLPage', 'Objects');
@@ -1291,9 +1296,9 @@ final class CaMykS {
     public function get_assetData($data) {
         /* Load data if not present */
         if (!isset($this->assetData[$data])) {
-            $dataFile = new File($this->get_assetFilePath('Data/'.$data.'.json.inc'));
+            $dataFile = new File($this->get_assetFilePath('Data/'.$data.CAMYKS_ASSETDATAEXTENSION));
             $assetData = $dataFile->get_JSONData();
-            if ($assetData === false)
+            if (is_null($assetData))
                 return array();
             $this->assetData[$data] = $assetData;
         }

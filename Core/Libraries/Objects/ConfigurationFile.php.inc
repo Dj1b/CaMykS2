@@ -3,7 +3,7 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Mar 2020
  * @date Modification: Feb 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -64,15 +64,10 @@ final class ConfigurationFile {
         global $CaMykS;
 
         /* Load engine configuration file */
-        $file = 'Core/Configuration/'.$file.CAMYKS_LIBRARYEXTENSION;
-        if ($CaMykS->check_engineFileExists($file)) {
-            require $CaMykS->get_engineFileFullPath($file);
-            if (isset($configuration) and is_array($configuration))
-                return $configuration;
-        }
+        $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.CAMYKS_ASSETDATAEXTENSION));
 
-        /* Return default value */
-        return array();
+        /* Return configuration data */
+        return $file->get_JSONData(array());
     }
 
     /**
@@ -84,15 +79,10 @@ final class ConfigurationFile {
         global $CaMykS;
 
         /* Load website configuration file */
-        $file = 'Configuration/'.$file.CAMYKS_LIBRARYEXTENSION;
-        if ($CaMykS->check_websiteFileExists($file)) {
-            require $CaMykS->get_websiteFileFullPath($file);
-            if (isset($configuration) and is_array($configuration))
-                return $configuration;
-        }
+        $file = new File($CaMykS->get_websiteFileFullPath('Configuration/'.$file.CAMYKS_ASSETDATAEXTENSION));
 
-        /* Return default value */
-        return array();
+        /* Return configuration data */
+        return $file->get_JSONData(array());
     }
 
     /* Private save methods */
@@ -112,20 +102,11 @@ final class ConfigurationFile {
         /* Load current configuration and merge it with new params */
         $params = array_merge($this->load_engineFile($file), $params);
 
-        /* Build content */
-        $content = "<?php \n";
-        $content .= '$configuration = '.var_export($params, true).";\n";
-        $content .= "?>\n";
-
         /* Build file full path */
-        $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.CAMYKS_LIBRARYEXTENSION), '', 'Write');
-
-        /* Check file is writable */
-        if ($file->is_writable() === false)
-            return false;
+        $file = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$file.CAMYKS_ASSETDATAEXTENSION), '', 'Write');
 
         /* Write configuration */
-        return $file->write($content, true);
+        return $file->write_JSONData($params, true);
     }
 
     /**
