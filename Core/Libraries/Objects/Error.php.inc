@@ -3,9 +3,9 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3.1
+ * @version 1.0pre3.2
  * @date Creation: Nov 2019
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -194,8 +194,10 @@ final class Error {
             if (isset($trace['function']))
                 $m .= $trace['function'];
 
-            if (isset($trace['args']))
+            if (isset($trace['args']) and is_string($trace['args']))
                 $m .= '('.implode(', ', $trace['args']).')';
+            elseif (isset($trace['args']) and is_object($trace['args']))
+                $m .= '('.implode(', ', getClass($trace['args'])).')';
 
             $lines[] = $m;
         }

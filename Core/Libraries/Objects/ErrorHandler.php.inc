@@ -3,9 +3,9 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2019
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -323,10 +323,32 @@ final class ErrorHandler extends CaMykSLibrary {
         /* Check page output is HTML */
         /* @to do */
 
+        /* Adds scripts */
+        if (count($this->errors) > 1) {
+            echo '<script>'."\n";
+            echo 'errorCurrent = 0;'."\n";
+            echo 'errorCount = '.count($this->errors).";\n";
+            echo 'function display_previous_error() {document.getElementById("CaMykSError"+errorCurrent).style.display="none"; errorCurrent--; if (errorCurrent === -1) errorCurrent = errorCount-1; document.getElementById("CaMykSError"+errorCurrent).style.display="block"; document.getElementById("CaMykSErrorIndex").innerHTML = errorCurrent + 1;}'."\n";
+            echo 'function display_next_error() {document.getElementById("CaMykSError"+errorCurrent).style.display="none"; errorCurrent++; if (errorCurrent === errorCount) errorCurrent = 0; document.getElementById("CaMykSError"+errorCurrent).style.display="block"; document.getElementById("CaMykSErrorIndex").innerHTML = errorCurrent + 1;}'."\n";
+            echo '</script>'."\n";
+        }
+
         /* Display results as HTML */
-        echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; max-height:100%; overflow:auto; margin:0 auto; background:#57488e; color:white; border:solid 1px white; padding:12px; font-family:arial; font-size:12px; line-height:16px; z-index:9999999;">'."\n";
-        foreach ($this->errors as $error) {
-            echo $error->export_asHTML()."<br />\n";
+        echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; max-height:100%; overflow:auto; margin:0 auto; background:#57488e; border:solid 1px white; z-index:9999999;">'."\n";
+        if (count($this->errors) > 1) {
+            echo '<div style="padding:8px 12px; border-bottom:solid 1px white; border-left:solid 1px white; float:right; width:80px; text-align:center; box-sizing:border-box; line-height:15px;">'."\n";
+            echo '<a href="javascript:display_previous_error();" style="color:white; font-family:arial; font-size:14px; font-weight:bold; text-decoration:none;"> &lt; </a>'."\n";
+            echo '<span id="CaMykSErrorIndex" style="color:white; font-family:arial; font-size:14px;"> 1 </span><span style="color:white; font-family:arial; font-size:14px;">  / '.count($this->errors).'</span>'."\n";
+            echo '<a href="javascript:display_next_error();" style="color:white; font-family:arial; font-size:14px; font-weight:bold; text-decoration:none;"> &gt; </a>'."\n";
+            echo '</div>';
+        }
+        echo '<div style="padding:8px 12px; border-bottom:solid 1px white; color:white; font-family:arial; font-size:14px;">'."\n";
+        echo 'CaMykS Error Console </div>'."\n";
+
+        foreach ($this->errors as $index => $error) {
+            echo '<div id="CaMykSError'.$index.'" style="padding:12px; color:white; font-family:arial; font-size:12px; line-height:16px; display:'.($index === 0 ? 'block' : 'none').';">';
+            echo $error->export_asHTML()."\n";
+            echo '</div>';
         }
         echo '</div>';
     }
