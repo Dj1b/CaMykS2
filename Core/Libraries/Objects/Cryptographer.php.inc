@@ -3,9 +3,9 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -75,18 +75,30 @@ final class Cryptographer extends CaMykSLibrary {
     /* Specific public methods */
 
     /**
-     * Check engine configuration.
+     * Check engine availability.
      * @return boolean success
      */
-    public function check_engineConfiguration() {
+    public function check_engineAvailability() {
         switch($this->params['engine']) {
-            case 'OpenSSL': return $this->_OpenSSL_check_configuration();
-            case 'Mcrypt': return $this->_Mcrypt_check_configuration();
-            case 'Sodium': return $this->_Sodium_check_configuration();
+            case 'OpenSSL': return $this->_OpenSSL_check_engineAvailability();
+            case 'Mcrypt': return $this->_Mcrypt_check_engineAvailability();
+            case 'Sodium': return $this->_Sodium_check_engineAvailability();
         }
 
         /* No known engine defined */
         return $this->add_error(1, $this->params['engine'], __FILE__, __LINE__);
+    }
+
+    /**
+     * Check encryption configuration.
+     * @return boolean success
+     */
+    public function check_encryptionConfiguration() {
+        switch($this->params['engine']) {
+            case 'OpenSSL': return $this->_OpenSSL_check_encryptionConfiguration();
+            case 'Mcrypt': return $this->_Mcrypt_check_encryptionConfiguration();
+            case 'Sodium': return $this->_Sodium_check_encryptionConfiguration();
+        }
     }
 
     /**
@@ -96,8 +108,12 @@ final class Cryptographer extends CaMykSLibrary {
      * @return false on failure, string on success
      */
     public function encrypt($data, $base64Encode=true) {
-        if (!$this->check_engineConfiguration())
+        if (!$this->check_engineAvailability())
             return false;
+
+        if (!$this->check_encryptionConfiguration())
+            return false;
+
         switch($this->params['engine']) {
             case 'OpenSSL': $result = $this->_OpenSSL_encrypt($data); break;
             case 'Mcrypt': $result = $this->_Mcrypt_encrypt($data); break;
@@ -113,12 +129,15 @@ final class Cryptographer extends CaMykSLibrary {
 
     /**
      * Decrypt data.
-     * @param string $data.
+     * @param string $data
      * @param integer $base64Decode
      * @return false on failure, string on success
      */
     public function decrypt($data, $base64Decode=true) {
-        if (!$this->check_engineConfiguration())
+        if (!$this->check_engineAvailability())
+            return false;
+
+        if (!$this->check_encryptionConfiguration())
             return false;
 
         if ($base64Decode)
@@ -133,16 +152,42 @@ final class Cryptographer extends CaMykSLibrary {
         return false;
     }
 
+    /**
+     * Return unique Id.
+     * @param int $size
+     * @return string
+     */
+    public function get_uniqueId($size=16) {
+        if (!$this->check_engineAvailability())
+            return false;
+
+        switch($this->params['engine']) {
+            case 'OpenSSL': return $this->_OpenSSL_getUniqueId($size);
+            case 'Mcrypt': return $this->_Mcrypt_getUniqueId($size);
+            case 'Sodium': return $this->_Sodium_getUniqueId($size);
+        }
+
+        return false;
+    }
+
     /* Private OpenSSL methods */
 
     /**
-     * Check OpenSSL configuration.
+     * Check OpenSSL availability.
      * @return boolean result
      */
-    private function _OpenSSL_check_configuration() {
+    private function _OpenSSL_check_engineAvailability() {
         if (!extension_loaded('openssl'))
             return $this->add_error(2, 'OpenSSL', __FILE__, __LINE__);
 
+        return true;
+    }
+
+    /**
+     * Check OpenSSL encryption configuration.
+     * @return boolean result
+     */
+    private function _OpenSSL_check_encryptionConfiguration() {
         if (!in_array($this->params['cipher'], openssl_get_cipher_methods()))
             return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
@@ -183,16 +228,33 @@ final class Cryptographer extends CaMykSLibrary {
         return openssl_decrypt($data,$this->params['cipher'], $key, 0, $iv);
     }
 
+    /**
+     * Return unique Id using OpenSSL engine.
+     * @param int $size
+     * @return string
+     */
+    private function _OpenSSL_getUniqueId($size) {
+        return bin2hex(openssl_random_pseudo_bytes((int)($size/2)));
+    }
+
     /* Private Mcrypt methods */
 
     /**
-     * Check Mcrypt configuration.
+     * Check Mcrypt availability.
      * @return boolean result
      */
-    private function _Mcrypt_check_configuration() {
+    private function _Mcrypt_check_engineAvailability() {
         if (!extension_loaded('mcrypt'))
             return $this->add_error(2, 'MCrypt', __FILE__, __LINE__);
 
+        return true;
+    }
+
+    /**
+     * Check Mcrypt encryption configuration.
+     * @return boolean result
+     */
+    private function _Mcrypt_check_encryptionConfiguration() {
         if (!in_array($this->params['cipher'], mcrypt_list_algorithms()))
             return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
@@ -235,16 +297,33 @@ final class Cryptographer extends CaMykSLibrary {
         return mcrypt_decrypt($this->params['cipher'], $key, $data, $this->params['mode'], $iv);
     }
 
+    /**
+     * Return unique Id using Mcrypt engine.
+     * @param int $size
+     * @return string
+     */
+    private function _Mcrypt_getUniqueId($size) {
+        return mcrypt_create_iv($size);
+    }
+
     /* Private Sodium methods */
 
     /**
-     * Check Sodium configuration.
+     * Check Sodium availability.
      * @return boolean result
      */
-    private function _Sodium_check_configuration() {
+    private function _Sodium_check_engineAvailability() {
         if (!extension_loaded('sodium'))
-            return $this->add_error(2, 'Sodium', __FILE__, __LINE__, true);
+            return $this->add_error(2, 'Sodium', __FILE__, __LINE__);
 
+        return true;
+    }
+
+    /**
+     * Check Sodium encryption configuration.
+     * @return boolean result
+     */
+    private function _Sodium_check_encryptionConfiguration() {
         if ($this->params['key'] == '')
             return $this->add_error(21, '', __FILE__, __LINE__);
 
@@ -294,6 +373,19 @@ final class Cryptographer extends CaMykSLibrary {
 
         /* Return result */
         return $result;
+    }
+
+    /**
+     * Return unique Id using Sodium engine.
+     * @param int $size
+     * @return string
+     */
+    private function _Sodium_getUniqueId($size) {
+        /* Define minimum size */
+        $tsize = max(16, (int)($size/2));
+
+        /* Return value, troncated if required */
+        return substr(sodium_bin2hex(sodium_crypto_pwhash($tsize, md5(microtime()), random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES), SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE)), 0, $size);
     }
 }
 ?>
