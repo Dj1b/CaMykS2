@@ -3,10 +3,10 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.0.1
+ * @version 1.0pre1
  * @date Creation: Mar 2020
- * @date Modification: Jul 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -26,60 +26,81 @@ class HTMLFormInput extends CaMykSLibrary {
 
     /**
      * @var array $params
-     * @brief List of all params for inputs.
+     * @brief Parameters list for input.
      */
     protected $params = array(
         'type'          => '',
-        'id'            => '',
         'name'          => '',
         'language'      => null,
         'default'       => null,
-        'class'         => '',
-        'style'         => '',
-        'onchange'      => '',
-        'onfocus'       => '',
-        'onblur'        => '',
-        'oninput'       => '',
-        'onkeydown'     => '',
-        'onkeyup'       => '',
-        'disabled'      => '',
-        'data'          => array(),
-        'tabIndex'      => 'auto',
-        'placeholder'   => '',
-        'maxlength'     => 0,
-        'minlength'     => 0,
-        'pattern'       => '',
-        'readonly'      => '',
-        'list'          => '',
-        'autocomplete'  => '',
         'allowMultiple' => false,
-        'size'          => 0,
+        'tabIndex'      => 'auto',
+    );
+
+    /**
+     * @var array $genericAttributes
+     * @brief List of generic attributes
+     */
+    private $genericAttributes = array(
+        'id'            => array('type'=>'str', 'default'=>''),
+        'class'         => array('type'=>'str', 'default'=>''),
+        'style'         => array('type'=>'str', 'default'=>''),
+        'onchange'      => array('type'=>'str', 'default'=>''),
+        'onfocus'       => array('type'=>'str', 'default'=>''),
+        'onblur'        => array('type'=>'str', 'default'=>''),
+        'oninput'       => array('type'=>'str', 'default'=>''),
+        'onkeydown'     => array('type'=>'str', 'default'=>''),
+        'onkeyup'       => array('type'=>'str', 'default'=>''),
+        'disabled'      => array('type'=>'str', 'default'=>''),
+        'pattern'       => array('type'=>'str', 'default'=>''),
+        'list'          => array('type'=>'str', 'default'=>''),
+        'autocomplete'  => array('type'=>'str', 'default'=>''),
+        'readonly'      => array('type'=>'special', 'default'=>''),
+        'data'          => array('type'=>'special', 'default'=>array()),
     );
 
     /**
      * @var array $specificAttributes
      * @brief List of all specific attributes for inputs.
      */
-    protected $specificAttributes = array(
+    private $specificAttributes = array(
         'text' => array(
-            'maxlength'             => 32,
+            'maxlength'             => array('type'=>'int', 'default'=>32),
+            'minlength'             => array('type'=>'int', 'default'=>0),
+            'size'                  => array('type'=>'int', 'default'=>0),
         ),
         'password' => array(
-            'maxlength'             => 32,
+            'maxlength'             => array('type'=>'int', 'default'=>32),
+            'minlength'             => array('type'=>'int', 'default'=>0),
+            'size'                  => array('type'=>'int', 'default'=>0),
         ),
         'textarea' => array(
-            'cols'                  => 40,
-            'rows'                  => 4,
+            'cols'                  => array('type'=>'int', 'default'=>40),
+            'rows'                  => array('type'=>'int', 'default'=>4),
         ),
         'select' => array(
-            'values'                => array(),
-            'hasEmptyFirstOption'   => false,
+            'values'                => array('type'=>'params', 'default'=>array()),
+            'hasEmptyFirstOption'   => array('type'=>'params', 'default'=>false),
         ),
         'checkbox' => array(
-            'value'                 => '',
-            'labelTitle'            => '',
-            'labelClass'            => '',
-            'labelStyle'            => '',
+            'value'                 => array('type'=>'str', 'default'=>''),
+            'labelTitle'            => array('type'=>'params', 'default'=>''),
+            'labelClass'            => array('type'=>'params', 'default'=>''),
+            'labelStyle'            => array('type'=>'params', 'default'=>''),
+        ),
+        'radio' => array(
+            'value'                 => array('type'=>'str', 'default'=>''),
+            'labelTitle'            => array('type'=>'params', 'default'=>''),
+            'labelClass'            => array('type'=>'params', 'default'=>''),
+            'labelStyle'            => array('type'=>'params', 'default'=>''),
+        ),
+        'number' => array(
+            'maxlength'             => array('type'=>'int', 'default'=>4),
+            'minlength'             => array('type'=>'int', 'default'=>0),
+            'size'                  => array('type'=>'int', 'default'=>0),
+            'step'                  => array('type'=>'int', 'default'=>1),
+            'min'                   => array('type'=>'int', 'default'=>''),
+            'max'                   => array('type'=>'int', 'default'=>''),
         ),
     );
 
@@ -90,9 +111,14 @@ class HTMLFormInput extends CaMykSLibrary {
      * @return void
      */
     public function __construct($params=array(), &$parent=null) {
-        /* Merge specific attributes */
+        /* Merge generic attributes default values in params */
+        foreach ($this->genericAttributes as $name => $attribute)
+            $this->params[$name] = $attribute['default'];
+
+        /* Merge specific attributes default values in params */
         if (isset($params['type']) and isset($this->specificAttributes[$params['type']]))
-            $this->params = array_merge($this->params, $this->specificAttributes[$params['type']]);
+            foreach ($this->specificAttributes[$params['type']] as $name => $attribute)
+                $this->params[$name] = $attribute['default'];
 
         /* Merge given params */
         $this->params = array_merge($this->params, $params);
@@ -171,8 +197,6 @@ class HTMLFormInput extends CaMykSLibrary {
         /* Build HTML */
         $html = '<textarea';
         $html .= $this->build_attributes();
-        $html .= ' cols="'.$this->params['cols'].'"';
-        $html .= ' rows="'.$this->params['rows'].'"';
         $html .= ' >';
         $html .= string_text2html($this->params['default']);
         $html .= '</textarea>';
@@ -187,7 +211,7 @@ class HTMLFormInput extends CaMykSLibrary {
      */
     protected function display_tickBox() {
         /* Check label for automatic id */
-        if ($this->params['label'] != '' and $this->params['id'] == '') {
+        if ($this->params['labelTitle'] != '' and $this->params['id'] == '') {
             if (!is_null($this->parent))
                 $this->params['id'] = $this->parent->get_name();
             $this->params['id'] .= '_'.$this->params['name'].($this->params['language'] != '' ? '_'.$this->params['language']:'').'_'.$this->params['value'];
@@ -196,8 +220,7 @@ class HTMLFormInput extends CaMykSLibrary {
         /* Build tick box HTML */
         $html = '<input type="'.$this->params['type'].'"';
         $html .= $this->build_attributes();
-        $html .= ' value="'.$this->params['value'].'"';
-        if ($this->params['default'] === $pthis->arams['value'])
+        if ($this->params['default'] === $this->params['value'])
             $html .= ' checked="checked"';
         elseif (is_array($this->params['default']) and in_array($this->params['value'], $this->params['default']))
             $html .= ' checked="checked"';
@@ -207,7 +230,7 @@ class HTMLFormInput extends CaMykSLibrary {
         echo $html;
 
         /* Check for label */
-        if ($this->params['label'] === '')
+        if ($this->params['labelTitle'] === '')
             return;
 
         /* Build HTML */
@@ -216,7 +239,7 @@ class HTMLFormInput extends CaMykSLibrary {
             $html .= ' class="'.$this->params['labelClass'].'"';
         if ($this->params['labelStyle'] != '')
             $html .= ' style="'.$this->params['labelStyle'].'"';
-        $html .= '>'.$this->params['label'].'</label>';
+        $html .= '>'.$this->params['labelTitle'].'</label>';
 
         /* Write HTML */
         echo $html;
@@ -286,83 +309,40 @@ class HTMLFormInput extends CaMykSLibrary {
         /* Add name */
         $html .= ' name="'.$this->get_fullName().'"';
 
-        /* Add id */
-        if ($this->params['id'] != '')
-            $html .= ' id="'.$this->params['id'].'"';
+        /* Add generic attributes */
+        foreach ($this->genericAttributes as $name => $attribute) {
+            if ($attribute['type'] == 'str') {
+                if ($this->params[$name] != '')
+                    $html .= ' '.$name.'="'.$this->params[$name].'"';
+            } elseif ($attribute['type'] == 'int') {
+                if ((is_string($this->params[$name]) and $this->params[$name] != '') or (is_int($this->params[$name]) and $this->params[$name] > 0))
+                    $html .= ' '.$name.'="'.$this->params[$name].'"';
+            }
+        }
 
-        /* Add class */
-        if ($this->params['class'] != '')
-            $html .= ' class="'.$this->params['class'].'"';
+        /* Add specific attributes */
+        if (isset($this->params['type']) and isset($this->specificAttributes[$this->params['type']])) {
+            foreach ($this->specificAttributes[$this->params['type']] as $name => $attribute) {
+                if ($attribute['type'] == 'str') {
+                    if ($this->params[$name] != '')
+                        $html .= ' '.$name.'="'.$this->params[$name].'"';
+                } elseif ($attribute['type'] == 'int') {
 
-        /* Add style */
-        if ($this->params['style'] != '')
-            $html .= ' style="'.$this->params['style'].'"';
-
-        /* Add max length */
-        if ($this->params['maxlength'] > 0)
-            $html .= ' maxlength="'.$this->params['maxlength'].'"';
-
-        /* Add min length */
-        if ($this->params['minlength'] > 0)
-            $html .= ' minlength="'.$this->params['minlength'].'"';
-
-        /* Add on change event */
-        if ($this->params['onchange'] != '')
-            $html .= ' onchange="'.$this->params['onchange'].'"';
-
-        /* Add on key down event */
-        if ($this->params['onkeydown'] != '')
-            $html .= ' onkeydown="'.$this->params['onkeydown'].'"';
-
-        /* Add on key up event */
-        if ($this->params['onkeyup'] != '')
-            $html .= ' onkeyup="'.$this->params['onkeyup'].'"';
-
-        /* Add on focus event */
-        if ($this->params['onfocus'] != '')
-            $html .= ' onfocus="'.$this->params['onfocus'].'"';
-
-        /* Add on blur event */
-        if ($this->params['onblur'] != '')
-            $html .= ' onblur="'.$this->params['onblur'].'"';
-
-        /* Add on input event */
-        if ($this->params['oninput'] != '')
-            $html .= ' oninput="'.$this->params['oninput'].'"';
-
-        /* Add disabled */
-        if ($this->params['disabled'] != '')
-            $html .= ' disabled="disabled"';
-
-        /* Add placeholder */
-        if ($this->params['placeholder'] != '')
-            $html .= ' placeholder="'.$this->params['placeholder'].'"';
+                    if ((is_string($this->params[$name]) and $this->params[$name] != '') or (is_int($this->params[$name]) and $this->params[$name] > 0))
+                        $html .= ' '.$name.'="'.$this->params[$name].'"';
+                }
+            }
+        }
 
         /* Add readonly */
         if ($this->params['readonly'] == 'readonly' or $this->params['readonly'] == true)
             $html .= ' readonly="readonly"';
-
-        /* Add list */
-        if ($this->params['list'] != '')
-            $html .= ' list="'.$this->params['list'].'"';
-
-        /* Add autocomplete */
-        if ($this->params['autocomplete'] != '')
-            $html .= ' autocomplete="'.$this->params['autocomplete'].'"';
-
-        /* Add pattern */
-        if ($this->params['pattern'] != '')
-            $html .= ' pattern="'.$this->params['pattern'].'"';
 
         /* Add data */
         if (is_array($this->params['data'])) {
             foreach ($this->params['data'] as $name => $value)
                 $html .= ' data-'.$name.'="'.$value.'"';
         }
-
-        /* Add size */
-        if ($this->params['size'] > 0)
-            $html .= ' size="'.$this->params['size'].'"';
 
         /* Add tabIndex */
         if ($this->params['tabIndex'] > 0)

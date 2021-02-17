@@ -3,10 +3,10 @@
  * @brief HTML Form.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2.1
+ * @version 1.0pre3
  * @date Creation: Mar 2020
- * @date Modification: Jul 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Feb 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -241,7 +241,7 @@ class HTMLForm extends CaMykSLibrary {
         $this->status = 'closed';
     }
 
-    /* Basic inputs display methods */
+    /* Generic input display methods */
 
     /**
      * Display input.
@@ -257,9 +257,12 @@ class HTMLForm extends CaMykSLibrary {
             $input->display();
     }
 
+    /* Basic inputs display methods */
+
     /**
      * Display hidden input.
      * @param array $params
+     * @return void
      */
     public function display_hiddenInput($params=array()) {
         $this->display_input(array_merge(array('type'=>'hidden'), $params));
@@ -268,6 +271,7 @@ class HTMLForm extends CaMykSLibrary {
     /**
      * Display text input.
      * @param array $params
+     * @return void
      */
     public function display_textInput($params=array()) {
         $this->display_input(array_merge(array('type'=>'text'), $params));
@@ -276,13 +280,78 @@ class HTMLForm extends CaMykSLibrary {
     /**
      * Display password input.
      * @param array $params
+     * @return void
      */
     public function display_passwordInput($params=array()) {
         $this->display_input(array_merge(array('type'=>'password'), $params));
     }
 
-    /* Advanced inputs display methods */
+    /**
+     * Display select input.
+     * @param array $params
+     * @return void
+     */
+    public function display_selectInput($params=array()) {
+        $this->display_input(array_merge(array('type'=>'select'), $params));
+    }
 
+    /**
+     * Display checkbox input.
+     * @param array $params
+     * @return void
+     */
+    public function display_checkboxInput($params=array()) {
+        $this->display_input(array_merge(array('type'=>'checkbox'), $params));
+    }
+
+    /**
+     * Display number input.
+     * @param array $params
+     * @return void
+     */
+    public function display_numberInput($params=array()) {
+        $this->display_input(array_merge(array('type'=>'number'), $params));
+    }
+
+    /* Advanced select inputs display methods */
+
+    /**
+     * Display a select input with boolean values.
+     * @param array $params
+     * @return void
+     */
+    public function display_booleanSelectInput($params=array()) {
+        /* Merge with specific params */
+        $params = array_merge(array('values' => array(
+            0 => $this->get_locale('No'),
+            1 => $this->get_locale('Yes'),
+        )), $params);
+
+        /* Display select input */
+        $this->display_selectInput($params);
+    }
+
+    /* Advanced checkbox input display methods */
+
+    /**
+     * Display a toggle switch input.
+     * @param array $params
+     * @return void
+     */
+    public function display_toggleSwitchInput($params=array()) {
+        /* Merge with specific params */
+        $params = array_merge(array(
+            'name'      => '',
+            'offValue'  => 0,
+        ), $params);
+
+        /* Display toggle switch */
+        echo '<label class="toggleSwitchInput">';
+        $this->display_hiddenInput(array('name'=>$params['name'], 'default'=>$params['offValue']));
+        $this->display_checkboxInput($params);
+        echo '<span class="switcher"></span>';
+        echo '</label>';
+    }
 
     /* TabIndex related methods */
 
