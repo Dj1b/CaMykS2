@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
+ * @date Modification: Feb 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,10 +33,10 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
     protected $libraryName;
 
     /**
-     * @const array DEFAULT_PARAMS
+     * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    const DEFAULT_PARAMS = array('Mandatory'=>false);
+    protected const DEFAULTPARAMS = array('Mandatory'=>false);
 
     /**
      * @var array $params
@@ -66,6 +66,7 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
      * Class constructor.
      * @param Object $parent
      * @param string $name
+     * @param mixed $default
      * @param array $params
      * @param boolean $isLocalised
      * @return void
@@ -83,7 +84,7 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
         $this->isLocalised = $isLocalised;
 
         /* Merge parameters */
-        $this->params = array_merge(self::DEFAULT_PARAMS, $this::DEFAULT_PARAMS, $params);
+        $this->params = array_merge(self::DEFAULTPARAMS, $this::DEFAULTPARAMS, $params);
     }
 
     /* Value related methods */
@@ -120,7 +121,6 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
     /**
      * Load values from saving location.
      * @param array $array
-     * @param boolean $update
      * @return void
      */
     public function load_fromSave($array=array()) {
@@ -258,6 +258,7 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
     /**
      * Return attribute full name including name, language and prefix.
      * @param string $language
+     * @param string $prefix
      * @return string
      */
     protected function get_fullName($language=null, $prefix=null) {

@@ -19,10 +19,10 @@ namespace CaMykS2;
 abstract class IntegerPluginLibraryAttribute extends PluginLibraryAttribute {
 
     /**
-     * @const array DEFAULT_PARAMS
+     * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    const DEFAULT_PARAMS = array('Min'=>null, 'Max'=>null, 'Unsigned'=>'Auto');
+    const DEFAULTPARAMS = array('Min'=>null, 'Max'=>null, 'Unsigned'=>'Auto');
 
     /* Override PluginLibraryAttribute methods */
 

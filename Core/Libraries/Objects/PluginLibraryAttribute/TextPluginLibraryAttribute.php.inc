@@ -3,7 +3,7 @@
  * @brief TextPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2021
  * @date Modification: Feb 2021
  * @copyright 2021 CaMykS Team
@@ -19,10 +19,10 @@ namespace CaMykS2;
 abstract class TextPluginLibraryAttribute extends PluginLibraryAttribute {
 
     /**
-     * @const array DEFAULT_PARAMS
+     * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    const DEFAULT_PARAMS = array('Length'=>32, 'StripPHPTags'=>true, 'StripJSTags'=>true, 'StripHTMLTags'=>false, 'AutoTrim'=>false,);
+    const DEFAULTPARAMS = array('Length'=>32, 'StripPHPTags'=>true, 'StripJSTags'=>true, 'StripHTMLTags'=>false, 'AutoTrim'=>false,);
 
     /* Override PluginLibraryAttribute methods */
 

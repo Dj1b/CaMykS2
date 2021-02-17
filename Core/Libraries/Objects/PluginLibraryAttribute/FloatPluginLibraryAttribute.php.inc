@@ -3,7 +3,7 @@
  * @brief FloatPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2021
  * @date Modification: Feb 2021
  * @copyright 2021 CaMykS Team
@@ -19,10 +19,10 @@ namespace CaMykS2;
 abstract class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
 
     /**
-     * @const array DEFAULT_PARAMS
+     * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    const DEFAULT_PARAMS = array('Min'=>null, 'Max'=>null, 'Unsigned'=>'Auto', 'Decimals'=>null);
+    const DEFAULTPARAMS = array('Min'=>null, 'Max'=>null, 'Unsigned'=>'Auto', 'Decimals'=>null);
 
     /* Override PluginLibraryAttribute methods */
 
