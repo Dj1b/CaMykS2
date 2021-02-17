@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Mar 2020
  * @date Modification: Feb 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -95,6 +95,10 @@ $locales = array(
     'Information_PHP' => 'PHP',
     'Information_AvailableDatabaseDrivers' => 'Connecteurs de base de donn&eacute;es',
 
+    /* ResetOpcodeCache */
+    'ResetOpcodeCache_Success' => 'Le cache OpCode a &eacute;t&eacute; vid&eacute; avec succ&egrave;s.',
+    'ResetOpcodeCache_Error' => 'Une erreur est survenue lors de la suppression du cache OpCode.',
+
     /* Configuration panel interface */
     'Configuration_ManagerSettings' => 'Gestionnaire de sites',
     'Configuration_EngineSettings' => 'Moteur CaMykS',
@@ -105,8 +109,26 @@ $locales = array(
     'Configuration_PluginsSettings' => 'Plugins par d&eacute;faut',
     'Configuration_NoneTitle' => 'S&eacute;lectionnez une section &agrave; configurer.',
 
-    /* ResetOpcodeCache */
-    'ResetOpcodeCache_Success' => 'Le cache OpCode a &eacute;t&eacute; vid&eacute; avec succ&egrave;s.',
-    'ResetOpcodeCache_Error' => 'Une erreur est survenue lors de la suppression du cache OpCode.',
+    /* Configuration panel all interface */
+    'Configuration_Edit' => 'Modifier la configuration',
+    'Configuration_Parameters' => 'Param&egrave;tres',
+
+    /* Configuration Manager panel interface */
+    'Configuration_EditManagerPassword' => 'Modifier le mot de passe',
+    'Configuration_DefaultLanguage' => 'Langue',
+    'Configuration_DefaultLanguageAutomatic' => 'Automatique',
+    'Configuration_Theme' => 'Th&egrave;me',
+    'Configuration_ThemeAutomatic' => 'Automatique',
+    'Configuration_SiteList' => 'Liste des sites',
+    'Configuration_SiteListPath' => 'Dossier racine',
+    'Configuration_SiteListSearchLevel' => 'Niveaux de recherche',
+    'Configuration_SiteListHiddenFiles' => 'Fichiers &agrave; cacher',
+    'Configuration_SiteListHiddenFilesNone' => 'Aucun',
+    'Configuration_SiteListHiddenFolders' => 'Dossiers &agrave; cacher',
+    'Configuration_SiteListHiddenFoldersNone' => 'Aucun',
+    'Configuration_Security' => 'S&eacute;curit&eacute',
+    'Configuration_SSLEnabled' => 'Activer SSL',
+    'Configuration_RestrainedIPs' => 'Adresses IP Limit&eacute;es',
+    'Configuration_RestrainedIPsNone' => 'Aucune',
 );
 ?>

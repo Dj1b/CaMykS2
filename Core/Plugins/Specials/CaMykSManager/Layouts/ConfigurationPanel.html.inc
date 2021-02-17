@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, configuration panel layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Mar 2020
  * @date Modification: Feb 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -47,7 +47,7 @@ global $CaMykS;
         </div>
 
         <div class="column configurationForm">
-            <?php $this->load_layout('Configuration/'.$this->section); ?>
+            <?php $this->load_layout('ConfigurationPanels/'.$this->subAction.'/'.$this->section); ?>
         </div>
     </div>
 </div>

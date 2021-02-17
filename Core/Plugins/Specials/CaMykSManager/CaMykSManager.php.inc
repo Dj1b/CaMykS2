@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Dec 2019
  * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -52,6 +52,8 @@ final class CaMykSManager extends Plugin {
      */
     private $passwordEncodingLength = 64;
 
+    /* Configuration variables */
+
     /**
      * @var array $configurationSections
      * @brief List sections available to configure.
@@ -63,6 +65,12 @@ final class CaMykSManager extends Plugin {
      * @brief Current section to configure.
      */
     protected $section;
+
+    /**
+     * @var string $subAction
+     * @brief Action to execute on configure.
+     */
+    protected $subAction;
 
     /**
      * Class constructor.
@@ -143,6 +151,10 @@ final class CaMykSManager extends Plugin {
 
             case 'DisplayConfigurationPanel':
                 $this->initialise_DisplayConfigurationPanel();
+                break;
+
+            case 'EditConfigurationPanel':
+                $this->initialise_EditConfigurationPanel();
                 break;
 
             case 'DisplayInformationPanel':
@@ -451,13 +463,54 @@ final class CaMykSManager extends Plugin {
 
             /* Load configuration */
 
-            /* Build login form */
-            $this->managerForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
-
+            /* Load specific data for sections */
+            switch ($this->section) {
+                case 'Manager':
+                    $this->availableLanguages = language_getLocalisedTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
+                    break;
+            }
         } else
-            $this->section ='None';
+            $this->section = 'None';
 
         /* Update layout */
+        $this->subAction = 'View';
+        $this->update_selectedLayout('ConfigurationPanel');
+
+        /* End action  */
+        return;
+    }
+
+    /**
+     * Initialise plugin in EditConfigurationPanel mode.
+     * @return void
+     */
+    private function initialise_EditConfigurationPanel() {
+        global $CaMykS;
+
+        /* Enable action bar buttons */
+        $CaMykS->currentTemplate->enable_actionBar();
+
+        /* Load section to configure */
+        if (isset($_REQUEST['Section']) and in_array($_REQUEST['Section'], $this->configurationSections)) {
+            $this->section = $_REQUEST['Section'];
+
+            /* Load configuration */
+
+            /* Build configuration form */
+            $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
+            $this->configurationForm->add_hidden('Section', $this->section);
+
+            /* Load specific data for sections */
+            switch ($this->section) {
+                case 'Manager':
+                    $this->availableLanguages = language_getLocalisedTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
+                    break;
+            }
+        } else
+            return $this->initialise_DisplayConfigurationPanel();
+
+        /* Update layout */
+        $this->subAction = 'Edit';
         $this->update_selectedLayout('ConfigurationPanel');
 
         /* End action  */
