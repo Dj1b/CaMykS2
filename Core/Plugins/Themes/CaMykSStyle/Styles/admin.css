@@ -2,7 +2,7 @@
  * @brief CaMykSStyle theme admin CSS styles
  * @details Plugin / Theme Styles
  * @author JB Lebrun <jb.lebrun@ideogram-design.fr>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Mar 2020
  * @date Modification: Feb 2021
  * @copyright 2020 - 2021 Ideogram Design
@@ -125,7 +125,7 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 
 /* Columns */
 .columns {display:flex;}
-.columns .column {margin-left:50px; flex:1;}
+.columns .column {margin-left:40px; flex:1;}
 .columns .column:first-child {margin-left:0;}
 .columns .column.half {flex:2;}
 .columns .column.quarter {flex:1;}
@@ -134,11 +134,21 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .columns .column.2thirds {flex:2;}
 
 /* Form */
-.formTitle {color:#504284; border-bottom:solid 1px #504284; font-size:15px; text-transform:uppercase; margin: 20px 0 8px;}
-.formLine {font-size:0; display:flex;}
-.formLine .formLabel {flex:1; text-align:right; min-width: 150px; max-width:150px; font-weight:bold; margin-right:12px; padding:4px;}
-.formLine .formValue {flex:2; padding:4px;}
-.formLine .formInput {flex:2;}
+.formBlock {font-size:0;}
+.formTitle {color:#504284; border-bottom:dotted 1px #504284; font-size:15px; text-transform:uppercase; margin: 20px 0 8px;}
+.formElement {font-size:0; display:inline-flex; width:100%;}
+.formElement.half {width:50%;}
+.formElement .formLabel {flex:1; text-align:right; min-width: 200px; max-width:200px; font-weight:bold; margin:5px 12px 0 0; padding:4px;}
+.formElement .formValue {flex:2; padding:4px; margin:5px 0 0; max-width:100%; color:#504284; font-weight:bold;}
+.formElement .formNoValue {flex:2; padding:4px; margin:5px 0 0; max-width:100%; color:#504284; font-style:italic;}
+.formElement .formInput {flex:2; max-width:100%;}
+
+.formButtons {background:#DCDCDC; text-align:right; margin:20px 0; font-size:0;}
+.formButtons .formButton {display:inline-block; background:#504284; color:white; font-size:13px; line-height:18px; padding:6px 28px; text-transform:uppercase; text-decoration:none; transition:background 0.3s linear;}
+.formButtons .formButton.Secondary {background:#fbc02a;}
+.formButtons .formButton.Back {background:#888888;}
+.formButtons .formButton:hover {background:#262334;}
+.formButtons .formButton + .formButton {margin-left:4px;}
 
 /* Manager - Site List */
 .siteList {margin:20px 0;}
