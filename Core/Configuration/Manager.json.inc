@@ -9,5 +9,5 @@
     "Manager_SiteListPath" : "..\/",
     "Manager_SiteListSearchLevel" : 3,
     "Manager_SiteListHideHiddenFiles" : [],
-    "Manager_SiteListHideHiddenFolders" : 0
+    "Manager_SiteListHideHiddenFolders" : []
 }
