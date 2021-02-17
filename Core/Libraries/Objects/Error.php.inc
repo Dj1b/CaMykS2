@@ -3,7 +3,7 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3.2
+ * @version 1.0pre3.3
  * @date Creation: Nov 2019
  * @date Modification: Feb 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -102,15 +102,30 @@ final class Error {
      */
     public function get_header() {
         $s = '';
+
+        /* Add origin */
         if ($this->origin != '')
             $s .= $this->origin.' ';
+
+        /* Add error */
         if ($this->type != '') {
             $s .= $this->type;
             if ($this->code > 0)
                 $s .= ' ['.$this->code.']';
         }
+
+        /* Add count */
         if ($this->count > 1)
             $s .= ' x'.$this->count;
+
+        /* Add file and line */
+        if ($this->file != '') {
+            $s .= ' in '.$this->file;
+            if ($this->line > 0)
+                $s .= ' (Line '.$this->line.')';
+        }
+
+        /* Return result */
         return $s;
     }
 
@@ -258,10 +273,8 @@ final class Error {
      */
     public function export_asHTML() {
         $s = '<strong style="color:inherit;">'.$this->get_header();
-        if (!$this->has_backtrace() and $this->has_location())
-            $s .= ' - <em style="color:inherit;">'.$this->get_location().'</em>';
         if ($this->has_message())
-            $s .= ' - '.$this->get_message(true);
+            $s .= '<br /> Error: '.$this->get_message(true);
         $s .= '</strong>';
         if ($this->has_backtrace())
             $s .= $this->get_backtrace(true);
