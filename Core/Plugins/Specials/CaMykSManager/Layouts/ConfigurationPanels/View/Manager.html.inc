@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, configuration panel, view manager section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre1.1
  * @date Creation: Sep 2020
  * @date Modification: Feb 2021
- * @copyright 2020 - 2021CaMykS Team
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -146,5 +146,3 @@ global $CaMykS;
         </a>
     </div>
 </div>
-
-<?php $this->configurationForm->display_footer(); ?>
