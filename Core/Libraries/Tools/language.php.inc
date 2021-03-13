@@ -3,9 +3,9 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Oct 2019
- * @date Modification: Jan 2021
+ * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,12 +36,13 @@ function language_getLanguagesData() {
 function language_read($language) {
     $default = array(
         'Language'  => null,
+        'Script'    => null,
         'Country'   => null,
     );
 
     /* Check if language is already optimised */
     if (is_array($language)) {
-        if (array_keys($language) == array('Language', 'Country'))
+        if (array_keys($language) == array('Language', 'Script', 'Country'))
             return $language;
         else
             return $default;
@@ -51,22 +52,13 @@ function language_read($language) {
     $languagesData = language_getLanguagesData();
 
     /* Check for full format language */
-    if (preg_match('/^([a-z]{2})_([a-z]{2})$/i', $language, $matches)) {
+    if (preg_match('/^([a-z]{2})(_([a-z]{4}))?(_([a-z]{2}))?$/i', $language, $matches)) {
         if (!isset($languagesData[strtolower($matches[1])]))
             return $default;
         return array(
             'Language'  => strtolower($matches[1]),
-            'Country'   => strtoupper($matches[2]),
-        );
-    }
-
-    /* Check for short format language */
-    elseif (preg_match('/^([a-z]{2})$/i', $language, $matches)) {
-        if (!isset($languagesData[strtolower($matches[1])]))
-            return $default;
-        return array(
-            'Language'  => strtolower($matches[1]),
-            'Country'   => $languagesData[strtolower($matches[1])]['DefaultCountry'],
+            'Script'    => (isset($matches[3]) and $matches[3] != '') ? ucwords(strtolower($matches[3])) : null,
+            'Country'   => (isset($matches[5]) and $matches[5] != '') ? strtoupper($matches[5]) : (isset($languagesData[strtolower($matches[1])]['DefaultCountry']) ? strtoupper($languagesData[strtolower($matches[1])]['DefaultCountry']) : null),
         );
     }
 
@@ -77,19 +69,19 @@ function language_read($language) {
 /**
  * Return language as string.
  * @param mixed $language
- * @param boolean $noCountry
+ * @param boolean $noDetails
  * @return string
  */
-function language_export($language, $noCountry=false) {
+function language_export($language, $noDetails=false) {
     /* Optimise language */
     $language = language_read($language);
 
-    /* Return language without country */
-    if ($noCountry === true or $language['Country'] == null)
+    /* Return language without details */
+    if ($noDetails === true)
         return strtolower($language['Language']);
 
-    /* Return language with country */
-    return strtolower($language['Language']).'_'.strtoupper($language['Country']);
+    /* Return language with script and country */
+    return $language['Language'].(is_null($language['Script']) ? '' : '_'.$language['Script']).(is_null($language['Country']) ? '' : '_'.$language['Country']);
 }
 
 /* Language native title related methods */
@@ -156,7 +148,7 @@ function language_getTitle($language) {
 function language_loadLanguagesLocale($language=null) {
     global $CaMykS;
 
-    $CaMykS->load_locales('Libraries/languages', 'language', $language);
+    $CaMykS->load_engineLocales('Libraries/language', 'language', $language);
 }
 
 /**
@@ -197,7 +189,6 @@ function language_getLocalisedTitles($params=array(), $language=null) {
     return $result;
 }
 
-
 /**
  * Return language localised title.
  * @param string $requestLanguage
@@ -210,15 +201,105 @@ function language_getLocalisedTitle($requestLanguage, $resultLanguage=null) {
     /* Load data file */
     $languagesData = language_getLanguagesData();
 
+    /* Read language */
+    $requestLanguage = language_read($requestLanguage);
+
     /* Check request language */
-    if (!isset($languagesData[$requestLanguage]))
+    if (!isset($languagesData[$requestLanguage['Language']]))
         return '';
 
     /* Load locales */
     language_loadLanguagesLocale($resultLanguage);
 
     /* Return result */
-    return $CaMykS->get_locale($requestLanguage, 'language');
+    return $CaMykS->get_locale($requestLanguage['Language'], 'language');
+}
+
+/**
+ * Return languages localised long title list.
+ * @param array $params
+ * @param string $language
+ * @return array
+ */
+function language_getLocalisedLongTitles($params=array(), $language=null) {
+    global $CaMykS;
+
+    /* Define default params and merge with params */
+    $params = array_merge(array('ShortList'=>array()), $params);
+
+    /* Load data file */
+    $languagesData = language_getLanguagesData();
+
+    /* Load locales */
+    language_loadLanguagesLocale($language);
+
+    /* Initialise result */
+    $result = array();
+
+    if (is_array($params['ShortList']) and count($params['ShortList'])) {
+        /* Add languages from the short list */
+        foreach ($params['ShortList'] as $c) {
+            if (($l = language_getLocalisedLongTitleValue(language_read($c))) != '')
+                $result[$c] = $l;
+        }
+    } else {
+        /* Add all languages ? */
+
+    }
+
+    /* Return result */
+    return $result;
+}
+
+/**
+ * Return language localised long title.
+ * @param string $requestLanguage
+ * @param string $resultLanguage
+ * @return string
+ */
+function language_getLocalisedLongTitle($requestLanguage, $resultLanguage=null) {
+    global $CaMykS;
+
+    /* Load data file */
+    $languagesData = language_getLanguagesData();
+
+    /* Read language */
+    $requestLanguage = language_read($requestLanguage);
+
+    /* Check request language */
+    if (!isset($languagesData[$requestLanguage['Language']]))
+        return '';
+
+    /* Load locales */
+    language_loadLanguagesLocale($resultLanguage);
+
+    /* Return result */
+    return language_getLocalisedLongTitleValue($requestLanguage);
+}
+
+/**
+ * Return language localised long title assuming all is loaded.
+ * @param string $requestLanguage
+ * @param string $resultLanguage
+ * @return string
+ */
+function language_getLocalisedLongTitleValue($requestLanguage, $resultLanguage=null) {
+    global $CaMykS;
+
+    /* Add language title */
+    $title = $CaMykS->get_locale($requestLanguage['Language'], 'language');
+
+    /* Add details */
+    $details = array();
+    if (!is_null($requestLanguage['Script']))
+        $details[] = $CaMykS->get_locale($requestLanguage['Script'], 'language');
+    if (!is_null($requestLanguage['Country']))
+        $details[] = country_getLocalisedTitle($requestLanguage['Country'], $resultLanguage);
+    if (count($details) > 0)
+        $title .= ' ('.implode(', ', $details).')';
+
+    /* Return result */
+    return $title;
 }
 
 /* Language default country related methods */
