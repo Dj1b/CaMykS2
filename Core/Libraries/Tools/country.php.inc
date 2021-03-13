@@ -3,9 +3,9 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre7.1
  * @date Creation: Oct 2019
- * @date Modification: Jan 2021
+ * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -81,6 +81,9 @@ function country_getLocalisedTitles($params=array(), $language=null) {
  */
 function country_getLocalisedTitle($country, $language=null) {
     global $CaMykS;
+
+    /* Optimise country */
+    $country = strtolower($country);
 
     /* Load data file */
     $countriesData = country_getCountriesData();
