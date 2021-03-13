@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Mar 2020
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -115,7 +115,8 @@ $locales = array(
 
     /* Configuration Manager panel interface */
     'Configuration_EditManagerPassword' => 'Modifier le mot de passe',
-    'Configuration_DefaultLanguage' => 'Langue',
+    'Configuration_Language' => 'Langue',
+    'Configuration_DefaultLanguage' => 'Langue par d&eacute;faut',
     'Configuration_DefaultLanguageAutomatic' => 'Automatique',
     'Configuration_Theme' => 'Th&egrave;me',
     'Configuration_ThemeAutomatic' => 'Automatique',
@@ -130,5 +131,14 @@ $locales = array(
     'Configuration_SSLEnabled' => 'Activer SSL',
     'Configuration_RestrainedIPs' => 'Adresses IP Limit&eacute;es',
     'Configuration_RestrainedIPsNone' => 'Aucune',
+
+    /* Configuration Admin panel interface */
+    'Configuration_Languages' => 'Langues',
+    'Configuration_LanguagesNone' => 'Aucune',
+    'Configuration_EditionLanguages' => 'Langues en &eacute;ditions',
+    'Configuration_EntryPoint' => 'Point d\'entr&eacute;e',
+    'Configuration_SSL' => 'SSL',
+    'Configuration_KeepAlive' => 'Conserver la connexion',
+    'Configuration_SaveMode' => 'Mode d\'enregistrement',
 );
 ?>

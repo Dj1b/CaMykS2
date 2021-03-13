@@ -3,9 +3,9 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Dec 2019
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -466,7 +466,6 @@ final class CaMykSManager extends Plugin {
             /* Load specific data for sections */
             switch ($this->section) {
                 case 'Manager':
-                    $this->availableLanguages = language_getLocalisedTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
                     break;
             }
         } else
@@ -503,7 +502,7 @@ final class CaMykSManager extends Plugin {
             /* Load specific data for sections */
             switch ($this->section) {
                 case 'Manager':
-                    $this->availableLanguages = language_getLocalisedTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
+                    $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
                     break;
             }
         } else

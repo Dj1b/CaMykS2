@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, configuration panel, view manager section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2
  * @date Creation: Sep 2020
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -32,7 +32,7 @@ global $CaMykS;
 
     <div class="formElement half">
         <div class="formLabel">
-            <?= $this->get_locale('Configuration_DefaultLanguage'); ?>
+            <?= $this->get_locale('Configuration_Language'); ?>
         </div>
         <?php if ($CaMykS->get_configValue('Manager_DefaultLanguage') == '') : ?>
             <div class="formNoValue">
@@ -40,7 +40,7 @@ global $CaMykS;
             </div>
         <?php else : ?>
             <div class="formValue">
-                <?= language_getLocalisedTitle($CaMykS->get_configValue('Manager_DefaultLanguage')); ?>
+                <?= language_getLocalisedLongTitle($CaMykS->get_configValue('Manager_DefaultLanguage')); ?>
             </div>
         <?php endif; ?>
     </div>
