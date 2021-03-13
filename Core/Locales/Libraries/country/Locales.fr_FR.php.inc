@@ -3,16 +3,16 @@
  * @brief Countries french dictionary.
  * @details Engine / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0.1
+ * @version 1.0.0.2
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 $locales = array(
     'ad' => 'Andorre',
-    'ae' => 'Emirats Arabes Unis',
+    'ae' => '&Eacute;mirats Arabes Unis',
     'af' => 'Afghanistan',
     'ag' => 'Antigua-et-Barbuda',
     'ai' => 'Anguilla',
