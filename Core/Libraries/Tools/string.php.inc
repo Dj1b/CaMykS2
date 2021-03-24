@@ -3,10 +3,10 @@
  * @brief String specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -117,6 +117,50 @@ function string_getShortenedSentence($string='', $length=64) {
         return substr($string, 0, $length).'...';
     }
     return $string;
+}
+
+/* String search methods */
+
+/**
+ * Check if given string starts with other string.
+ * @param string $haystack
+ * @param mixed $needle
+ * @param boolean $caseSensitive
+ * @return boolean result
+ */
+function string_startsWith($haystack, $needle, $caseSensitive=false) {
+    if (is_array($needle)) {
+        foreach ($needle as $id => $value)
+            $needle[$id] = preg_quote($value, '/');
+        return preg_match('/^('.implode('|', $needle).')/'.($caseSensitive?'i':''), $haystack) > 0;
+    } else {
+        if ($caseSensitive) {
+            $needle = strtolower ($needle);
+            $haystack = strtolower ($haystack);
+        }
+        return $needle === "" || strpos($haystack, $needle) === 0;
+    }
+}
+
+/**
+ * Check if given string ends with other string.
+ * @param string $haystack
+ * @param mixed $needle
+ * @param boolean $caseSensitive
+ * @return boolean result
+ */
+function string_endsWith($haystack, $needle, $caseSensitive=false) {
+    if (is_array($needle)) {
+        foreach ($needle as $id => $value)
+            $needle[$id] = preg_quote($value, '/');
+        return preg_match('/('.implode('|', $needle).')$/'.($caseSensitive?'i':''), $haystack) > 0;
+    } else {
+        if ($caseSensitive) {
+            $needle = strtolower ($needle);
+            $haystack = strtolower ($haystack);
+        }
+        return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
+    }
 }
 
 ?>
