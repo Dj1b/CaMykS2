@@ -3,10 +3,10 @@
  * @brief Date related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0.1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -14,22 +14,22 @@
 /**
  * @def NOW
  */
-define('NOW',    time());
+define('NOW',       time());
 
 /**
  * @def TODAY
  */
-define('TODAY',    mktime(0, 0, 0, date('m'), date('d'), date('Y')));
+define('TODAY',     mktime(0, 0, 0, date('m'), date('d'), date('Y')));
 
 /**
  * @def TOMORROW
  */
-define('TOMORROW',    mktime(0, 0, 0, date('m'), date('d')+1, date('Y')));
+define('TOMORROW',  mktime(0, 0, 0, date('m'), date('d')+1, date('Y')));
 
 /**
  * @def YESTERDAY
  */
-define('YESTERDAY',    mktime(0, 0, 0, date('m'), date('d')-1, date('Y')));
+define('YESTERDAY', mktime(0, 0, 0, date('m'), date('d')-1, date('Y')));
 
 /* Textual display methods */
 
@@ -457,7 +457,6 @@ function date_getDay($date=NOW) {
     return strftime('%A', $date);
 }
 
-
 /* Test methods */
 
 /**
@@ -515,5 +514,40 @@ function date_isTomorrow($date=NOW) {
  */
 function date_isYesterday($date=NOW) {
     return mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $date)) == YESTERDAY;
+}
+
+/* Time specific methods */
+
+/**
+ * Transform an float to a time.
+ * @params integer $value
+ * @param string $hSep
+ * @param mixed $mSep
+ * @return string
+ */
+function date_float2Time($value=0, $hSep=':', $mSep=false) {
+    /* Make sure value is a float  */
+    $value = (float)$value;
+
+    /* Make sure value is a correct hour of a day */
+    $value = fmod($value, 24);
+
+    /* Add hours */
+    $result = str_pad((int)$value, 2, '0', STR_PAD_LEFT);
+
+    /* Add minutes */
+    $result .= $hSep;
+    $minutes = ($value-(int)$value) * 60;
+    $result .= str_pad((int)$minutes, 2, '0', STR_PAD_LEFT);
+
+    /* Add seconds */
+    if ($mSep !== false) {
+        $result .= $mSep;
+        $seconds = ($minutes-(int)$minutes) * 60;
+        $result .= str_pad((int)$seconds, 2, '0', STR_PAD_LEFT);
+    }
+
+    /* Return result */
+    return $result;
 }
 ?>
