@@ -3,9 +3,9 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Mar 2020
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -66,13 +66,13 @@ class HTMLFormInput extends CaMykSLibrary {
     private $specificAttributes = array(
         'text' => array(
             'maxlength'             => array('type'=>'int', 'default'=>32),
-            'minlength'             => array('type'=>'int', 'default'=>0),
-            'size'                  => array('type'=>'int', 'default'=>0),
+            'minlength'             => array('type'=>'int', 'default'=>null),
+            'size'                  => array('type'=>'int', 'default'=>null),
         ),
         'password' => array(
             'maxlength'             => array('type'=>'int', 'default'=>32),
-            'minlength'             => array('type'=>'int', 'default'=>0),
-            'size'                  => array('type'=>'int', 'default'=>0),
+            'minlength'             => array('type'=>'int', 'default'=>null),
+            'size'                  => array('type'=>'int', 'default'=>null),
         ),
         'textarea' => array(
             'cols'                  => array('type'=>'int', 'default'=>40),
@@ -96,11 +96,11 @@ class HTMLFormInput extends CaMykSLibrary {
         ),
         'number' => array(
             'maxlength'             => array('type'=>'int', 'default'=>4),
-            'minlength'             => array('type'=>'int', 'default'=>0),
-            'size'                  => array('type'=>'int', 'default'=>0),
+            'minlength'             => array('type'=>'int', 'default'=>null),
+            'size'                  => array('type'=>'int', 'default'=>null),
             'step'                  => array('type'=>'int', 'default'=>1),
-            'min'                   => array('type'=>'int', 'default'=>''),
-            'max'                   => array('type'=>'int', 'default'=>''),
+            'min'                   => array('type'=>'int', 'default'=>null),
+            'max'                   => array('type'=>'int', 'default'=>null),
         ),
     );
 
@@ -324,11 +324,10 @@ class HTMLFormInput extends CaMykSLibrary {
         if (isset($this->params['type']) and isset($this->specificAttributes[$this->params['type']])) {
             foreach ($this->specificAttributes[$this->params['type']] as $name => $attribute) {
                 if ($attribute['type'] == 'str') {
-                    if ($this->params[$name] != '')
+                    if ($this->params[$name] !== '')
                         $html .= ' '.$name.'="'.$this->params[$name].'"';
                 } elseif ($attribute['type'] == 'int') {
-
-                    if ((is_string($this->params[$name]) and $this->params[$name] != '') or (is_int($this->params[$name]) and $this->params[$name] > 0))
+                    if (is_int($this->params[$name]))
                         $html .= ' '.$name.'="'.$this->params[$name].'"';
                 }
             }
