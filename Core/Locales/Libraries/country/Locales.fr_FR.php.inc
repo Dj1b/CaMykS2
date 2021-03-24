@@ -3,7 +3,7 @@
  * @brief Countries french dictionary.
  * @details Engine / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0.2
+ * @version 1.0pre0.3
  * @date Creation: Nov 2019
  * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -156,7 +156,7 @@ $locales = array(
     'mf' => 'Saint-Martin',
     'mg' => 'Madagascar',
     'mh' => 'Marshall',
-    'mk' => 'Ex-R&eacute;publique Yougoslave de Mac&eacute;doine',
+    'mk' => 'Mac&eacute;doine du Nord',
     'ml' => 'Mali',
     'mm' => 'Birmanie',
     'mn' => 'Mongolie',
@@ -207,7 +207,7 @@ $locales = array(
     'ru' => 'Russie (F&eacute;d&eacute;ration de)',
     'rw' => 'Rwanda',
     'sa' => 'Arabie Saoudite',
-    'sb' => 'Salomon (Iles)',
+    'sb' => 'Salomon (&Icirc;les)',
     'sc' => 'Seychelles',
     'sd' => 'Soudan',
     'se' => 'Su&egrave;de',
@@ -250,7 +250,7 @@ $locales = array(
     'uy' => 'Uruguay',
     'uz' => 'Ouzb&eacute;kistan',
     'va' => 'Vatican (Etat de la Cit&eacute; du)',
-    'vc' => 'Saint-Vincent-et-les Grenadines',
+    'vc' => 'Saint-Vincent et les Grenadines',
     've' => 'Venezuela',
     'vg' => '&Icirc;les Vierges britanniques',
     'vi' => '&Icirc;les Vierges des &Eacute;tats-Unis',
