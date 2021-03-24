@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.4.1
+ * @version 1.0pre4.2
  * @date Creation: Oct 2019
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -415,7 +415,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * <br />Method is static to be called without having a working database connection.
      * @return array
      */
-    public static function get_availableDriverList() {
+    public static function get_availableDrivers() {
         $list = array();
 
         if (extension_loaded('mysql'))
