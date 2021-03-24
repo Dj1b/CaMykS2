@@ -3,10 +3,10 @@
  * @brief Image manipulating object
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0pre1
  * @date Creation: Dec 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Mar 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Adds ImageMagick (and/or other manipulation engines) methods.
@@ -20,6 +20,12 @@ namespace CaMykS2;
  * Image class.
  */
 final class Image extends CaMykSLibrary {
+    /**
+     * @var constant array DEFAULTPARAMS
+     * @brief Known image manipulation engines.
+     */
+    private const KNOWNENGINES = array('gd');
+
     /**
      * @var string $source
      * @brief Image source path.
@@ -37,12 +43,6 @@ final class Image extends CaMykSLibrary {
      * @brief Is image loaded.
      */
     private $loaded = false;
-
-    /**
-     * @var array $knownEngines
-     * @brief Known image manipulation engines.
-     */
-    private $knownEngines = array('gd');
 
     /**
      * @var mixed $engine
@@ -117,7 +117,7 @@ final class Image extends CaMykSLibrary {
         );
     }
 
-    /* Public methods */
+    /* Image related public methods */
 
     /**
      * Load image resource.
@@ -364,10 +364,10 @@ final class Image extends CaMykSLibrary {
         $engine = strToLower($engine);
 
         /* Check provided engine */
-        if (in_array($engine, $this->knownEngines)) {
+        if (in_array($engine, self::KNOWNENGINES)) {
             /* Check favorite engine from configuration */
             $engine = $this->get_configValue('Engine_PictureEditor');
-            if (!in_array($engine, $this->knownEngines))
+            if (!in_array($engine, self::KNOWNENGINES))
                 return $this->add_error(1, $engine, __FILE__, __LINE__);
         }
 
@@ -970,6 +970,22 @@ final class Image extends CaMykSLibrary {
         imageAlphaBlending($this->resource, true);
         imageSaveAlpha($this->resource, true);
         $this->hasTransparency = true;
+    }
+
+    /* Static public methods */
+
+    /**
+     * Return available engine list.
+     * @return array
+     */
+    public static function get_availableEngines() {
+        $list = array();
+
+        foreach (self::KNOWNENGINES as $engine)
+            if (extension_loaded($engine))
+                $list[] = $engine;
+
+        return $list;
     }
 }
 ?>
