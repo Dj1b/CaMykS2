@@ -3,7 +3,7 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7.1
+ * @version 1.0pre8
  * @date Creation: Oct 2019
  * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -317,5 +317,24 @@ function country_getFlagTag($country, $collection=null, $size=null, $URLMode=fal
 
     /* Return built tag */
     return html_getImg($imgParams);
+}
+
+/* Timezone related methods */
+
+/**
+ * Return timezone list for given country.
+ * @params string $country
+ * @return array
+ */
+function country_getTimezones($country) {
+    /* Load data file */
+    $countriesData = country_getCountriesData();
+
+    /* Check country */
+    if (!isset($countriesData[$country]))
+        return array();
+
+    /* Return timezones */
+    return $countriesData[$country]['Timezones'];
 }
 ?>
