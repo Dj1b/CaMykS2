@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre25
+ * @version 2.0pre26
  * @date Creation: Feb 2017
- * @date Modification: Feb 2021
+ * @date Modification: Mar 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -626,7 +626,7 @@ final class CaMykS {
      * @param string $configFile
      * @return void
      */
-    private function load_configuration($configFile) {
+    public function load_configuration($configFile) {
         $config = new ConfigurationFile();
 
         /* Load engine configuration file */
@@ -645,11 +645,11 @@ final class CaMykS {
      */
     public function get_configValue($name, $default=null) {
         /* Check website configuration */
-        if (isset($this->websiteConfiguration[$name]) and $this->websiteConfiguration[$name] != null)
+        if (isset($this->websiteConfiguration[$name]) and !is_null($this->websiteConfiguration[$name]))
             return $this->websiteConfiguration[$name];
 
         /* Check CaMykS configuration */
-        if (isset($this->engineConfiguration[$name]) and $this->engineConfiguration[$name] != null)
+        if (isset($this->engineConfiguration[$name]) and !is_null($this->engineConfiguration[$name]))
             return $this->engineConfiguration[$name];
 
         /* Return default value */
@@ -833,68 +833,73 @@ final class CaMykS {
     /* Plugin related methods */
 
     /**
-     * Load plugin.
+     * Load plugin from its source.
      * @param string $name
      * @param string $type
      * @param string $location
-     * @return boolean result
+     * @return Plugin
      */
-    public function load_plugin($name, $type, $location=null) {
+    public function &load_plugin($name, $type, $location=null) {
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
 
-        /* Check is already loaded */
-        if (isset($this->plugins[$folder][$name]))
-            return true;
+        /* Build full class name */
+        $class = 'CaMykS2\\'.$name;
 
-        /* Check is in system plugins */
-        if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
-            $location = 'System';
-            $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
-        }
+        /* Check class is already loaded */
+        if (!class_exists($class)) {
+            /* Check is in system plugins */
+            if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
+                $location = 'System';
+                $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
+            }
 
-        /* Check is in shared plugins */
-        elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
-            $location = 'Shared';
-            $path = $CaMykS->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
-        }
+            /* Check is in shared plugins */
+            elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
+                $location = 'Shared';
+                $path = $this->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
+            }
 
-        /* Check is in website plugins */
-        elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
-            $location = 'Website';
-            $path = $CaMykS->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
-        }
+            /* Check is in website plugins */
+            elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
+                $location = 'Website';
+                $path = $this->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
+            }
 
-        /* Plugin not found */
-        else {
-            /* Log error ? */
+            /* Plugin not found */
+            else {
+                /* Log error ? */
 
-            /* Return failure */
-            return false;
-        }
+                /* Return failure */
+                return $this->falseRef;
+            }
 
-        /* Load plugin */
-        try {
+            /* Load plugin file */
             require_once $path.$name.CAMYKS_LIBRARYEXTENSION;
-            $class = 'CaMykS2\\'.$name;
-            $this->plugins[$folder][$name] = new $class($location);
+
+            /* Check if class exists */
+            if (!class_exists($class))
+                return $this->falseRef;
+        }
+
+        /* Load plugin object */
+        try {
+            $plugin = new $class($location);
+            return $plugin;
 
         } catch (Exception $e) {
             /* Log error */
 
             /* Return failure */
-            return false;
+            return $this->falseRef;
         }
-
-        /* Return success */
-        return true;
     }
 
     /**
      * Load component.
      * @param string $name
      * @param string $location
-     * @return boolean result
+     * @return Component
      */
     public function load_component($name, $location=null) {
         return $this->load_plugin($name, 'Component', $location);
@@ -904,7 +909,7 @@ final class CaMykS {
      * Load module.
      * @param string $name
      * @param string $location
-     * @return boolean result
+     * @return Module
      */
     public function load_module($name, $location=null) {
         return $this->load_plugin($name, 'Module', $location);
@@ -914,7 +919,7 @@ final class CaMykS {
      * Load template.
      * @param string $name
      * @param string $location
-     * @return boolean result
+     * @return Template
      */
     public function load_template($name, $location=null) {
         return $this->load_plugin($name, 'Template', $location);
@@ -924,14 +929,14 @@ final class CaMykS {
      * Load theme.
      * @param string $name
      * @param string $location
-     * @return boolean result
+     * @return Theme
      */
     public function load_theme($name, $location=null) {
         return $this->load_plugin($name, 'Theme', $location);
     }
 
     /**
-     * Return link to plugin object.
+     * Return link to stored plugin object.
      * @param string $name
      * @param string $type
      * @param boolean $autoLoad
@@ -952,8 +957,13 @@ final class CaMykS {
             return $this->plugins[$folder][$pluginName];
 
         /* Try to load plugin */
-        if ($autoLoad and $this->load_plugin($name, $type, $location))
+        if ($autoLoad and ($plugin = $this->load_plugin($name, $type, $location)) !== false) {
+            /* Store plugin */
+            $this->plugins[$folder][$name] = &$plugin;
+
+            /* Return plugin */
             return $this->plugins[$folder][$pluginName];
+        }
 
         /* Return failure */
         return $this->falseRef;
@@ -1001,6 +1011,117 @@ final class CaMykS {
      */
     public function &get_template($name, $autoLoad=false, $location=null) {
         return $this->get_plugin($name, 'Template', $autoLoad, $location);
+    }
+
+    /**
+     * Return available component list.
+     * @param array $params
+     * @return array
+     */
+    public function get_availableComponents($params=array()) {
+        /* Return plugins */
+        return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Component')));
+    }
+
+    /**
+     * Return available module title list.
+     * @param array $params
+     * @return array
+     */
+    public function get_availableModules($params=array()) {
+        /* Build default params */
+        $defaultParams = array('Type'=>null);
+
+        /* Merge params */
+        $params = array_merge($defaultParams, $params);
+
+        /* Initialise plugins */
+        $plugins = array();
+
+        /* Check for admin modules */
+        if (is_null($params['Type']) or $params['Type'] == 'Admin')
+            $plugins = array_merge($plugins, $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Module', 'PluginSubType'=>'Admin'))));
+
+        /* Check for content modules */
+        if (is_null($params['Type']) or $params['Type'] == 'Content')
+            $plugins = array_merge($plugins, $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Module', 'PluginSubType'=>'Content'))));
+
+        /* Check for tool modules */
+        if (is_null($params['Type']) or $params['Type'] == 'Tool')
+            $plugins = array_merge($plugins, $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Module', 'PluginSubType'=>'Tool'))));
+
+        /* Return module list */
+        return $plugins;
+    }
+
+    /**
+     * Return available theme title list.
+     * @param array $params
+     * @return array
+     */
+    public function get_availableThemes($params=array()) {
+        /* Return plugins */
+        return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Theme')));
+    }
+
+    /**
+     * Return available template title list.
+     * @param array $params
+     * @return array
+     */
+    public function get_availableTemplates($params=array()) {
+        /* Return plugins */
+        return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Template')));
+    }
+
+    /**
+     * Return available plugin title list.
+     * @param array $params
+     * @return array
+     */
+    private function get_availablePlugins($params) {
+        /* Build default params */
+        $defaultParams = array('Location'=>array('Website', 'Shared', 'System'), 'Package'=>null, 'PluginType'=>null, 'PluginSubType'=>'');
+
+        /* Merge params */
+        $params = array_merge($defaultParams, $params);
+
+        /* Check params */
+        if (is_string($params['Location']))
+            $params['Location'] = array($params['Location']);
+
+        /* Initialise list */
+        $plugins = array();
+
+        /* Check plugin type */
+        if ($params['PluginSubType'] !== '');
+            $params['PluginSubType'] = '/'.$params['PluginSubType'];
+
+        /* Build folders following locations */
+        $folders = array();
+        if (in_array('System', $params['Location']))
+            $folders['System'] = $this->get_engineFileFullPath('Core/Plugins/'.$params['PluginType'].'s'.$params['PluginSubType']);
+        if (in_array('Shared', $params['Location']))
+            $folders['Shared'] = $this->get_engineFileFullPath('Plugins/'.$params['PluginType'].'s'.$params['PluginSubType']);
+        if (in_array('Website', $params['Location']))
+            $folders['Website'] = $this->get_websiteFileFullPath('Plugins/'.$params['PluginType'].'s'.$params['PluginSubType']);
+
+        /* Load plugins from each folders */
+        foreach ($folders as $location => $folder) {
+            $pluginNames = folder_listFolders($folder);
+
+            foreach ($pluginNames as $pluginName) {
+                $plugin = $this->load_plugin($pluginName, $params['PluginType'], $location);
+                if ($plugin === false)
+                    continue;
+                if (!is_null($params['Package']) and $plugin->get_package() !== $params['Package'])
+                    continue;
+                $plugins[$pluginName] = $plugin;
+            }
+        }
+
+        /* Return plugin list */
+        return $plugins;
     }
 
     /**
