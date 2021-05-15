@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre26
+ * @version 2.0pre27
  * @date Creation: Feb 2017
- * @date Modification: Mar 2021
+ * @date Modification: May 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -402,6 +402,11 @@ final class CaMykS {
 
         /* Load engine configuration */
         $this->load_configuration('Engine');
+        
+        /* Start session */
+        session_start(array(
+            'cookie_lifetime' => $this->get_configValue('Engine_SessionLifetime', 24)*60,
+        ));
 
         /* Define time zone */
         date_default_timezone_set($this->get_configValue('Engine_TimeZone', 'Europe/Paris'));
