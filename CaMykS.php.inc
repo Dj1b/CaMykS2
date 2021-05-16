@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre27
+ * @version 2.0pre28
  * @date Creation: Feb 2017
  * @date Modification: May 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -247,7 +247,7 @@ final class CaMykS {
             return null;
         }
 
-        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'localStorage')))
+        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'localStorage', 'errorHandler')))
             return $this->$variableName;
     }
 
@@ -402,7 +402,7 @@ final class CaMykS {
 
         /* Load engine configuration */
         $this->load_configuration('Engine');
-        
+
         /* Start session */
         session_start(array(
             'cookie_lifetime' => $this->get_configValue('Engine_SessionLifetime', 24)*60,
@@ -755,6 +755,7 @@ final class CaMykS {
         $this->load_library('php', 'Tools');
         $this->load_library('server', 'Tools');
         $this->load_library('string', 'Tools');
+        $this->load_library('url', 'Tools');
         $this->load_library('util', 'Tools');
 
         /* Load parent object libraries */
@@ -1249,43 +1250,11 @@ final class CaMykS {
 
     /**
      * Define website required URL.
-     * @param integer $SSLMode
+     * @param string $SSLMode
      * @return void
      */
-    private function define_baseURL($SSLMode=0) {
-        /* Load current URL */
-        $url = $_SERVER['REQUEST_URI'];
-
-        /* Load website URL */
-        $this->websiteURL = $this->get_configValue('Website_URL');
-        if ($this->websiteURL === false) {
-            $this->websiteURL = substr($url, 0, strrpos($url, '/'));
-        }
-
-        /* Check scheme from SSLMode */
-        switch ($SSLMode) {
-            case 1 : // Forced to HTTPS
-                $scheme = 'https';
-                break;
-            case 2 : // Forced to HTTP
-                $scheme = 'http';
-                break;
-            case 3 : // Autocheck
-                /* @todo */
-                break;
-            case 0 : // default / client's choice
-            default :
-                $scheme = parse_url($url, PHP_URL_SCHEME);
-        }
-
-        /* Check host */
-        $host = parse_url($this->websiteURL, PHP_URL_HOST);
-
-        /* Check path */
-        $path = parse_url($this->websiteURL, PHP_URL_PATH);
-
-        /* Finalise URL */
-        $this->websiteURL = $scheme.'://'.$host.'/'.($path != '' ? $path.'/' : '');
+    private function define_baseURL($SSLMode='Default') {
+        $this->websiteURL = url_getURLWithSSLMode($SSLMode, $this->get_configValue('Website_URL'));
     }
 
     /**
@@ -1296,20 +1265,10 @@ final class CaMykS {
     public function get_baseURL($URLMode=null) {
         /* Check for website default URL mode */
         if ($URLMode == null)
-            $URLMode = $this->get_configValue('Website_URLMode');
+            $URLMode = $this->get_configValue('Visit_URLMode');
 
         /* Return base url from mode */
-        switch ($URLMode) {
-            case 'Absolute':
-            case 'AbsoluteLong':
-                return $this->websiteURL.'/';
-            case 'AbsoluteShort':
-                return '/';
-            case 'Relative':
-            default:
-                return '';
-        }
-        return '';
+        return url_getBaseURLFromMode($URLMode, $this->websiteURL);
     }
 
     /**
