@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Dec 2019
- * @date Modification: Mar 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -137,8 +137,16 @@ final class CaMykSManager extends Plugin {
                 $this->initialise_Login();
                 break;
 
-            case 'Logout': /* Close connection */
+            case 'Logout': /* Close session */
                 $this->initialise_Logout();
+                break;
+
+            case 'InsertFolder':
+                $this->initialise_InsertFolder();
+                break;
+
+            case 'InsertCaMykS2Site':
+                $this->initialise_InsertCaMykS2Site();
                 break;
 
             case 'OpenSiteVisit':
@@ -352,6 +360,22 @@ final class CaMykSManager extends Plugin {
 
         /* Update layout */
         $this->update_selectedLayout('SiteList');
+    }
+    
+    /**
+     * Initialise plugin in InsertFolder mode.
+     * @return void
+     */
+    private function initialise_InsertFolder() {
+    
+    }
+    
+    /**
+     * Initialise plugin in InsertCaMykS2Site mode.
+     * @return void
+     */
+    private function initialise_InsertCaMykS2Site() {
+    
     }
 
     /**
