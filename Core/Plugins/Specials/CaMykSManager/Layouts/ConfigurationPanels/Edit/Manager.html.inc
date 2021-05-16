@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, configuration panel, edit manager section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2021
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -47,7 +47,7 @@ global $CaMykS;
             <?= $this->get_locale('Configuration_Theme'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'Theme', 'default'=>$CaMykS->get_configValue('Manager_Theme'), 'values'=>array())); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'Theme', 'default'=>$CaMykS->get_configValue('Manager_Theme'), 'values'=>$this->availableThemes)); ?>
         </div>
     </div>
 

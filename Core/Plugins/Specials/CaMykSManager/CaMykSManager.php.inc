@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Dec 2019
  * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -58,7 +58,7 @@ final class CaMykSManager extends Plugin {
      * @var array $configurationSections
      * @brief List sections available to configure.
      */
-    protected $configurationSections = array('Manager', 'Engine', 'Visit', 'Admin', 'Database', 'GDPR', 'Plugins'/*, 'Request'*/);
+    protected $configurationSections = array('Manager', 'Engine', 'Visit', 'Admin', 'Database', 'Plugins'/*, 'Request'*/);
 
     /**
      * @var string $section
@@ -361,21 +361,21 @@ final class CaMykSManager extends Plugin {
         /* Update layout */
         $this->update_selectedLayout('SiteList');
     }
-    
+
     /**
      * Initialise plugin in InsertFolder mode.
      * @return void
      */
     private function initialise_InsertFolder() {
-    
+
     }
-    
+
     /**
      * Initialise plugin in InsertCaMykS2Site mode.
      * @return void
      */
     private function initialise_InsertCaMykS2Site() {
-    
+
     }
 
     /**
@@ -462,7 +462,7 @@ final class CaMykSManager extends Plugin {
         $CaMykS->currentTemplate->enable_actionBar();
 
         /* Load available database drivers */
-        $this->dbDrivers = DatabaseConnector::get_availableDriverList();
+        $this->dbDrivers = DatabaseConnector::get_availableDrivers();
 
         /* Update layout */
         $this->update_selectedLayout('InformationPanel');
@@ -486,10 +486,14 @@ final class CaMykSManager extends Plugin {
             $this->section = $_REQUEST['Section'];
 
             /* Load configuration */
+            $CaMykS->load_configuration($this->section);
 
             /* Load specific data for sections */
             switch ($this->section) {
-                case 'Manager':
+                case 'Engine':
+                    /* Load error logging data */
+                    $this->errorLoggingOutputs = $CaMykS->errorHandler->get_availableLoggingOutputs();
+                    $this->errorLoggingLevels = $CaMykS->errorHandler->get_availableLoggingLevels();
                     break;
             }
         } else
@@ -513,30 +517,67 @@ final class CaMykSManager extends Plugin {
         /* Enable action bar buttons */
         $CaMykS->currentTemplate->enable_actionBar();
 
-        /* Load section to configure */
-        if (isset($_REQUEST['Section']) and in_array($_REQUEST['Section'], $this->configurationSections)) {
-            $this->section = $_REQUEST['Section'];
-
-            /* Load configuration */
-
-            /* Build configuration form */
-            $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
-            $this->configurationForm->add_hidden('Section', $this->section);
-
-            /* Load specific data for sections */
-            switch ($this->section) {
-                case 'Manager':
-                    $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
-                    break;
-            }
-        } else
+        /* Check section to configure */
+        if (!isset($_REQUEST['Section']) or !in_array($_REQUEST['Section'], $this->configurationSections))
             return $this->initialise_DisplayConfigurationPanel();
+
+        /* Load section */
+        $this->section = $_REQUEST['Section'];
+
+        /* Load configuration */
+        $CaMykS->load_configuration($this->section);
+
+        /* Build configuration form */
+        $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
+        $this->configurationForm->add_hidden('Section', $this->section);
+
+        /* Load specific data for sections */
+        switch ($this->section) {
+            case 'Manager':
+                /* Load available themes */
+                $this->availableThemes = $this->get_configurationAvailableThemeTitles();
+
+                /* Load available languages */
+                $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
+                break;
+            case 'Engine':
+                /* Load timezone library and data */
+                $CaMykS->load_library('timezone', 'Tools');
+                $this->timeZoneLocations = timezone_getLocationTitles(array('GroupByZone'=>true));
+
+                /* Load error logging data */
+                $this->errorLoggingOutputs = $CaMykS->errorHandler->get_availableLoggingOutputs();
+                $this->errorLoggingLevels = $CaMykS->errorHandler->get_availableLoggingLevels();
+
+                /* Load Image library and data */
+                $CaMykS->load_library('Image', 'Objects');
+                $this->imageEditorEngines = Image::get_availableEngines();
+                break;
+            case 'Admin':
+                /* Load available themes */
+                $this->availableThemes = $this->get_configurationAvailableThemeTitles();
+
+                /* Load URL modes */
+                $this->availableSSLModes = url_getSSLModes();
+
+                break;
+            case 'Visit':
+                /* Load URL modes */
+                $this->availableURLModes = url_getBaseURLModes();
+                $this->availableSSLModes = url_getSSLModes();
+
+                break;
+            case 'Database':
+                /* Load available database drivers */
+                $this->databaseDrivers = array_merge(array('Undefined' => $this->get_locale('Configuration_DriverUndefined')), DatabaseConnector::get_availableDrivers());
+                break;
+        }
 
         /* Update layout */
         $this->subAction = 'Edit';
         $this->update_selectedLayout('ConfigurationPanel');
 
-        /* End action  */
+        /* End action */
         return;
     }
 
@@ -702,6 +743,30 @@ final class CaMykSManager extends Plugin {
             return '';
 
         return $file->get_description(array('AddSize'=>true));
+    }
+
+    /* Private tool methods */
+
+    /**
+     * Return available theme titles for configuration
+     * @return array
+     */
+    private function get_configurationAvailableThemeTitles() {
+        global $CaMykS;
+
+        /* Initialise result */
+        $result = array();
+
+        /* Load avaiable themes from CMS */
+        $themes = $CaMykS->get_availableThemes();
+
+        /* CHeck themes that support admin mode */
+        foreach ($themes as $name => $theme)
+            if ($theme->support_adminMode())
+                $result[$name] = $name;
+
+        /* Return result */
+        return $result;
     }
 }
 ?>
