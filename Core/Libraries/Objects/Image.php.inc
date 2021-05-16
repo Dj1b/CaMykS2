@@ -3,13 +3,14 @@
  * @brief Image manipulating object
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre1.1
  * @date Creation: Dec 2019
  * @date Modification: Mar 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @todo Adds ImageMagick (and/or other manipulation engines) methods.
+ * @warning This library is not loaded with CaMykS initialisation.
+ * @todo Add ImageMagick (and/or other manipulation engines) methods.
  * @todo Finalise crop calculation in _gd_rotate method.
  * @todo Complete methods documentation with params details.
  */
