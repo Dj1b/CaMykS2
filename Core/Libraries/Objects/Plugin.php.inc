@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief Plugin object.
- * <br />Parent object for Module, Template, Theme, Component, extends CaMykSLibrary.
+ * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -38,9 +38,15 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * @var string $pluginLocation
-     * @brief Plugin location, values are "Website", "Shared", 'System".
+     * @brief Plugin location, values are "Website", "Shared", "System".
      */
     protected $pluginLocation;
+
+    /**
+     * @var string $pluginPackage
+     * @brief Plugin package.
+     */
+    protected $pluginPackage;
 
     /**
      * @var string $pluginFolder
@@ -80,7 +86,7 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * @var array $styleFiles.
-     * @brief List of styles to be attached.
+     * @brief List of styles to be attached in site mode.
      * @note Style files are indicated like "file.js" => "media and condition"
      * @note Optionaly, version can be added to file name like "file.js?v=1.0.0"
      */
@@ -89,7 +95,8 @@ abstract class Plugin extends CaMykSLibrary {
     /**
      * @var array $adminStyleFiles.
      * @brief List of styles to be attached in admin mode.
-     * @note Same as visitStyleFiles.
+     * @note Style files are indicated like "file.js" => "media and condition"
+     * @note Optionaly, version can be added to file name like "file.js?v=1.0.0"
      */
     protected $adminStyleFiles = array();
 
@@ -212,7 +219,15 @@ abstract class Plugin extends CaMykSLibrary {
      * @return string
      */
     public function get_version() {
-        return $this->version;
+        return $this->pluginVersion;
+    }
+
+    /**
+     * Return plugin package.
+     * @return string
+     */
+    public function get_package() {
+        return $this->pluginPackage;
     }
 
     /* Libraries related methods */
