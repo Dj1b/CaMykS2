@@ -3,10 +3,10 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Dec 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: May 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -40,7 +40,6 @@ function http_getIntRequest($name, $default=0) {
 function http_getFloatRequest($name, $default=0) {
     return (float)http_getStringRequest($name, $default);
 }
-
 
 /**
  * Return HTTP response code list.
@@ -145,38 +144,40 @@ function http_getResponseCodeName($code=200) {
  * Return contents over HTTP.
  * @param array $params
  * @parblock - Available parameters are <br />
- * \e string url <br />
- * \e string engine - \b php / \b curl <br />
- * \e string method - \b GET / \b POST <br />
- * \e array values <br />
- * \e boolean SSL_VerifyPeer <br />
- * \e string user_agent <br />
- * \e string referer <br />
- * \e integer timeout <br />
+ * \e string URL <br />
+ * \e string Engine - \b php / \b curl <br />
+ * \e string Method - \b GET / \b POST <br />
+ * \e mixed Content <br />
+ * \e boolean SSLVerifyPeer <br />
+ * \e string UserAgent <br />
+ * \e string Referer <br />
+ * \e integer Timeout <br />
+ * \e mixed Headers <br />
  * @endparblock
  * @return string
  */
 function http_getContents($params=array()) {
     global $CaMykS;
 
-    /* build params list */
+    /* Build params list */
     $defaultParams = array(
         'URL'               => '',
         'Engine'            => 'php', // php | curl
         'Method'            => 'GET', // GET | POST
-        'Values'            => array(), // fields
-        'SSLVerifyPeer'    => true,
-        'UserAgent'        => $CaMykS->get_configValue('Engine_UserAgent'),
+        'Content'           => null, // fields
+        'SSLVerifyPeer'     => true,
+        'UserAgent'         => $CaMykS->get_configValue('Engine_UserAgent'),
         'Referer'           => '',
         'Timeout'           => 60,
+        'Headers'           => array('Content-type' => 'application/x-www-form-urlencoded'),
     );
     $params = array_merge($defaultParams, $params);
 
-    /* check curl engine */
-    if ($params['Engine'] == 'curl' and !function_exists('curl_init'))
+    /* Check cURL engine */
+    if ($params['Engine'] == 'curl' and !extension_loaded('curl'))
         $params['Engine'] = 'php';
 
-    /* get context using the indicated engine */
+    /* Check engine to use */
     if ($params['Engine'] == 'curl')
         return http_getContentsUsingCURL($params);
     return http_getContentsUsingPHP($params);
@@ -186,34 +187,46 @@ function http_getContents($params=array()) {
  * Return contents over HTTP using php functions.
  * @param array $params
  * @parblock - Available parameters are <br />
- * \e string url <br />
- * \e string method - \b GET / \b POST <br />
- * \e array values <br />
- * \e string user_agent <br />
+ * \e string URL <br />
+ * \e string Method - \b GET / \b POST <br />
+ * \e mixed Content <br />
+ * \e boolean SSLVerifyPeer <br />
+ * \e string UserAgent <br />
  * \e string referer <br />
  * \e integer timeout <br />
+ * \e mixed Headers <br />
  * @endparblock
  * @return false on failure, string on success
  */
 function http_getContentsUsingPHP($params=array()) {
     global $CaMykS;
 
-    /* build params list */
+    /* Build params list */
     $defaultParams = array(
         'URL'           => '',
         'Method'        => 'GET', // GET | POST
-        'Values'        => array(), // fields
-        'SSLVerifyPeer'=> true,
-        'UserAgent'    => $CaMykS->get_configValue('Engine_UserAgent'),
+        'Content'       => array(), // fields
+        'SSLVerifyPeer' => true,
+        'UserAgent'     => $CaMykS->get_configValue('Engine_UserAgent'),
         'Referer'       => '',
         'Timeout'       => 60,
+        'Headers'       => array('Content-type' => 'application/x-www-form-urlencoded'),
     );
     $params = array_merge($defaultParams, $params);
 
-    /* build context */
+    /* Build header */
+    if (is_string($params['Headers']))
+        $header = $params['Headers'];
+    elseif (is_array($params['Headers'])) {
+        $header = '';
+        foreach ($params['Headers'] as $name => $value)
+            $header = $name.":".$value."\r\n";
+    }
+
+    /* Build context */
     $opts = array(
         'http' => array(
-            'header'        => 'Content-type: application/x-www-form-urlencoded',
+            'header'        => $header,
             'method'        => $params['Method'],
             'user_agent'    => $params['UserAgent'],
             'referer'       => $params['Referer'],
@@ -221,7 +234,7 @@ function http_getContentsUsingPHP($params=array()) {
         ),
     );
 
-    /* check SSL peer verification */
+    /* Check SSL peer verification */
     if ($params['SSLVerifyPeer']) {
         $opts['ssl'] = array(
             'verify_peer'       => false,
@@ -229,14 +242,17 @@ function http_getContentsUsingPHP($params=array()) {
         );
     }
 
-    /* add fields values to context */
-    if (count($params['Values']) > 0) {
+    /* Add content to context */
+    if (is_array($params['Content']) and count($params['Content']) > 0) {
         $data = http_build_query($params['Values']);
         $opts['http']['content'] = $data;
-    }
+    } elseif (is_string($params['Content']) and $params['Content'] !== '')
+        $opts['http']['content'] = $params['Content'];
 
-    /* get contents */
+    /* Create context */
     $context  = stream_context_create($opts);
+
+    /* Execute request */
     return @file_get_contents($params['URL'], false, $context);
 }
 
@@ -244,32 +260,43 @@ function http_getContentsUsingPHP($params=array()) {
  * Return contents over HTTP using CURL functions.
  * @param array $params
  * @parblock - Available parameters are <br />
- * \e string url <br />
- * \e string method - \b GET / \b POST <br />
- * \e array values <br />
- * \e boolean SSL_VerifyPeer <br />
- * \e string user_agent <br />
- * \e string referer <br />
- * \e integer timeout <br />
+ * \e string URL <br />
+ * \e string Method - \b GET / \b POST <br />
+ * \e mixed Content <br />
+ * \e boolean SSLVerifyPeer <br />
+ * \e string UserAgent <br />
+ * \e string Referer <br />
+ * \e integer Timeout <br />
+ * \e mixed Headers <br />
  * @endparblock
  * @return false on failure, string on success
  */
 function http_getContentsUsingCURL($params=array()) {
     global $CaMykS;
 
-    /* build params list */
+    /* Build params list */
     $defaultParams = array(
-        'URL'               => '',
-        'Method'            => 'GET', // GET | POST
-        'Values'            => array(), // fields
-        'SSLVerifyPeer'     => true, // curl
-        'UserAgent'         => $CaMykS->get_configValue('Engine_UserAgent'),
-        'Referer'           => '',
-        'Timeout'           => 60,
+        'URL'           => '',
+        'Method'        => 'GET', // GET | POST
+        'Content'        => array(), // fields
+        'SSLVerifyPeer' => true, // curl
+        'UserAgent'     => $CaMykS->get_configValue('Engine_UserAgent'),
+        'Referer'       => '',
+        'Timeout'       => 60,
+        'Headers'       => array('Content-type' => 'application/x-www-form-urlencoded'),
     );
     $params = array_merge($defaultParams, $params);
 
-    /* build request */
+    /* Build header */
+    $header = array();
+    if (is_string($params['Headers']))
+        $header[] = array($params['Headers']);
+    elseif (is_array($params['Headers'])) {
+        foreach ($params['Headers'] as $name => $value)
+            $header[] = $name.":".$value;
+    }
+
+    /* Build request */
     $request = curl_init();
     curl_setopt($request, CURLOPT_URL, $params['URL']);
     curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
@@ -285,8 +312,10 @@ function http_getContentsUsingCURL($params=array()) {
         curl_setopt($request, CURLOPT_AUTOREFERER, true);
     elseif ($params['Referer'] != '')
         curl_setopt($request, CURLOPT_REFERER, $params['Referer']);
+    if (count($header) > 0)
+        curl_setopt($request, CURLOPT_HTTPHEADER, $header);
 
-    /* execute request */
+    /* Execute request */
     return @curl_exec($request);
 }
 ?>
