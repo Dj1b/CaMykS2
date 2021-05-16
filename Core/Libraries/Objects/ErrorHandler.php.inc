@@ -3,9 +3,9 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -351,6 +351,35 @@ final class ErrorHandler extends CaMykSLibrary {
             echo '</div>';
         }
         echo '</div>';
+    }
+
+    /* Configuration related methods */
+
+    /**
+     * Return available error logging output list.
+     * @return array
+     */
+    public function get_availableLoggingOutputs() {
+        return array(
+            'auto'      => $this->get_locale('Output_Auto'),
+            'html'      => $this->get_locale('Output_HTML'),
+            'logs'      => $this->get_locale('Output_Logs'),
+            'shared'    => $this->get_locale('Output_Shared'),
+            'session'   => $this->get_locale('Output_Session'),
+            'none'      => $this->get_locale('Output_None'),
+        );
+    }
+
+    /**
+     * Return available error logging level list.
+     * @return array
+     */
+    public function get_availableLoggingLevels() {
+        return array(
+            'auto'      => $this->get_locale('Level_Auto'),
+            'mini'      => $this->get_locale('Level_Mini'),
+            'maxi'      => $this->get_locale('Level_Maxi'),
+        );
     }
 }
 ?>
