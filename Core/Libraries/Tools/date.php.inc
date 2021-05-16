@@ -3,9 +3,9 @@
  * @brief Date related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre1.1
  * @date Creation: Nov 2019
- * @date Modification: Mar 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -520,7 +520,7 @@ function date_isYesterday($date=NOW) {
 
 /**
  * Transform an float to a time.
- * @params integer $value
+ * @param integer $value
  * @param string $hSep
  * @param mixed $mSep
  * @return string

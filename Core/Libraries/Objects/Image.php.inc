@@ -3,9 +3,9 @@
  * @brief Image manipulating object
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre1.2
  * @date Creation: Dec 2019
- * @date Modification: Mar 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,7 +22,7 @@ namespace CaMykS2;
  */
 final class Image extends CaMykSLibrary {
     /**
-     * @var constant array DEFAULTPARAMS
+     * @var constant array KNOWNENGINES
      * @brief Known image manipulation engines.
      */
     private const KNOWNENGINES = array('gd');

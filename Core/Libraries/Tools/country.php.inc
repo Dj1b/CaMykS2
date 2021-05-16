@@ -3,9 +3,9 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre8.1
  * @date Creation: Oct 2019
- * @date Modification: Mar 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -323,7 +323,7 @@ function country_getFlagTag($country, $collection=null, $size=null, $URLMode=fal
 
 /**
  * Return timezone list for given country.
- * @params string $country
+ * @param string $country
  * @return array
  */
 function country_getTimezones($country) {
