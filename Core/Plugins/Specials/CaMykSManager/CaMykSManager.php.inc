@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 /**
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre12.1
  * @date Creation: Dec 2019
  * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
