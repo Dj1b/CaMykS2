@@ -4,7 +4,7 @@
     "Admin_EditionLanguages" : [],
     "Admin_Theme" : "CaMykSStyle",
     "Admin_EntryPoint" : "admin.php",
-    "Admin_SSL" : 0,
+    "Admin_SSLMode" : "Default",
     "Admin_KeepAlive" : 0,
     "Admin_SaveMode" : 0,
     "Admin_HeaderLogoFile" : "",
