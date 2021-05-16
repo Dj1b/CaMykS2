@@ -4,10 +4,10 @@
  * <br />Theme abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Dec 2019
- * @date Modification: Feb 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: May 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -79,6 +79,24 @@ abstract class Theme extends Plugin {
 
         /* Build element base name */
         $this->shortName = preg_replace('/(Style|Design)$/', '', $this->libraryName);
+    }
+
+    /* Check methods */
+
+    /**
+     * Check if theme supports visit mode.
+     * @return boolean result
+     */
+    public function support_visitMode() {
+        return (count($this->styleFiles) > 0);
+    }
+
+    /**
+     * Check if theme support admin mode.
+     * @return boolan result
+     */
+    public function support_adminMode() {
+        return (count($this->adminStyleFiles) > 0);
     }
 
     /* Graphical elements building */
