@@ -2,11 +2,11 @@
 /**
  * @brief SystemLogManager admin module.
  * <br />Module to manage logs and errors.
- * @details Plugin / Module Library
+ * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre1.1
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
