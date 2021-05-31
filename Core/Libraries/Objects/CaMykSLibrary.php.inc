@@ -3,9 +3,9 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre8.1
  * @date Creation: Oct 2019
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -224,7 +224,7 @@ abstract class CaMykSLibrary {
      * @param integer $errorId
      * @return string
      */
-    private function get_errorCode($errorId) {
+    protected function get_errorCode($errorId) {
         /* Load error codes if needed */
         if ($this->errorCodes === null)
             $this->define_errorCodes();
