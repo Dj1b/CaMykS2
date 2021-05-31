@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre29
+ * @version 2.0pre30
  * @date Creation: Feb 2017
  * @date Modification: May 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -65,6 +65,16 @@ final class CaMykS {
      * @brief Loaded plugins.
      */
     private $plugins = array('Components'=>array(), 'Modules'=>array(), 'Templates'=>array(), 'Themes'=>array());
+
+    /**
+     * @var array $systemPlugins
+     * @brief System required plugins name.
+     */
+    private $systemPlugins = array(
+        array('Name'=>'Admin/SystemPluginManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'Admin/SystemLogManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'Admin/SystemSessionManager', 'Type'=>'Module', 'Location'=>'System'),
+    );
 
     /**
      * @var integer $startMicroTime
@@ -396,6 +406,8 @@ final class CaMykS {
         /* Check if website is installed */
         if (in_array($this->mode, array(CAMYKS_MODE_VISIT, CAMYKS_MODE_ADMIN, CAMYKS_MODE_REQUEST)) and $this->get_configuration('Website_Status') == 0)
             $this->mode = CAMYKS_MODE_INSTALL;
+        elseif ($this->mode === CAMYKS_MODE_INSTALL and $this->get_configuration('Website_Status') !== 0)
+            $this->mode = CAMYKS_MODE_VISIT;
 
         /* Load first libraries */
         $this->load_engineFirstLibraries();
@@ -479,6 +491,18 @@ final class CaMykS {
      * @return void
      */
     public function initialise_common() {
+        /* Initialise database connection */
+
+        /* Load system plugins */
+        $this->load_systemPlugins();
+
+        /* Load website plugins */
+        $this->load_websitePlugins();
+
+        /* Check plugins for updates */
+        $this->check_plugins();
+
+        /* Load client session */
 
     }
 
@@ -530,7 +554,26 @@ final class CaMykS {
      * @return void
      */
     private function initialise_install() {
+        /* Load admin configuration for theme value */
+        $this->load_configuration('Admin');
 
+        /* Load language */
+        $this->load_currentLanguage();
+
+        /* Load installer plugin */
+        $this->installer = &$this->get_plugin('CaMykSInstaller', 'Special', true, 'System');
+
+        /* Load template */
+        $this->currentTemplate = &$this->get_template('AdminPage', true, 'System');
+        $this->currentTemplate->initialise();
+
+        /* Load theme */
+        $this->currentTheme = &$this->get_theme($this->get_configValue('Admin_Theme'), true);
+        $this->currentTheme->initialise();
+        $this->currentTheme->load_adminStyleFiles();
+
+        /* Initialise installer */
+        $this->installer->initialise();
     }
 
     /* CaMykS display methods */
@@ -827,7 +870,7 @@ final class CaMykS {
     private function check_serverRequirements() {
         /* Check PHP version */
         if (version_compare(PHP_VERSION, $this->PHPMinVersion, '<')) {
-            $this->trigger_error('Fatal', null, 'Current PHP version ('.PHP_VERSION.') doesn\'t meet minimum requirements.'."\n".
+            $this->trigger_error('CaMykS', 1, 'Current PHP version ('.PHP_VERSION.') doesn\'t meet minimum requirements.'."\n".
             'To run CaMykS2 properly, PHP engine must be, at least, version '.$this->PHPMinVersion.".\n".
             'Please update your version of PHP, before running CaMykS2.',
             '', null, null, true);
@@ -835,7 +878,7 @@ final class CaMykS {
 
         /* Check mod_rewrite module */
         if (!server_checkModuleAvailability('mod_rewrite')) {
-            $this->trigger_error('Fatal', null, 'URL rewriting module must be enabled.'."\n".
+            $this->trigger_error('CaMykS', 2, 'URL rewriting module must be enabled.'."\n".
             'Please turn on the URL rewriting module of your web software, before running CaMykS2.',
             '', null, null, true);
         }
@@ -1136,21 +1179,50 @@ final class CaMykS {
     }
 
     /**
-     * Load system plugins.
-     * @return boolean success
-     * @todo
+     * Return system required plugins.
+     * @return array
+     */
+    public function get_systemPlugins() {
+        return $this->systemPlugins;
+    }
+
+    /**
+     * Load system required plugins.
+     * @return void
+     * @tocomplete
      */
     private function load_systemPlugins() {
+        foreach ($this->systemPlugins as $plugin) {
+            $plugin = $this->get_plugin($plugin['Name'], $plugin['Type'], true, $plugin['Location']);
 
+            /* Check plugin loading */
+            if ($plugin === false) {
+                /* Throw fatal error */
+                $this->trigger_error('CaMykS', 101, 'CaMykS can\'t load system required plugin '.$plugin['Name'].'.', '', __FILE__, __LINE__-3, true);
+            }
+
+            /* Check plugin is installed */
+        }
     }
 
     /**
      * Load website plugins.
-     * @return boolean success
-     * @todo
+     * @return void
      */
     private function load_websitePlugins() {
+        /* Load plugin manager */
+        $pluginManager = $this->get_module('Admin/SystemPluginManager');
 
+        /* Load enabled plugins list from plugin manager */
+        $enabledPlugins = $pluginManager->get_enabledPluginList();
+
+        /* Load plugins */
+        foreach ($enabledPlugins as $plugin) {
+            if ($this->get_plugin($plugin->Name, $plugin->Type, true, $plugin->Location) === false) {
+                /* Plugin loading failed, log error */
+                $this->trigger_error('CaMykS', 102, 'CaMykS can\'t load enabled plugin '.$plugin->Name.'.', '', __FILE__, __LINE__-2);
+            }
+        }
     }
 
     /* File related methods */
