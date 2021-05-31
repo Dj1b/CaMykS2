@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre2.1
  * @date Creation: Jan 2021
  * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
@@ -19,7 +19,7 @@ define('ATTRIBUTE_FULLNAME_SEPARATOR', '_');
 /**
  * PluginLibraryAttribute class.
  */
-abstract class PluginLibraryAttribute extends CaMykSLibrary {
+abstract class PluginLibraryAttribute {
     /**
      * @var Object $libraryParent
      * @brief Parent plugin.
