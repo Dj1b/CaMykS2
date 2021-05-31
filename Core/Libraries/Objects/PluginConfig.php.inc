@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,9 +68,10 @@ abstract class PluginConfig extends PluginLibrary {
 
     /**
      * Load object from its main source.
+     * @param mixed $language
      * @return boolean success
      */
-    public function load() {
+    public function load($language=true) {
         global $CaMykS;
 
         /* Load default values */

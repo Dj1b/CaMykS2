@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2021
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -236,12 +236,11 @@ abstract class PluginLibraryAttribute extends CaMykSLibrary {
     }
 
     /**
-     * Check and return value.
-     * @param mixed $value
-     * @return mixed
+     * Check and optimise stored value.
+     * @return boolean result
      */
-    protected function check_value($value) {
-        return $value;
+    protected function check_value() {
+        return true;
     }
 
     /**

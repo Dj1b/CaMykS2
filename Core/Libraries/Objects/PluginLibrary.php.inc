@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +29,18 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @brief Library attributes.
      */
     protected $libraryAttributes = array();
+
+    /**
+     * var array $actionMessages
+     * @brief Stores action messages.
+     */
+    protected $actionMessages = array();
+
+    /**
+     * var array $actionErrors
+     * @brief Stores action errors.
+     */
+    protected $actionrrors = array();
 
     /**
      * Class constructor.
@@ -66,6 +78,19 @@ abstract class PluginLibrary extends CaMykSLibrary {
             $this->libraryAttributes[$name]->value = $value;
     }
 
+    /* Override CaMykSLibrary methods */
+
+    /**
+     * Define error code list.
+     * @return void
+     */
+    protected function define_errorCodes() {
+        $this->errorCodes = array(
+            /* Attibutes errors */
+            1 => 'UnknownAttributeType',
+        );
+    }
+
     /* Installation methods */
 
     /**
@@ -100,9 +125,10 @@ abstract class PluginLibrary extends CaMykSLibrary {
 
     /**
      * Load object from its main source.
+     * @param mixed $language
      * @return boolean success
      */
-    abstract public function load();
+    abstract public function load($language=true);
 
     /**
      * Save object to its main source.
@@ -125,7 +151,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
     public function toArray() {
         $result = array();
         foreach ($this->libraryAttributes as $attribute)
-            $result = array_merge($result, $attribute->get_asArray());
+            $result = array_merge($result, $attribute->toArray());
         return $result;
     }
 
@@ -205,6 +231,60 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     protected function load_locales($folder='', $language=null) {
         return $this->libraryParent->load_locales($folder, $language);
+    }
+
+    /* Attributes related methods */
+
+    /**
+     * Check attributes values.
+     * @return boolean success
+     */
+    protected function check_attributesValues() {
+        /* Initialise result */
+        $result = true;
+
+        /* Check all attributes */
+        foreach ($this->libraryAttributes as $attribute) {
+            if (!$attribute->check_value())
+                $result = false;
+        }
+
+        /* Return result */
+        return $result;
+    }
+
+    /* Action errors & messages methods */
+
+    /**
+     * Add action message.
+     * @return void
+     */
+    protected function add_actionMessage($message) {
+        $this->actionMessages[] = $messages;
+    }
+
+    /**
+     * Return action messages.
+     * @return array
+     */
+    public function get_actionMessages() {
+        return $this->actionMessages;
+    }
+
+    /**
+     * Add action error.
+     * @return void
+     */
+    protected function add_actionError($error) {
+        $this->actionErrors[] = $error;
+    }
+
+    /**
+     * Return action error.
+     * @return array
+     */
+    public function get_actionErrors() {
+        return $this->actionErrors;
     }
 }
 ?>

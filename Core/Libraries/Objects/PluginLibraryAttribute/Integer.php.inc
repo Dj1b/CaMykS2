@@ -3,9 +3,9 @@
  * @brief IntegerPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2021
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,21 +36,23 @@ abstract class IntegerPluginLibraryAttribute extends PluginLibraryAttribute {
     }
 
     /**
-     * Read and return value.
-     * @param mixed $value
-     * @return sting
+     * Check and optimise stored value.
+     * @return boolean result
      */
-    protected function check_value($value) {
+    protected function check_value() {
+        /* Force value as an integer */
+        $this->value = (int)$this->value;
+
         /* Check minimum value */
         if (!is_null($this->params['Min']))
-            $value = max($this->params['Min'], $value);
+            $this->value = max($this->params['Min'], $this->value);
 
         /* Check maximum value */
         if (!is_null($this->params['Max']))
-            $value = min($this->params['Max'], $value);
+            $this->value = min($this->params['Max'], $this->value);
 
-        /* Return value */
-        return $value;
+        /* Return value is conform */
+        return true;
     }
 }
 ?>

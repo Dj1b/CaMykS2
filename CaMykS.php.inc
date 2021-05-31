@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre28
+ * @version 2.0pre29
  * @date Creation: Feb 2017
  * @date Modification: May 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -785,10 +785,15 @@ final class CaMykS {
         $this->load_library('Template', 'Objects');
         $this->load_library('Theme', 'Objects');
 
-        /* Load PluginLibraryAttribute object libraries */
-        $this->load_library('TextPluginLibraryAttribute', 'Objects');
-        $this->load_library('IntegerPluginLibraryAttribute', 'Objects');
-        $this->load_library('FloatPluginLibraryAttribute', 'Objects');
+        /* Load PluginLibraryAttribute simple object libraries */
+        $this->load_library('PluginLibraryAttribute/Float', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Integer', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Text', 'Objects');
+
+        /* Load PluginLibraryAttribute advanced object libraries */
+        $this->load_library('PluginLibraryAttribute/ListItem', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Name', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
         /* Build object from libraries */
         $this->localStorage = new LocalStorage();

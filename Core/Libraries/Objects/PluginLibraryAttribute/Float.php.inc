@@ -3,9 +3,9 @@
  * @brief FloatPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2021
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,25 +39,27 @@ abstract class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
     }
 
     /**
-     * Read and return value.
-     * @param mixed $value
-     * @return sting
+     * Check and optimise stored value.
+     * @return boolean result
      */
-    protected function check_value($value) {
+    protected function check_value() {
+        /* Force value as a float */
+        $this->value = (float)$this->value;
+
         /* Check minimum value */
         if (!is_null($this->params['Min']))
-            $value = max($this->params['Min'], $value);
+            $this->value = max($this->params['Min'], $this->value);
 
         /* Check maximum value */
         if (!is_null($this->params['Max']))
-            $value = min($this->params['Max'], $value);
+            $this->value = min($this->params['Max'], $this->value);
 
         /* Check decimals */
         if (!is_null($this->params['Decimals']))
-            $value = round($value, $this->params['Decimals']);
+            $this->value = round($this->value, $this->params['Decimals']);
 
-        /* Return value */
-        return $value;
+        /* Return value is correct */
+        return true;
     }
 }
 ?>

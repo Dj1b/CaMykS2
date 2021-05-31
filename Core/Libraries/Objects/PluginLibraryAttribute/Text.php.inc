@@ -3,9 +3,9 @@
  * @brief TextPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2021
- * @date Modification: Feb 2021
+ * @date Modification: May 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -45,28 +45,30 @@ abstract class TextPluginLibraryAttribute extends PluginLibraryAttribute {
     }
 
     /**
-     * Read and return value.
-     * @param mixed $value
-     * @return sting
+     * Check and optimise stored value.
+     * @return boolean result
      */
-    protected function check_value($value) {
+    protected function check_value() {
         /* Check tags stripping */
-        if ($this->params['StripHTMLTags'])
-            $value = strip_tags($value, '<br>');
-            $value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value);
-        else {
+        if ($this->params['StripHTMLTags']) {
+            $this->value = strip_tags($value, '<br>');
+            $this->value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $this->value);
+        } else {
             if ($this->params['StripPHPTags'])
-                $value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $value);
+                $this->value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $this->value);
             if ($this->params['StripJSTags'])
-                $value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $value);
+                $this->value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $this->value);
         }
 
         /* Check autotrim */
         if ($this->params['AutoTrim'])
-            $value = trim($value);
+            $this->value = trim($this->value);
 
-        /* Return value */
-        return $value;
+        /* Check length */
+        $this->value = substr($value, 0, $this->params['Length']);
+
+        /* Return value is conform */
+        return true;
     }
 }
 ?>
