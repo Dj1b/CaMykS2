@@ -4,9 +4,9 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Dec 2020
- * @date Modification: Feb 2021
+ * @date Modification: Jun 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,12 +37,31 @@ final class LocalStorage extends CaMykSLibrary {
     private $storageFolder = 'data';
 
     /**
+     * @var array $storageModes
+     * @brief List of available storage modes.
+     */
+     private $storageModes = array('Files', 'Database');
+
+    /**
      * Class constructor.
      * @return void
      */
     public function __construct() {
         /* Execute parent construct */
         parent::__construct();
+    }
+
+    /* Public tool methods */
+
+    /**
+     * Return available modes.
+     * @return array
+     */
+    public function get_availableModes() {
+        $list = array();
+        foreach ($this->storageModes as $mode)
+            $list[$mode] = $this->get_locale('Mode_'.$mode);
+        return $list;
     }
 
     /* Documents related methods */
@@ -82,7 +101,7 @@ final class LocalStorage extends CaMykSLibrary {
     public function get_configuration($plugin, $library, $name) {
         $this->load_storageMode();
 
-        if ($this->storageMode === 'database') {
+        if ($this->storageMode === 'Database') {
             /* Load data from database */
             $data = $this->storageManager->get_configuration($plugin, $library, $name);
         } else {
@@ -112,7 +131,7 @@ final class LocalStorage extends CaMykSLibrary {
         /* Encode data */
         $data = json_encode($data);
 
-        if ($this->storageMode === 'database') {
+        if ($this->storageMode === 'Database') {
             /* Save data to database */
             return $this->storageManager->save_configuration($plugin, $library, $name, $data);
         } else {
@@ -131,7 +150,7 @@ final class LocalStorage extends CaMykSLibrary {
     public function delete_configuration($plugin, $library, $name) {
         $this->load_storageMode();
 
-        if ($this->storageMode === 'database') {
+        if ($this->storageMode === 'Database') {
             /* Save data to database */
             return $this->storageManager->delete_configuration($plugin, $library, $name, $data);
         } else {
@@ -235,7 +254,7 @@ final class LocalStorage extends CaMykSLibrary {
         $this->storageMode = $CaMykS->get_configValue('Website_LocalStorage');
 
         /* Check database storage is available */
-        if ($CaMykS->get_configValue('Website_LocalStorage') === 'database') {
+        if ($CaMykS->get_configValue('Website_LocalStorage') === 'Database') {
             $this->load_storageManager();
             if ($this->storageManager === false)
                 $this->storageMode = 'files';
