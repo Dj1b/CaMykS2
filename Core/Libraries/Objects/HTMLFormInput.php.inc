@@ -3,9 +3,9 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre2.1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2021
+ * @date Modification: Jun 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,6 +68,7 @@ class HTMLFormInput extends CaMykSLibrary {
             'maxlength'             => array('type'=>'int', 'default'=>32),
             'minlength'             => array('type'=>'int', 'default'=>null),
             'size'                  => array('type'=>'int', 'default'=>null),
+            'placeholder'           => array('type'=>'str', 'default'=>''),
         ),
         'password' => array(
             'maxlength'             => array('type'=>'int', 'default'=>32),
