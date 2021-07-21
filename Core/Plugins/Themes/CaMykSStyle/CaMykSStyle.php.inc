@@ -3,9 +3,9 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0.5
+ * @version 1.0pre1
  * @date Creation: Feb 2020
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -17,6 +17,13 @@ namespace CaMykS2;
  * CaMykSStyle class.
  */
 final class CaMykSStyle extends Theme {
+
+    /**
+     * @var array $params
+     * @brief Object "public" parameters.
+     */
+    protected $params = array('FileMode'=>'Attached');
+
     /**
      * @var boolean $supportAdminMode
      * @brief Is theme capable to design admin mode.
@@ -39,7 +46,7 @@ final class CaMykSStyle extends Theme {
      * @var array $adminStyleFiles.
      * @brief List of styles to be attached in admin mode.
      */
-    protected $adminStyleFiles = array('admin.css?v=1.0pre11'=>'');
+    protected $adminStyleFiles = array('admin.css?v=1.0pre12'=>'');
 
     /**
      * Class constructor.
@@ -61,7 +68,12 @@ final class CaMykSStyle extends Theme {
     public function initialise($params=array()) {
         parent::initialise($params);
 
-        /* Adds specific style script */
-        $this->add_styleScript('#PageHeader .background {background-image:url('.$this->get_fileURL('Images/Admin/header.jpg').');}');
+         /* Adds specific style script */
+        if ($this->params['FileMode'] === 'Attached') {
+            $this->add_styleScript('#PageHeader .background {background-image:url('.$this->get_fileURL('Images/Admin/header.jpg').');}');
+        } elseif ($this->params['FileMode'] === 'Inserted') {
+            $bkgdFile = new File($this->get_filePath('Images/Admin/header.jpg'));
+            $this->add_styleScript('#PageHeader .background {background-image:url('.$bkgdFile->get_base64Data().');}');
+        }
     }
 }

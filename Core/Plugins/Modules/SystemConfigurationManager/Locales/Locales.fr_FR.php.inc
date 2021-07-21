@@ -1,0 +1,66 @@
+<?php
+/**
+ * @brief SystemConfigurationManager plugin, french dictionary.
+ * @details Plugin / Dictionary
+ * @author CaMykS Team <camyks.contact@gmail.com>
+ * @version 1.0pre0
+ * @date Creation: Jun 2021
+ * @date Modification: Jun 2021
+ * @copyright 2021 CaMykS Team
+ * @note This program is distributed as is - WITHOUT ANY WARRANTY,
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+$locales = array(
+    /* Website configuration */
+    'WebsiteConfiguration' => 'Param&egrave;tres du site',
+    'Title' => 'Titre',
+    'Version' => 'Version',
+    'Encoding' => 'Encodage',
+    'Author' => 'Auteur',
+    'CMSSignature' => 'Signature du CMS',
+    'LocalStorage' => 'Stockage local',
+
+    /* Admin/Visit configuration */
+    'AdminConfiguration' => 'Configuration de l\'espace administrateur',
+    'Languages' => 'Langues',
+    'DefaultLanguage' => 'Langue par d&eacute;faut',
+    'GraphicalAspect' => 'Aspect graphique',
+    'Theme' => 'Th&egrave;me',
+    'URLs' => 'URLs',
+    'SSLMode' => 'Mode SSL',
+
+    /* Admin configuration */
+    'EditionLanguages' => 'Langues en &eacute;dition',
+    'EntryPoint' => 'Point d\'entr&eacute;e',
+    'KeepAlive' => 'Conserver la connexion',
+    'SaveMode' => 'Mode d\'enregistrement',
+
+    /* Visit configuration */
+    'VisitConfiguration' => 'Configuration de l\'espace visiteur',
+    'URLMode' => 'Mode',
+    'ServerSideCache' => 'Cache c&ocirc;t&eacute; serveur',
+    'ClientSideCache' => 'Cache c&ocirc;t&eacute; client',
+    'AutoLoadCaMykSJS' => 'Chargement auto. de CaMykS.js',
+
+
+    /* Database configuration */
+    'DatabaseConfiguration' => 'Configuration de la connexion &agrave; la base de donn&eacute;es',
+    'Driver' => 'Driver',
+    'Host' => 'H&ocirc;te',
+    'Name' => 'Nom',
+    'Login' => 'Identifiant',
+    'Password' => 'Mot de passe',
+    'Port' => 'Port',
+    'Secure' => 'S&eacute;curit&eacute;',
+    'TablePrefix' => 'Pr&eacute;fixe des tables',
+
+    /* Display CMS signatures values */
+    'DisplayCMSSignature_Hidden' => 'Masqu&eacute;e',
+    'DisplayCMSSignature_Display' => 'Affich&eacute;e',
+
+    /* Errors */
+    'Error_TitleIsEmpty' => 'Veuillez ins&eacute;rer un titre pour le site internet.',
+    'Error_DatabaseNameIsEmpty' => 'Veuillez ins&eacute;rer le nom de la base de donn&eacute;es.',
+    'Error_DatabaseDriverIsNotCompatibleWithDatabaseLocalStorage' => 'Les bases de donn&eacute;es %s ne sont pas compatibles avec le stockage local en base de données.',
+);
+?>

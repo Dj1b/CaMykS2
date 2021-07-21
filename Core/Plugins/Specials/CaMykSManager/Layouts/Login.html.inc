@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, login layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre1.1
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Jun 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -39,7 +39,7 @@
 
     <?php if (!client_isHTTPS()) : ?>
         <div class="warning">
-            <?= $this->get_locale('Login_ConnectionNotScured'); ?>
+            <?= $this->get_locale('Login_ConnectionNotSecured'); ?>
         </div>
     <?php endif; ?>
 </div>

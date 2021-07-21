@@ -1,0 +1,11 @@
+/**
+ * @brief CaMykSInstaller plugin CSS styles
+ * @details Plugin / Plugin Styles
+ * @author CaMykS Team <camyks.contact@gmail.com>
+ * @version 1.0pre0
+ * @date Creation: Jun 2021
+ * @date Modification: Jun 2021
+ * @copyright 2021 Ideogram Design
+ */
+
+.welcomeFrame {margin:50px auto 0; width:700px; max-width:100%; text-align:center;}

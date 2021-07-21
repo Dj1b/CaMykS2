@@ -1,10 +1,10 @@
 /**
  * @brief CaMykSStyle theme admin CSS styles
  * @details Plugin / Theme Styles
- * @author JB Lebrun <jb.lebrun@ideogram-design.fr>
- * @version 1.0pre11
+ * @author CaMykS Team <camyks.contact@gmail.com>
+ * @version 1.0pre12
  * @date Creation: Mar 2020
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2020 - 2021 Ideogram Design
  */
 
@@ -13,7 +13,7 @@
 body {background:#f9f9f9;}
 p {padding: 8px 0;}
 a {text-decoration:none;}
-ul {margin:0px 28px; padding:0; list-style:url(img/bullet.gif);}
+ul {margin:0px 28px; padding:0; list-style:url(../Images/bullet.gif);}
 ul.noDot {list-style:none; margin:0px 16px;}
 ol {margin:0px 28px; padding:0;}
 li {margin:4px 4px;}
@@ -55,7 +55,7 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 #PageHeader .innerContent .title {flex:2; padding: 20px; font-size:20px; text-transform:uppercase; color:white; text-align:right; font-weight:300;}
 #PageHeader .innerContent .logo {flex:1; max-width:200px; height:100px; background:yellow;}
 
-#PageContent {margin:100px 0 24px 40px;}
+#PageContent {margin:100px 0 24px 0;}
 #PageContent .innerContent {min-height:400px;}
 
 #PageFooter {position:fixed; bottom:0; width:100%; height:24px; background:#262334; padding:0 20px; z-index:10;}
@@ -120,7 +120,7 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .loginFrame .input input {font-size:16px; background:white; padding:12px; text-align:center; width:350px; border:solid 1px #DCDCDC;}
 
 /* Main interface */
-.mainFrame {background:white; padding:50px 30px;}
+.mainFrame {background:white; padding:50px 40px;}
 .mainFrame .listLine {border-bottom:solid 1px #DCDCDC; display:flex;}
 .mainFrame .listLine:hover {background:#ebe9f5;}
 .mainFrame .listLine .cell {flex:2; padding:4px;}

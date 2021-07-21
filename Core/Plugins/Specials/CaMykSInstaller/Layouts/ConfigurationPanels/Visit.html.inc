@@ -1,31 +1,28 @@
 <?php
 /**
- * @brief CaMykSManager plugin, configuration panel, edit visit section sublayout.
+ * @brief CaMykSMInstaller plugin, visit configuration sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
- * @date Creation: Feb 2021
- * @date Modification: Jul 2021
+ * @version 1.0pre0
+ * @date Creation: Jun 2021
+ * @date Modification: Jun 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 global $CaMykS;
 ?>
-<h3 class="title3">
-    <?= $this->get_locale('Configuration_VisitSettings'); ?>
-</h3>
-
-<?php $this->configurationForm->display_header(); ?>
-<?php $this->configurationForm->display_hiddens(); ?>
+<h2 class="title3">
+    <?= $this->configurationManager->get_locale('VisitConfiguration'); ?>
+</h2>
 
 <div class="formBlock">
     <div class="formButtons">
-        <a class="formButton Back" href="<?= $this->get_actionLink('DisplayConfigurationPanel', array('Section'=>$this->section)); ?>">
-            <?= $this->get_locale('Cancel'); ?>
+        <a class="formButton Back" href="<?= $this->get_actionLink('DisplayWebsiteConfiguration'); ?>">
+            <?= $this->get_locale('Back'); ?>
         </a>
         <a class="formButton" href="<?= $this->configurationForm->get_HTMLSubmitLink(); ?>">
-            <?= $this->get_locale('Save'); ?>
+            <?= $this->get_locale('Continue'); ?>
         </a>
     </div>
 
@@ -47,7 +44,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('DefaultLanguage'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'DefaultLanguage', 'default'=>$CaMykS->get_configValue('Visit_DefaultLanguage'), 'values'=>$this->availableDefaultLanguages, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'DefaultLanguage', 'default'=>$CaMykS->get_configValue('Visit_DefaultLanguage'), 'values'=>$this->availableLanguages, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -127,13 +124,12 @@ global $CaMykS;
     </div>
 
     <div class="formButtons">
-        <a class="formButton Back" href="<?= $this->get_actionLink('DisplayConfigurationPanel', array('Section'=>$this->section)); ?>">
-            <?= $this->get_locale('Cancel'); ?>
+        <a class="formButton Back" href="<?= $this->get_actionLink('DisplayWebsiteConfiguration'); ?>">
+            <?= $this->get_locale('Back'); ?>
         </a>
         <a class="formButton" href="<?= $this->configurationForm->get_HTMLSubmitLink(); ?>">
-            <?= $this->get_locale('Save'); ?>
+            <?= $this->get_locale('Continue'); ?>
         </a>
     </div>
 </div>
 
-<?php $this->configurationForm->display_footer(); ?>

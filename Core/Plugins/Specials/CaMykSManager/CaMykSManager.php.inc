@@ -3,9 +3,9 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12.1
+ * @version 1.0pre13
  * @date Creation: Dec 2019
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -100,7 +100,7 @@ final class CaMykSManager extends Plugin {
         $CaMykS->set_configValue('Website_URL', dirname($this->get_homeLink()).'/');
 
         /* Load locales */
-        $this->load_locales('', $CaMykS->currentLanguage);
+        $this->load_locales();
 
         /* Apply title */
         $CaMykS->HTMLPage->set_pageInformation($this->get_locale('TemplateHeaderTitle'));
@@ -481,6 +481,16 @@ final class CaMykSManager extends Plugin {
         /* Enable action bar buttons */
         $CaMykS->currentTemplate->enable_actionBar();
 
+        /* Load configuration module */
+        $this->configurationManager = $CaMykS->load_module('SystemConfigurationManager', 'System');
+        if ($this->configurationManager === false) {
+            /* Throw fatal error */
+
+            die();
+        }
+        $this->configurationManager->initialise();
+        $this->configurationManager->load_locales();
+
         /* Load section to configure */
         if (isset($_REQUEST['Section']) and in_array($_REQUEST['Section'], $this->configurationSections)) {
             $this->section = $_REQUEST['Section'];
@@ -521,6 +531,16 @@ final class CaMykSManager extends Plugin {
         if (!isset($_REQUEST['Section']) or !in_array($_REQUEST['Section'], $this->configurationSections))
             return $this->initialise_DisplayConfigurationPanel();
 
+        /* Load configuration module */
+        $this->configurationManager = $CaMykS->load_module('SystemConfigurationManager', 'System');
+        if ($this->configurationManager === false) {
+            /* Throw fatal error */
+
+            die();
+        }
+        $this->configurationManager->initialise();
+        $this->configurationManager->load_locales();
+
         /* Load section */
         $this->section = $_REQUEST['Section'];
 
@@ -535,7 +555,7 @@ final class CaMykSManager extends Plugin {
         switch ($this->section) {
             case 'Manager':
                 /* Load available themes */
-                $this->availableThemes = $this->get_configurationAvailableThemeTitles();
+                $this->availableThemes = $this->configurationManager->get_availableAdminThemeTitles();
 
                 /* Load available languages */
                 $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
@@ -555,16 +575,30 @@ final class CaMykSManager extends Plugin {
                 break;
             case 'Admin':
                 /* Load available themes */
-                $this->availableThemes = $this->get_configurationAvailableThemeTitles();
+                $this->availableThemes = $this->configurationManager->get_availableAdminThemesTitles();
 
                 /* Load URL modes */
                 $this->availableSSLModes = url_getSSLModes();
+
+                /* Load available languages */
+                $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$CaMykS->get_availableEngineLocaleLanguages()));
+                $this->availableDefaultLanguages = array_merge(array('' => $this->get_locale('Configuration_DefaultLanguageAutomatic')), $this->availableLanguages);
 
                 break;
             case 'Visit':
+                /* Load available themes */
+                $this->availableThemes = $this->configurationManager->get_availableVisitThemesTitles();
+
+                /* Load available templates */
+                $this->availableTemplates = $this->configurationManager->get_availableVisitTemplatesTitles();
+
                 /* Load URL modes */
                 $this->availableURLModes = url_getBaseURLModes();
                 $this->availableSSLModes = url_getSSLModes();
+
+                /* Load available languages */
+                $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$CaMykS->get_availableEngineLocaleLanguages()));
+                $this->availableDefaultLanguages = array_merge(array('' => $this->get_locale('Configuration_DefaultLanguageAutomatic')), $this->availableLanguages);
 
                 break;
             case 'Database':
@@ -743,30 +777,6 @@ final class CaMykSManager extends Plugin {
             return '';
 
         return $file->get_description(array('AddSize'=>true));
-    }
-
-    /* Private tool methods */
-
-    /**
-     * Return available theme titles for configuration
-     * @return array
-     */
-    private function get_configurationAvailableThemeTitles() {
-        global $CaMykS;
-
-        /* Initialise result */
-        $result = array();
-
-        /* Load avaiable themes from CMS */
-        $themes = $CaMykS->get_availableThemes();
-
-        /* CHeck themes that support admin mode */
-        foreach ($themes as $name => $theme)
-            if ($theme->support_adminMode())
-                $result[$name] = $name;
-
-        /* Return result */
-        return $result;
     }
 }
 ?>

@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Mar 2020
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -52,7 +52,7 @@ $locales = array(
     'Login_Title' => 'Connexion',
     'Login_Content' => '',
     'Login_Access' => 'Acc&eacute;der',
-    'Login_ConnectionNotScured' => 'Attention : Votre connexion n\'est pas s&eacute;curis&eacute;e. Vous prenez un risque en vous connectant, votre mot de passe sera transmis en clair vers le serveur.',
+    'Login_ConnectionNotSecured' => 'Attention : Votre connexion n\'est pas s&eacute;curis&eacute;e. Vous prenez un risque en vous connectant, votre mot de passe sera transmis en clair vers le serveur.',
 
     /* Site list interface */
     'SiteList_ServerNameX' => 'Serveur %s',
@@ -131,30 +131,26 @@ $locales = array(
     'Configuration_RestrainedIPs' => 'Adresses IP Limit&eacute;es',
     'Configuration_RestrainedIPsNone' => 'Aucune',
 
-    /* Configuration Admin panel interface */
-    'Configuration_Languages' => 'Langues',
+    /* Configuration Admin/Visit panel interface */
     'Configuration_LanguagesUndefined' => 'Non d&eacute;finies',
-    'Configuration_EditionLanguages' => 'Langues en &eacute;ditions',
-    'Configuration_EntryPoint' => 'Point d\'entr&eacute;e',
-    'Configuration_EntryPointUndefined' => 'Non d&eacute;fini',
     'Configuration_ThemeUndefined' => 'Non d&eacute;fini',
-    'Configuration_SSLMode' => 'SSL',
     'Configuration_SSLUndefined' => 'Non d&eacute;fini',
-    'Configuration_KeepAlive' => 'Conserver la connexion',
+
+    /* Configuration Admin panel interface */
+    'Configuration_EntryPointUndefined' => 'Non d&eacute;fini',
     'Configuration_KeepAliveUndefined' => 'Non d&eacute;fini',
-    'Configuration_SaveMode' => 'Mode d\'enregistrement',
     'Configuration_SaveModeUndefined' => 'Non d&eacute;fini',
 
+    /* Configuration Visit panel interface */
+    'Configuration_TemplateUndefined' => 'Non d&eacute;fini',
+
     /* Configuration Database panel interface */
-    'Configuration_Driver' => 'Driver',
     'Configuration_DriverUndefined' => 'Non d&eacute;fini',
-    'Configuration_Host' => 'H&ocirc;te',
     'Configuration_HostUndefined' => 'Non d&eacute;fini',
-    'Configuration_Port' => 'Port',
+    'Configuration_LoginUndefined' => 'Non d&eacute;fini',
+    'Configuration_PasswordUndefined' => 'Non d&eacute;fini',
     'Configuration_PortAutomatic' => 'Automatique',
-    'Configuration_Secure' => 'S&eacute;curit&eacute;',
     'Configuration_SecureUndefined' => 'Non d&eacute;fini',
-    'Configuration_TablePrefix' => 'Pr&eacute;fix des tables',
     'Configuration_TablePrefixUndefined' => 'Non d&eacute;fini',
 
     /* Configuration Engine panel interface */
@@ -173,16 +169,5 @@ $locales = array(
     'Configuration_Requests' => 'Requ&ecirc;tes',
     'Configuration_RequestUserAgent' => 'Agent utilisateur',
     'Configuration_RequestUserAgentUndefined' => 'Non d&eacute;fini',
-
-    /* Configuration Visit panel interface */
-    'Configuration_GraphicalAspect' => 'Aspect graphique',
-    'Configuration_Template' => 'Template',
-    'Configuration_TemplateUndefined' => 'Non d&eacute;fini',
-    'Configuration_URLs' => 'Param&eacute;trage des URLS',
-    'Configuration_URLMode' => 'Mode',
-    'Configuration_AdvancedParameters' => 'Param&egrave;tres avanc&eacute;s',
-    'Configuration_ServerSideCache' => 'Cache c&ocirc;t&eacute; serveur',
-    'Configuration_ClientSideCache' => 'Cache c&ocirc;t&eacute; client',
-    'Configuration_AutoLoadCaMykSJS' => 'Chargement auto. de CaMykS.js',
 );
 ?>
