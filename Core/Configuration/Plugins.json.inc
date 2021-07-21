@@ -1,9 +1,8 @@
 {
     "Plugins_AdminLogin" : "SystemAdminLogin",
     "Plugins_AdminPanel" : "SystemAdminControlPanel",
-    "Plugins_AdminList" : "CaMykSAdminList",
-    "Plugins_AdminEditor" : "",
-    "Plugins_AdminFileManager" : "",
+    "Plugins_AdminList" : "SystemAdminList",
     "Plugins_AdminUIDManager" : "",
-    "Plugins_VisitCaptcha" : ""
+    "Plugins_AdminDefaultEditor" : "",
+    "Plugins_AdminDefaultFileManager" : "",
 }
