@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4.2
+ * @version 1.0pre5
  * @date Creation: Oct 2019
- * @date Modification: Mar 2021
+ * @date Modification: Jul 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -430,6 +430,17 @@ final class DatabaseConnector extends CaMykSLibrary {
             $list['PgSQL'] = 'PgSQL';
 
         return $list;
+    }
+
+    /**
+     * Check if given driver is compatible with database local storage.
+     * @param string $driver
+     * @return boolean result
+     */
+    public static function is_driverCompatibleWithDatableLocalStorage($driver) {
+        if ($driver == 'SQLite3')
+            return false;
+        return true;
     }
 }
 ?>
