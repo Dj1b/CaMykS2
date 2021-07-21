@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre30
+ * @version 2.0pre31
  * @date Creation: Feb 2017
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -71,9 +71,10 @@ final class CaMykS {
      * @brief System required plugins name.
      */
     private $systemPlugins = array(
-        array('Name'=>'Admin/SystemPluginManager', 'Type'=>'Module', 'Location'=>'System'),
-        array('Name'=>'Admin/SystemLogManager', 'Type'=>'Module', 'Location'=>'System'),
-        array('Name'=>'Admin/SystemSessionManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'SystemPluginManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'SystemLogManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'SystemSessionManager', 'Type'=>'Module', 'Location'=>'System'),
+        array('Name'=>'SystemFileStorageManager', 'Type'=>'Module', 'Location'=>'System'),
     );
 
     /**
@@ -228,6 +229,12 @@ final class CaMykS {
     private $manager;
 
     /**
+     * @var Object $installer
+     * @brief Link to installer special plugin.
+     */
+    private $installer;
+
+    /**
      * Class constructor.
      * @param array $configuration
      * @return void
@@ -257,7 +264,7 @@ final class CaMykS {
             return null;
         }
 
-        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'localStorage', 'errorHandler')))
+        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'installer', 'localStorage', 'errorHandler')))
             return $this->$variableName;
     }
 
@@ -398,15 +405,15 @@ final class CaMykS {
         $this->CaMykSPath = dirname(__FILE__);
 
         /* Set up website files path */
-        $this->webitePath = getcwd();
+        $this->websitePath = getcwd();
 
         /* Load CaMykS configuration */
         require_once $this->CaMykSPath.'/Core/Configuration/CaMykS.php.inc';
 
         /* Check if website is installed */
-        if (in_array($this->mode, array(CAMYKS_MODE_VISIT, CAMYKS_MODE_ADMIN, CAMYKS_MODE_REQUEST)) and $this->get_configuration('Website_Status') == 0)
+        if (in_array($this->mode, array(CAMYKS_MODE_VISIT, CAMYKS_MODE_ADMIN, CAMYKS_MODE_REQUEST)) and $this->get_configValue('Website_Status') == 0)
             $this->mode = CAMYKS_MODE_INSTALL;
-        elseif ($this->mode === CAMYKS_MODE_INSTALL and $this->get_configuration('Website_Status') !== 0)
+        elseif ($this->mode === CAMYKS_MODE_INSTALL and $this->get_configValue('Website_Status') !== 0)
             $this->mode = CAMYKS_MODE_VISIT;
 
         /* Load first libraries */
@@ -554,9 +561,6 @@ final class CaMykS {
      * @return void
      */
     private function initialise_install() {
-        /* Load admin configuration for theme value */
-        $this->load_configuration('Admin');
-
         /* Load language */
         $this->load_currentLanguage();
 
@@ -568,9 +572,9 @@ final class CaMykS {
         $this->currentTemplate->initialise();
 
         /* Load theme */
-        $this->currentTheme = &$this->get_theme($this->get_configValue('Admin_Theme'), true);
-        $this->currentTheme->initialise();
-        $this->currentTheme->load_adminStyleFiles();
+        $this->currentTheme = &$this->get_theme('CaMykSStyle', true);
+        $this->currentTheme->initialise(array('FileMode'=>'Inserted'));
+        $this->currentTheme->load_adminStyleFiles('Inserted');
 
         /* Initialise installer */
         $this->installer->initialise();
@@ -630,7 +634,8 @@ final class CaMykS {
      * @return void
      */
     private function display_install() {
-
+        /* Display template main layout */
+        $this->currentTemplate->display();
     }
 
     /* CaMykS display sub methods */
@@ -661,7 +666,8 @@ final class CaMykS {
 
                 break;
             case CAMYKS_MODE_INSTALL:
-                /* Display install */
+                /* Display installer */
+                $this->installer->display();
 
                 break;
         }
@@ -681,7 +687,7 @@ final class CaMykS {
         $this->engineConfiguration = array_merge($this->engineConfiguration, $config->load($configFile, 'Engine'));
 
         /* Load website configuration file */
-        if ($this->mode != CAMYKS_MODE_MANAGER)
+        if ($this->mode !== CAMYKS_MODE_MANAGER and $this->mode !== CAMYKS_MODE_INSTALL)
             $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->load($configFile, 'Website'));
     }
 
@@ -790,7 +796,6 @@ final class CaMykS {
         $this->load_library('currency', 'Tools');
         $this->load_library('date', 'Tools');
         $this->load_library('file', 'Tools');
-        $this->load_library('folder', 'Tools');
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
         $this->load_library('language', 'Tools');
@@ -1002,13 +1007,9 @@ final class CaMykS {
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
 
-        /* Check plugin name and sub type */
-        $pluginName = explode('/', $name);
-        $pluginName = isset($pluginName[1]) ? $pluginName[1] : $pluginName[0];
-
         /* Check is in loaded plugin */
-        if (isset($this->plugins[$folder][$pluginName]))
-            return $this->plugins[$folder][$pluginName];
+        if (isset($this->plugins[$folder][$name]))
+            return $this->plugins[$folder][$name];
 
         /* Try to load plugin */
         if ($autoLoad and ($plugin = $this->load_plugin($name, $type, $location)) !== false) {
@@ -1016,7 +1017,7 @@ final class CaMykS {
             $this->plugins[$folder][$name] = &$plugin;
 
             /* Return plugin */
-            return $this->plugins[$folder][$pluginName];
+            return $this->plugins[$folder][$name];
         }
 
         /* Return failure */
@@ -1189,7 +1190,7 @@ final class CaMykS {
     /**
      * Load system required plugins.
      * @return void
-     * @tocomplete
+     * @todo
      */
     private function load_systemPlugins() {
         foreach ($this->systemPlugins as $plugin) {
@@ -1727,6 +1728,29 @@ final class CaMykS {
         return true;
     }
 
+    /**
+     * Return available locale languages for plugin.
+     * @param string $folder
+     * @return array
+     */
+    public function get_availableEngineLocaleLanguages($folder='') {
+        /* Load file list */
+        $files = glob($this->CaMykSPath.'/Core/Locales'.($folder != ''? '/'.$folder : '').'/*');
+
+        /* Initialise result list */
+        $result = array();
+
+        /* Add languages to list */
+        foreach ($files as $file) {
+            $file = basename($file);
+            if (preg_match('/Locales.(.*).php.inc/', $file, $match))
+                $result[] = $match[1];
+        }
+
+        /* Return result */
+        return $result;
+    }
+
     /** Logging & errors related methods */
 
     /**
@@ -1754,7 +1778,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_message($object, $action, $message='') {
-        $logManager = $this->get_module('Admin/SystemLogManager', true);
+        $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_message($object, $action, $message);
@@ -1767,7 +1791,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_messages($object, $messages=array()) {
-        $logManager = $this->get_module('Admin/SystemLogManager', true);
+        $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_messages($object, $messages);
@@ -1779,7 +1803,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function log_error($error) {
-        $logManager = $this->get_module('Admin/SystemLogManager', true);
+        $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
         return $logManager->log_error($error);
