@@ -32,6 +32,7 @@ final class SystemPluginManagerPlugin extends ModuleLibrary {
         $this->define_databaseAttribute('Name',     'Name',     '');
         $this->define_databaseAttribute('Type',     'ListItem', '', array('Values'=>array('Component', 'Module/Admin', 'Module/Content', 'Theme', 'Template')));
         $this->define_databaseAttribute('Location', 'ListItem', '', array('Values'=>array('System', 'Shared', 'Website')));
+        $this->define_databaseAttribute('Package',  'Name',     '');
         $this->define_databaseAttribute('Version',  'Version',  '1.0');
     }
 }

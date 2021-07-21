@@ -33,24 +33,5 @@ final class SystemPluginManager extends AdminModule {
         /* Execute parent construct */
         parent::__construct($location);
     }
-
-    /* Override Module methods */
-
-    /**
-     * Load module.
-     * @return void
-     */
-    protected function load() {
-        /* Check is already loaded */
-        if ($this->moduleLoaded)
-            return;
-
-        /* Load libraries */
-
-        /* Create internal object */
-
-        /* Mark module as loaded */
-        $this->moduleLoaded = true;
-    }
 }
 ?>
