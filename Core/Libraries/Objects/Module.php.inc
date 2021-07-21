@@ -4,7 +4,7 @@
  * <br />Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre5.1
  * @date Creation: Dec 2019
  * @date Modification: May 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -93,7 +93,9 @@ abstract class Module extends Plugin {
      * Initialise object admin/main mode.
      * @return void
      */
-    abstract protected function initialise_admin_main();
+    protected function initialise_admin_main() {
+
+    }
 
     /* Configuration mode methods */
 
@@ -120,25 +122,33 @@ abstract class Module extends Plugin {
      * Initialise object in view configuration mode.
      * @return void
      */
-    abstract protected function initialise_configuration_view();
+    protected function initialise_configuration_view() {
+
+    }
 
     /**
      * Display object in view configuration mode.
      * @return void
      */
-    abstract protected function display_configuration_view();
+    protected function display_configuration_view() {
+
+    }
 
     /**
      * Initialise object in edit configuration mode.
      * @return void
      */
-    abstract protected function initialise_configuration_edit();
+    protected function initialise_configuration_edit() {
+
+    }
 
     /**
      * Display object in edit configuration mode.
      * @return void
      */
-    abstract protected function display_configuration_edit();
+    protected function display_configuration_edit() {
+
+    }
 
     /* Private methods */
 
