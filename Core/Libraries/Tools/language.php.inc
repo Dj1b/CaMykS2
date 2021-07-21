@@ -3,9 +3,9 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Mar 2021
+ * @date Modification: Jul 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -243,8 +243,16 @@ function language_getLocalisedLongTitles($params=array(), $language=null) {
                 $result[$c] = $l;
         }
     } else {
-        /* Add all languages ? */
+        /* Load languages by countries */
+        $countries = country_getOfficialLanguages();
 
+        foreach ($countries as $country => $languages) {
+            foreach ($languages as $language) {
+                $c = array('Language' => $language, 'Script' => null, 'Country' => $country);
+                if (($l = language_getLocalisedLongTitleValue($c)) != '')
+                $result[language_export($c)] = $l;
+            }
+        }
     }
 
     /* Return result */
@@ -411,8 +419,9 @@ function language_getLocaleLoadingSequence($language) {
             $result[] = language_export($default);
     }
 
-    /* Add no country language *
+    /* Add no country language
     $result[] = language_export($language, true);
+    */
 
     /* Return sequence */
     return $result;
