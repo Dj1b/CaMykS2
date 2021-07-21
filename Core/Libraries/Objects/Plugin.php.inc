@@ -4,9 +4,9 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Nov 2019
- * @date Modification: May 2021
+ * @date Modification: Jul 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -141,7 +141,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @return void
      */
     protected function load_data() {
-        /* To be override by PluginType libraries or plugin themselfs */
+        /* To be override by PluginType libraries or plugin themselves */
     }
 
     /* Main methods */
@@ -335,7 +335,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $language
      * @return boolean success
      */
-    protected function load_locales($folder='', $language=null) {
+    public function load_locales($folder='', $language=null) {
         global $CaMykS;
 
         /* Load locales in plugin folder */
@@ -526,10 +526,16 @@ abstract class Plugin extends CaMykSLibrary {
      * Load admin specific styles files.
      * @return void
      */
-    public function load_adminStyleFiles() {
-        /* Attach admin style files to HTML page */
-        foreach ($this->adminStyleFiles as $file => $condition)
-            $this->add_styleFile($file, $condition);
+    public function load_adminStyleFiles($mode = 'Attached') {
+        if ($mode === 'Attached') {
+            /* Attach admin style files to HTML page */
+            foreach ($this->adminStyleFiles as $file => $condition)
+                $this->add_styleFile($file, $condition);
+        } elseif ($mode === 'Inserted') {
+            /* Insert admin style files to HTML page */
+            foreach ($this->adminStyleFiles as $file => $condition)
+                $this->add_styleIncludedFile($file, $condition);
+        }
     }
 
     /**
@@ -542,6 +548,18 @@ abstract class Plugin extends CaMykSLibrary {
     protected function add_styleFile($file, $condition='', $URLMode=null) {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleFile($this->get_fileURL('Styles/'.$file, $URLMode), $condition);
+    }
+
+    /**
+     * Insert a style file to HTML page.
+     * @param string $file
+     * @param string $condition
+     * @param string $URLMode
+     * @return void
+     */
+    protected function add_styleIncludedFile($file, $condition='', $URLMode=null) {
+        global $CaMykS;
+        $CaMykS->HTMLPage->add_styleIncludedFile($this->get_filePath('Styles/'.$file, $URLMode), $condition);
     }
 
     /**
