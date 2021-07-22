@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Mar 2020
  * @date Modification: Jul 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -152,22 +152,5 @@ $locales = array(
     'Configuration_PortAutomatic' => 'Automatique',
     'Configuration_SecureUndefined' => 'Non d&eacute;fini',
     'Configuration_TablePrefixUndefined' => 'Non d&eacute;fini',
-
-    /* Configuration Engine panel interface */
-    'Configuration_TimeZone' => 'Fuseau horaire',
-    'Configuration_TimeZoneUndefined' => 'Non d&eacute;fini',
-    'Configuration_WebmasterEmail' => 'Email du webmaster',
-    'Configuration_WebmasterEmailUndefined' => 'Non d&eacute;fini',
-    'Configuration_ErrorLogging' => 'Gestion des erreurs',
-    'Configuration_ErrorLoggingLevel' => 'Niveau',
-    'Configuration_ErrorLoggingLevelUndefined' => 'Non d&eacute;fini',
-    'Configuration_ErrorLoggingOutput' => 'Sortie',
-    'Configuration_ErrorLoggingOutputUndefined' => 'Non d&eacute;finie',
-    'Configuration_DefaultTools' => 'Outils',
-    'Configuration_PictureEditor' => 'Editeur d\'images',
-    'Configuration_PictureEditorUndefined' => 'Non d&eacute;fini',
-    'Configuration_Requests' => 'Requ&ecirc;tes',
-    'Configuration_RequestUserAgent' => 'Agent utilisateur',
-    'Configuration_RequestUserAgentUndefined' => 'Non d&eacute;fini',
 );
 ?>

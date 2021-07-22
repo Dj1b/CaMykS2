@@ -3,9 +3,9 @@
  * @brief SystemConfigurationManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jun 2021
- * @date Modification: Jun 2021
+ * @date Modification: Jul 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,6 +42,24 @@ $locales = array(
     'ClientSideCache' => 'Cache c&ocirc;t&eacute; client',
     'AutoLoadCaMykSJS' => 'Chargement auto. de CaMykS.js',
 
+    /* Engine configuration *//* Configuration Engine panel interface */
+    'Configuration_TimeZone' => 'Fuseau horaire',
+    'Configuration_TimeZoneUndefined' => 'Non d&eacute;fini',
+    'Configuration_WebmasterEmail' => 'Email du webmaster',
+    'Configuration_WebmasterEmailUndefined' => 'Non d&eacute;fini',
+    'Configuration_TemporaryFolder' => 'Dossier temporaire',
+    'Configuration_DefaultTemporaryFolder' => 'Dossier temporaire du syst&egrave;me',
+    'Configuration_ErrorLogging' => 'Gestion des erreurs',
+    'Configuration_ErrorLoggingLevel' => 'Niveau',
+    'Configuration_ErrorLoggingLevelUndefined' => 'Non d&eacute;fini',
+    'Configuration_ErrorLoggingOutput' => 'Sortie',
+    'Configuration_ErrorLoggingOutputUndefined' => 'Non d&eacute;finie',
+    'Configuration_DefaultTools' => 'Outils',
+    'Configuration_PictureEditor' => 'Editeur d\'images',
+    'Configuration_PictureEditorUndefined' => 'Non d&eacute;fini',
+    'Configuration_Requests' => 'Requ&ecirc;tes',
+    'Configuration_RequestUserAgent' => 'Agent utilisateur',
+    'Configuration_RequestUserAgentUndefined' => 'Non d&eacute;fini',
 
     /* Database configuration */
     'DatabaseConfiguration' => 'Configuration de la connexion &agrave; la base de donn&eacute;es',
