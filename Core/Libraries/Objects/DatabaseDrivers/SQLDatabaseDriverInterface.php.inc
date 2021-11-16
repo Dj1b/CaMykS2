@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Nov 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
@@ -24,7 +24,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $parent
      * @return void
      */
-    protected function __construct(&$parent) {
+    public function __construct(&$parent) {
         parent::__construct($parent);
     }
 
@@ -33,14 +33,15 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     /**
      * Execute prepared query using DbQuery builder.
      * @param Object $query
+     * @param string $resourceName
      * @return boolean success
      */
-    public function execute_builtQuery($query) {
+    public function execute_builtQuery($query, $resourceName='Default') {
         switch ($query->get_action()) {
-            case 'select': return $this->execute_builtSelectQuery($query);
-            case 'insert': return $this->execute_builtInsertQuery($query);
-            case 'update': return $this->execute_builtUpdateQuery($query);
-            case 'delete': return $this->execute_builtDeleteQuery($query);
+            case 'select': return $this->execute_directQuery($this->get_builtSelectQuery($query), $resourceName);
+            case 'insert': return $this->execute_directQuery($this->get_builtInsertQuery($query), $resourceName);
+            case 'update': return $this->execute_directQuery($this->get_builtUpdateQuery($query), $resourceName);
+            case 'delete': return $this->execute_directQuery($this->get_builtDeleteQuery($query), $resourceName);
         }
 
         /* Return default result */
@@ -50,69 +51,65 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     /* Execute built query methods */
 
     /**
-     * Execute select query using DbQuery builder.
+     * Return select query using DbQuery builder.
      * @param Object $query
-     * @return boolean success
+     * @return string
      */
-    protected function execute_builtSelectQuery($query) {
-        $sqlQuery = 'select '.
-                    $this->get_selectItems($query->get_selectItems()).
-                    'from '.
-                    $this->get_tables($query->get_tables()).
-                    $this->get_whereConditions($query->get_whereConditions()).
-                    $this->get_selectGroupBy($query->get_selectGroupBy()).
-                    $this->get_orderBy($query->get_orderBy()).
-                    $this->get_limits($query->get_limits()).
-                    ';';
-        return $this->execute_directQuery($sqlQuery);
+    protected function get_builtSelectQuery($query) {
+        return  'select '.
+                $this->get_selectItems($query->get_selectItems()).
+                'from '.
+                $this->get_tables($query->get_tables()).
+                $this->get_whereConditions($query->get_whereConditions()).
+                $this->get_selectGroupBy($query->get_selectGroupBy()).
+                $this->get_orderBy($query->get_orderBy()).
+                $this->get_limits($query->get_limits()).
+                ';';
     }
 
     /**
-     * Execute insert query using DbQuery builder.
+     * Return insert query using DbQuery builder.
      * @param Object $query
-     * @return boolean success
+     * @return string
      */
-    protected function execute_builtInsertQuery($query) {
-        $sqlQuery = 'insert into '.
-                    $this->get_tables($query->get_tables()).
-                    //'partition '.
-                    $this->get_insertPartition($query->get_insertPartition()).
-                    'values '.
-                    $this->get_insertValues($query->get_selectGroupBy()).
-                    ';';
-        return $this->execute_directQuery($sqlQuery);
+    protected function get_builtInsertQuery($query) {
+        return  'insert into '.
+                 $this->get_tables($query->get_tables()).
+                //'partition '.
+                $this->get_insertPartition($query->get_insertPartition()).
+                'values '.
+                $this->get_insertValues($query->get_selectInsertValues()).
+                ';';
     }
 
     /**
-     * Execute update query using DbQuery builder.
+     * Return update query using DbQuery builder.
      * @param Object $query
-     * @return boolean success
+     * @return string
      */
-    protected function execute_builtUpdateQuery($query) {
-        $sqlQuery = 'update '.
-                    $this->get_tables($query->get_tables()).
-                    'set '.
-                    $this->get_updateAssignments($query->get_updateAssignments()).
-                    'where '.
-                    $this->get_whereConditions($query->get_whereConditions()).
-                    ';';
-        return $this->execute_directQuery($sqlQuery);
+    protected function get_builtUpdateQuery($query) {
+        return  'update '.
+                $this->get_tables($query->get_tables()).
+                'set '.
+                $this->get_updateAssignments($query->get_updateAssignments()).
+                'where '.
+                $this->get_whereConditions($query->get_whereConditions()).
+                ';';
     }
 
     /**
-     * Execute delete query using DbQuery builder.
+     * Return delete query using DbQuery builder.
      * @param Object $query
-     * @return boolean success
+     * @return string
      */
-    protected function execute_builtDeleteQuery($query) {
-        $sqlQuery = 'delete from '.
-                    $this->get_tables($query->get_tables()).
-                    'where '.
-                    $this->get_whereConditions($query->get_whereConditions()).
-                    $this->get_orderBy($query->get_orderBy()).
-                    $this->get_limits($query->get_limits()).
-                    ';';
-        return $this->execute_directQuery($sqlQuery);
+    protected function get_builtDeleteQuery($query) {
+        return  'delete from '.
+                $this->get_tables($query->get_tables()).
+                'where '.
+                $this->get_whereConditions($query->get_whereConditions()).
+                $this->get_orderBy($query->get_orderBy()).
+                $this->get_limits($query->get_limits()).
+                ';';
     }
 
     /* Execute built query generic sub methods */

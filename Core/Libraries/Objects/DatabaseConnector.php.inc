@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -83,16 +83,17 @@ final class DatabaseConnector extends CaMykSLibrary {
                     $driver = 'MySQLDatabaseDriver';
                     break;
                 default :
-                    return $this->add_error(1);
+                    return $this->add_error(1, '');
             }
         }
 
         /* Load driver library */
-        if (!$CaMykS->load_library('DatabaseDrivers/'.$driver, 'Objects'))
-            return $this->add_error(2);
+        if ($CaMykS->load_library('DatabaseDrivers/'.$driver, 'Objects') === false)
+            return $this->add_error(2, $driver);
 
-       /* Load connection */
-       $this->connection = new $$driver($this);
+        /* Load connection */
+        $driver = '\\CaMykS2\\'.$driver;
+        $this->connection = new $driver($this);
 
         /* Register connector in CaMykS */
         $CaMykS->register_databaseConnection($this);
@@ -109,7 +110,29 @@ final class DatabaseConnector extends CaMykSLibrary {
             /* Driver related errors */
             1  => 'DriverUnknown',
             2  => 'DriverUnavailable',
+
+            /* Query related error */
+            11 => 'InvalidQuery',
         );
+    }
+
+    /* Driver related methods */
+
+    /**
+     * Add an error.
+     * @param integer $errorId
+     * @param string $query
+     * @param string $file
+     * @param integer $line
+     * @return false
+     */
+    public function add_driverError($errorId, $query, $file='', $line=0) {
+        /* Build details from driver value and query */
+        $details = 'Driver: '.$this->params['Driver']."\n";
+        $details .= 'Query: '.$query."\n";
+
+        /* Throw error */
+        return $this->add_error($errorId, $details, $file, $line, false);
     }
 
     /* Check methods */
@@ -119,9 +142,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @return boolean result
      */
     public function check_status() {
-        if ($this->connection === false)
-            return false;
-        return $this->connection->check_status();
+        return ($this->connection !== false);
     }
 
     /**
@@ -166,6 +187,14 @@ final class DatabaseConnector extends CaMykSLibrary {
         return $this->connection->get_driverVersion();
     }
 
+    /**
+     * Return database driver architecture.
+     * @return string
+     */
+    public function get_driverArchitecture() {
+        return $this->connection->get_driverArchitecture();
+    }
+
     /* Database methods */
 
     /**
@@ -174,8 +203,8 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @return boolean success
      */
     public function select_database($name=null) {
-        if ($name != null) $this->params['database'] = $name;
-        return $this->connection->select_database($this->params['database']);
+        if (!is_null($name)) $this->params['Database'] = $name;
+        return $this->connection->select_database($this->params['Database']);
     }
 
     /**
@@ -184,8 +213,8 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @return boolean success
      */
     public function check_database($name=null) {
-        if ($name != null) $this->params['database'] = $name;
-        return $this->connection->check_database($this->params['database']);
+        if (!is_null($name)) $this->params['Database'] = $name;
+        return $this->connection->check_database($this->params['Database']);
     }
 
     /**
@@ -195,17 +224,16 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @return boolean
      */
     public function create_database($name, $charset='UTF8') {
-        if ($name != null) $this->params['database'] = $name;
-        return $this->connection->create_database($this->params['database'], $charset);
+        if (!is_null($name)) $this->params['Database'] = $name;
+        return $this->connection->create_database($this->params['Database'], $charset);
     }
 
     /**
      * Dump database.
-     * @param mixed $file
      * @return mixed
      */
-    public function dump_database($file=false) {
-        return $this->connection->dump_database($file);
+    public function dump_database() {
+        return $this->connection->dump_database();
     }
 
     /**
@@ -236,11 +264,13 @@ final class DatabaseConnector extends CaMykSLibrary {
 
     /**
      * Create a table in the database.
+     * @param string $name
+     * @param array $fields
      * @param array $params
      * @return boolean success
      */
-    public function create_table($params=array()) {
-        return $this->connection->create_table($params);
+    public function create_table($name, $fields, $params=array()) {
+        return $this->connection->create_table($name, $params);
     }
 
     /**
@@ -282,25 +312,51 @@ final class DatabaseConnector extends CaMykSLibrary {
     /* Query methods */
 
     /**
-     * Execute direct query.
-     * @param string $query
+     * Execute query.
+     * @param mixed $query
+     * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query) {
-        return $this->connection->execute_directQuery($query);
+    public function execute_query($query, $resourceName='Default') {
+        if (is_string($query))
+            return $this->connection->execute_directQuery($query, $resourceName);
+        if (is_object($query) and get_class($query) == 'DbQuery')
+            return $this->connection->execute_builtQuery($query, $resourceName);
+        return false;
     }
 
     /**
-     * Execute prepared query using CQuery builder.
+     * Execute direct query .
      * @param Object $query
+     * @param string $resourceName
      * @return boolean success
      */
-    public function execute_builtQuery($query) {
-        return $this->connection->execute_builtQuery($query);
+    public function execute_directQuery($query, $resourceName='Default') {
+        return $this->connection->execute_directQuery($query, $resourceName);
     }
 
     /**
-     * Record given query from connection library to query list
+     * Execute prepared query using DbQuery builder.
+     * @param Object $query
+     * @param string $resourceName
+     * @return boolean success
+     */
+    public function execute_builtQuery($query, $resourceName='Default') {
+        return $this->connection->execute_builtQuery($query, $resourceName);
+    }
+
+    /**
+     * Execute direct queries.
+     * @param string $queries
+     * @param string $resourceName
+     * @return boolean success
+     */
+    public function execute_queries($queries, $resourceName='Default') {
+        return $this->connection->execute_queries($queries, $resourceName);
+    }
+
+    /**
+     * Record given query from connection library to query list.
      * @param string $query
      * @return void
      */
@@ -317,7 +373,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryGeneratedId($resourceName='DefaultResource') {
+    public function get_queryGeneratedId($resourceName='Default') {
         return $this->connection->get_queryGeneratedId($resourceName);
     }
 
@@ -326,7 +382,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryDataLine($resourceName='DefaultResource') {
+    public function get_queryDataLine($resourceName='Default') {
         if ($l = $this->connection->get_queryDataLine($resourceName)) {
             $this->statistics['FetchedLines']++;
             return $l;
@@ -339,7 +395,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryNumDataLine($resourceName='DefaultResource') {
+    public function get_queryNumDataLine($resourceName='Default') {
         if ($l = $this->connection->get_queryNumDataLine($resourceName)) {
             $this->statistics['FetchedLines']++;
             return $l;
@@ -352,7 +408,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows($resourceName='DefaultResource') {
+    public function get_queryAffectedRows($resourceName='Default') {
         $v = $this->connection->get_queryAffectedRows($resourceName);
         $this->statistics['UpdatedLines'] += $v;
         return $v;
@@ -363,7 +419,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryFieldCount($resourceName='DefaultResource') {
+    public function get_queryFieldCount($resourceName='Default') {
         return $this->connection->get_queryFieldCount($resourceName);
     }
 
@@ -373,7 +429,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='DefaultResource') {
+    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
         return $this->connection->get_queryFieldType($fIndex, $resourceName);
     }
 
@@ -382,7 +438,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError($resourceName='DefaultResource') {
+    public function get_queryError($resourceName='Default') {
         return $this->connection->get_queryError($resourceName);
     }
 
@@ -393,7 +449,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource($resourceName='DefaultResource') {
+    public function close_ressource($resourceName='Default') {
         return $this->connection->close_ressource($resourceName);
     }
 

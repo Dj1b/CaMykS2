@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0pre3
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Nov 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,23 +24,63 @@ abstract class DatabaseDriverInterface {
     protected $parent;
 
     /**
+     * @var boolean $status
+     * @brief Status of the database connection.
+     */
+    protected $status = false;
+
+    /**
+     * @var array $queryResources
+     * @brief List of open resources.
+     */
+    protected $queryResources = array();
+
+    /**
+     * @var string $architecture
+     * @brief Architecture of the database, can be "server" or "file"
+     */
+    protected $architecture;
+
+    /**
      * Class constructor.
      * @param Object $parent
      * @return void
      */
-    protected function __construct(&$parent) {
+    public function __construct(&$parent) {
         $this->parent = $parent;
     }
 
     /* Parent methods */
 
     /**
-     * Return parameter value
+     * Return parameter value.
      * @param string $param
      * @return mixed
      */
     protected function get_param($param) {
         return $this->parent->get_param($param);
+    }
+
+    /**
+     * Update parameter value.
+     * @param string $param
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function update_param($param, $value) {
+        return $this->parent->update_param($param, $value);
+    }
+
+    /**
+     * Add an error.
+     * @param integer $errorId
+     * @param string $query
+     * @param string $file
+     * @param integer $line
+     * @return false
+     */
+    protected function add_error($errorId, $query, $file='', $line=0) {
+        return $this->parent->add_driverError($errorId, $query, $file, $line);
     }
 
     /* Connection methods */
@@ -64,6 +104,14 @@ abstract class DatabaseDriverInterface {
      * @return string
      */
     abstract public function get_driverVersion();
+
+    /**
+     * Return database driver architecture.
+     * @return string
+     */
+    public function get_driverArchitecture() {
+        return $this->architecture;
+    }
 
     /* Database methods */
 
@@ -91,10 +139,9 @@ abstract class DatabaseDriverInterface {
 
     /**
      * Dump database.
-     * @param mixed $file
      * @return mixed
      */
-    abstract public function dump_database($file=false);
+    abstract public function dump_database();
 
     /**
      * Return database size.
@@ -118,10 +165,12 @@ abstract class DatabaseDriverInterface {
 
     /**
      * Create a table in the database.
+     * @param string $name
+     * @param array $fields
      * @param array $params
      * @return boolean success
      */
-    abstract public function create_table($params=array());
+    abstract public function create_table($name, $fields, $params=array());
 
     /**
      * Duplicate a table in the database.
@@ -156,16 +205,26 @@ abstract class DatabaseDriverInterface {
     /**
      * Execute direct query.
      * @param string $query
+     * @param string $resourceName
      * @return boolean success
      */
-    abstract public function execute_directQuery($query);
+    abstract public function execute_directQuery($query, $resourceName='Default');
 
     /**
-     * Execute prepared query using CQuery builder.
+     * Execute prepared query using DbQuery builder.
      * @param Object $query
+     * @param string $resourceName
      * @return boolean success
      */
-    abstract public function execute_builtQuery($query);
+    abstract public function execute_builtQuery($query, $resourceName='Default');
+
+    /**
+     * Execute direct queries.
+     * @param string $queries
+     * @param string $resourceName
+     * @return boolean success
+     */
+    abstract public function execute_queries($queries, $resourceName='Default');
 
     /**
      * Record given query from connection library to query list
@@ -183,35 +242,35 @@ abstract class DatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryGeneratedId($resourceName='DefaultResource');
+    abstract public function get_queryGeneratedId($resourceName='Default');
 
     /**
      * Return next query data line.
      * @param string $resourceName
      * @return array
      */
-    abstract public function get_queryDataLine($resourceName='DefaultResource');
+    abstract public function get_queryDataLine($resourceName='Default');
 
     /**
      * Return next query data line with numeric index.
      * @param string $resourceName
      * @return array
      */
-    abstract public function get_queryNumDataLine($resourceName='DefaultResource');
+    abstract public function get_queryNumDataLine($resourceName='Default');
 
     /**
      * Return latest query affected rows.
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryAffectedRows($resourceName='DefaultResource');
+    abstract public function get_queryAffectedRows($resourceName='Default');
 
     /**
      * Return latest query field count.
      * @param string $resourceName
      * @return integer
      */
-    abstract public function get_queryFieldCount($resourceName='DefaultResource');
+    abstract public function get_queryFieldCount($resourceName='Default');
 
     /**
      * Return latest query field type.
@@ -219,14 +278,14 @@ abstract class DatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    abstract public function get_queryFieldType($fIndex=0, $resourceName='DefaultResource');
+    abstract public function get_queryFieldType($fIndex=0, $resourceName='Default');
 
     /**
      * Return latest query error.
      * @param string $resourceName
      * @return string
      */
-    abstract public function get_queryError($resourceName='DefaultResource');
+    abstract public function get_queryError($resourceName='Default');
 
     /* Ressource methods */
 
@@ -235,7 +294,7 @@ abstract class DatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    abstract public function close_ressource($resourceName='DefaultResource');
+    abstract public function close_ressource($resourceName='Default');
 
     /* Data methods */
 
@@ -245,5 +304,15 @@ abstract class DatabaseDriverInterface {
      * @return string
      */
     abstract public function escape_string($string='');
+
+    /* Check methods */
+
+    /**
+     * Check connection is active.
+     * @return boolean result
+     */
+    public function is_active() {
+        return $this->status;
+    }
 }
 ?>
