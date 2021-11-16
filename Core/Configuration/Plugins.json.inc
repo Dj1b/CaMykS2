@@ -4,5 +4,5 @@
     "Plugins_AdminList" : "SystemAdminList",
     "Plugins_AdminUIDManager" : "",
     "Plugins_AdminDefaultEditor" : "",
-    "Plugins_AdminDefaultFileManager" : "",
+    "Plugins_AdminDefaultFileManager" : ""
 }
