@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre31
+ * @version 2.0pre32
  * @date Creation: Feb 2017
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -378,8 +378,7 @@ final class CaMykS {
         if ($this->bench !== false) $this->bench->add_step('CaMykS terminate.');
 
         /* Close database connections */
-        foreach ($this->openedDBonnections as $connection)
-            $connection->close();
+        $this->close_databaseConnections();
 
         /* Run onTerminate event handlers */
         $this->run_eventHandlers('onTerminate');
@@ -795,6 +794,7 @@ final class CaMykS {
         $this->load_library('country', 'Tools');
         $this->load_library('currency', 'Tools');
         $this->load_library('date', 'Tools');
+        $this->load_library('email', 'Tools');
         $this->load_library('file', 'Tools');
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
@@ -1867,6 +1867,26 @@ final class CaMykS {
                 case 'onTerminate' :        $plugin->execute_onCaMykSTerminate(); break;
             }
         }
+    }
+
+    /* Database related methods */
+
+    /**
+     * Register a database connection.
+     * @param Object $connection
+     * @return void
+     */
+    public function register_databaseConnection($connection) {
+        $this->openedDBonnections[] = &$connection;
+    }
+
+    /**
+     * Close all database connection.
+     * @return void
+     */
+    public function close_databaseConnections() {
+        foreach ($this->openedDBonnections as $connection)
+            $connection->close_connection();
     }
 }
 ?>
