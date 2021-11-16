@@ -3,10 +3,10 @@
  * @brief Client specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0pre3.1
  * @date Creation: Dec 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Nov 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -41,7 +41,7 @@ function client_getIp() {
  * @return boolean result
  */
 function client_isHTTPS() {
-    return (!empty($_SERVER['HTTPS']));
+    return (!empty($_SERVER['HTTPS']) or (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) and $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'));
 }
 
 /**
