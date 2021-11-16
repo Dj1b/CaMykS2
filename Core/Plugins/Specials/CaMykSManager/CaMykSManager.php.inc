@@ -3,9 +3,9 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre13.1
  * @date Creation: Dec 2019
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -555,7 +555,7 @@ final class CaMykSManager extends Plugin {
         switch ($this->section) {
             case 'Manager':
                 /* Load available themes */
-                $this->availableThemes = $this->configurationManager->get_availableAdminThemeTitles();
+                $this->availableThemes = $this->configurationManager->get_availableAdminThemesTitles();
 
                 /* Load available languages */
                 $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$this->get_availableLocaleLanguages()));
