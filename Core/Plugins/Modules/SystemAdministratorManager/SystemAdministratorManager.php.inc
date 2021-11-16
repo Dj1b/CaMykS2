@@ -1,7 +1,7 @@
 <?php
 /**
- * @brief SystemAdminUserManager admin module.
- * <br />Module to manage admin users and groups.
+ * @brief SystemAdministratorManager admin module.
+ * <br />Module to manage administration users and groups.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0pre0
@@ -15,9 +15,9 @@
 namespace CaMykS2;
 
 /**
- * SystemAdminUserManager class.
+ * SystemAdministratorManager class.
  */
-final class SystemAdminUserManager extends AdminModule {
+final class SystemAdministratorManager extends AdminModule {
     /**
      * Class constructor.
      * @param string $location
