@@ -3,9 +3,9 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: May 2021
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -390,6 +390,9 @@ final class CaMykSInstaller extends Plugin {
         /* Build configuration form */
         $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveWebmasterConfiguration')));
 
+        /* Load additional dictionnary */
+        $CaMykS->load_engineLocales('Generic/PersonalData');
+
         /* Update layout */
         $this->section = 'Webmaster';
         $this->update_selectedLayout('Configuration');
@@ -403,7 +406,22 @@ final class CaMykSInstaller extends Plugin {
         global $CaMykS;
 
         /* Load values */
+        $this->currentConfiguration['Webmaster']['FirstName'] = trim($_REQUEST['FirstName']);
+        $this->currentConfiguration['Webmaster']['LastName'] = trim($_REQUEST['LastName']);
+        $this->currentConfiguration['Webmaster']['Email'] = trim($_REQUEST['Email']);
+        $this->currentConfiguration['Webmaster']['Login'] = trim($_REQUEST['Login']);
+        $this->currentConfiguration['Webmaster']['Password'] = $_REQUEST['Password'];
+        $this->currentConfiguration['Webmaster']['PasswordConfirmation'] = $_REQUEST['PasswordConfirmation'];
 
+        /* Load administrator manager module */
+        $this->administratorManager = $CaMykS->load_module('SystemAdministratorManager', 'System');
+        if ($this->administratorManager === false) {
+            /* Throw fatal error */
+
+            die();
+        }
+        $this->administratorManager->initialise();
+        $this->administratorManager->load_locales();
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -526,8 +544,50 @@ final class CaMykSInstaller extends Plugin {
             $CaMykS->close();
         }
 
+        /* Check database connexion */
+        $dbConnector = new DatabaseConnector(array(
+            'Driver'    => $this->currentConfiguration['Database']['Database_Driver'],
+            'Host'      => $this->currentConfiguration['Database']['Database_Host'],
+            'Port'      => $this->currentConfiguration['Database']['Database_Port'],
+            'Login'     => $this->currentConfiguration['Database']['Database_Login'],
+            'Password'  => $this->currentConfiguration['Database']['Database_Password'],
+        ));
+
+        if (!$dbConnector->check_status()) {
+            /* Load last error from database connector */
+            $error = $dbConnector->get_lastError();
+
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $error['Message']);
+
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayDatabaseConfiguration'));
+            $CaMykS->close();
+        }
+
+        if (!$dbConnector->open_connection()) {
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->configurationManager->get_locale('Error_DatabaseCantConnectServer'));
+
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayDatabaseConfiguration'));
+            $CaMykS->close();
+        }
+
+        /* Prepare message */
+        if ($dbConnector->get_driverArchitecture())
+            $message = $this->get_locale('Message_DatabaseConnected').' ';
+        else
+            $message = '';
+
+        /* Check database already exists */
+        if ($dbConnector->check_database($this->currentConfiguration['Database']['Database_Name']))
+            $CaMykS->set_sessionValue('AdminInterface-Message', $message.$this->get_locale('Message_DatabaseExists'));
+        else
+            $CaMykS->set_sessionValue('AdminInterface-Message', $message.$this->get_locale('Message_DatabaseDoesntExist'));
+
         /* Check database driver is compatible with database local storage */
-        if (!DatabaseConnector::is_driverCompatibleWithDatableLocalStorage($this->currentConfiguration['Database']['Database_Driver'])) {
+        if ($this->currentConfiguration['Website']['Website_LocalStorage'] === 'database' and !DatabaseConnector::is_driverCompatibleWithDatableLocalStorage($this->currentConfiguration['Database']['Database_Driver'])) {
             /* Store error */
             $CaMykS->set_sessionValue('AdminInterface-Error', $this->configurationManager->get_locale('Error_DatabaseDriverIsNotCompatibleWithDatabaseLocalStorage', $this->currentConfiguration['Database']['Database_Driver']));
 
@@ -547,7 +607,39 @@ final class CaMykSInstaller extends Plugin {
     private function check_webmasterConfiguration() {
         global $CaMykS;
 
+        /* Check email value */
+        if ($this->currentConfiguration['Webmaster']['Email'] === '') {
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->administratorManager->get_locale('Error_AdminUserEmailIsEmpty'));
 
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayWebmasterConfiguration'));
+            $CaMykS->close();
+        } elseif (!email_isValid($this->currentConfiguration['Webmaster']['Email'])) {
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->administratorManager->get_locale('Error_AdminUserEmailIsNotValid'));
+
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayWebmasterConfiguration'));
+            $CaMykS->close();
+        }
+
+        /* Check password and confirmation */
+        if ($this->currentConfiguration['Webmaster']['Password'] === '') {
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->administratorManager->get_locale('Error_AdminUserPasswordIsEmpty'));
+
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayWebmasterConfiguration'));
+            $CaMykS->close();
+        } elseif ($this->currentConfiguration['Webmaster']['Password'] !== $this->currentConfiguration['Webmaster']['PasswordConfirmation']) {
+            /* Store error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->administratorManager->get_locale('Error_AdminUserPasswordIsNotConfirmed'));
+
+            /* Redirect to main page */
+            $CaMykS->HTMLPage->set_redirect($this->get_actionLink('DisplayWebmasterConfiguration'));
+            $CaMykS->close();
+        }
 
         /* Return success */
         return true;
@@ -614,6 +706,15 @@ final class CaMykSInstaller extends Plugin {
                 $data[$name] = '';
             $this->currentConfiguration[$section] = $data;
         }
+
+        /* Adds default webmaster configuration */
+        $this->currentConfiguration['Webmaster'] = array(
+            'FirstName' => '',
+            'LastName'  => '',
+            'Email'     => '',
+            'Login'     => '',
+            'Password'  => '',
+        );
 
         /* Save configuration */
         $this->save_currentConfiguration();

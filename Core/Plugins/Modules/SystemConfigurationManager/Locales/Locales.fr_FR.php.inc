@@ -3,9 +3,9 @@
  * @brief SystemConfigurationManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jun 2021
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,7 +42,7 @@ $locales = array(
     'ClientSideCache' => 'Cache c&ocirc;t&eacute; client',
     'AutoLoadCaMykSJS' => 'Chargement auto. de CaMykS.js',
 
-    /* Engine configuration *//* Configuration Engine panel interface */
+    /* Engine configuration */
     'Configuration_TimeZone' => 'Fuseau horaire',
     'Configuration_TimeZoneUndefined' => 'Non d&eacute;fini',
     'Configuration_WebmasterEmail' => 'Email du webmaster',
@@ -80,5 +80,6 @@ $locales = array(
     'Error_TitleIsEmpty' => 'Veuillez ins&eacute;rer un titre pour le site internet.',
     'Error_DatabaseNameIsEmpty' => 'Veuillez ins&eacute;rer le nom de la base de donn&eacute;es.',
     'Error_DatabaseDriverIsNotCompatibleWithDatabaseLocalStorage' => 'Les bases de donn&eacute;es %s ne sont pas compatibles avec le stockage local en base de données.',
+    'Error_DatabaseCantConnectServer' => 'Impossible de se connecter au serveur de base de donn&eacute;es.',
 );
 ?>
