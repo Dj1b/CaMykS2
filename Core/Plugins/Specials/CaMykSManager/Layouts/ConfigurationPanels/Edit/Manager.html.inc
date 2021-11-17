@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, configuration panel, edit manager section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2021
- * @date Modification: May 2021
+ * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -78,7 +78,7 @@ global $CaMykS;
             <?= $this->get_locale('Configuration_SiteListHiddenFiles'); ?>
         </div>
         <div class="formInput">
-
+            <?php  $this->configurationForm->display_toggleSwitchInput(array('name'=>'SiteListHideHiddenFiles', 'value'=>0, 'offValue'=>1, 'default'=>$CaMykS->get_configValue('Manager_SiteListHideHiddenFiles'))); ?>
         </div>
     </div>
 
@@ -87,7 +87,7 @@ global $CaMykS;
             <?= $this->get_locale('Configuration_SiteListHiddenFolders'); ?>
         </div>
         <div class="formInput">
-
+            <?php  $this->configurationForm->display_toggleSwitchInput(array('name'=>'SiteListHideHiddenFolders', 'value'=>0, 'offValue'=>1, 'default'=>$CaMykS->get_configValue('Manager_SiteListHideHiddenFolders'))); ?>
         </div>
     </div>
 

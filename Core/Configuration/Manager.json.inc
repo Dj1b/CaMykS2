@@ -8,6 +8,6 @@
     "Manager_IndexRedirectURL" : "",
     "Manager_SiteListPath" : "..\/",
     "Manager_SiteListSearchLevel" : 3,
-    "Manager_SiteListHideHiddenFiles" : [],
-    "Manager_SiteListHideHiddenFolders" : []
+    "Manager_SiteListHideHiddenFiles" : 1,
+    "Manager_SiteListHideHiddenFolders" : 1
 }

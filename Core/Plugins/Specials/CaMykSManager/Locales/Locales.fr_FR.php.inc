@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Mar 2020
- * @date Modification: Jul 2021
+ * @date Modification: Nov 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -122,9 +122,9 @@ $locales = array(
     'Configuration_SiteList' => 'Liste des sites',
     'Configuration_SiteListPath' => 'Dossier racine',
     'Configuration_SiteListSearchLevel' => 'Niveaux de recherche',
-    'Configuration_SiteListHiddenFiles' => 'Fichiers &agrave; cacher',
+    'Configuration_SiteListHiddenFiles' => 'Afficher fichiers invisibles',
     'Configuration_SiteListHiddenFilesNone' => 'Aucun',
-    'Configuration_SiteListHiddenFolders' => 'Dossiers &agrave; cacher',
+    'Configuration_SiteListHiddenFolders' => 'Afficher dossiers invisibles',
     'Configuration_SiteListHiddenFoldersNone' => 'Aucun',
     'Configuration_Security' => 'S&eacute;curit&eacute',
     'Configuration_SSLEnabled' => 'Activer SSL',
