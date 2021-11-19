@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief PluginConfig object.
+ * @brief PluginConfiguration object.
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: May 2021
+ * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -17,7 +17,7 @@ namespace CaMykS2;
 /**
  * PluginConfig class.
  */
-abstract class PluginConfig extends PluginLibrary {
+abstract class PluginConfiguration extends PluginLibrary {
     /**
      * @var string $objectName
      * @brief Object name.
