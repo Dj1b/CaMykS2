@@ -4,10 +4,10 @@
  * <br />Component abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Dec 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Dec 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,6 +18,11 @@ namespace CaMykS2;
  * Component class.
  */
 abstract class Component extends Plugin {
+    /**
+     * @var string $componentType
+     * @brief Component type.
+     */
+    protected $componentType = '';
 
     /**
      * Class constructor.
@@ -30,6 +35,16 @@ abstract class Component extends Plugin {
 
         /* Execute parent construct */
         parent::__construct($location);
+    }
+
+    /* Data related methods */
+
+    /**
+     * Return component type value.
+     * @return string
+     */
+    public function get_componentType() {
+        return $this->componentType;
     }
 }
 ?>

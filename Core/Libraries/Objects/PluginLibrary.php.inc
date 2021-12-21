@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: May 2021
+ * @date Modification: Dec 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -86,8 +86,10 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     protected function define_errorCodes() {
         $this->errorCodes = array(
-            /* Attibutes errors */
+            /* Attributes errors */
             1 => 'UnknownAttributeType',
+            2 => 'DuplicatedAttributeName',
+            3 => 'InvalidAttributeName',
         );
     }
 
@@ -234,6 +236,37 @@ abstract class PluginLibrary extends CaMykSLibrary {
     }
 
     /* Attributes related methods */
+
+    /**
+     * Add attribute.
+     * @param string $name
+     * @param string $type
+     * @param mixed $default
+     * @param array $params
+     * @param boolean $isLocalised
+     * @return void
+     */
+    protected function define_attribute($name, $type, $default, $params=array(), $isLocalised=false) {
+        /* Check name is already used */
+        if (isset($this->libraryAttributes[$name])) {
+            $this->add_error(2, 'Duplicate name is '.$name, __FILE__, __LINE__);
+            return;
+        }
+
+        /* Check name is invalid */
+
+
+
+        /* Check type */
+        if (!in_array($type, array('Integer', 'Float', 'Text', 'Name', 'ListItem', 'Version'))) {
+            $this->add_error(1, 'Unknown type '.$type, __FILE__, __LINE__);
+            return;
+        }
+
+        /* Build attribute from type */
+        $attribute = '\\CaMykS2\\'.$type.'PluginLibraryAttribute';
+        $this->libraryAttributes[$name] = new $attribute($name, $default, $params, $isLocalised);
+    }
 
     /**
      * Check attributes values.
