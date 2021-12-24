@@ -4,9 +4,9 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Nov 2019
- * @date Modification: Jul 2021
+ * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -262,10 +262,11 @@ abstract class Plugin extends CaMykSLibrary {
     /**
      * Return configuration value.
      * @param string $name
+     * @param string $language
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue($name, $default=null) {
+    public function get_configValue($name, $language=null, $default=null) {
         global $CaMykS;
 
         /* Check for plugin configuration */
@@ -275,7 +276,10 @@ abstract class Plugin extends CaMykSLibrary {
                 $this->configuration->load();
 
             /* Load configuration */
-            $value = $this->configuration->get_value($name, $default);
+            if (is_null($language))
+                $value = $this->configuration->$name;
+            else
+                $value = $this->configuration->get_value($name, $language);
 
             /* Return value if defined */
             if ($value !== null)

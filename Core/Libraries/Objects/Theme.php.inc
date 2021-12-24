@@ -4,9 +4,9 @@
  * <br />Theme abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Dec 2019
- * @date Modification: May 2021
+ * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -53,6 +53,12 @@ abstract class Theme extends Plugin {
      * @brief Temporary element to display in layouts.
      */
     protected $layoutContext;
+
+    /**
+     * @var array $pluginStyleFiles
+     * @brief List all available plugins style files.
+     */
+    protected $pluginStyleFiles = array();
 
     /**
      * Class constructor.
@@ -142,6 +148,20 @@ abstract class Theme extends Plugin {
 
         /* Load generic layout */
         return $CaMykS->load_assetLayout('Theme/Button', $this->layoutContext);
+    }
+
+    /* Plugin related methods */
+
+    /**
+     * Attach a plugin specific style file to HTML page.
+     * @param string $plugin
+     * @param string $condition
+     * @param string $URLMode
+     * @return void
+     */
+    public function add_pluginStyleFile($plugin, $condition='', $URLMode=null) {
+        if (isset($this->pluginStyleFiles[$plugin]))
+            $this->add_styleFile('Plugins/'.$this->pluginStyleFiles[$plugin], $condition, $URLMode);
     }
 }
 ?>

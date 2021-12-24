@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2.1
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: May 2021
+ * @date Modification: Dec 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -72,9 +72,6 @@ abstract class PluginLibraryAttribute {
      * @return void
      */
     public function __construct(&$parent, $name, $default, $params=array(), $isLocalised=false) {
-        /* Execute parent construct */
-        parent::__construct();
-
         /* Define library variables */
         $this->libraryParent = $parent;
         $this->libraryName = $name;
@@ -82,6 +79,9 @@ abstract class PluginLibraryAttribute {
         /* Define other variables */
         $this->defaultValue = $default;
         $this->isLocalised = $isLocalised;
+
+        /* Define original value */
+        $this->value = $default;
 
         /* Merge parameters */
         $this->params = array_merge(self::DEFAULTPARAMS, $this::DEFAULTPARAMS, $params);
@@ -95,12 +95,32 @@ abstract class PluginLibraryAttribute {
      * @return mixed
      */
     public function get_value($language=null) {
+        global $CaMykS;
+
         if ($this->isLocalised) {
-            if (!is_null($language) and isset($this->value[$language]))
+            if (is_null($language))
+                $language = $CaMykS->get_currentLanguage();
+            if (isset($this->value[$language]))
                 return $this->value[$language];
             return null;
         }
         return $this->value;
+    }
+
+    /**
+     * Set current value.
+     * @param mixed $value
+     * @param string $language
+     * @return void
+     */
+    public function set_value($value, $language=null) {
+        if ($this->isLocalised) {
+            if (is_null($language))
+                $language = $CaMykS->get_currentLanguage();
+            if (isset($this->value[$language]))
+                $this->value[$language] = $value;
+        }
+        $this->value = $value;
     }
 
     /**

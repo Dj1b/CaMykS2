@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
  * @date Modification: Dec 2021
  * @copyright 2021 CaMykS Team
@@ -62,9 +62,9 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $name
      * @return mixed
      */
-    public function &__get($name) {
+    public function __get($name) {
         if (isset($this->libraryAttributes[$name]))
-            return $this->libraryAttributes[$name]->value;
+            return $this->libraryAttributes[$name]->get_value();
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function __set($name, $value) {
         if (isset($this->libraryValues[$name]))
-            $this->libraryAttributes[$name]->value = $value;
+            $this->libraryAttributes[$name]->set_value($value);
     }
 
     /* Override CaMykSLibrary methods */
@@ -265,7 +265,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
 
         /* Build attribute from type */
         $attribute = '\\CaMykS2\\'.$type.'PluginLibraryAttribute';
-        $this->libraryAttributes[$name] = new $attribute($name, $default, $params, $isLocalised);
+        $this->libraryAttributes[$name] = new $attribute($this, $name, $default, $params, $isLocalised);
     }
 
     /**
