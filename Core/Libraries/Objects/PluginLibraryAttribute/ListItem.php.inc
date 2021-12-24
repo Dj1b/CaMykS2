@@ -3,9 +3,9 @@
  * @brief ListItemPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: May 2021
- * @date Modification: May 2021
+ * @date Modification: Dec 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -16,7 +16,7 @@ namespace CaMykS2;
 /**
  * ListItemPluginLibraryAttribute class.
  */
-abstract class ListItemPluginLibraryAttribute extends PluginLibraryAttribute {
+final class ListItemPluginLibraryAttribute extends PluginLibraryAttribute {
 
     /**
      * @var constant array DEFAULTPARAMS
