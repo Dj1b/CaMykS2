@@ -3,9 +3,9 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13.1
+ * @version 1.0pre14
  * @date Creation: Dec 2019
- * @date Modification: Nov 2021
+ * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -124,7 +124,10 @@ final class CaMykSManager extends Plugin {
 
         /* Check manager has a logged user */
         } elseif ($this->check_hasLoggedUser()) {
-
+            /* Load Media Popup component */
+            $this->mediaPopupComponent = $CaMykS->load_component('MediaPopup');
+            if ($this->mediaPopupComponent !== false)
+                $this->mediaPopupComponent->plug(array('Control_ClickBkgdToClose'=>0));
         }
 
         /* Initialise action to execute */
@@ -353,8 +356,14 @@ final class CaMykSManager extends Plugin {
         $this->externalLinksForm->add_hidden('ManagerAction', '');
         $this->externalLinksForm->add_hidden('Folder', '');
 
+        /* Build new folder HTML form */
+        $this->newFolderForm = new HTMLForm(array('Name'=>'NewFolderForm', 'Action'=>$this->get_actionLink('InsertFolder')));
+        $this->newFolderForm->add_hidden('Path', '');
+        $this->newFolderForm->add_hidden('FolderName', '');
+
         /* Load plugin scripts */
-        $this->add_JSFile('SiteList.js', array('async'=>''));
+        $this->add_JSFile('SiteList.js?v=1.0pre2', array('async'=>''));
+        $this->add_JSFile('Locales/SiteList.'.$CaMykS->get_currentLanguageValue().'.js?v=1.0pre0', array('async'=>''));
         $this->add_JSScript('SiteList.set_param("form", "'.$this->externalLinksForm->get_name().'");', false, 'Load');
         $this->add_JSScript('SiteList.initialise();', true, 'Load');
 
@@ -367,7 +376,37 @@ final class CaMykSManager extends Plugin {
      * @return void
      */
     private function initialise_InsertFolder() {
+        global $CaMykS;
 
+        /* Load data from header */
+        $path = http_getStringRequest('Path', 'null');
+        $folderName = http_getStringRequest('FolderName', 'null');
+        $folder = $path.'/'.$folderName;
+
+        /* Check folder name */
+        if (!preg_match('#^[A-Za-z][A-Za-z0-9_\-]*[A-Za-z0-9]$#', $folderName)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_FolderNameIsNotValid'));
+        }
+
+        /* Check folder exists */
+        elseif (file_exists($CaMykS->get_configValue('Manager_SiteListPath').$folder)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_FolderAlreadyExists'));
+        }
+
+        /* Create folder */
+        elseif (!folder_completePath($CaMykS->get_configValue('Manager_SiteListPath').$folder)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_CantCreateFolder'));
+        } else
+            $CaMykS->set_sessionValue('AdminInterface-Message', $this->get_locale('SiteList_FolderCreated'));
+
+        /* Redirect to SiteList interface */
+        $CaMykS->HTMLPage->set_redirect($this->get_actionLink('SiteList'));
+
+        /* Close CaMykS */
+        $CaMykS->close();
     }
 
     /**

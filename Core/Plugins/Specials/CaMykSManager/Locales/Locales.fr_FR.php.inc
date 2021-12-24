@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Mar 2020
- * @date Modification: Nov 2021
+ * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -83,6 +83,12 @@ $locales = array(
     'SiteList_InfoPanel_DatabaseServer' => 'Serveur',
     'SiteList_InfoPanel_DatabaseUser' => 'Utilisateur',
     'SiteList_InfoPanel_DatabasePrefix' => 'Pr&eacute;fixe des tables',
+
+    /* Site list create folder messages */
+    'SiteList_Error_FolderNameIsNotValid' => 'Le nom du dossier n\'est pas valide.',
+    'SiteList_Error_FolderAlreadyExists' => 'Un dossier avec ce nom existe d&eacute;j&agrave;.',
+    'SiteList_Error_CantCreateFolder' => 'Cr&eacute;ation du dossier impossible.',
+    'SiteList_FolderCreated' => 'Dossier cr&eacute;&eacute;.',
 
     /* Information panel interface */
     'Information_CurrentVersion' => 'Version courante',

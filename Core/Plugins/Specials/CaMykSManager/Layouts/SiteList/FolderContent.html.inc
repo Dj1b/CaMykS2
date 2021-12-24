@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, folder content sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0pre4
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS Team
+ * @date Modification: Dec 2021
+ * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -69,7 +69,7 @@ $currentLevel = $this->currentLevel;
                 </a>
             </div>
             <div class="cell action">
-                <a href="#" class="img">
+                <a href="javascript:SiteList.open_newFolderPromptPopup('<?= $folder; ?>');" class="img">
                     <img src="<?= $this->get_fileURL('Images/SiteList/AddFolder.png'); ?>" alt="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" />
                 </a>
             </div>

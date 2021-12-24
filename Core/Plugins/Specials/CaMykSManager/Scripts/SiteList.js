@@ -1,16 +1,17 @@
 /**
  * @brief CaMykSManager plugin, site list mode, client side scripts.
- * @details Plugin / Input Javascripts
+ * @details Plugin / Plugin Javascripts
  * @author CaMykS Team
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Mar 2020
- * @date Modification: Mar 2020
- * @copyright 2020 CaMykS
+ * @date Modification: Dec 2021
+ * @copyright 2020 - 2021 CaMykS
  */
 var SiteList = {
     name: 'SiteList',
     loaded: false,
     params: {},
+    locales: {},
 
     /**
      * add parameter
@@ -42,6 +43,37 @@ var SiteList = {
     },
 
     /**
+     * Add locale.
+     * @param string name
+     * @param mixed value
+     * @return void
+     */
+    add_locale: function(name, value) {
+        this.locales[name] = value;
+    },
+
+    /**
+     * Return locale value from name.
+     * @param mixed param
+     * @return mixed
+     */
+    get_locale: function(name) {
+        if (this.locales[name])
+            return this.locales[name];
+        return name;
+    },
+
+    /**
+     * Load multiple locales.
+     * @param array locales
+     * @return void
+     */
+    load_locales: function(locales) {
+        for (i in locales)
+            this.add_locale(i, locales[i]);
+    },
+
+    /**
      * Initialise object
      * @return void
      */
@@ -50,6 +82,13 @@ var SiteList = {
         if (!document.getElementById(this.get_param('form')))
             return;
         this.set_param('form', document.getElementById(this.get_param('form')));
+
+        /* Load locales */
+        if (SiteListLocales) {
+            this.load_locales(SiteListLocales);
+        } else {
+            //CaMykS.log('Locales not found.');
+        }
 
         /* Finalise initialisation */
         this.loaded = true;
@@ -92,5 +131,72 @@ var SiteList = {
         if (!this.loaded)
             return;
         document.getElementById('WebsiteInfoPanel').classList.toggle('opened');
-    }
+    },
+
+    /**
+     * Open prompt popup for new folder.
+     * @param string path
+     * @return void
+     */
+    open_newFolderPromptPopup: function(path) {
+        /* Check CaMykS is available */
+        if (!CaMykS)
+            return;
+
+        /* Check AdminPage is available */
+        if (!CaMykS.check_object('AdminPage')) {
+            // CaMykS.log('AdminPage object not available');
+            return;
+        }
+
+        /* Send request using dedicated form */
+        form = document.getElementById('NewFolderForm');
+        form.Path.value = path;
+
+        /* Open prompt popup */
+        CaMykS.AdminPage.open_promptPopup({'content':this.get_locale('NewFolderMessage'), 'acceptLink':'javascript:'+this.name+'.send_newFolderRequest();', 'inputName':'FolderName', 'inputDefault':'', 'inputMaxlength':32, 'inputPlaceholder':'', 'inputOnInput':this.name+'.check_folderName(this);'});
+    },
+
+    /**
+     * Check folder name.
+     * @param object input
+     * @return void
+     */
+    check_folderName: function(input) {
+        value = input.value;
+        if (value.match(/^[A-Za-z][A-Za-z0-9_\-]*[A-Za-z0-9]$/)) {
+            input.className = 'isValid';
+            return true;
+        } else {
+            input.className = 'isNotValid';
+            return false;
+        }
+    },
+
+    /**
+     * Send new folder request.
+     * @return void
+     */
+    send_newFolderRequest: function() {
+        console.log ('new folder request');
+
+        if (!document.getElementById('FolderName')) {
+            // CaMykS.log('AdminPage object not available');
+            return;
+        }
+        console.log ('folder name found');
+
+
+        /* Load input */
+        input = document.getElementById('FolderName');
+        if (!this.check_folderName(input))
+            return;
+
+        console.log ('name checked');
+
+        /* Send request using dedicated form */
+        form = document.getElementById('NewFolderForm');
+        form.FolderName.value = input.value;
+        form.submit();
+    },
 }
