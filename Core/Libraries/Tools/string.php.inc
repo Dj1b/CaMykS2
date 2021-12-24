@@ -3,13 +3,72 @@
  * @brief String specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: Mar 2021
+ * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+
+/* Conversion methods */
+
+/**
+ * Decode string from HTML to text.
+ * @param string $string
+ * @param string $encoding
+ * @return string
+ */
+function string_html2Text($string, $encoding=null) {
+    global $CaMykS;
+
+    /* check encoding */
+    if (!isset($encoding))
+        $encoding = $CaMykS->get_configValue('Website_Encoding');
+
+    /* decode HTML */
+    $string = html_entity_decode($string);
+
+    /* encode text */
+    switch ($encoding) {
+        case 'UTF-8':
+            return utf8_encode($string);
+            break;
+        case 'ISO-8859-1':
+            if (string_isUTF8($string))
+                return utf8_decode($string);
+            break;
+        default:
+        case '':
+            return $string;
+    }
+    return $string;
+}
+
+/**
+ * Encode string from text to HTML.
+ * @param string $string
+ * @param string $encoding
+ * @return string
+ */
+function string_text2Html($string, $encoding=null) {
+    global $CaMykS;
+
+    /* check encoding */
+    if (!isset($encoding))
+        $encoding = $CaMykS->get_configValue('Website_Encoding');
+
+    /* decode text */
+    switch ($encoding) {
+        case 'UTF-8':
+            return htmlentities($string, null, 'UTF-8');
+        case 'ISO-8859-1':
+            return htmlentities($string, null, 'ISO-8859-1');
+        default:
+        case '':
+    }
+    return htmlentities($string);
+}
 
 /* Check methods */
 
