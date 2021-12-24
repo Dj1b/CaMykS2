@@ -3,10 +3,10 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.5
+ * @version 1.0pre5.1
  * @date Creation: Nov 2019
- * @date Modification: Mar 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Dec 2021
+ * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Test and rewrite most of the methods.
@@ -40,15 +40,22 @@ function folder_completePath($path, $rights=0771) {
     if (folder_checkPathAccessibility($path, 'write') === false)
         return false;
 
+    /* Removes double slashes */
+    $path = preg_replace('#[/]+#', '/', $path);
+
     /* Create all necessary folders */
     $folders = explode ('/', $path);
     while ($folders[0] == '') {
         array_shift($folders);
     }
+
     $folder = '';
     foreach ($folders as $dir) {
-        if ($dir == '.')
-             $folder = realpath('.');
+        if ($dir == '.' or $dir == '..')
+            if ($folder == '')
+                $folder = realpath($dir);
+            else
+                $folder = realpath($folder.'/'.$dir);
         else
             $folder .= '/'.$dir;
         if (is_file($folder) or $dir == '') {
