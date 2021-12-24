@@ -2,9 +2,9 @@
  * @brief CaMykSStyle theme admin CSS styles
  * @details Plugin / Theme Styles
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Mar 2020
- * @date Modification: Jul 2021
+ * @date Modification: Dec 2021
  * @copyright 2020 - 2021 Ideogram Design
  */
 
@@ -26,7 +26,7 @@ input, textarea, select {border:none; padding:0; background: white; font-weight:
 select {padding:5px 8px 5px;}
 input, textarea, option {padding:7px 12px 5px; font-weight:bold; color:#5a5a5a;}
 textarea {resize: none; height:250px;}
-input:focus, textarea:focus, select:focus {background: rgba(80, 66, 132, 0.1); border:solid 1px rgba(80, 66, 132, 0.5);}
+input:focus, textarea:focus, select:focus {background: rgba(80, 66, 132, 0.2); border:solid 1px rgba(80, 66, 132, 0.8); box-shadow: 0 0 4px 2px rgba(80, 66, 132, 0.8); outline: none;}
 input[type=number] {padding-right:4px;}
 option:disabled {font-weight:normal; color:#7a7a7a;}
 option.title {font-size:1.025em; color:#504284; font-weight:bold;}
@@ -131,9 +131,9 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .columns .column:first-child {margin-left:0;}
 .columns .column.half {flex:2;}
 .columns .column.quarter {flex:1;}
-.columns .column.3quarters {flex:3;}
+.columns .column.quarters3 {flex:3;}
 .columns .column.third {}
-.columns .column.2thirds {flex:2;}
+.columns .column.thirds2 {flex:2;}
 
 /* Form */
 .formBlock {font-size:0;}
@@ -151,6 +151,18 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .formButtons .formButton.Back {background:#888888;}
 .formButtons .formButton:hover {background:#262334;}
 .formButtons .formButton + .formButton {margin-left:4px;}
+
+/* Modal popup using MediaPopup component */
+.modalPopup .message {font-size:24px; color:white; text-align:center;}
+.modalPopup .message.xxlarge {font-size:64px;}
+.modalPopup .buttons {text-align:center;}
+.modalPopup .buttons .greenButton {display:inline-block; margin:8px; text-align:center; color:white; font-size:20px; padding:8px 16px; background:#99d98c; min-width:100px;}
+.modalPopup .buttons .redButton {display:inline-block; margin:8px; text-align:center; color:white; font-size:20px; padding:8px 16px; background:#ee6055; min-width:100px;}
+.modalPopup .buttons .greenButton:hover, .mediaPopup .buttons .redButton:hover{text-decoration:none; opacity:0.8;}
+.modalPopup .inputBox {text-align:center;}
+.modalPopup .inputBox input {background:#444444; font-size:24px; color:white; width:100%;}
+.modalPopup .inputBox input.isValid {color:#99d98c; background-image:url(../Images/Admin/PopupInput/valid.png); background-repeat:no-repeat; background-position:top 50% right 4px; background-size:auto 80%;}
+.modalPopup .inputBox input.isNotValid {color:#ee6055; background-image:url(../Images/Admin/PopupInput/notValid.png); background-repeat:no-repeat; background-position:top 50% right 4px; background-size:auto 80%;}
 
 /* Manager - Site List */
 .siteList {margin:20px 0;}
