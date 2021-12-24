@@ -3,9 +3,9 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2020
- * @date Modification: Jul 2021
+ * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,7 +62,9 @@ final class AdminPage extends Template {
             $CaMykS->load_CaMykSJSScript();
 
             /* Load plugin scripts */
-            $this->add_JSFile('AdminPage.js', array('async'=>''));
+            $this->add_JSFile('AdminPage.js?v=1.0pre1', array('async'=>''));
+            $this->add_JSFile('Locales/AdminPage.'.$CaMykS->get_currentLanguageValue().'.js?v=1.0pre0', array('async'=>''));
+            $this->add_JSScript('AdminPage.set_param("LogoutURL", "'.$this->get_logoutLink().'");', true, 'Load');
             $this->add_JSScript('AdminPage.initialise();', true, 'Load');
         }
     }
