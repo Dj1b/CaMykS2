@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre32.1
+ * @version 2.0pre33
  * @date Creation: Feb 2017
- * @date Modification: Nov 2021
+ * @date Modification: Dec 2021
  * @copyright 2017 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -1389,6 +1389,10 @@ final class CaMykS {
      * @return string
      */
     public function get_assetFilePath($asset) {
+        /* Check for asset with identifier */
+        $fileName = explode('?', $asset);
+        $asset = $fileName[0];
+
         /* Check file in website */
         $file = 'Assets/'.$asset;
         if ($this->mode < 3) {
@@ -1412,17 +1416,22 @@ final class CaMykS {
      * @return string
      */
     public function get_assetFileURL($asset, $URLMode=null) {
+        /* Check for asset with identifier */
+        $fileName = explode('?', $asset);
+        $asset = $fileName[0];
+        $identifier = isset($fileName[1]) ? '?'.$fileName[1] : 0;
+
         /* Check file in website */
         $file = 'Assets/'.$asset;
         if ($this->mode < 3) {
             if (file_exists($file))
-                return $this->get_baseURL($URLMode).$file;
+                return $this->get_baseURL($URLMode).$file.$identifier;
         }
 
         /* Check file in CaMykS */
         $file = 'Core/'.$file;
         if ($this->check_engineFileExists($file))
-            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$file;
+            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$file.$identifier;
 
         /* Default for files that don't exists */
         return '';
@@ -1508,7 +1517,7 @@ final class CaMykS {
      */
     public function load_CaMykSJSScript() {
         /* Load object script */
-        $this->load_engineJSScript('CaMykS.js', 'Objects');
+        $this->load_engineJSScript('CaMykS.js?v=1.0pre2', 'Objects');
 
         /* Add object initialisation */
         if (isset($this->HTMLPage))
@@ -1569,6 +1578,14 @@ final class CaMykS {
      */
     public function get_currentLanguage() {
         return $this->currentLanguage;
+    }
+
+    /**
+     * Return current language value.
+     * @return string
+     */
+    public function get_currentLanguageValue() {
+        return language_export($this->currentLanguage);
     }
 
     /* Locale related methods */

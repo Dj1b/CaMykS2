@@ -2,10 +2,10 @@
  * @brief CaMykS client side master script
  * @details Engine / Javascript
  * @author CaMykS Team
- * @version 1.0p1
+ * @version 1.0pre2
  * @date Creation: Mar 2020
- * @date Modification: Dec 2020
- * @copyright 2020 Ideogram Design
+ * @date Modification: Dec 2021
+ * @copyright 2020 - 2021 Ideogram Design
  */
 var CaMykS = {
     name: 'CaMykS',
@@ -27,7 +27,7 @@ var CaMykS = {
     },
 
     /**
-     * Return param value from name
+     * Return param value from name.
      * @param mixed param
      * @return mixed
      */
@@ -43,7 +43,7 @@ var CaMykS = {
     },
 
     /**
-     * Add locale
+     * Add locale.
      * @param string name
      * @param mixed value
      * @return void
@@ -53,7 +53,7 @@ var CaMykS = {
     },
 
     /**
-     * return locale value from name
+     * Return locale value from name.
      * @param mixed param
      * @return mixed
      */
@@ -70,6 +70,43 @@ var CaMykS = {
     initialise: function() {
         /* Set object as loaded */
         this.loaded = true;
+    },
+
+    /* Objects related methods */
+
+    /**
+     * Register an object in CaMykS.
+     * @param string name
+     * @param object object
+     * @return void
+     */
+    register_object: function(name, object) {
+        if (eval('this.'+name))
+          return false;
+        eval('this.'+name+' = object');
+        return true;
+    },
+
+    /**
+     * Check object is available.
+     * @param string name
+     * @return boolean result
+     */
+    check_object: function(name) {
+        if (eval('this.'+name))
+            return true;
+        return false;
+    },
+
+    /**
+     * Return object.
+     * @param string name
+     * @return object
+     */
+    get_object: function(name) {
+        if (eval('this.'+name))
+            return eval('this.'+name);
+        return false;
     },
 
     /* DOM related tool methods */
