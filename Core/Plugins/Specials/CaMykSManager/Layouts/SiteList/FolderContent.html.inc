@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, folder content sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Mar 2020
  * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -64,7 +64,7 @@ $currentLevel = $this->currentLevel;
         </div>
         <?php if ($folderInfo['Type'] == 'Folder' and $currentLevel < $CaMykS->get_configValue('Manager_SiteListSearchLevel')) : ?>
             <div class="cell action">
-                <a href="#" class="img">
+                <a href="javascript:SiteList.open_newCaMykS2SitePromptPopup('<?= $folder; ?>');" class="img">
                     <img src="<?= $this->get_fileURL('Images/SiteList/AddSite.png'); ?>" alt="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" />
                 </a>
             </div>

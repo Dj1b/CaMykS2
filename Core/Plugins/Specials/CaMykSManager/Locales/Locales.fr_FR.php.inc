@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: Mar 2020
  * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -84,11 +84,14 @@ $locales = array(
     'SiteList_InfoPanel_DatabaseUser' => 'Utilisateur',
     'SiteList_InfoPanel_DatabasePrefix' => 'Pr&eacute;fixe des tables',
 
-    /* Site list create folder messages */
+    /* Site list create folder and site messages */
     'SiteList_Error_FolderNameIsNotValid' => 'Le nom du dossier n\'est pas valide.',
     'SiteList_Error_FolderAlreadyExists' => 'Un dossier avec ce nom existe d&eacute;j&agrave;.',
     'SiteList_Error_CantCreateFolder' => 'Cr&eacute;ation du dossier impossible.',
     'SiteList_FolderCreated' => 'Dossier cr&eacute;&eacute;.',
+    'SiteList_Error_CantCreateSite' => 'Cr&eacute;ation du site impossible.',
+    'SiteList_Error_CantEditSiteConfiguration' => 'Edition de la configuration du site impossible.',
+    'SiteList_SiteCreated'=> 'Site CaMykS 2 cr&eacute;&eacute;.',
 
     /* Information panel interface */
     'Information_CurrentVersion' => 'Version courante',

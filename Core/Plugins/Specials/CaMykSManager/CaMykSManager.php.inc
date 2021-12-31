@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre14
+ * @version 1.0pre15
  * @date Creation: Dec 2019
  * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -239,17 +239,21 @@ final class CaMykSManager extends Plugin {
 
         /* Check password is not encoded */
         if (!preg_match('#^[0-9a-z]{8}\:[0-9a-z]{'.$this->passwordEncodingLength.'}$#', $password)) {
+            /* Load configuration file */
+            $config = new ConfigurationFile('Manager', 'Engine');
+            $config->load();
+
+
             /* Encode password with hash */
             $salt = substr(session_id(), 1, 8);
-            $data = array('Manager_Password'=> $salt.':'.password_encode($password, $this->passwordEncodingLength, $salt));
+            $config->define('Manager_Password', $salt.':'.password_encode($password, $this->passwordEncodingLength, $salt));
 
             /* Check for document root setting */
             if ($CaMykS->get_configValue('Manager_SiteListPath') == '')
-                $data['Manager_SiteListPath'] = server_getDocumentRoot().'/';
+                $config->define('Manager_SiteListPath', server_getDocumentRoot().'/');
 
             /* Save configuration */
-            $config = new ConfigurationFile();
-            if (!$config->save('Manager', 'Engine', $data)) {
+            if (!$config->save()) {
                 /* Display error message page */
                 $this->action = 'DisplayMessage';
                 $this->message['Title'] = $this->get_locale('Error_CantSavePassword_Title');
@@ -361,6 +365,11 @@ final class CaMykSManager extends Plugin {
         $this->newFolderForm->add_hidden('Path', '');
         $this->newFolderForm->add_hidden('FolderName', '');
 
+        /* Build new CaMykS 2 site HTML form */
+        $this->newC2SiteForm = new HTMLForm(array('Name'=>'NewC2SiteForm', 'Action'=>$this->get_actionLink('InsertCaMykS2Site')));
+        $this->newC2SiteForm->add_hidden('Path', '');
+        $this->newC2SiteForm->add_hidden('SiteName', '');
+
         /* Load plugin scripts */
         $this->add_JSFile('SiteList.js?v=1.0pre2', array('async'=>''));
         $this->add_JSFile('Locales/SiteList.'.$CaMykS->get_currentLanguageValue().'.js?v=1.0pre0', array('async'=>''));
@@ -414,7 +423,50 @@ final class CaMykSManager extends Plugin {
      * @return void
      */
     private function initialise_InsertCaMykS2Site() {
+        global $CaMykS;
 
+        /* Load data from header */
+        $path = http_getStringRequest('Path', 'null');
+        $siteName = http_getStringRequest('SiteName', 'null');
+        $fullName = $path.'/'.$siteName;
+
+        /* Check folder name */
+        if (!preg_match('#^[A-Za-z][A-Za-z0-9_\-]*[A-Za-z0-9]$#', $siteName)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_FolderNameIsNotValid'));
+        }
+
+        /* Check folder exists */
+        elseif (file_exists($CaMykS->get_configValue('Manager_SiteListPath').$fullName)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_FolderAlreadyExists'));
+        }
+
+        /* Duplicate skeleton site */
+        elseif (!folder_copy($CaMykS->get_engineFileFullPath('Core/Skeleton'), $CaMykS->get_configValue('Manager_SiteListPath').$fullName)) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_CantCreateSite'));
+        }
+
+        else {
+            /* Edit configuration file to set  site name and CaMykS path */
+            $configuration = new ConfigurationFile($CaMykS->get_configValue('Manager_SiteListPath').$fullName.'/Configuration/Website'.CAMYKS_LIBRARYEXTENSION, 'FullPath');
+            $configuration->load();
+            $configuration->define('Website_Name', $siteName);
+            $configuration->define('Website_CaMykSPath', $CaMykS->get_engineFileFullPath(''));
+
+            /* Save configuration */
+            if (!$configuration->save())
+                $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('SiteList_Error_CantEditSiteConfiguration'));
+            else
+                $CaMykS->set_sessionValue('AdminInterface-Message', $this->get_locale('SiteList_SiteCreated'));
+        }
+
+        /* Redirect to SiteList interface */
+        $CaMykS->HTMLPage->set_redirect($this->get_actionLink('SiteList'));
+
+        /* Close CaMykS */
+        $CaMykS->close();
     }
 
     /**

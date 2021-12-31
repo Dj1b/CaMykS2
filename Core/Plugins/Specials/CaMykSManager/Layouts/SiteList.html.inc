@@ -3,7 +3,7 @@
  * @brief CaMykSManager plugin, site list layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Mar 2020
  * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS Team
@@ -19,6 +19,10 @@
     <?php $this->newFolderForm->display_header(); ?>
     <?php $this->newFolderForm->display_hiddens(); ?>
     <?php $this->newFolderForm->display_footer(); ?>
+
+    <?php $this->newC2SiteForm->display_header(); ?>
+    <?php $this->newC2SiteForm->display_hiddens(); ?>
+    <?php $this->newC2SiteForm->display_footer(); ?>
 
     <div class="buttons rightFloated">
         <?php $this->theme->display_button(array(

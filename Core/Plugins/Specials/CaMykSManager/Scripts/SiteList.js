@@ -2,7 +2,7 @@
  * @brief CaMykSManager plugin, site list mode, client side scripts.
  * @details Plugin / Plugin Javascripts
  * @author CaMykS Team
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Mar 2020
  * @date Modification: Dec 2021
  * @copyright 2020 - 2021 CaMykS
@@ -158,6 +158,74 @@ var SiteList = {
     },
 
     /**
+     * Send new folder request.
+     * @return void
+     */
+    send_newFolderRequest: function() {
+        /* Check input is available */
+        if (!document.getElementById('FolderName')) {
+            // CaMykS.log('FolderName input not available');
+            return;
+        }
+
+        /* Load input */
+        input = document.getElementById('FolderName');
+        if (!this.check_folderName(input))
+            return;
+
+        /* Send request using dedicated form */
+        form = document.getElementById('NewFolderForm');
+        form.FolderName.value = input.value;
+        form.submit();
+    },
+
+    /**
+     * Open prompt popup for new CaMykS 2 site.
+     * @param string path
+     * @return void
+     */
+    open_newCaMykS2SitePromptPopup: function(path) {
+        /* Check CaMykS is available */
+        if (!CaMykS)
+            return;
+
+        /* Check AdminPage is available */
+        if (!CaMykS.check_object('AdminPage')) {
+            // CaMykS.log('AdminPage object not available');
+            return;
+        }
+
+        /* Send request using dedicated form */
+        form = document.getElementById('NewC2SiteForm');
+        form.Path.value = path;
+
+        /* Open prompt popup */
+        CaMykS.AdminPage.open_promptPopup({'content':this.get_locale('NewC2SiteMessage'), 'acceptLink':'javascript:'+this.name+'.send_newCaMykS2SiteRequest();', 'inputName':'SiteName', 'inputDefault':'', 'inputMaxlength':32, 'inputPlaceholder':'', 'inputOnInput':this.name+'.check_folderName(this);'});
+    },
+
+    /**
+     * Send new CaMykS 2 site request.
+     * @return void
+     */
+    send_newCaMykS2SiteRequest: function() {
+        /* Check input is available */
+        if (!document.getElementById('SiteName')) {
+            // CaMykS.log('FolderName form not available');
+            return;
+        }
+
+        /* Load input */
+        input = document.getElementById('SiteName');
+        if (!this.check_folderName(input))
+            return;
+
+        /* Send request using dedicated form */
+        form = document.getElementById('NewC2SiteForm');
+        form.SiteName.value = input.value;
+        form.submit();
+    },
+
+    /**
      * Check folder name.
      * @param object input
      * @return void
@@ -171,32 +239,5 @@ var SiteList = {
             input.className = 'isNotValid';
             return false;
         }
-    },
-
-    /**
-     * Send new folder request.
-     * @return void
-     */
-    send_newFolderRequest: function() {
-        console.log ('new folder request');
-
-        if (!document.getElementById('FolderName')) {
-            // CaMykS.log('AdminPage object not available');
-            return;
-        }
-        console.log ('folder name found');
-
-
-        /* Load input */
-        input = document.getElementById('FolderName');
-        if (!this.check_folderName(input))
-            return;
-
-        console.log ('name checked');
-
-        /* Send request using dedicated form */
-        form = document.getElementById('NewFolderForm');
-        form.FolderName.value = input.value;
-        form.submit();
     },
 }
