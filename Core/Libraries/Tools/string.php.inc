@@ -3,7 +3,7 @@
  * @brief String specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
  * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -220,6 +220,17 @@ function string_endsWith($haystack, $needle, $caseSensitive=false) {
         }
         return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
     }
+}
+
+/* String escaping methods */
+
+/**
+ * Return string escaped for regular expression.
+ * @param string $string
+ * @return string
+ */
+function string_escape4Regex($string='') {
+  return preg_replace('/(\/|\(|\)|\.|\?|\$|\^|\[|\]|\*|\+|\{|\}|\,)/', '\\\$1', $string);
 }
 
 ?>
