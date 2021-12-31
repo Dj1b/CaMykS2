@@ -3,9 +3,9 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
+ * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -98,18 +98,9 @@ final class File extends CaMykSLibrary {
         if (isset($f[1]))
             $this->queryString = $f[1];
 
-        /* Check mode */
-        $this->mode = ucwords(strtolower($mode));
-        if (!in_array($this->mode, array('Read', 'Write', 'Detete')))
-            $this->mode = 'Read';
-
-        /* Check if file exists in read/delete mode */
-        if ($this->mode != 'Write' and ($this->isAccessible = file_exists($this->filePath)) == false)
-            return $this->add_error(1, '', __FILE__, __LINE__);
-
-        /* Check if file is accessible in given mode */
-        if (($this->isAccessible = folder_checkPathAccessibility($this->filePath, $this->mode)) == false)
-            return $this->add_error(2, '', __FILE__, __LINE__);
+        /* Apply given mode */
+        if (!$this->change_mode($mode))
+            return;
 
         /* Split path and file */
         $this->path = dirname($this->filePath);
@@ -217,6 +208,29 @@ final class File extends CaMykSLibrary {
             return false;
         return $this->queryString;
     }
+
+    /* File mode methods */
+
+    /**
+     * Change mode.
+     * @param string $mode
+     * @return void
+     */
+    public function change_mode($mode) {
+        /* Check mode */
+        $this->mode = ucwords(strtolower($mode));
+        if (!in_array($this->mode, array('Read', 'Write', 'Detete')))
+            $this->mode = 'Read';
+
+        /* Check if file exists in read/delete mode */
+        if ($this->mode != 'Write' and ($this->isAccessible = file_exists($this->filePath)) == false)
+            return $this->add_error(1, '', __FILE__, __LINE__);
+
+        /* Check if file is accessible in given mode */
+        if (($this->isAccessible = folder_checkPathAccessibility($this->filePath, $this->mode)) == false)
+            return $this->add_error(2, '', __FILE__, __LINE__);
+    }
+
 
     /* Read mode methods */
 
