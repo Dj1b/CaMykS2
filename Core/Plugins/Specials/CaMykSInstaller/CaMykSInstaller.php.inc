@@ -3,9 +3,9 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: May 2021
- * @date Modification: Nov 2021
+ * @date Modification: Dec 2021
  * @copyright 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -697,10 +697,10 @@ final class CaMykSInstaller extends Plugin {
             $this->currentConfiguration['Website'] = $configuration;
 
         /* Load system configurations */
-        $config = new ConfigurationFile();
-
         foreach (array('Visit', 'Admin', 'Database') as $section) {
-            $data = $config->load($section, 'Engine');
+            $config = new ConfigurationFile($section, 'Engine');
+            $data = $config->export();
+
             /* Clean pre-defined configuration */
             foreach ($data as $name => $value)
                 $data[$name] = '';

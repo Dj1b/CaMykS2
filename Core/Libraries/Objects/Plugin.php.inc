@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Nov 2019
  * @date Modification: Dec 2021
  * @copyright 2019 - 2021 CaMykS Team
@@ -343,7 +343,7 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* Load locales in plugin folder */
-        return $CaMykS->load_locales($this->pluginPath.'Locales'.($folder != ''? '/'.$folder : ''), $this->libraryName, $language);
+        return $CaMykS->load_locales($this->pluginPath.'/Locales'.($folder != '' ? '/'.$folder : ''), $this->libraryName, $language);
     }
 
     /**
@@ -353,7 +353,7 @@ abstract class Plugin extends CaMykSLibrary {
      */
     public function get_availableLocaleLanguages($folder='') {
         /* Load file list */
-        $files = glob($this->pluginPath.'Locales'.($folder != ''? '/'.$folder : '').'/*');
+        $files = glob($this->pluginPath.'Locales'.($folder != '' ? '/'.$folder : '').'/*');
 
         /* Initialise result list */
         $result = array();
