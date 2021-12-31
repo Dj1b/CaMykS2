@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre33
+ * @version 2.0pre34
  * @date Creation: Feb 2017
  * @date Modification: Dec 2021
  * @copyright 2017 - 2021 CaMykS Team
@@ -680,14 +680,15 @@ final class CaMykS {
      * @return void
      */
     public function load_configuration($configFile) {
-        $config = new ConfigurationFile();
 
         /* Load engine configuration file */
-        $this->engineConfiguration = array_merge($this->engineConfiguration, $config->load($configFile, 'Engine'));
+        $config = new ConfigurationFile($configFile, 'Engine');
+        $this->engineConfiguration = array_merge($this->engineConfiguration, $config->export());
 
         /* Load website configuration file */
+        $config = new ConfigurationFile($configFile, 'Website');
         if ($this->mode !== CAMYKS_MODE_MANAGER and $this->mode !== CAMYKS_MODE_INSTALL)
-            $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->load($configFile, 'Website'));
+            $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->export());
     }
 
     /**
@@ -910,19 +911,19 @@ final class CaMykS {
             /* Check is in system plugins */
             if ($location == 'System' or ($location === null and $this->check_engineFileExists('Core/Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
                 $location = 'System';
-                $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name.'/');
+                $path = $this->get_engineFileFullPath('Core/Plugins/'.$folder.'/'.$name);
             }
 
             /* Check is in shared plugins */
             elseif ($location == 'Shared' or ($location === null and $this->check_engineFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
                 $location = 'Shared';
-                $path = $this->get_engineFileFullPath('Plugins/'.$folder.'/'.$name.'/');
+                $path = $this->get_engineFileFullPath('Plugins/'.$folder.'/'.$name);
             }
 
             /* Check is in website plugins */
             elseif ($location == 'Website' or ($location === null and  $this->check_websiteFileExists('Plugins/'.$folder.'/'.$name.'/'.$name.CAMYKS_LIBRARYEXTENSION))) {
                 $location = 'Website';
-                $path = $this->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name.'/');
+                $path = $this->get_websiteFileFullPath('Plugins/'.$folder.'/'.$name);
             }
 
             /* Plugin not found */
@@ -934,7 +935,7 @@ final class CaMykS {
             }
 
             /* Load plugin file */
-            require_once $path.$name.CAMYKS_LIBRARYEXTENSION;
+            require_once $path.'/'.$name.CAMYKS_LIBRARYEXTENSION;
 
             /* Check if class exists */
             if (!class_exists($class))
@@ -1243,7 +1244,7 @@ final class CaMykS {
      * @return string
      */
     public function get_engineFileFullPath($filePath) {
-        return $this->CaMykSPath.'/'.$filePath;
+        return realpath($this->CaMykSPath.'/'.$filePath);
     }
 
     /**
@@ -1261,7 +1262,7 @@ final class CaMykS {
      * @return string
      */
     public function get_websiteFileFullPath($filePath) {
-        return $this->websitePath.'/'.$filePath;
+        return realpath($this->websitePath.'/'.$filePath);
     }
 
     /**
@@ -1419,7 +1420,7 @@ final class CaMykS {
         /* Check for asset with identifier */
         $fileName = explode('?', $asset);
         $asset = $fileName[0];
-        $identifier = isset($fileName[1]) ? '?'.$fileName[1] : 0;
+        $identifier = isset($fileName[1]) ? '?'.$fileName[1] : '';
 
         /* Check file in website */
         $file = 'Assets/'.$asset;
@@ -1642,7 +1643,7 @@ final class CaMykS {
      * @return boolean success
      */
     public function load_engineLocales($file, $prefix='', $language=null) {
-        return $this->load_locales($this->CaMykSPath.'/Core/Locales/'.$file, $prefix, $language);
+        return $this->load_locales($this->get_engineFileFullPath('/Core/Locales/'.$file), $prefix, $language);
     }
 
     /**
