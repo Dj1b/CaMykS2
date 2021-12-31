@@ -2,7 +2,7 @@
  * @brief MediaPopup component, client side scripts.
  * @details Plugin / Component Javascripts
  * @author CaMykS Team
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Dec 2021
  * @date Modification: Dec 2021
  * @copyright 2021 CaMykS
@@ -316,15 +316,15 @@ var MediaPopup = {
         this.get_param('popupBkgd').style.zIndex = Math.max(maxZ, 10000);
         this.get_param('popupBox').style.zIndex = Math.max(maxZ, 10000)+1;
 
+        /* Update status */
+        this.set_param('popupStatus', 1);
+
         /* Update size */
         this.update_mediaSize();
 
         /* Display background */
         this.get_param('popupBkgd').style.display = 'block';
         this.get_param('popupBox').style.display = 'block';
-
-        /* Update status */
-        this.set_param('popupStatus', 1);
     },
 
     /**
@@ -332,7 +332,8 @@ var MediaPopup = {
      * @return void
      */
     update_mediaSize: function() {
-        if (!this.loaded || this.get_param('popupStatus') === 0)
+        /* Check update is not required */
+        if (!this.loaded || this.get_param('popupStatus') == 0)
             return;
 
         /* Load sizes */

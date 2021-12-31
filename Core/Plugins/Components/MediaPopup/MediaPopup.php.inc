@@ -4,7 +4,7 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Nov 2021
  * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
@@ -91,7 +91,7 @@ final class MediaPopup extends Component {
 
         /* Add scripts */
         $CaMykS->load_engineJSScript('dom.js', 'Tools');
-        $this->add_JSFile('MediaPopup.js', array('async'=>''));
+        $this->add_JSFile('MediaPopup.js?v=1.0pre1', array('async'=>''));
         $this->add_JSScript('MediaPopup.set_param("EnableBackgroundAction", '.$this->get_configValue('Control_ClickBkgdToClose').');', true, 'Load');
         $this->add_JSScript('MediaPopup.set_param("EnableKeyboardActions", '.$this->get_configValue('Control_EnableKeyboard').');', true, 'Load');
         $this->add_JSScript('MediaPopup.set_param("EnableDiaporama", '.$this->get_configValue('Diaporama_Enable').');', true, 'Load');
