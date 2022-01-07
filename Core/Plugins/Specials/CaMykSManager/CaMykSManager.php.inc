@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre15
+ * @version 1.0pre16
  * @date Creation: Dec 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -98,6 +98,7 @@ final class CaMykSManager extends Plugin {
         $CaMykS->set_configValue('Website_Name', $this->libraryName);
         $CaMykS->set_configValue('Website_Title', 'Website Manager');
         $CaMykS->set_configValue('Website_URL', dirname($this->get_homeLink()).'/');
+        $CaMykS->set_configValue('Admin_HeaderLogoFile', $this->get_fileURL('Images/Header/Banner.svg'));
 
         /* Load locales */
         $this->load_locales();
@@ -108,6 +109,12 @@ final class CaMykSManager extends Plugin {
         /* Load theme */
         $this->theme = &$CaMykS->currentTheme;
 
+        /* Define body class */
+        $CaMykS->HTMLPage->set_bodyClass('manager');
+
+        /* Load template */
+        $this->template = &$CaMykS->currentTemplate;
+
         /* Check manager is in a website installed in standalone mode */
         if (!$this->check_isStandaloneMode())
             return false;
@@ -117,13 +124,19 @@ final class CaMykSManager extends Plugin {
             return false;
 
         /* Load action to execute */
-        $this->action = http_getStringRequest('ManagerAction', 'SiteList');
+        $this->action = http_getStringRequest('ManagerAction', 'Home');
 
         /* Check manager has password defined */
         if ($this->check_hasPasswordDefined()) {
 
         /* Check manager has a logged user */
         } elseif ($this->check_hasLoggedUser()) {
+
+            /* Add buttons */
+            $this->template->add_actionBarButton(array('Title'=>$this->get_locale('Action_SiteList'), 'Link'=>$this->get_actionLink('SiteList'), 'Icon'=>$this->get_fileURL('Images/Home/SiteList.svg')));
+            $this->template->add_actionBarButton(array('Title'=>$this->get_locale('Action_ConfigureCaMykS2'), 'Link'=>$this->get_actionLink('DisplayConfigurationPanel'), 'Icon'=>$this->get_fileURL('Images/Home/Settings.svg')));
+            $this->template->add_actionBarButton(array('Title'=>$this->get_locale('Action_CaMykS2Information'), 'Link'=>$this->get_actionLink('DisplayInformationPanel'), 'Icon'=>$this->get_fileURL('Images/Home/Server.svg')));
+
             /* Load Media Popup component */
             $this->mediaPopupComponent = $CaMykS->load_component('MediaPopup');
             if ($this->mediaPopupComponent !== false)
@@ -142,6 +155,10 @@ final class CaMykSManager extends Plugin {
 
             case 'Logout': /* Close session */
                 $this->initialise_Logout();
+                break;
+
+            case 'SiteList':
+                $this->initialise_SiteList();
                 break;
 
             case 'InsertFolder':
@@ -176,9 +193,9 @@ final class CaMykSManager extends Plugin {
                 $this->initialise_ResetOpcodeCache();
                 break;
 
-            case 'SiteList': /* Main, default */
+            case 'Home': /* Main, default */
             default:
-                $this->initialise_SiteList();
+                $this->initialise_Home();
         }
     }
 
@@ -337,6 +354,27 @@ final class CaMykSManager extends Plugin {
     }
 
     /**
+     * Initialise plugin in Home mode.
+     * @return void
+     */
+    private function initialise_Home() {
+        global $CaMykS;
+
+        /* Update background color */
+        $CaMykS->HTMLPage->set_bodyClass('manager colored');
+
+        /* Build button list */
+        $this->panelButtons = array(
+            array('Title'=>$this->get_locale('Action_SiteList'), 'Link'=>$this->get_actionLink('SiteList'), 'Icon'=>$this->get_fileURL('Images/Home/SiteList.svg')),
+            array('Title'=>$this->get_locale('Action_ConfigureCaMykS2'), 'Link'=>$this->get_actionLink('DisplayConfigurationPanel'), 'Icon'=>$this->get_fileURL('Images/Home/Settings.svg')),
+            array('Title'=>$this->get_locale('Action_CaMykS2Information'), 'Link'=>$this->get_actionLink('DisplayInformationPanel'), 'Icon'=>$this->get_fileURL('Images/Home/Server.svg')),
+        );
+
+        /* Update layout */
+        $this->update_selectedLayout('Home');
+    }
+
+    /**
      * Initialise plugin in SiteList mode.
      * @return void
      */
@@ -348,7 +386,7 @@ final class CaMykSManager extends Plugin {
 
         /* Load folder tree */
         $this->folderTree = array(
-            'Files'     =>array(),
+            'Files'     => array(),
             'Folders'   => array('/' => array_merge(
                 array('Path' => '/', 'Files' => array(), 'Folders' => array(), 'Type' => 'Folder', 'Id' => 'Root', 'Class' => 'opened'),
                 $this->load_folderTree('', 1)
@@ -492,7 +530,7 @@ final class CaMykSManager extends Plugin {
                     /* Load website configuration */
                     include $CaMykS->get_configValue('Manager_SiteListPath').$folder.'/etc/site.php.inc';
 
-                    /* Check configuration */
+                    /* Check website configuration */
                     if (isset($conf) and isset($conf['url'])) {
                         $url = preg_replace('#/$#', '', $conf['url']);
 
@@ -512,8 +550,46 @@ final class CaMykSManager extends Plugin {
                     break;
                 case 'CaMykSv2Site':
                     /* Load website configuration */
+                    $configuration = new ConfigurationFile($CaMykS->get_configValue('Manager_SiteListPath').$folder.'/Configuration/Website.php.inc', 'FullPath');
+                    $configuration->load();
 
                     /* Check website configuration */
+                    $url = $configuration->value('Website_URL');
+                    if (is_null($url) or $url === '') {
+                        /* Create URL from root */
+                        $url = url_getCurrentURL();
+                        $url = preg_replace('#CaMykS2/Manager.php$#i', '', $url);
+                        $url .= $folder;
+                    }
+
+                    /* Check admin mode */
+                    if ($adminMode) {
+                        /* Load admin entry point from website configuration */
+                        $configuration = new ConfigurationFile($CaMykS->get_configValue('Manager_SiteListPath').$folder.'/Configuration/Admin.json.inc', 'FullPath');
+                        $configuration->load();
+
+                        $adminPage = $configuration->value('Admin_EntryPoint');
+                        if (is_null($adminPage) or $adminPage === '') {
+                            /* Load admin entry point from engine configuration */
+                            $configuration = new ConfigurationFile('Admin', 'Engine');
+                            $configuration->load();
+
+                            $adminPage = $configuration->value('Admin_EntryPoint');
+                            if (is_null($adminPage) or $adminPage === '') {
+                                /* Load admin entry point from default value */
+                                $adminPage = 'admin.php';
+                            }
+                        }
+
+                        /* Update URL */
+                        $url .= '/'.$adminPage;
+                    }
+
+                    /* Redirect to main page */
+                    $CaMykS->HTMLPage->set_redirect($url);
+
+                    /* Close CaMykS */
+                    $CaMykS->close();
 
                     /* End action */
                     return;

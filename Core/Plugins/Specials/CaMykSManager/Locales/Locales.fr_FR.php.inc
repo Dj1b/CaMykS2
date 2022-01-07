@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre14
+ * @version 1.0pre15
  * @date Creation: Mar 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -19,10 +19,10 @@ $locales = array(
 
     /* Buttons */
     'Action_Retry' => 'R&eacute;essayer',
+    'Action_SiteList' => 'Liste des sites',
     'Action_ConfigureCaMykS2' => 'Configurer CaMykS 2',
     'Action_CaMykS2Information' => 'Serveur CaMykS 2',
     'Action_CloseWindow' => 'Fermer la fen&ecirc;tre',
-    'Action_BackToSiteList' => 'Retour &agrave; la liste des sites',
     'Action_Update' => 'Mettre &agrave; jour',
     'Action_CheckIntegrity' => 'V&eacute;rifier l\'int&eacute;grit&eacute;',
     'Action_ResetOpcodeCache' => 'Vider les caches OpCode',

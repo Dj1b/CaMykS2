@@ -3,24 +3,19 @@
  * @brief CaMykSManager plugin, information panel layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Sep 2020
- * @date Modification: Feb 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 global $CaMykS;
 ?>
 <div class="mainFrame configurationPanel">
-    <div class="buttons rightFloated">
-        <?php $this->theme->display_button(array(
-            'Title' => $this->get_locale('Action_BackToSiteList'),
-            'Link'  => $this->get_actionLink('SiteList'),
-        )); ?>
-    </div>
 
     <h1 class="title1">
+        <img src="<?= $this->get_fileURL('Images/Home/Server.svg'); ?>" alt="<?= $this->get_locale('SiteList_ServerNameX', gethostname()); ?>" />
         <?= $this->get_locale('SiteList_ServerNameX', gethostname()); ?>
     </h1>
 
@@ -33,7 +28,7 @@ global $CaMykS;
     </div>
 
     <div class="columns">
-        <div class="column third">
+        <div class="column half">
             <h2 class="title2">
                 <?= $this->get_locale('Information_Server'); ?>
             </h2>
@@ -64,8 +59,6 @@ global $CaMykS;
                 <?php endforeach; ?>
             <?php endif; ?>
 
-        </div>
-        <div class="column third">
             <h2 class="title2">
                 &nbsp;
             </h2>
@@ -121,8 +114,7 @@ global $CaMykS;
                 </ul>
             <?php endforeach; ?>
         </div>
-        <div class="column third">
-
+        <div class="column half">
             <h2 class="title2">
                 CaMykS
             </h2>

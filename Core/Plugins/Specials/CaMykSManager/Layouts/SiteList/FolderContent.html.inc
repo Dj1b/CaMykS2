@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, folder content sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Mar 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,7 +21,7 @@ $currentLevel = $this->currentLevel;
             &nbsp;
         </div>
         <div class="cell icon">
-            <img src="<?= $this->get_fileURL('Images/SiteList/File.png'); ?>" alt="<?= $this->get_locale('File'); ?>" title="<?= $this->get_locale('File'); ?>" />
+            <img src="<?= $this->get_fileURL('Images/SiteList/File.svg'); ?>" alt="<?= $this->get_locale('File'); ?>" title="<?= $this->get_locale('File'); ?>" />
         </div>
         <div class="cell name">
             <?= $file; ?>
@@ -54,7 +54,7 @@ $currentLevel = $this->currentLevel;
             <?php endif; ?>
         </div>
         <div class="cell icon">
-            <img src="<?= $this->get_fileURL('Images/SiteList/'.$folderInfo['Type'].'.png'); ?>" alt="<?= $this->get_locale($folderInfo['Type']); ?>" title="<?= $this->get_locale($folderInfo['Type']); ?>" />
+            <img src="<?= $this->get_fileURL('Images/SiteList/'.$folderInfo['Type'].'.svg'); ?>" alt="<?= $this->get_locale($folderInfo['Type']); ?>" title="<?= $this->get_locale($folderInfo['Type']); ?>" />
         </div>
         <div class="cell name">
             <?= $folder; ?>
@@ -65,12 +65,12 @@ $currentLevel = $this->currentLevel;
         <?php if ($folderInfo['Type'] == 'Folder' and $currentLevel < $CaMykS->get_configValue('Manager_SiteListSearchLevel')) : ?>
             <div class="cell action">
                 <a href="javascript:SiteList.open_newCaMykS2SitePromptPopup('<?= $folder; ?>');" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/AddSite.png'); ?>" alt="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/AddSite.svg'); ?>" alt="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewCaMykSv2WebsiteInX', $folder); ?>" />
                 </a>
             </div>
             <div class="cell action">
                 <a href="javascript:SiteList.open_newFolderPromptPopup('<?= $folder; ?>');" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/AddFolder.png'); ?>" alt="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/AddFolder.svg'); ?>" alt="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" title="<?= $this->get_locale('SiteList_NewFolderInX', $folder); ?>" />
                 </a>
             </div>
             <div class="cell action">
@@ -79,34 +79,34 @@ $currentLevel = $this->currentLevel;
 
         <?php elseif ($folderInfo['Type'] == 'CaMykSv2Site') : ?>
             <div class="cell action">
-                <a href="#" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/View.png'); ?>" alt="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" title="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" />
+                <a href="javascript:SiteList.open_externalLink('OpenSiteVisit', '<?= $folderInfo['Path']; ?>');" class="img">
+                    <img src="<?= $this->get_fileURL('Images/SiteList/View.svg'); ?>" alt="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" title="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" />
+                </a>
+            </div>
+            <div class="cell action">
+                <a href="javascript:SiteList.open_externalLink('OpenSiteAdmin', '<?= $folderInfo['Path']; ?>');" class="img">
+                    <img src="<?= $this->get_fileURL('Images/SiteList/Admin.svg'); ?>" alt="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" title="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" />
                 </a>
             </div>
             <div class="cell action">
                 <a href="#" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/Admin.png'); ?>" alt="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" title="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" />
-                </a>
-            </div>
-            <div class="cell action">
-                <a href="#" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/Configuration.png'); ?>" alt="" title="" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/Configuration.svg'); ?>" alt="" title="" />
                 </a>
             </div>
         <?php elseif ($folderInfo['Type'] == 'CaMykSv1Site') : ?>
             <div class="cell action">
                 <a href="javascript:SiteList.open_externalLink('OpenSiteVisit', '<?= $folderInfo['Path']; ?>');" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/View.png'); ?>" alt="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" title="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/View.svg'); ?>" alt="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" title="<?= $this->get_locale('SiteList_VisitWebsite'); ?>" />
                 </a>
             </div>
             <div class="cell action">
                 <a href="javascript:SiteList.open_externalLink('OpenSiteAdmin', '<?= $folderInfo['Path']; ?>');" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/Admin.png'); ?>" alt="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" title="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/Admin.svg'); ?>" alt="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" title="<?= $this->get_locale('SiteList_AccessWebsiteAdmin'); ?>" />
                 </a>
             </div>
             <div class="cell action">
                 <a href="javascript:SiteList.toggle_websiteInfoPanelDisplay();" class="img">
-                    <img src="<?= $this->get_fileURL('Images/SiteList/Info.png'); ?>" alt="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" title="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" />
+                    <img src="<?= $this->get_fileURL('Images/SiteList/Info.svg'); ?>" alt="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" title="<?= $this->get_locale('SiteList_ViewWebsiteInfo'); ?>" />
                 </a>
             </div>
         <?php else : ?>
