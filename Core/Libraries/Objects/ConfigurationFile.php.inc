@@ -3,10 +3,10 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Mar 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -36,6 +36,12 @@ final class ConfigurationFile {
     private $source = '';
 
     /**
+     * @var string $mode
+     * @brief Configuration file opening mode.
+     */
+    private $mode = '';
+
+    /**
      * @var array $data
      * @brief Configuration data.
      */
@@ -59,9 +65,10 @@ final class ConfigurationFile {
      * @param string $source
      * @return void
      */
-    public function __construct($file, $source) {
+    public function __construct($file, $source, $mode='Read') {
         $this->file = $file;
         $this->source = $source;
+        $this->mode = $mode;
     }
 
     /*  Public methods */
@@ -79,7 +86,7 @@ final class ConfigurationFile {
         }
 
         /* Check file availability */
-        if ($this->configurationFile->is_accessible()) {
+        if ($this->configurationFile->is_accessible('Read')) {
             /* Load configuration data */
             switch($this->fileType) {
                 case 'JSON': $this->load_JSONData(); break;
@@ -127,6 +134,19 @@ final class ConfigurationFile {
     }
 
     /**
+     * Return data value.
+     * @param string $name
+     * @return mixed
+     */
+    public function value($name) {
+        if (!$this->status)
+            $this->load();
+        if (!isset($this->data[$name]))
+            return null;
+        return $this->data[$name];
+    }
+
+    /**
      * Define data value.
      * @param string $name
      * @param mixed $value
@@ -159,7 +179,7 @@ final class ConfigurationFile {
         global $CaMykS;
 
         /* Load engine configuration file */
-        $this->configurationFile = new File($CaMykS->get_engineFileFullPath('Core/Configuration/'.$this->file.CAMYKS_ASSETDATAEXTENSION));
+        $this->configurationFile = new File($CaMykS->get_engineFileFullPath('Core/Configuration'), $this->file.CAMYKS_ASSETDATAEXTENSION, $this->mode);
 
         /* Define file type */
         $this->fileType = 'JSON';
@@ -174,10 +194,10 @@ final class ConfigurationFile {
 
         /* Load website configuration file */
         if ($this->file === 'Website') {
-            $this->configurationFile = new File($CaMykS->get_websiteFileFullPath('Configuration/'.$this->file.CAMYKS_LIBRARYEXTENSION));
+            $this->configurationFile = new File($CaMykS->get_websiteFileFullPath('Configuration'), $this->file.CAMYKS_LIBRARYEXTENSION, $this->mode);
             $this->fileType = 'PHP';
         } else {
-            $this->configurationFile = new File($CaMykS->get_websiteFileFullPath('Configuration/'.$this->file.CAMYKS_ASSETDATAEXTENSION));
+            $this->configurationFile = new File($CaMykS->get_websiteFileFullPath('Configuration'), $this->file.CAMYKS_ASSETDATAEXTENSION, $this->mode);
             $this->fileType = 'JSON';
         }
     }
@@ -215,7 +235,7 @@ final class ConfigurationFile {
      * @return void
      */
     private function load_PHPData() {
-        include $this->file;
+        include $this->configurationFile->get_filePath();
 
         if (isset($configuration))
             $this->data = $configuration;
