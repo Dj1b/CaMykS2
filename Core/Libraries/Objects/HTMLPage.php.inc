@@ -5,8 +5,8 @@
  * @author CaMykS Team <CaMykS.contact@gmail.com>
  * @version 1.0pre5
  * @date Creation: Feb 2020
- * @date Modification: Feb 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -403,6 +403,15 @@ final class HTMLPage {
      */
     public function add_headExtra($content='') {
         $this->headExtras .= $content."\n";
+    }
+
+    /**
+     * Define body class.
+     * @param string $class
+     * @return void
+     */
+    public function set_bodyClass($class) {
+        $this->bodyClass = $class;
     }
 
     /* Shortcuts to some headers and data insertion methods */
