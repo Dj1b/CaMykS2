@@ -3,10 +3,10 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Feb 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -98,6 +98,15 @@ final class AdminPage extends Template {
         global $CaMykS;
         $logo = $CaMykS->get_configValue('Admin_HeaderLogoFile');
         return (!is_null($logo) and $logo !== '');
+    }
+
+    /**
+     * Return header logo url.
+     * @return string
+     */
+    protected function get_headerLogo() {
+        global $CaMykS;
+        return $CaMykS->get_configValue('Admin_HeaderLogoFile');
     }
 
     /**

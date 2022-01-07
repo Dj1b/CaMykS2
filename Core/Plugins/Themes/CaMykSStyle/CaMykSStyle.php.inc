@@ -3,10 +3,10 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2
  * @date Creation: Feb 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -46,7 +46,7 @@ final class CaMykSStyle extends Theme {
      * @var array $adminStyleFiles.
      * @brief List of styles to be attached in admin mode.
      */
-    protected $adminStyleFiles = array('admin.css?v=1.0pre13'=>'');
+    protected $adminStyleFiles = array('admin.css?v=1.0pre14'=>'');
 
     /**
      * Class constructor.
@@ -67,13 +67,5 @@ final class CaMykSStyle extends Theme {
      */
     public function initialise($params=array()) {
         parent::initialise($params);
-
-         /* Adds specific style script */
-        if ($this->params['FileMode'] === 'Attached') {
-            $this->add_styleScript('#PageHeader .background {background-image:url('.$this->get_fileURL('Images/Admin/header.jpg').');}');
-        } elseif ($this->params['FileMode'] === 'Inserted') {
-            $bkgdFile = new File($this->get_filePath('Images/Admin/header.jpg'));
-            $this->add_styleScript('#PageHeader .background {background-image:url('.$bkgdFile->get_base64Data().');}');
-        }
     }
 }

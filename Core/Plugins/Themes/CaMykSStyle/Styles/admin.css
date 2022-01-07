@@ -1,17 +1,22 @@
 /**
- * @brief CaMykSStyle theme admin CSS styles
+ * @brief CaMykSStyle theme, admin CSS styles
  * @details Plugin / Theme Styles
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: Mar 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 Ideogram Design
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 Ideogram Design
+
+ * @note This program is distributed as is - WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 * {padding:0; margin:0; box-sizing: border-box; font-family: Arial; font-size: 14px; font-weight:normal; font-style:normal; color:#707070;}
 
 body {background:#f9f9f9;}
-p {padding: 8px 0;}
+body.colored {background:#5d4d96;}
+
+p {padding: 6px 0;}
 a {text-decoration:none;}
 ul {margin:0px 28px; padding:0; list-style:url(../Images/bullet.gif);}
 ul.noDot {list-style:none; margin:0px 16px;}
@@ -23,8 +28,8 @@ sup, sub{font-size:9px; color:inherit;}
 /* Form elements */
 form {margin:0; font-size:0;}
 input, textarea, select {border:none; padding:0; background: white; font-weight:bold; border:solid 1px #aeaeae; width:200px; max-width:100%;}
-select {padding:5px 8px 5px;}
-input, textarea, option {padding:7px 12px 5px; font-weight:bold; color:#5a5a5a;}
+select {padding:5px 8px 5px; background:#f9f9f9;}
+input, textarea, option {padding:7px 12px 5px; font-weight:bold; color:#5a5a5a; background:#f9f9f9;}
 textarea {resize: none; height:250px;}
 input:focus, textarea:focus, select:focus {background: rgba(80, 66, 132, 0.2); border:solid 1px rgba(80, 66, 132, 0.8); box-shadow: 0 0 4px 2px rgba(80, 66, 132, 0.8); outline: none;}
 input[type=number] {padding-right:4px;}
@@ -45,26 +50,31 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .toggleSwitchInput input[type=checkbox]:focus + .switcher {box-shadow: 0 0 1px #fbc02a;}
 .toggleSwitchInput input[type=checkbox]:checked + .switcher:before {-webkit-transform: translateX(30px); -ms-transform: translateX(30px); transform: translateX(30px);}
 
+input[type=checkbox] + label + autoBox {height:0; overflow:hidden; transition:all 0.5s ease;}
+input[type=checkbox]:checked + label + autoBox {height:auto;}
+
 /* Structure */
 .innerContent {width:1400px; max-width:100%; margin:0 auto;}
 
-#PageHeader {position:fixed; top:0; width:100%; background:linear-gradient(to right, #4c3f7b, #4c3f7b 250px, #262334); z-index:10;}
+#PageHeader {position:fixed; top:0; width:100%; background:#352B5A; z-index:6;}
 #PageHeader .background {height:100px; background-repeat:no-repeat; background-size:auto 100%; background-position:0% 50%;}
 #PageHeader .innerContent {display:flex; justify-content: flex-end;}
 #PageHeader .innerContent .infos {flex:1; max-width:300px; height:100px;}
 #PageHeader .innerContent .title {flex:2; padding: 20px; font-size:20px; text-transform:uppercase; color:white; text-align:right; font-weight:300;}
-#PageHeader .innerContent .logo {flex:1; max-width:200px; height:100px; background:yellow;}
+#PageHeader .innerContent .logo {flex:2; height:100px; text-align:center; padding:15px 0;}
+#PageHeader .innerContent .logo img {height:70px; width:auto; max-width:100%; max-height:100%;}
 
-#PageContent {margin:100px 0 24px 0;}
-#PageContent .innerContent {min-height:400px;}
-
-#PageFooter {position:fixed; bottom:0; width:100%; height:24px; background:#262334; padding:0 20px; z-index:10;}
-#PageFooter .innerContent {color:white; font-size:11px; padding:6px 20px;}
+#PageContent {margin:100px 0 0 0;}
+#PageContent .innerContent {min-height:400px; padding:0 0 0 120px;}
 
 /* Tools */
 .leftFloated {float:left;}
 .rightFloated {float:right;}
 .clear {clear:both;}
+.toLeft {text-align:left;}
+.toRight {text-align:right;}
+.justifified {text-align:justify;}
+.centered {text-align:center;}
 
 .img {font-size:0}
 
@@ -82,28 +92,38 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 
 /* Graphical elements */
 .CaMykSButton {display:inline-block; background:#fbc02a; color:white; font-size:13px; line-height:18px; padding:6px 28px; transition:background 0.3s linear; text-transform:uppercase; text-decoration:none; border-radius:4px;}
-.CaMykSButton.Large {font-size:14px; line-height:20px; padding:8px 32px;}
-.CaMykSButton.Small {font-size:12px; line-height:16px; padding:6px 24px;}
 .CaMykSButton:hover {background:#262334;}
 .CaMykSButton + .CaMykSButton {margin-left:16px;}
+.CaMykSButton.Large {font-size:14px; line-height:20px; padding:8px 32px;}
+.CaMykSButton.Small {font-size:12px; line-height:16px; padding:6px 24px;}
+.CaMykSButton.Alternate {background:#352B5A;}
 
 /* Editor styles */
-.title1 {font-size:28px; color:#4c3f7b;}
-.title2 {font-size:24px; color:#262334;}
+.title1 {font-size:28px; color:#4c3f7b; padding-bottom:6px; border-bottom: solid 2px #fbc02a;}
+.title2 {font-size:25px; color:#fbc02a; font-weight:bold;}
 .title3 {font-size:20px; color:#4c3f7b; font-weight:bold; margin:16px 0 4px; position:relative; overflow:hidden;}
 .title3:after {content: ""; position:absolute; top:17px; width:100%; background: #4c3f7b; height:1px; font-size:0; margin-left:6px;}
 .title4 {font-size:15px; color:#4c3f7b; text-transform:uppercase; margin:4px 0;}
 
+.content1 {}
+.content2 {}
+.content3 {}
+.content4 {}
+
+.content1.large, .content2.large, .content3.large, .content4.large {font-size:18px;}
+
 /* Action bar */
-#ActionBar {background:#262334; position:fixed; left:0; top:100px; bottom:24px; z-index:5;}
-#ActionBar .button img {opacity:0.5; transition: opacity 0.3s linear;}
+#ActionBar {background:#5d4d96; position:fixed; left:0; top:100px; bottom:0; z-index:5; width:120px;}
+#ActionBar .button {width:100%; max-width:100%; overflow:hidden; text-align:center;}
+#ActionBar .button img {opacity:0.5; transition: opacity 0.3s linear; max-width:50px; padding:8px 0;}
 #ActionBar .button:hover img {opacity:1;}
-#ActionBar .button.home {background:#504284;}
-#ActionBar .button.menu {background:#fbc02a;}
+#ActionBar .button.menu {background:#fbc02a; padding: 0;}
+#ActionBar .button.logout {position:absolute; bottom:20px;}
+#ActionBar .version {position:absolute; bottom:0; width:100%; color:white; text-align:center; padding:4px 0; font-size:10px;}
 
 /* Admin menu */
-#AdminMenu {background:#fbc02a; position:fixed; left:-250px;; top:100px; bottom:24px; width:250px; z-index:4; transition:all 0.3s ease-in;}
-#AdminMenu.opened {left:60px;}
+#AdminMenu {background:#fbc02a; position:fixed; left:-250px; top:0; bottom:0; width:250px; z-index:4; transition:all 0.3s ease-in;}
+#AdminMenu.opened {left:120px;}
 
 /* Admin interface messages */
 .interfaceError {text-align:center; font-size:15px; background:#f5d8d8; color:#cc3333; font-weight:bold; padding:8px 40px; margin: 0;}
@@ -123,7 +143,7 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .mainFrame {background:white; padding:50px 40px;}
 .mainFrame .listLine {border-bottom:solid 1px #DCDCDC; display:flex;}
 .mainFrame .listLine:hover {background:#ebe9f5;}
-.mainFrame .listLine .cell {flex:2; padding:4px;}
+.mainFrame .listLine .cell {flex:2; padding:6px; font-size:15px;}
 
 /* Columns */
 .columns {display:flex;}
@@ -164,15 +184,31 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .modalPopup .inputBox input.isValid {color:#99d98c; background-image:url(../Images/Admin/PopupInput/valid.png); background-repeat:no-repeat; background-position:top 50% right 4px; background-size:auto 80%;}
 .modalPopup .inputBox input.isNotValid {color:#ee6055; background-image:url(../Images/Admin/PopupInput/notValid.png); background-repeat:no-repeat; background-position:top 50% right 4px; background-size:auto 80%;}
 
+/* Manager */
+.manager .title1 img {max-height:36px; width:auto; filter:invert(0.9); vertical-align:-6px;}
+.manager .formButtons {display:none;}
+.manager .formButtons ~ .formButtons {display:block;}
+
+
+/* Manager - Home */
+.homeFrame {padding:100px 0 0;}
+.homeFrame .buttonsPanel {margin:100px auto 0; text-align:center; width:1000px; max-width:100%; display:flex;}
+.homeFrame .buttonsPanel .button {flex:1; width:25%; border-left:solid 3px #352B5A; text-align:center; font-size:14px; text-transform:uppercase; color:white; opacity:0.5; transition:all 0.3s ease;}
+.homeFrame .buttonsPanel .button:hover {opacity:1;}
+.homeFrame .buttonsPanel .button img {margin-bottom:8px;}
+.homeFrame .buttonsPanel .button:nth-of-type(4n + 1) {border-left:none;}
+
 /* Manager - Site List */
 .siteList {margin:20px 0;}
 .siteList .listLine .cell.opener {max-width:20px; cursor:pointer;}
-.siteList .listLine .cell.opener * {font-weight:bold; font-size:16px;}
+.siteList .listLine .cell.opener * {font-weight:bold; font-size:18px;}
 .siteList .listLine .cell.opener .openButton {display:inline;}
 .siteList .listLine .cell.opener .closeButton {display:none;}
-.siteList .listLine .cell.icon {max-width:20px; max-height:20px; padding:4px 0; overflow:hidden; text-align:center;}
-.siteList .listLine .cell.description {max-width:200px; transition:all 0.3s ease-in; z-index:2; opacity:0.3;}
-.siteList .listLine .cell.action {max-width:26px; max-height:20px; padding:4px 0; overflow:hidden; text-align:center; filter:grayscale(100%); transition:all 0.2s ease-in; z-index:2; opacity:0.2;}
+.siteList .listLine .cell.icon {max-width:24px; max-height:26px; padding:4px 0; overflow:hidden; text-align:center;}
+.siteList .listLine .cell.icon img {height:22px; width:auto;}
+.siteList .listLine .cell.description {max-width:300px; transition:all 0.3s ease-in; z-index:2; opacity:0.3;}
+.siteList .listLine .cell.action {max-width:30px; max-height:26px; padding:4px 0; overflow:hidden; text-align:center; filter:grayscale(100%); transition:all 0.2s ease-in; z-index:2; opacity:0.2;}
+.siteList .listLine .cell.action img {height:22px; width:auto;}
 .siteList .children {margin-left:20px; display:none;}
 
 .siteList .listLine.opened .cell.opener .openButton {display:none;}
@@ -202,3 +238,9 @@ input.shortest, textarea.shortest, select.shortest {width:75px;}
 .configurationPanel .configurationForm {}
 .configurationPanel .configurationForm .noneSection {text-align:center; margin:40px 0 0;}
 .configurationPanel .configurationForm .noneSection:after {background:none;}
+
+/* Installer */
+.installer #ActionBar {top: auto; height:20px;}
+.installer #PageContent .innerContent {padding:0;}
+.installer .manifest {color:white;}
+.installer .title1.manifest img {max-height:36px; width:auto; vertical-align:-6px;}
