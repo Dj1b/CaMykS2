@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre35
+ * @version 2.0pre36
  * @date Creation: Feb 2017
  * @date Modification: Jan 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -82,6 +82,12 @@ final class CaMykS {
      * @brief Store CaMykS starting microtime
      */
     private $startMicroTime;
+
+    /**
+     * @var Object $databaseConnection
+     * @brief Website, main database connection.
+     */
+    private $databaseConnection;
 
     /**
      * @var array $openedDBonnections
@@ -264,7 +270,7 @@ final class CaMykS {
             return null;
         }
 
-        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'installer', 'localStorage', 'errorHandler', 'corePluginLink', 'sharedPluginLink', 'coreAssetLink')))
+        if (in_array($variableName, array('mode', 'databaseConnection', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'installer', 'localStorage', 'errorHandler', 'corePluginLink', 'sharedPluginLink', 'coreAssetLink')))
             return $this->$variableName;
     }
 
@@ -1913,6 +1919,50 @@ final class CaMykS {
     public function close_databaseConnections() {
         foreach ($this->openedDBonnections as $connection)
             $connection->close_connection();
+    }
+
+    /**
+     * Load main database connection.
+     * @return void
+     */
+    public function load_mainDatabaseConnection() {
+        /* Check database is already loaded */
+        if (!is_null($this->databaseConnection))
+            return;
+
+        /* Initialise database configuration */
+        $this->initialise_mainDatabase();
+
+        /* Try to connect */
+        if (!$this->databaseConnection->open_connection()) {
+            /* Throw a fatal error */
+
+        }
+
+        /* Try to open database */
+        if (!$this->databaseConnection->open_database()) {
+            /* Throw a fatal error */
+
+        }
+    }
+
+    /**
+     * Initialise main database object.
+     * @return void
+     */
+    public function initialise_mainDatabase() {
+        /* Load database configuration */
+        $this->load_configuration('Database');
+
+        /* Build connection object */
+        $this->databaseConnection = new DatabaseConnector(array(
+            'Driver'    => $this->get_configValue('Database_Driver'),
+            'Host'      => $this->get_configValue('Database_Host'),
+            'Port'      => $this->get_configValue('Database_Port'),
+            'Login'     => $this->get_configValue('Database_Login'),
+            'Password'  => $this->get_configValue('Database_Password'),
+            'Database'  => $this->get_configValue('Database_Name'),
+        ));
     }
 }
 ?>
