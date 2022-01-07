@@ -3,10 +3,10 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre34
+ * @version 2.0pre35
  * @date Creation: Feb 2017
- * @date Modification: Dec 2021
- * @copyright 2017 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2017 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -264,7 +264,7 @@ final class CaMykS {
             return null;
         }
 
-        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'installer', 'localStorage', 'errorHandler')))
+        if (in_array($variableName, array('mode', 'currentLanguage', 'currentTheme', 'currentTemplate', 'HTMLPage', 'manager', 'installer', 'localStorage', 'errorHandler', 'corePluginLink', 'sharedPluginLink', 'coreAssetLink')))
             return $this->$variableName;
     }
 
@@ -532,9 +532,9 @@ final class CaMykS {
         $this->define_baseURL($this->get_configValue('Manager_SSL'));
 
         /* Update folder links */
-        $this->corePluginLink = 'Core';
-        $this->sharedPluginLink = '';
-        $this->coreAssetLink = '';
+        $this->corePluginLink = 'Core/Plugins/';
+        $this->sharedPluginLink = 'Plugins/';
+        $this->coreAssetLink = 'Core/Assets/';
 
         /* Load language */
         $this->load_currentLanguage();
@@ -687,7 +687,7 @@ final class CaMykS {
 
         /* Load website configuration file */
         $config = new ConfigurationFile($configFile, 'Website');
-        if ($this->mode !== CAMYKS_MODE_MANAGER and $this->mode !== CAMYKS_MODE_INSTALL)
+        if ($this->mode !== CAMYKS_MODE_MANAGER and $this->get_configValue('Website_Status') !== 0)
             $this->websiteConfiguration = array_merge($this->websiteConfiguration, $config->export());
     }
 
@@ -1363,6 +1363,16 @@ final class CaMykS {
     /* Plugin related files */
 
     /**
+     * Return website plugin file URL.
+     * @param string $filePath
+     * @param string $URLMode
+     * @return string
+     */
+    public function get_websitePluginFileURL($filePath, $URLMode=null) {
+        return $this->get_baseURL($URLMode).($this->websitePluginLink != '' ? $this->websitePluginLink.'/' : '').$filePath;
+    }
+
+    /**
      * Return shared plugin file URL.
      * @param string $filePath
      * @param string $URLMode
@@ -1423,16 +1433,14 @@ final class CaMykS {
         $identifier = isset($fileName[1]) ? '?'.$fileName[1] : '';
 
         /* Check file in website */
-        $file = 'Assets/'.$asset;
         if ($this->mode < 3) {
-            if (file_exists($file))
-                return $this->get_baseURL($URLMode).$file.$identifier;
+            if (file_exists('Assets/'.$asset))
+                return $this->get_baseURL($URLMode).'Assets/'.$asset.$identifier;
         }
 
         /* Check file in CaMykS */
-        $file = 'Core/'.$file;
-        if ($this->check_engineFileExists($file))
-            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$file.$identifier;
+        if ($this->check_engineFileExists('Core/Assets/'.$asset))
+            return $this->get_baseURL($URLMode).($this->coreAssetLink != '' ? $this->coreAssetLink.'/' : '').$asset.$identifier;
 
         /* Default for files that don't exists */
         return '';

@@ -4,10 +4,10 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Nov 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -56,9 +56,15 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * @var string $pluginPath
-     * @brief Plugin root path.
+     * @brief Plugin path.
      */
     protected $pluginPath;
+
+    /**
+     * @var string $pluginPath
+     * @brief Plugin full path.
+     */
+    protected $pluginFullPath;
 
     /**
      * @var array $pluginDependencies
@@ -180,15 +186,16 @@ abstract class Plugin extends CaMykSLibrary {
         $typeFolder = $this->get_typeFolder();
 
         /* Define plugin folder */
-        $this->pluginFolder = 'Plugins/'.$typeFolder.'/'.$this->libraryName.'/';
+        $this->pluginFolder = $typeFolder.'/'.$this->libraryName.'/';
+        $this->pluginPath = 'Plugins/'.$this->pluginFolder;
 
         /* Search plugin if location is not defined */
         if (is_null($this->pluginLocation)) {
-            if (__FILE__ == $CaMykS->get_engineFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+            if (__FILE__ == $CaMykS->get_engineFileFullPath($this->pluginPath.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
                 $this->pluginLocation = 'Shared';
-            elseif (__FILE__ == $CaMykS->get_engineFileFullPath('Core/Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+            elseif (__FILE__ == $CaMykS->get_engineFileFullPath('Core/'.$this->pluginPath.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
                 $this->pluginLocation = 'System';
-            elseif ($CaMykS->get_websiteFileFullPath('Plugins/'.$typeFolder.'/'.$this->libraryName.'/'.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
+            elseif ($CaMykS->get_websiteFileFullPath($this->pluginPath.$this->libraryName.CAMYKS_LIBRARYEXTENSION))
                 $this->pluginLocation = 'Website';
             else {
                 /* Plugin not found throw fatal error */
@@ -196,11 +203,11 @@ abstract class Plugin extends CaMykSLibrary {
             }
         }
 
-        /* Define plugin path */
+        /* Define plugin full path */
         switch ($this->pluginLocation) {
-            case 'Shared'   : $this->pluginPath = $CaMykS->get_engineFileFullPath($this->pluginFolder); break;
-            case 'System'   : $this->pluginPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginFolder); break;
-            case 'Website'  : $this->pluginPath = $CaMykS->get_websiteFileFullPath($this->pluginFolder); break;
+            case 'Shared'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath($this->pluginPath); break;
+            case 'System'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginPath); break;
+            case 'Website'  : $this->pluginFullPath = $CaMykS->get_websiteFileFullPath($this->pluginPath); break;
         }
     }
 
@@ -241,7 +248,7 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* build file path */
-        $filePath = $this->pluginPath.'/Libraries/'.$library.CAMYKS_LIBRARYEXTENSION;
+        $filePath = $this->pluginFullPath.'/Libraries/'.$library.CAMYKS_LIBRARYEXTENSION;
 
         /* load file if exists */
         if (file_exists($filePath))
@@ -343,7 +350,7 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* Load locales in plugin folder */
-        return $CaMykS->load_locales($this->pluginPath.'/Locales'.($folder != '' ? '/'.$folder : ''), $this->libraryName, $language);
+        return $CaMykS->load_locales($this->pluginFullPath.'/Locales'.($folder != '' ? '/'.$folder : ''), $this->libraryName, $language);
     }
 
     /**
@@ -380,7 +387,7 @@ abstract class Plugin extends CaMykSLibrary {
         global $CaMykS;
 
         /* Complete file path */
-        $filePath = $this->pluginFolder.$filePath;
+        $filePath = $this->pluginPath.$filePath;
 
         /* Remove QueryString for versioned files */
         $f = explode('?', $filePath);
@@ -412,28 +419,29 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * Return file URL, allowing file overriding.
-     * @param string $filePath
+     * @param string $file
      * @param string $URLMode
      * @return string
      */
-    public function get_fileURL($filePath, $URLMode=null) {
+    public function get_fileURL($file, $URLMode=null) {
         global $CaMykS;
 
-        /* Complete file path */
-        $filePath = $this->pluginFolder.$filePath;
-
         /* Keep back QueryString for versioned files */
-        $f = explode('?', $filePath);
+        $f = explode('?', $file);
         if (count($f) == 2) {
-            $filePath = $f[0];
+            $file = $f[0];
             $queryString = '?'.$f[1];
         } else {
             $queryString = '';
         }
 
+        /* Complete file path */
+        $filePath = $this->pluginPath.$file;
+        $file = $this->pluginFolder.$file;
+
         /* Check in website folder */
         if ($CaMykS->check_websiteFileExists($filePath))
-            return $CaMykS->get_websiteFileURL($filePath.$queryString, $URLMode);
+            return $CaMykS->get_websiteFileURL($file.$queryString, $URLMode);
 
         /* Check plugin is located in website folder */
         if ($this->pluginLocation == 'Website')
@@ -441,7 +449,7 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Check in shared folder */
         if ($CaMykS->check_engineFileExists($filePath))
-            return $CaMykS->get_sharedPluginFileURL($filePath.$queryString, $URLMode);
+            return $CaMykS->get_sharedPluginFileURL($file.$queryString, $URLMode);
 
         /* Check plugin is located in shared folder */
         if ($this->pluginLocation == 'Shared')
@@ -449,7 +457,7 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Check in system folder */
         if ($CaMykS->check_engineFileExists('Core/'.$filePath))
-            return $CaMykS->get_corePluginFileURL($filePath.$queryString, $URLMode);
+            return $CaMykS->get_corePluginFileURL($file.$queryString, $URLMode);
 
         /* File not found, return default value */
         return '';
