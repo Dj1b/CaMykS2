@@ -3,10 +3,10 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: May 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -85,6 +85,9 @@ final class CaMykSInstaller extends Plugin {
 
         /* Load theme */
         $this->theme = &$CaMykS->currentTheme;
+
+        /* Define body class */
+        $CaMykS->HTMLPage->set_bodyClass('installer');
 
         /* Load configuration module */
         $this->configurationManager = $CaMykS->load_module('SystemConfigurationManager', 'System');
@@ -166,6 +169,10 @@ final class CaMykSInstaller extends Plugin {
         /* Load CaMykS logo */
         $this->welcomePicture = new File($CaMykS->get_assetFilePath('Images/Logo/Logo500.png'));
 
+        /* Reset configuration if requered */
+        $this->currentConfiguration = null;
+        $this->save_currentConfiguration();
+
         /* Update layout */
         $this->update_selectedLayout('Welcome');
     }
@@ -198,12 +205,13 @@ final class CaMykSInstaller extends Plugin {
         global $CaMykS;
 
         /* Load values */
-        $this->currentConfiguration['Website']['Website_Title'] = trim($_REQUEST['Title']);
-        $this->currentConfiguration['Website']['Website_Version'] = trim($_REQUEST['Version']);
-        $this->currentConfiguration['Website']['Website_Encoding'] = $_REQUEST['Encoding'];
-        $this->currentConfiguration['Website']['Website_Author'] = trim($_REQUEST['Author']);
-        $this->currentConfiguration['Website']['Website_DisplayCMSSignature'] = $_REQUEST['DisplayCMSSignature'];
-        $this->currentConfiguration['Website']['Website_LocalStorage'] = $_REQUEST['LocalStorage'];
+        $this->currentConfiguration['Website']['Website_CaMykSMode'] = $this->get_configValue('Website_CaMykSPath') == 'CaMykS2' ? 'Dedicated' : 'Shared';
+        $this->currentConfiguration['Website']['Website_Title'] = trim(http_getStringRequest('Title'));
+        $this->currentConfiguration['Website']['Website_Version'] = trim(http_getStringRequest('Version'));
+        $this->currentConfiguration['Website']['Website_Encoding'] = http_getStringRequest('Encoding');
+        $this->currentConfiguration['Website']['Website_Author'] = trim(http_getStringRequest('Author'));
+        $this->currentConfiguration['Website']['Website_DisplayCMSSignature'] = http_getIntRequest('DisplayCMSSignature');
+        $this->currentConfiguration['Website']['Website_LocalStorage'] = http_getStringRequest('LocalStorage');
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -240,17 +248,18 @@ final class CaMykSInstaller extends Plugin {
         if (isset($this->availableTemplates[$CaMykS->get_configValue('Visit_Template')]))
             $this->availableTemplates = array_merge(array('' => $this->get_locale('UseCaMykSConfiguration', $this->availableTemplates[$CaMykS->get_configValue('Visit_Template')])), $this->availableTemplates);
 
-        /* Load URL modes */
+        /* Load SSL modes */
         $this->availableSSLModes = url_getSSLModes();
         if (isset($this->availableSSLModes[$CaMykS->get_configValue('Visit_SSLMode')]))
             $this->availableSSLModes = array_merge(array('' => $this->get_locale('UseCaMykSConfiguration', $this->availableSSLModes[$CaMykS->get_configValue('Visit_SSLMode')])), $this->availableSSLModes);
+
+        /* Load URL modes */
         $this->availableURLModes = url_getBaseURLModes();
         if (isset($this->availableURLModes[$CaMykS->get_configValue('Visit_URLMode')]))
             $this->availableURLModes = array_merge(array('' => $this->get_locale('UseCaMykSConfiguration', $this->availableURLModes[$CaMykS->get_configValue('Visit_URLMode')])), $this->availableURLModes);
 
         /* Load available languages */
         $this->availableLanguages = language_getLocalisedLongTitles(array('ShortList'=>$CaMykS->get_availableEngineLocaleLanguages()));
-
 
         /* Update layout */
         $this->section = 'Visit';
@@ -264,7 +273,18 @@ final class CaMykSInstaller extends Plugin {
     private function initialise_SaveVisitConfiguration() {
         global $CaMykS;
 
-        /* Laod values */
+        print_r($_REQUEST);
+
+        /* Load values */
+        $this->currentConfiguration['Visit']['Visit_DefaultLanguage'] = http_getStringRequest('DefaultLanguage');
+        $this->currentConfiguration['Visit']['Visit_Languages'] = array(http_getStringRequest('DefaultLanguage'));
+        $this->currentConfiguration['Visit']['Visit_Theme'] = http_getStringRequest('Theme');
+        $this->currentConfiguration['Visit']['Visit_Template'] = http_getStringRequest('Template');
+        $this->currentConfiguration['Visit']['Visit_URLMode'] = http_getStringRequest('URLMode');
+        $this->currentConfiguration['Visit']['Visit_SSLMode'] = http_getStringRequest('SSLMode');
+        $this->currentConfiguration['Visit']['Visit_AutoLoadCaMykSJS'] = http_getIntRequest('AutoLoadCaMykSJS');
+        $this->currentConfiguration['Visit']['Visit_ClientSideCache'] = http_getIntRequest('ClientSideCache');
+        $this->currentConfiguration['Visit']['Visit_ServerSideCache'] = http_getIntRequest('ServerSideCache');
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -318,6 +338,14 @@ final class CaMykSInstaller extends Plugin {
         global $CaMykS;
 
         /* Load values */
+        $this->currentConfiguration['Admin']['Admin_DefaultLanguage'] = http_getStringRequest('DefaultLanguage');
+        $this->currentConfiguration['Admin']['Admin_Languages'] = array(http_getStringRequest('DefaultLanguage'));
+        $this->currentConfiguration['Admin']['Admin_EditionLanguages'] = array(http_getStringRequest('DefaultLanguage'));
+        $this->currentConfiguration['Admin']['Admin_Theme'] = http_getStringRequest('Theme');
+        $this->currentConfiguration['Admin']['Admin_EntryPoint'] = http_getStringRequest('EntryPoint');
+        $this->currentConfiguration['Admin']['Admin_SSLMode'] = http_getStringRequest('SSLMode');
+        $this->currentConfiguration['Admin']['Admin_KeepAlive'] = http_getIntRequest('KeepAlive');
+        $this->currentConfiguration['Admin']['Admin_SaveMode'] = http_getIntRequest('SaveMode');
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -360,13 +388,13 @@ final class CaMykSInstaller extends Plugin {
         global $CaMykS;
 
         /* Load values */
-        $this->currentConfiguration['Database']['Database_Driver'] = $_REQUEST['Driver'];
-        $this->currentConfiguration['Database']['Database_Host'] = trim($_REQUEST['Host']);
-        $this->currentConfiguration['Database']['Database_Name'] = trim($_REQUEST['Name']);
-        $this->currentConfiguration['Database']['Database_Login'] = trim($_REQUEST['Login']);
-        $this->currentConfiguration['Database']['Database_Password'] = $_REQUEST['Password'];
-        $this->currentConfiguration['Database']['Database_Port'] = (int)$_REQUEST['Port'];
-        $this->currentConfiguration['Database']['Database_TablePrefix'] = $_REQUEST['TablePrefix'];
+        $this->currentConfiguration['Database']['Database_Driver'] = http_getStringRequest('Driver');
+        $this->currentConfiguration['Database']['Database_Host'] = trim(http_getStringRequest('Host'));
+        $this->currentConfiguration['Database']['Database_Name'] = trim(http_getStringRequest('Name'));
+        $this->currentConfiguration['Database']['Database_Login'] = trim(http_getStringRequest('Login'));
+        $this->currentConfiguration['Database']['Database_Password'] = http_getStringRequest('Password');
+        $this->currentConfiguration['Database']['Database_Port'] = http_getIntRequest('Port');
+        $this->currentConfiguration['Database']['Database_TablePrefix'] = http_getStringRequest('TablePrefix');
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -406,12 +434,12 @@ final class CaMykSInstaller extends Plugin {
         global $CaMykS;
 
         /* Load values */
-        $this->currentConfiguration['Webmaster']['FirstName'] = trim($_REQUEST['FirstName']);
-        $this->currentConfiguration['Webmaster']['LastName'] = trim($_REQUEST['LastName']);
-        $this->currentConfiguration['Webmaster']['Email'] = trim($_REQUEST['Email']);
-        $this->currentConfiguration['Webmaster']['Login'] = trim($_REQUEST['Login']);
-        $this->currentConfiguration['Webmaster']['Password'] = $_REQUEST['Password'];
-        $this->currentConfiguration['Webmaster']['PasswordConfirmation'] = $_REQUEST['PasswordConfirmation'];
+        $this->currentConfiguration['Webmaster']['FirstName'] = trim(http_getStringRequest('FirstName'));
+        $this->currentConfiguration['Webmaster']['LastName'] = trim(http_getStringRequest('LastName'));
+        $this->currentConfiguration['Webmaster']['Email'] = trim(http_getStringRequest('Email'));
+        $this->currentConfiguration['Webmaster']['Login'] = trim(http_getStringRequest('Login'));
+        $this->currentConfiguration['Webmaster']['Password'] = http_getStringRequest('Password');
+        $this->currentConfiguration['Webmaster']['PasswordConfirmation'] = http_getStringRequest('PasswordConfirmation');
 
         /* Load administrator manager module */
         $this->administratorManager = $CaMykS->load_module('SystemAdministratorManager', 'System');
@@ -448,6 +476,9 @@ final class CaMykSInstaller extends Plugin {
         /* Check again database configuation */
         $this->check_databaseConfiguration();
 
+        /* Clear messages */
+        $CaMykS->set_sessionValue('AdminInterface-Message', '');
+
         /* Check write permission on website folder */
         if (!is_writable($CaMykS->get_websiteFileFullPath('Configuration'))) {
             /* Define error */
@@ -464,21 +495,201 @@ final class CaMykSInstaller extends Plugin {
 
         /* Prepare installation manifest */
         $installationManifest = array();
+        $installationManifest[] = $this->get_locale('Manifest_WebsiteInstallationStarted');
 
         /* Write website configuration file */
+        $configuration = new ConfigurationFile('Website', 'Website', 'Write');
+        $configuration->load();
+        $configuration->merge($this->currentConfiguration['Website']);
+        if (!$configuration->save()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteWebsiteConfiguration'));
 
-        /* Write other configuration file */
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_WebsiteConfigurationFileWritten');
+
+        /* Drop empty visit configuration values */
+        if ($this->currentConfiguration['Visit']['Visit_Theme'] === '') unset($this->currentConfiguration['Visit']['Visit_Theme']);
+        if ($this->currentConfiguration['Visit']['Visit_Template'] === '') unset($this->currentConfiguration['Visit']['Visit_Template']);
+        if ($this->currentConfiguration['Visit']['Visit_URLMode'] === '') unset($this->currentConfiguration['Visit']['Visit_URLMode']);
+        if ($this->currentConfiguration['Visit']['Visit_SSLMode'] === '') unset($this->currentConfiguration['Visit']['Visit_SSLMode']);
+
+        /* Write visit configuration file */
+        $configuration = new ConfigurationFile('Visit', 'Website', 'Write');
+        $configuration->merge($this->currentConfiguration['Visit']);
+        if (!$configuration->save()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteVisitConfiguration'));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_VisitConfigurationFileWritten');
+
+        /* Drop empty admin configuration values */
+        if ($this->currentConfiguration['Admin']['Admin_Theme'] === '') unset($this->currentConfiguration['Admin']['Admin_Theme']);
+        if ($this->currentConfiguration['Admin']['Admin_EntryPoint'] === '') unset($this->currentConfiguration['Admin']['Admin_EntryPoint']);
+        if ($this->currentConfiguration['Admin']['Admin_SSLMode'] === '') unset($this->currentConfiguration['Admin']['Admin_SSLMode']);
+
+        /* Write admin configuration file */
+        $configuration = new ConfigurationFile('Admin', 'Website', 'Write');
+        $configuration->merge($this->currentConfiguration['Admin']);
+        if (!$configuration->save()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteAdminConfiguration'));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_AdminConfigurationFileWritten');
+
+        /* Drop empty database configuration values */
+        if ($this->currentConfiguration['Database']['Database_Driver'] === '') unset($this->currentConfiguration['Database']['Database_Driver']);
+        if ($this->currentConfiguration['Database']['Database_Host'] === '') unset($this->currentConfiguration['Database']['Database_Host']);
+        if ($this->currentConfiguration['Database']['Database_Login'] === '') unset($this->currentConfiguration['Database']['Database_Login']);
+        if ($this->currentConfiguration['Database']['Database_Password'] === '') unset($this->currentConfiguration['Database']['Database_Password']);
+        if ($this->currentConfiguration['Database']['Database_Port'] === '') unset($this->currentConfiguration['Database']['Database_Port']);
+
+        /* Write database configuration file */
+        $configuration = new ConfigurationFile('Database', 'Website', 'Write');
+        $configuration->merge($this->currentConfiguration['Database']);
+        if (!$configuration->save()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteDatabaseConfiguration'));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_DatabaseConfigurationFileWritten');
+
+        /* Declare website as installed to let CaMykS access database configuration */
+        $CaMykS->set_configValue('Website_Status', 1);
 
         /* Connect to database server */
+        $CaMykS->initialise_mainDatabase();
+        if (!$CaMykS->databaseConnection->open_connection()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->configurationManager->get_locale('Error_DatabaseCantConnectServer'));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_DatabaseConnectionOpened');
 
         /* Create database if not exists */
+        if (!$CaMykS->databaseConnection->check_database()) {
+            if (!$CaMykS->databaseConnection->create_database()) {
+                /* Define error */
+                $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_DatabaseCantCreate'));
+
+                /* Update layout */
+                $this->update_selectedLayout('FinalisationError');
+
+                /* Avoid doing other checks and installation */
+                return;
+            }
+            $installationManifest[] = $this->get_locale('Manifest_DatabaseConnectionCreated');
+        }
+        $installationManifest[] = $this->get_locale('Manifest_DatabaseOpened');
+
+        /* Create symbolic links for websites using shared CaMykS */
+        if ($this->currentConfiguration['Website']['Website_CaMykSMode'] === 'Shared') {
+            /* Check and create Core Plugin symbolic link */
+            if (($l = readlink($CaMykS->corePluginLink)) !== false) {
+                if ($l !== $this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Plugins') {
+                    /* Define error */
+                    $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CorePluginsSymLinkExistsAndIsNotValid'));
+
+                    /* Update layout */
+                    $this->update_selectedLayout('FinalisationError');
+
+                    /* Avoid doing other checks and installation */
+                    return;
+                }
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkCorePluginsAlreadyExists');
+            } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Plugins', $CaMykS->corePluginLink)) {
+                /* Define error */
+                $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_SymLinkCantCreate'));
+
+                /* Update layout */
+                $this->update_selectedLayout('FinalisationError');
+
+                /* Avoid doing other checks and installation */
+                return;
+            } else
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkCorePluginsCreated');
+
+            /* Check and create Shared Plugins symbolic link */
+            if (($l = readlink($CaMykS->sharedPluginLink)) !== false) {
+                if ($l !== $this->currentConfiguration['Website']['Website_CaMykSPath'].'/Plugins') {
+                    /* Define error */
+                    $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_SharedPluginsSymLinkExistsAndIsNotValid'));
+
+                    /* Update layout */
+                    $this->update_selectedLayout('FinalisationError');
+
+                    /* Avoid doing other checks and installation */
+                    return;
+                }
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkSharedPluginsAlreadyExists');
+            } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Plugins', $CaMykS->sharedPluginLink)) {
+                /* Define error */
+                $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_SymLinkCantCreate'));
+
+                /* Update layout */
+                $this->update_selectedLayout('FinalisationError');
+
+                /* Avoid doing other checks and installation */
+                return;
+            } else
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkSharedPluginsCreated');
+
+            /* Check and create Shared Plugins symbolic link */
+            if (($l = readlink($CaMykS->coreAssetLink)) !== false) {
+                if ($l !== $this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Assets') {
+                    /* Define error */
+                    $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CoreAssetsSymLinkExistsAndIsNotValid'));
+
+                    /* Update layout */
+                    $this->update_selectedLayout('FinalisationError');
+
+                    /* Avoid doing other checks and installation */
+                    return;
+                }
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkCoreAssetsAlreadyExists');
+            } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Assets', $CaMykS->coreAssetLink)) {
+                /* Define error */
+                $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_SymLinkCantCreate'));
+
+                /* Update layout */
+                $this->update_selectedLayout('FinalisationError');
+
+                /* Avoid doing other checks and installation */
+                return;
+            } else
+                $installationManifest[] = $this->get_locale('Manifest_SymLinkAssetsCreated');
+        }
 
         /* Install system plugins */
 
         /* Create webmaster account in admin account manager */
-
-        $CaMykS->HTMLPage->set_redirect($this->get_actionLink('Welcome'));
-        return;
 
         /* Save installation manifest */
         $CaMykS->set_sessionValue('InstallationManifest', $installationManifest);
@@ -497,8 +708,38 @@ final class CaMykSInstaller extends Plugin {
     private function initialise_DisplayInstallationDone() {
         global $CaMykS;
 
+        /* Update website configuration status *
+        $configuration = new ConfigurationFile('Website', 'Website', 'Write');
+        $configuration->load();
+        $configuration->merge($this->currentConfiguration['Website']);
+        if (!$configuration->save()) {
+            /* Define error *
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteWebsiteConfiguration'));
+
+            /* Update layout *
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation *
+            return;
+        }
+
+        /* Read admin configuration to get admin entry point */
+        $CaMykS->load_configuration('Admin');
+        $this->adminLink = $CaMykS->get_configValue('Admin_EntryPoint');
+
+        /* Load master scripts */
+        $CaMykS->load_CaMykSJSScript();
+
+        /* Load Media Popup component */
+        $this->mediaPopupComponent = $CaMykS->load_component('MediaPopup');
+        if ($this->mediaPopupComponent !== false)
+            $this->mediaPopupComponent->plug();
+
         /* Load installation manifest */
-        $this->installationManifest = $CaMykS->set_gessionValue('InstallationManifest');
+        $this->installationManifest = $CaMykS->get_sessionValue('InstallationManifest');
+
+        /* Clear configuration */
+        // $this->currentConfiguration = array();
 
         /* Update layout */
         $this->update_selectedLayout('Done');
@@ -653,7 +894,7 @@ final class CaMykSInstaller extends Plugin {
      * @param array $params
      * @return string
      */
-    public function get_actionLink($action='', $params=array()) {
+    protected function get_actionLink($action='', $params=array()) {
         /* Create link base url */
         $link = client_getCurrentURL();
 
@@ -676,7 +917,7 @@ final class CaMykSInstaller extends Plugin {
      * Load current configuration.
      * @return void
      */
-    public function load_currentConfiguration() {
+    private function load_currentConfiguration() {
         global $CaMykS;
 
         /* Load configuration from session */
@@ -724,11 +965,23 @@ final class CaMykSInstaller extends Plugin {
      * Save current configuration.
      * @return void
      */
-    public function save_currentConfiguration() {
+    private function save_currentConfiguration() {
         global $CaMykS;
 
         /* Load configuration from session */
         $CaMykS->set_sessionValue('InstallationConfiguration', $this->currentConfiguration);
+    }
+
+    /**
+     * Return current configuration value.
+     * @param string $section
+     * @param string $name
+     * @return mixed
+     */
+    protected function get_currentConfigurationValue($section, $name) {
+        if (isset($this->currentConfiguration[$section][$name]))
+            return $this->currentConfiguration[$section][$name];
+        return '';
     }
 }
 ?>

@@ -3,10 +3,10 @@
  * @brief CaMykSMInstaller plugin, visit configuration sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jun 2021
- * @date Modification: Jun 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -44,7 +44,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('DefaultLanguage'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'DefaultLanguage', 'default'=>$CaMykS->get_configValue('Visit_DefaultLanguage'), 'values'=>$this->availableLanguages, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'DefaultLanguage', 'default'=>$this->get_currentConfigurationValue('Visit', 'DefaultLanguage'), 'values'=>$this->availableLanguages, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -57,7 +57,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('Theme'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'Theme', 'default'=>$CaMykS->get_configValue('Visit_Theme'), 'values'=>$this->availableThemes, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'Theme', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_Theme'), 'values'=>$this->availableThemes, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -66,7 +66,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('Template'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'Template', 'default'=>$CaMykS->get_configValue('Visit_Template'), 'values'=>$this->availableTemplates, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'Template', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_Template'), 'values'=>$this->availableTemplates, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -79,7 +79,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('URLMode'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'URLMode', 'default'=>$CaMykS->get_configValue('Visit_URLMode'), 'values'=>$this->availableURLModes, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'URLMode', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_URLMode'), 'values'=>$this->availableURLModes, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -88,7 +88,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('SSLMode'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_selectInput(array('name'=>'SSLMode', 'default'=>$CaMykS->get_configValue('Visit_SSLMode'), 'values'=>$this->availableSSLModes, 'class'=>'longest')); ?>
+            <?php $this->configurationForm->display_selectInput(array('name'=>'SSLMode', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_SSLMode'), 'values'=>$this->availableSSLModes, 'class'=>'longest')); ?>
         </div>
     </div>
 
@@ -101,7 +101,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('ServerSideCache'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'ServerSideCache', 'default'=>$CaMykS->get_configValue('Visit_ServerSideCache'))); ?>
+            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'ServerSideCache', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_ServerSideCache'))); ?>
         </div>
     </div>
 
@@ -110,7 +110,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('ClientSideCache'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'ClientSideCache', 'default'=>$CaMykS->get_configValue('Visit_ClientSideCache'))); ?>
+            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'ClientSideCache', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_ClientSideCache'))); ?>
         </div>
     </div>
 
@@ -119,7 +119,7 @@ global $CaMykS;
             <?= $this->configurationManager->get_locale('AutoLoadCaMykSJS'); ?>
         </div>
         <div class="formInput">
-            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'AutoLoadCaMykSJS', 'default'=>$CaMykS->get_configValue('Visit_AutoLoadCaMykSJS'))); ?>
+            <?php $this->configurationForm->display_booleanSelectInput(array('name'=>'AutoLoadCaMykSJS', 'default'=>$this->get_currentConfigurationValue('Visit', 'Visit_AutoLoadCaMykSJS'))); ?>
         </div>
     </div>
 
