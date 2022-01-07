@@ -3,10 +3,10 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre2.1
+ * @version 1.0pre3
  * @date Creation: Mar 2020
- * @date Modification: Jun 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -235,7 +235,7 @@ class HTMLFormInput extends CaMykSLibrary {
             return;
 
         /* Build HTML */
-        $html .= '<label for="'.$this->params['id'].'"';
+        $html = '<label for="'.$this->params['id'].'"';
         if ($this->params['labelClass'] != '')
             $html .= ' class="'.$this->params['labelClass'].'"';
         if ($this->params['labelStyle'] != '')
