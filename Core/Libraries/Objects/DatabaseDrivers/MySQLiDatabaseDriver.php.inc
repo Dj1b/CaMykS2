@@ -3,10 +3,10 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Nov 2021
- * @date Modification: Nov 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -121,7 +121,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean
      */
     public function create_database($name, $encoding='UTF8') {
-        return $this->execute_query('create database "'.$name.'" default character set '.$this->charsets[$encoding].';');
+        return $this->execute_directQuery('create database `'.$name.'` default character set '.$this->charsets[$encoding].';');
     }
 
     /**
@@ -144,7 +144,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             while ($table = $this->get_queryNumDataLine('tableList')) {
 
                 /* Build table */
-                if ($this->execute_query('show create table '.$table[0].';', 'createTable')) {
+                if ($this->execute_directQuery('show create table '.$table[0].';', 'createTable')) {
                     if ($createTable = $this->get_queryNumDataLine('createTable')) {
 
                         /* Build table comments */
@@ -156,7 +156,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                         $content .= $createTable[1].";\n\n";
 
                         /* Build table content */
-                        if ($this->execute_query('select * from '.$table[0].';', 'tableItemList')) {
+                        if ($this->execute_directQuery('select * from '.$table[0].';', 'tableItemList')) {
                             while ($insertData = $this->get_queryNumDataLine('tableItemList')) {
                                 $content .= "insert into ".$table[0]." values(";
                                 for ($i=0; $i < $this->get_queryFieldCount('tableItemList'); $i++) {
@@ -397,7 +397,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
         $sql .= ';';
 
         /* Return result of SQL query execution */
-        return ($this->execute_query($sql) or $this->add_error(11, $sql, __FILE__, __LINE__));
+        return ($this->execute_directQuery($sql) or $this->add_error(11, $sql, __FILE__, __LINE__));
     }
 
     /**
@@ -416,7 +416,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function drop_table($name) {
         $sql = 'drop table '.$name.';';
-        return $this->execute_query($sql);
+        return $this->execute_directQuery($sql);
     }
 
     /**
@@ -426,7 +426,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function truncate_table($name) {
         $sql = 'trauncate table '.$name.';';
-        return $this->execute_query($sql);
+        return $this->execute_directQuery($sql);
 
     }
 
