@@ -4,7 +4,7 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Nov 2021
  * @date Modification: Nov 2021
  * @copyright 2021 CaMykS Team
@@ -16,6 +16,7 @@
  * <br />- Youtube video: https://youtu.be/xxxxxxxxxxxx
  * <br />- Direct content (including HTML): content:xxxxxxxx
  * <br />- Web page (in a frame): https://www.xxxxx.xxx/xxxxx
+ * <br />- DOM Element: DOMElement:DOMElementId
  */
 
 namespace CaMykS2;

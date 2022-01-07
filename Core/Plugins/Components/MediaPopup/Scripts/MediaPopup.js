@@ -2,10 +2,10 @@
  * @brief MediaPopup component, client side scripts.
  * @details Plugin / Component Javascripts
  * @author CaMykS Team
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Dec 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS
  */
 var MediaPopup = {
     name: 'MediaPopup',
@@ -199,6 +199,29 @@ var MediaPopup = {
             /* Define media type */
             this.set_param('currentMediaType', 'Webpage');
 
+        /* Check media is direct content */
+        } else if (mediaPrefix === 'domelement') {
+            mediaBox.innerHTML = '';
+
+            /* Load element */
+            media = media.substring(11);
+            if (!document.getElementById(media))
+                return;
+
+            /* Duplicate and prepare element */
+            media = document.getElementById(media).cloneNode(true);
+            media.id += 'Popup';
+
+            /* Attach duplicated element */
+            mediaBox.appendChild(media);
+
+            /* Make sure element is visible */
+            if (window.getComputedStyle(media, null).display == 'none')
+                media.style.display = 'block';
+
+            /* Define media type */
+            this.set_param('currentMediaType', 'DOMElement');
+
         /* Check a media has been loaded */
         } else {
             /* No media found */
@@ -210,7 +233,7 @@ var MediaPopup = {
         }
 
         /* Build title box */
-        if (title !== '') {
+        if (title !== '' && title !== undefined) {
             titleBox = document.createElement('div').cloneNode(true);
             titleBox.className = 'mediaTitle';
             titleBox.innerHTML = title;
