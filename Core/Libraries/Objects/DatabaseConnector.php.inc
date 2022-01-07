@@ -5,8 +5,8 @@
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Nov 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -223,7 +223,7 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $charset='UTF8') {
+    public function create_database($name=null, $charset='UTF8') {
         if (!is_null($name)) $this->params['Database'] = $name;
         return $this->connection->create_database($this->params['Database'], $charset);
     }
