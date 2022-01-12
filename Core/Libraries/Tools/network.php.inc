@@ -3,13 +3,12 @@
  * @brief Network methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0pre1
  * @date Creation: Feb 2020
- * @date Modification: Feb 2019
- * @copyright 2020 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @warning This library is not loaded with CaMykS initialisation.
  */
 
 /* Generic IP methods */
@@ -20,8 +19,9 @@
  * @return string
  */
 function network_checkIPFormat($ip) {
-    if (network_isIPv4Valid($ip)) return 'v4';
-    if (network_isIPv6Valid($ip)) return 'v6';
+    if (network_isIPv4Valid($ip)) return 'IPv4';
+    if (network_isIPv6Valid($ip)) return 'IPv6';
+    if (network_isIPCIDRValid($ip)) return 'CIDR';
     return '';
 }
 
@@ -44,6 +44,16 @@ function network_isIPValid($ip) {
  */
 function network_isIPv4Valid($ip) {
     return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+}
+
+/**
+ * Check IP is a valid CIDR.
+ * @param string $cidr
+ * @return boolean result
+ */
+function network_isIPCIDRValid($cidr) {
+    list ($ip, $mask) = explode ('/', $cidr);
+    return (!is_null($mask) and $mask > 0 and $mask < 24 and filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
 }
 
 /**
