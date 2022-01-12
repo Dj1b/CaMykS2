@@ -2,7 +2,7 @@
  * @brief CaMykSStyle theme, admin CSS styles
  * @details Plugin / Theme Styles
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre14
+ * @version 1.0pre15
  * @date Creation: Mar 2020
  * @date Modification: Jan 2022
  * @copyright 2020 - 2022 Ideogram Design
@@ -56,7 +56,7 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 /* Structure */
 .innerContent {width:1400px; max-width:100%; margin:0 auto;}
 
-#PageHeader {position:fixed; top:0; width:100%; background:#352B5A; z-index:6;}
+#PageHeader {position:fixed; top:0; width:100%; background:#5d4d96; z-index:6;}
 #PageHeader .background {height:100px; background-repeat:no-repeat; background-size:auto 100%; background-position:0% 50%;}
 #PageHeader .innerContent {display:flex; justify-content: flex-end;}
 #PageHeader .innerContent .infos {flex:1; max-width:300px; height:100px;}
@@ -113,7 +113,7 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 .content1.large, .content2.large, .content3.large, .content4.large {font-size:18px;}
 
 /* Action bar */
-#ActionBar {background:#5d4d96; position:fixed; left:0; top:100px; bottom:0; z-index:5; width:120px;}
+#ActionBar {background:#222222; position:fixed; left:0; top:100px; bottom:0; z-index:5; width:100px;}
 #ActionBar .button {width:100%; max-width:100%; overflow:hidden; text-align:center;}
 #ActionBar .button img {opacity:0.5; transition: opacity 0.3s linear; max-width:50px; padding:8px 0;}
 #ActionBar .button:hover img {opacity:1;}
@@ -123,7 +123,7 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 
 /* Admin menu */
 #AdminMenu {background:#fbc02a; position:fixed; left:-250px; top:0; bottom:0; width:250px; z-index:4; transition:all 0.3s ease-in;}
-#AdminMenu.opened {left:120px;}
+#AdminMenu.opened {left:100px;}
 
 /* Admin interface messages */
 .interfaceError {text-align:center; font-size:15px; background:#f5d8d8; color:#cc3333; font-weight:bold; padding:8px 40px; margin: 0;}
@@ -188,7 +188,7 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 .manager .title1 img {max-height:36px; width:auto; filter:invert(0.9); vertical-align:-6px;}
 .manager .formButtons {display:none;}
 .manager .formButtons ~ .formButtons {display:block;}
-
+.manager.colored #ActionBar {background:#5d4d96;}
 
 /* Manager - Home */
 .homeFrame {padding:100px 0 0;}
