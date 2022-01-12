@@ -4,10 +4,10 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2021
- * @date Modification: Nov 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @details Accepted media :
@@ -50,22 +50,6 @@ final class MediaPopup extends Component {
             /* Check auto loading */
             if ($this->get_configValue('Integration_Mode') == 1)
                 $this->plug();
-        }
-    }
-
-    /* Override Plugin methods */
-
-    /**
-     * Load plugin data.
-     * @return void
-     */
-    protected function load_data() {
-        /* Load plugin configuration */
-        $this->load_library('Configuration');
-
-        /* Load configuration object */
-        if (class_exists('CaMykS2\MediaPopupConfiguration')) {
-            $this->configuration = new MediaPopupConfiguration($this);
         }
     }
 
