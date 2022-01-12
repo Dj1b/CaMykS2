@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: Nov 2019
  * @date Modification: Jan 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -85,6 +85,12 @@ abstract class Plugin extends CaMykSLibrary {
     protected $hasConfiguration = false;
 
     /**
+     * @var Object $configuration
+     * @brief Configuration library.
+     */
+    protected $configuration;
+
+    /**
      * @var string $selectedLayout
      * @brief Currently selected layout to be displayed in display method.
      */
@@ -134,6 +140,10 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Check plugin dependencies */
         $this->check_dependencies();
+
+        /* Load plugin configuration */
+        if ($this->has_configuration())
+            $this->load_configuration();
 
         /* Load plugin data */
         $this->load_data();
@@ -264,6 +274,32 @@ abstract class Plugin extends CaMykSLibrary {
      */
     public function has_configuration() {
         return $this->hasConfiguration;
+    }
+
+    /**
+     * Load plugin configuration.
+     * @return void
+     */
+    public function load_configuration() {
+        if (!is_null($this->configuration))
+            return;
+
+        /* Load plugin configuration */
+        $this->load_library('Configuration');
+
+        /* Create and check full library name */
+        $libraryFullName = 'CaMykS2\\'.$this->libraryName.'Configuration';
+
+        if (!class_exists($libraryFullName)) {
+            /* Log error */
+            /* @TODO */
+
+            /* Return failure */
+            return false;
+        }
+
+        /* Create new configuration object from library */
+        $this->configuration = new $libraryFullName($this);
     }
 
     /**
