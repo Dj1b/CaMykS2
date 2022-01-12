@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: May 2021
  * @date Modification: Jan 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -73,6 +73,7 @@ final class CaMykSInstaller extends Plugin {
         $CaMykS->set_configValue('Website_Name', $this->libraryName);
         $CaMykS->set_configValue('Website_Title', 'Website Installer');
         $CaMykS->set_configValue('Website_URL', dirname($this->get_actionLink()).'/');
+        $CaMykS->set_configValue('Admin_HeaderLogoFile', $this->get_filePath('Images/Banner.svg'));
 
         /* Load current configuration */
         $this->load_currentConfiguration();

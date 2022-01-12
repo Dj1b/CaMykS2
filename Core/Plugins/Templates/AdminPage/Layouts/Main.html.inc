@@ -3,7 +3,7 @@
  * @brief AdminPage Template main layout.
  * @details Plugin / Template layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Feb 2020
  * @date Modification: Jan 2022
  * @copyright 2020 - 2022 CaMykS Team
@@ -20,13 +20,17 @@ global $CaMykS;
                     &nbsp;
                 </div>
                 <?php if ($this->has_logo()) : ?>
-                <div class="logo">
-                    <img src="<?= $this->get_headerLogo(); ?>" alt="<?= $this->get_headerTitle(); ?>" title="<?= $this->get_headerTitle(); ?>" />
-                </div>
+                    <div class="logo">
+                        <?php if ($CaMykS->mode === CAMYKS_MODE_INSTALL) : ?>
+                            <?= file_get_contents($this->get_headerLogo()); ?>
+                        <?php else : ?>
+                            <img src="<?= $this->get_headerLogo(); ?>" alt="<?= $this->get_headerTitle(); ?>" title="<?= $this->get_headerTitle(); ?>" />
+                        <?php endif; ?>
+                    </div>
                 <?php else : ?>
-                <div class="title">
-                    <?= $this->get_headerTitle(); ?>
-                </div>
+                    <div class="title">
+                        <?= $this->get_headerTitle(); ?>
+                    </div>
                 <?php endif; ?>
                 <div class="infos">
                     &nbsp;
