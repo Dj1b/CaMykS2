@@ -4,10 +4,10 @@
  * <br />Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5.1
+ * @version 1.0pre5.2
  * @date Creation: Dec 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -168,8 +168,7 @@ abstract class Module extends Plugin {
             }
 
             /* Create and check full library name */
-            $libraryFullName = $this->libraryName.$library;
-
+            $libraryFullName = 'CaMykS2\\'.$this->libraryName.$library;
             if (!class_exists($libraryFullName)) {
                 /* Log error */
                 /* @TODO */
