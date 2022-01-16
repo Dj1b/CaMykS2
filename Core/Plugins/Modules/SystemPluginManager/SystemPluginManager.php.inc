@@ -4,10 +4,10 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: May 2021
- * @date Modification: May 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -33,5 +33,34 @@ final class SystemPluginManager extends AdminModule {
         /* Execute parent construct */
         parent::__construct($location);
     }
+
+    /* Override Plugin methods */
+
+     /**
+     * Install plugin.
+     * @return boolean success
+     */
+    public function install() {
+        /* Perform plugin installation */
+        if (!parent::install())
+            return false;
+
+        /* Add its own information in plugin list data */
+        $this->Plugin->load_fromArray(array(
+            'Status'    => 1,
+            'Name'      => $this->libraryName,
+            'Type'      => $this->pluginType,
+            'Location'  => 'System',
+            'Version'   => $this->pluginVersion,
+        ));
+        if (!$this->Plugin->save())
+            return false;
+
+        /* Return success */
+        return true;
+    }
+
+    /* Admin mode methods */
+
 }
 ?>

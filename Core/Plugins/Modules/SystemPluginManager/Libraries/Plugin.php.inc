@@ -3,7 +3,7 @@
  * @brief SystemPluginManager admin module, plugin library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: May 2021
  * @date Modification: Jan 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -28,13 +28,13 @@ final class SystemPluginManagerPlugin extends ModuleLibrary {
         parent::__construct($parent);
 
         /* Define content attributes */
-        $this->define_databaseAttribute('Status',   'Integer',  0);
+        $this->define_databaseAttribute('Status',   'Integer',  0, array('Max'=>16)); /* 0: Disabled / 1: Enabled */
         $this->define_databaseAttribute('Name',     'Name',     '');
-        $this->define_databaseAttribute('Type',     'ListItem', '', array('Values'=>array('Component', 'Module', 'Theme', 'Template')));
-        $this->define_databaseAttribute('Location', 'ListItem', '', array('Values'=>array('System', 'Shared', 'Website')));
+        $this->define_databaseAttribute('Type',     'ListItem', '', array('Values' => array('Component', 'Module', 'Theme', 'Template')));
+        $this->define_databaseAttribute('Location', 'ListItem', '', array('Values' => array('System', 'Shared', 'Website')));
         $this->define_databaseAttribute('Package',  'Name',     '');
         $this->define_databaseAttribute('Version',  'Version',  '1.0');
-        $this->define_databaseAttribute('Source',   'Text',     '');
+        $this->define_databaseAttribute('Source',   'ObjectId', 0);
     }
 }
 ?>
