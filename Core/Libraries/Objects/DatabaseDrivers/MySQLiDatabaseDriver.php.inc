@@ -3,7 +3,7 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Nov 2021
  * @date Modification: Jan 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -249,7 +249,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Add auto id */
         if ($params['AutoId'])
-            $sql .= ' id bigint unsigned not nulll auto_increment,';
+            $sql .= 'id bigint unsigned not null auto_increment,';
 
         /* Add fields description */
         foreach ($fields as $field => $data) {
@@ -260,34 +260,35 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                 'Type'      => '',  /* text, integer, float, date, datetime, time */
                 'Default'   => '',
                 'NotNull'   => false,
+                'IsUnique'  => false,
 
                 /* Text settings */
                 'Length'    => '',
 
                 /* Numeric settings */
                 'Min'       => 0,
-                'Max'       => 2147483648,
+                'Max'       => 4294967296,
                 'Size'      => null,
-                'Signed'    => true,
+                'Unsigned'  => false,
 
                 /* Primary key and index settings */
                 'PrimaryKey'    => false,
                 'IndexName'     => false,
-                'IndexLength'   => 12,
+                'IndexLength'   => null,
             ), $data);
 
             /* Add field name */
-            $s = ' `'.$field['name'].'` ';
+            $s = ' `'.$field.'` ';
 
             /* Add field description from type */
-            switch ($field['Type']) {
+            switch ($data['Type']) {
                 case 'text':
                     if (is_int($data['Length'])) {
                         if ($data['Length'] < 256)
                             $s .= 'varchar('.$data['Length'].') default "'.addslashes($data['Default']).'"';
-                        if ($data['Length'] < 65535)
+                        elseif ($data['Length'] < 65535)
                             $s .= 'text ';
-                        if ($data['Length'] < 16777215)
+                        elseif ($data['Length'] < 16777215)
                             $s .= 'mediumtext';
                         else
                             $s .= ' longtext';
@@ -307,26 +308,26 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                     if (!is_null($data['Size']) and in_array(strtolower($data['Size']), array('tiny', 'small', 'medium', '', 'big'))) {
                         $data['Size'] = strtolower($data['Size']);
                         $s .= $data['Size'].'int';
-                        if ($data['Signed'] === false)
+                        if ($data['Unsigned'] === true)
                             $s .= ' unsigned';
                     } else {
-                        if ($data['Min'] >= 0 and $data['Max'] <= 255)
+                        if (($data['Min'] >= 0 or $data['Unsigned'] === true) and $data['Max'] <= 255)
                             $s .= 'tinyint unsigned';
                         elseif ($data['Min'] >= -128 and $data['Max'] <= 127)
                             $s .= 'tinyint';
-                        elseif ($data['Min'] >= 0 and $data['Max'] <= 65535)
+                        elseif (($data['Min'] >= 0 or $data['Unsigned'] === true) and $data['Max'] <= 65535)
                             $s .= 'smallint unsigned';
                         elseif ($data['Min'] >= -32768 and $data['Max'] <= 32767)
                             $s .= 'smallint';
-                        elseif ($data['Min'] >= 0 and $data['Max'] <= 16777215)
+                        elseif (($data['Min'] >= 0 or $data['Unsigned'] === true) and $data['Max'] <= 16777215)
                             $s .= 'mediumint unsigned';
                         elseif ($data['Min'] >= -8388608 and $data['Max'] <= 8388607)
                             $s .= 'mediumint';
-                        elseif ($data['Min'] >= 0 and $data['Max'] <= 4294967295)
+                        elseif (($data['Min'] >= 0 or $data['Unsigned'] === true) and $data['Max'] <= 4294967295)
                             $s .= 'int unsigned';
-                        elseif ($data['Min'] >= -2147483648 and $data['Max'] <= 2147483647)
+                        elseif ($data['Min'] >= -2147483648 and $data['Max'] <= 2147483648)
                             $s .= 'int';
-                        elseif ($data['Min'] < 0)
+                        elseif ($data['Min'] < 0 and $data['Unsigned'] !== true)
                             $s .= 'bigint';
                         else
                             $s .= 'bigint unsigned';
@@ -337,17 +338,17 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                     break;
                 case 'float':
                     $s .= 'float';
-                    if ($data['Signed'] === false or $data['Min'] >= 0)
+                    if ($data['Unsigned'] === true or $data['Min'] >= 0)
                         $s .= ' unsigned';
                     $s .= ' default '.(float)$data['Default'];
                     break;
                 case 'price':
                     $s .= 'decimal';
-                    if (($data['Min'] >= 0 or $data['Signed'] === false) and $data['Max'] <= 999999)
+                    if (($data['Min'] >= 0 or $data['Unsigned'] === true) and $data['Max'] <= 999999)
                         $s .= '(8, 2) unsigned';
                     elseif ($data['Min'] >= -500000 and $data['Max'] <= 499999)
                         $s .= '(8, 2)';
-                    elseif ($data['Min'] < 0 or $data['Signed'] === false)
+                    elseif ($data['Min'] < 0 or $data['Unsigned'] === true)
                         $s .= '(14,2) unsigned';
                     else
                         $s .= '(14,2)';
@@ -367,27 +368,71 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             if ($data['NotNull'])
                 $s .= ' not null';
 
+            /* Check for is unique information */
+            if ($data['IsUnique'])
+                $s .= ' unique';
+
             /* Add separator between fields */
-            $sql .= $s.', ';
+            $sql .= $s.',';
+
+            /* Check for index */
+            if ($data['IndexName'] === true) {
+                $params['Indexes'][] = $field;
+            } elseif ($data['IndexName'] !== false) {
+                if (!isset($params['Indexes'][$data['IndexName']]))
+                    $params['Indexes'][$data['IndexName']] = array();
+                $params['Indexes'][$data['IndexName']][] = $field;
+            }
+
+            /* Check for primary key */
+            if ($data['IndexName'] === true)
+                $params['PrimaryKey'][] = $field;
+        }
+
+        /* Add indexes */
+        foreach ($params['Indexes'] as $name => $indexes) {
+            /* Check single key index */
+            if (is_string($indexes)) {
+                $sql .= ' index `'.$indexes.'` (`'.$indexes.'`';
+
+                /* Check for index length */
+                if ($fields[$indexes]['IndexLength'] > 0)
+                    $sql .= '('.$fields[$indexes]['IndexLength'].')';
+
+                /* Add separator between indexes */
+                $sql .= '), ';
+            }
+            /* Check multi key index */
+            elseif (is_array($indexes)) {
+                $sql .= 'index `'.$name.'` (';
+
+                $keys = array();
+                foreach ($indexes as $index) {
+                    /* Add key name */
+                    $key = '`'.$index.'`';
+
+                    /* Check for key length */
+                    if ($fields[$index]['IndexLength'] > 0)
+                        $key .= '('.$fields[$index]['IndexLength'].')';
+
+                    /* Add key to keys */
+                    $keys[] = $key;
+                }
+
+                /* Compile all keys */
+                $sql .= implode(', ', $keys);
+
+                /* Add separator between indexes */
+                $sql .= '),';
+            }
         }
 
         /* Add primary keys */
         if (count($params['PrimaryKeys']) > 0)
             $sql .= ' primary key (`'.implode('`,`', $params['PrimaryKeys']).'`)';
 
-        /* Add indexes */
-        foreach ($params['Indexes'] as $name => $index) {
-            if (is_string($index)) {
-
-            }
-
-
-
-
-            if (is_integer($name))
-                $name = 'key';
-
-        }
+        /* Close fields information */
+        $sql .= ')';
 
         /* Add charset */
         if ($params['Charset'] !== '')
