@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
- * @date Modification: Nov 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -36,32 +36,6 @@ abstract class PluginConfiguration extends PluginLibrary {
 
         /* Define library variables */
         $this->objectName = $name;
-    }
-
-    /* Installation methods */
-
-    /**
-     * Install object.
-     * @return boolean success
-     */
-    public function install() {
-
-    }
-
-    /**
-     * Uninstall object.
-     * @return boolean success
-     */
-    public function uninstall() {
-
-    }
-
-    /**
-     * Check object installation.
-     * @return boolean result
-     */
-    public function is_installed() {
-
     }
 
     /* Data management methods */
