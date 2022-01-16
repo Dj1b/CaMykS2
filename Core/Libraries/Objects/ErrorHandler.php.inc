@@ -3,10 +3,10 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Nov 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -66,7 +66,7 @@ final class ErrorHandler extends CaMykSLibrary {
         $type = $this->get_typeFromCode($code);
 
         /* Create error */
-        $this->stack_error('PHP', $type, $code, $file, $line, $message);
+        $error = $this->stack_error('PHP', $type, $code, $file, $line, $message);
 
         /* Check for fatal errors */
         if (in_array($code, array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_STRICT)))
@@ -96,7 +96,7 @@ final class ErrorHandler extends CaMykSLibrary {
      */
     public function handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal) {
         /* Save error */
-        $this->stack_error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
+        $error = $this->stack_error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
 
         /* Check for fatal errors */
         if ($isFatal)
@@ -113,8 +113,13 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      */
     public function handle_CaMykSDatabaseError($code, $message, $details, $file, $line) {
+        global $CaMykS;
+
         /* Save error */
-        $this->stack_error('CaMykS', 'Database Error', $code, $file, $line, $message, $details);
+        $error = $this->stack_error('CaMykS', 'Database Error', $code, $file, $line, $message, $details);
+
+        /* Log database error */
+        $CaMykS->log_error($error);
     }
 
     /* Management methods */
@@ -129,7 +134,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param string $message
      * @param string $details
      * @param array $backtrace
-     * @return void
+     * @return Object
      */
     private function stack_error($origin, $type, $code, $file, $line, $message, $details='', $backtrace=null) {
         /* Check error exists */
@@ -147,8 +152,14 @@ final class ErrorHandler extends CaMykSLibrary {
         /* Remove this trace step */
         array_shift($backtrace);
 
-        /* Create error in error list */
-        $this->errors[] = new Error($origin, $type, $code, $file, $line, $message, $details, $backtrace);
+        /* Create error */
+        $error = new Error($origin, $type, $code, $file, $line, $message, $details, $backtrace);
+
+        /* Add error to error list */
+        $this->errors[] = $error;
+
+        /* Return error */
+        return $error;
     }
 
     /* Exportation methods */
