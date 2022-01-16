@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre36
+ * @version 2.0pre37
  * @date Creation: Feb 2017
  * @date Modification: Jan 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -90,10 +90,10 @@ final class CaMykS {
     private $databaseConnection;
 
     /**
-     * @var array $openedDBonnections
+     * @var array $openedDBConnections
      * @brief CaMykS opened database connections.
      */
-    private $openedDBonnections = array();
+    private $openedDBConnections = array();
 
     /**
      * @var array $eventsHandlers
@@ -1803,6 +1803,21 @@ final class CaMykS {
     }
 
     /**
+     * Trigger an database error.
+     * @param integer $code
+     * @param string $message
+     * @param string $details
+     * @param string $file
+     * @param integer $line
+     * @return boolean success
+     */
+    public function trigger_databaseError($code, $message, $details, $file='', $line=0) {
+        if ($this->errorHandler !== false)
+            return $this->errorHandler->handle_CaMykSDatabaseError($code, $message, $details, $file, $line);
+        return false;
+    }
+
+    /**
      * Log a message.
      * @param string $object
      * @param string $action
@@ -1909,7 +1924,26 @@ final class CaMykS {
      * @return void
      */
     public function register_databaseConnection($connection) {
-        $this->openedDBonnections[] = &$connection;
+        $this->openedDBConnections[$connection->get_connectionName()] = &$connection;
+    }
+
+    /**
+     * Close a database connection.
+     * @param string $connectionName
+     * @return boolean success
+     */
+    public function close_databaseConnection($connectionName) {
+        /* Check connection */
+        if (!isset($this->openedDBConnections[$connectionName]))
+            return false;
+
+        /* Close connection */
+        if (!$this->openedDBConnections[$connectionName]->close_connection())
+            return false;
+
+        /* Unregister connection */
+        unset($this->openedDBConnections[$connectionName]);
+        return true;
     }
 
     /**
@@ -1917,8 +1951,19 @@ final class CaMykS {
      * @return void
      */
     public function close_databaseConnections() {
-        foreach ($this->openedDBonnections as $connection)
+        foreach ($this->openedDBConnections as $connection)
             $connection->close_connection();
+    }
+
+    /**
+     * Return requested database connection.
+     * @param string $connectionName
+     * @return Object
+     */
+    public function &get_databaseConnection($connectionName) {
+        if (isset($this->openedDBConnections[$connectionName]))
+            return $this->openedDBConnections[$connectionName];
+        return $this->falseRef;
     }
 
     /**
@@ -1956,13 +2001,14 @@ final class CaMykS {
 
         /* Build connection object */
         $this->databaseConnection = new DatabaseConnector(array(
-            'Driver'    => $this->get_configValue('Database_Driver'),
-            'Host'      => $this->get_configValue('Database_Host'),
-            'Port'      => $this->get_configValue('Database_Port'),
-            'Login'     => $this->get_configValue('Database_Login'),
-            'Password'  => $this->get_configValue('Database_Password'),
-            'Database'  => $this->get_configValue('Database_Name'),
-        ));
+            'Driver'        => $this->get_configValue('Database_Driver'),
+            'Host'          => $this->get_configValue('Database_Host'),
+            'Port'          => $this->get_configValue('Database_Port'),
+            'Login'         => $this->get_configValue('Database_Login'),
+            'Password'      => $this->get_configValue('Database_Password'),
+            'Name'          => $this->get_configValue('Database_Name'),
+            'TablePrefix'   => $this->get_configValue('Database_TablePrefix'),
+        ), 'Main');
     }
 }
 ?>

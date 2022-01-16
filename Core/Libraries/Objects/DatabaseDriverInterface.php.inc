@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Oct 2019
- * @date Modification: Nov 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -80,7 +80,7 @@ abstract class DatabaseDriverInterface {
      * @return false
      */
     protected function add_error($errorId, $query, $file='', $line=0) {
-        return $this->parent->add_driverError($errorId, $query, $file, $line);
+        return $this->parent->add_error($errorId, $query, $file, $line);
     }
 
     /* Connection methods */
