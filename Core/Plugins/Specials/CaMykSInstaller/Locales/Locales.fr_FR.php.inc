@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jun 2021
  * @date Modification: Jan 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -57,7 +57,8 @@ $locales = array(
     'Manifest_SymLinkCorePluginsCreated' => 'Cr&eacute;ation du lien symbolique vers les plugins syst&egrave;me.',
     'Manifest_SymLinkSharedPluginsAlreadyExists' => 'Utilisation du lien symbolique vers les plugins partag&eacute;s.',
     'Manifest_SymLinkSharedPluginsCreated' => 'Cr&eacute;ation du lien symbolique vers les plugins partag&eacute;s.',
-    'Manifest_SymLinkAssetsAlreadyExists' => 'Utilisation du lien symbolique vers les donn&eacute;es.',
-    'Manifest_SymLinkAssetsCreated' => 'Cr&eacute;ation du lien symbolique vers les donn&eacute;es.',
+    'Manifest_SymLinkCoreAssetsAlreadyExists' => 'Utilisation du lien symbolique vers les donn&eacute;es.',
+    'Manifest_SymLinkCoreAssetsCreated' => 'Cr&eacute;ation du lien symbolique vers les donn&eacute;es.',
+    'Manifest_PluginInstalled' => 'Installation du plugin %s.',
 );
 ?>

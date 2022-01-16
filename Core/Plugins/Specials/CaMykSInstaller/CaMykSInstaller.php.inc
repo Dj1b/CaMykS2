@@ -688,7 +688,25 @@ final class CaMykSInstaller extends Plugin {
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkAssetsCreated');
         }
 
-        /* Install system plugins */
+        /* Install system plugin manager plugin */
+        $pluginManager = $CaMykS->get_module('SystemPluginManager', true, 'System');
+
+        if (!$pluginManager->install()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_PluginCantInstall', $pluginManager->libraryName));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $pluginManager->libraryName);
+
+        /* Install other system plugins */
+
+
+
 
         /* Create webmaster account in admin account manager */
 
