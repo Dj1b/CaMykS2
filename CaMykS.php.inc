@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre37
+ * @version 2.0pre38
  * @date Creation: Feb 2017
  * @date Modification: Jan 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -453,7 +453,6 @@ final class CaMykS {
         /* Load bench object */
         $this->bench = new Bench();
         $this->bench->start('CaMykS loading.', $this->startMicroTime);
-        unset($this->startMicroTime);
     }
 
     /**
@@ -806,6 +805,7 @@ final class CaMykS {
         $this->load_library('html', 'Tools');
         $this->load_library('http', 'Tools');
         $this->load_library('language', 'Tools');
+        $this->load_library('network', 'Tools');
         $this->load_library('password', 'Tools');
         $this->load_library('php', 'Tools');
         $this->load_library('server', 'Tools');
@@ -841,13 +841,19 @@ final class CaMykS {
         $this->load_library('Theme', 'Objects');
 
         /* Load PluginLibraryAttribute simple object libraries */
+        $this->load_library('PluginLibraryAttribute/Date', 'Objects');
         $this->load_library('PluginLibraryAttribute/Float', 'Objects');
         $this->load_library('PluginLibraryAttribute/Integer', 'Objects');
         $this->load_library('PluginLibraryAttribute/Text', 'Objects');
 
         /* Load PluginLibraryAttribute advanced object libraries */
+        $this->load_library('PluginLibraryAttribute/Boolean', 'Objects');
+        $this->load_library('PluginLibraryAttribute/EmailAddress', 'Objects');
+        $this->load_library('PluginLibraryAttribute/IPAddress', 'Objects');
         $this->load_library('PluginLibraryAttribute/ListItem', 'Objects');
         $this->load_library('PluginLibraryAttribute/Name', 'Objects');
+        $this->load_library('PluginLibraryAttribute/ObjectId', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Price', 'Objects');
         $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
         /* Build object from libraries */

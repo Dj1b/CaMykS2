@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief NamePluginLibraryAttribute object.
+ * @brief EmailAddressPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
- * @date Creation: May 2021
+ * @version 1.0pre0
+ * @date Creation: Jan 2022
  * @date Modification: Jan 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @copyright 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -14,15 +14,15 @@
 namespace CaMykS2;
 
 /**
- * NamePluginLibraryAttribute class.
+ * EmailAddressPluginLibraryAttribute class.
  */
-final class NamePluginLibraryAttribute extends TextPluginLibraryAttribute {
+class EmailAddressPluginLibraryAttribute extends TextPluginLibraryAttribute {
 
     /**
      * @var constant array SUBPARAMS
      * @brief Attribute level 3 default parameters.
      */
-    protected const SUBPARAMS = array('Length'=>32, 'ValidationRegex'=>'[^0-9A-Za-z]*', 'ReplacementChar'=>'');
+    protected const SUBPARAMS = array('Length'=>255, 'StripHTMLTags'=>true, 'AutoTrim'=>true);
 
     /* Override PluginLibraryAttribute methods */
 
@@ -31,11 +31,13 @@ final class NamePluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @return boolean result
      */
     protected function check_value() {
-        /* Check validated characters */
-        $this->value = preg_replace('/'.$this->params['ValidationRegex'].'/', $this->params['ReplacementChar'], $this->value);
+        /* Check generic text checks */
+        if (!parent::check_value())
+            return false;
 
-        /* Check length */
-        $this->value = substr($value, 0, $this->params['Length']);
+        /* Check email address validity */
+        if (!email_isValid($this->value))
+            return false;
 
         /* Return value is conform */
         return true;

@@ -1,28 +1,32 @@
 <?php
 /**
- * @brief TextPluginLibraryAttribute object.
+ * @brief DatePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
- * @date Creation: Feb 2021
+ * @version 1.0pre0
+ * @date Creation: Jan 2022
  * @date Modification: Jan 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @copyright 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * @details Available formats
+ * <br /> DateTime
+ * <br /> Date
+ * <br /> Time
  */
 
 namespace CaMykS2;
 
 /**
- * TextPluginLibraryAttribute class.
+ * DatePluginLibraryAttribute class.
  */
-class TextPluginLibraryAttribute extends PluginLibraryAttribute {
+class DatePluginLibraryAttribute extends PluginLibraryAttribute {
 
     /**
      * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    const DEFAULTPARAMS = array('Length'=>32, 'StripPHPTags'=>true, 'StripJSTags'=>true, 'StripHTMLTags'=>false, 'AutoTrim'=>false,);
+    const DEFAULTPARAMS = array('Format'=>'DateTime');
 
     /* Override PluginLibraryAttribute methods */
 
@@ -32,7 +36,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @return mixed
      */
     protected function read_valueFromSave($value) {
-        return stripSlashes($value);
+        return strtotime($value);
     }
 
     /**
@@ -41,7 +45,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @return $mixed
      */
     protected function optimise_valueToSave($value) {
-        return addSlashes($value);
+        return $this->format_date($value);
     }
 
     /**
@@ -49,26 +53,20 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @return boolean result
      */
     protected function check_value() {
-        /* Check tags stripping */
-        if ($this->params['StripHTMLTags']) {
-            $this->value = strip_tags($value, '<br>');
-            $this->value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $this->value);
-        } else {
-            if ($this->params['StripPHPTags'])
-                $this->value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $this->value);
-            if ($this->params['StripJSTags'])
-                $this->value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $this->value);
-        }
 
-        /* Check autotrim */
-        if ($this->params['AutoTrim'])
-            $this->value = trim($this->value);
-
-        /* Check length */
-        $this->value = substr($value, 0, $this->params['Length']);
 
         /* Return value is conform */
         return true;
+    }
+
+    /**
+     * Return default value.
+     * @return mixed
+     */
+    protected function get_defaultValue() {
+        if ($this->defaultValue === true)
+            return time();
+        return $this->defaultValue;
     }
 
     /**
@@ -76,19 +74,39 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @return array
      */
     public function export_databaseParameters() {
-        return array(
+        $params = array(
             /* Generic values */
-            'Type'      => 'text',  /* text, integer, float, date, datetime, time */
+            'Type'      => strtolower($this->params['Format']),
             'Default'   => $this->defaultValue,
             'IsUnique'  => $this->params['IsUnique'],
-
-            /* Text settings */
-            'Length'    => $this->params['Length'],
 
             /* Primary key and index settings */
             'IndexName'     => $this->params['IndexName'],
             'IndexLength'   => $this->params['IndexLength'],
         );
+
+        /* Return params */
+        return $params;
+    }
+
+    /* Specific methods */
+
+    /**
+     * Return formated date.
+     * @param mixed $value
+     * @return string
+     */
+    private function format_date($value) {
+        if ($this->params['Format'] == 'DateTime')
+            return date('Y-m-d H:i:s', $value);
+
+        if ($this->params['Format'] == 'Date')
+            return date('Y-m-d', $value);
+
+        if ($this->params['Format'] == 'Time')
+            return date('H:i:s', $value);
+
+        return '';
     }
 }
 ?>

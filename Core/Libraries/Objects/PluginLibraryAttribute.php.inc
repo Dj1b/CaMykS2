@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -36,7 +36,13 @@ abstract class PluginLibraryAttribute {
      * @var constant array DEFAULTPARAMS
      * @brief Attribute default parameters.
      */
-    protected const DEFAULTPARAMS = array('Mandatory'=>false);
+    protected const DEFAULTPARAMS = array('Mandatory'=>false, 'IndexName'=>false, 'IndexLength'=>12, 'IsUnique'=>false);
+
+    /**
+     * @var constant array SUBPARAMS
+     * @brief Attribute level 3 default parameters.
+     */
+    protected const SUBPARAMS = array();
 
     /**
      * @var array $params
@@ -51,8 +57,8 @@ abstract class PluginLibraryAttribute {
     protected $defaultValue;
 
      /**
-     * @var mixed $defaultValue
-     * @brief Attribute default value
+     * @var mixed $value
+     * @brief Attribute current value
      */
     protected $value;
 
@@ -81,10 +87,10 @@ abstract class PluginLibraryAttribute {
         $this->isLocalised = $isLocalised;
 
         /* Define original value */
-        $this->value = $default;
+        $this->value = $this->get_defaultValue();
 
         /* Merge parameters */
-        $this->params = array_merge(self::DEFAULTPARAMS, $this::DEFAULTPARAMS, $params);
+        $this->params = array_merge(self::DEFAULTPARAMS, $this::DEFAULTPARAMS, $this::SUBPARAMS, $params);
     }
 
     /* Value related methods */
@@ -131,10 +137,10 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             $this->value = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
-                $this->value[$language] = $this->defaultValue;
+                $this->value[$language] = $this->get_defaultValue();
             }
         } else {
-            $this->value = $this->defaultValue;
+            $this->value = $this->get_defaultValue();
         }
     }
 
@@ -149,13 +155,13 @@ abstract class PluginLibraryAttribute {
                 if (isset($array[$this->get_fullName($language)]))
                     $this->value[$language] = $this->read_valueFromSave($array[$this->get_fullName($language)]);
                 else
-                    $this->value[$language] = $this->defaultValue;
+                    $this->value[$language] = $this->get_defaultValue();
             }
         } else {
             if (isset($array[$this->get_fullName()]))
                 $this->value = $this->read_valueFromSave($array[$this->get_fullName()]);
             else
-                $this->value = $this->defaultValue;
+                $this->value = $this->get_defaultValue();
         }
     }
 
@@ -179,13 +185,13 @@ abstract class PluginLibraryAttribute {
                 if (!is_null($value = $this->load_valueFromHeader($this->get_fullName($language, $prefix))))
                     $this->value[$language] = $value;
                 elseif ($update === false)
-                    $this->value[$language] = $this->defaultValue;
+                    $this->value[$language] = $this->get_defaultValue();
             }
         } else {
             if (!is_null($value = $this->load_valueFromHeader($this->get_fullName($language, $prefix))))
                 $this->value[$language] = $value;
             elseif ($update === false)
-                $this->value[$language] = $this->defaultValue;
+                $this->value[$language] = $this->get_defaultValue();
         }
     }
 
@@ -201,13 +207,13 @@ abstract class PluginLibraryAttribute {
                 if (isset($array[$this->get_fullName($language)]))
                     $this->value[$language] = $this->read_value($array[$this->get_fullName($language)]);
                 elseif ($update === false)
-                    $this->value[$language] = $this->defaultValue;
+                    $this->value[$language] = $this->get_defaultValue();
             }
         } else {
             if (isset($array[$this->get_fullName()]))
                 $this->value = $this->read_value($array[$this->get_fullName()]);
             elseif ($update === false)
-                $this->value = $this->defaultValue;
+                $this->value = $this->get_defaultValue();
         }
     }
 
@@ -225,6 +231,12 @@ abstract class PluginLibraryAttribute {
         }
         return array($this->get_fullName() => $this->value);
     }
+
+    /**
+     * Return attribute parameters for table creation in database.
+     * @return array
+     */
+    abstract public function export_databaseParameters();
 
     /* Specific tool methods */
 
@@ -261,6 +273,14 @@ abstract class PluginLibraryAttribute {
      */
     protected function check_value() {
         return true;
+    }
+
+    /**
+     * Return default value.
+     * @return mixed
+     */
+    protected function get_defaultValue() {
+        return $this->defaultValue;
     }
 
     /**

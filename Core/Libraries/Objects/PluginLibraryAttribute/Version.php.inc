@@ -3,10 +3,10 @@
  * @brief VersionPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: May 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -16,15 +16,13 @@ namespace CaMykS2;
 /**
  * VersionPluginLibraryAttribute class.
  */
-final class VersionPluginLibraryAttribute extends PluginLibraryAttribute {
+final class VersionPluginLibraryAttribute extends TextPluginLibraryAttribute {
 
     /**
-     * @var constant array DEFAULTPARAMS
-     * @brief Attribute default parameters.
+     * @var constant array SUBPARAMS
+     * @brief Attribute level 3 default parameters.
      */
-    const DEFAULTPARAMS = array();
-
-    /* Override PluginLibraryAttribute methods */
+    protected const SUBPARAMS = array('Length' => 16);
 
     /**
      * Check and optimise stored value.
@@ -32,7 +30,7 @@ final class VersionPluginLibraryAttribute extends PluginLibraryAttribute {
      */
     protected function check_value() {
         /* Check value is valid version number */
-        if (!version_compare($this->value, '0.0.0.1', '>=' ) >= 0)
+        if (!version_compare($this->value, '0.0.0.1', '>=') >= 0)
             return false;
 
         /* Return value is conform */

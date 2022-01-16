@@ -3,10 +3,10 @@
  * @brief IntegerPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -53,6 +53,38 @@ class IntegerPluginLibraryAttribute extends PluginLibraryAttribute {
 
         /* Return value is conform */
         return true;
+    }
+
+    /**
+     * Return attribute parameters for table creation in database.
+     * @return array
+     */
+    public function export_databaseParameters() {
+        $params = array(
+            /* Generic values */
+            'Type'      => 'integer',
+            'Default'   => $this->defaultValue,
+            'IsUnique'  => $this->params['IsUnique'],
+
+            /* Primary key and index settings */
+            'IndexName'     => $this->params['IndexName'],
+            'IndexLength'   => $this->params['IndexLength'],
+        );
+
+        /* Check minimum value */
+        if (!is_null($this->params['Min']))
+            $params['Min'] = $this->params['Min'];
+
+        /* Check maximum value */
+        if (!is_null($this->params['Max']))
+            $params['Max'] = $this->params['Max'];
+
+        /* Check unsigned param */
+        if (is_bool($this->params['Unsigned']))
+            $params['Unsigned'] = $this->params['Unsigned'];
+
+        /* Return params */
+        return $params;
     }
 }
 ?>

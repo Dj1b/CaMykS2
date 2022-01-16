@@ -3,10 +3,10 @@
  * @brief ListItemPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: May 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Jan 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -16,15 +16,36 @@ namespace CaMykS2;
 /**
  * ListItemPluginLibraryAttribute class.
  */
-final class ListItemPluginLibraryAttribute extends PluginLibraryAttribute {
+final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
 
     /**
-     * @var constant array DEFAULTPARAMS
-     * @brief Attribute default parameters.
+     * @var constant array SUBPARAMS
+     * @brief Attribute level 3 default parameters.
      */
-    const DEFAULTPARAMS = array('Format'=>'Text', 'Length'=>32, 'Values'=>array());
+    protected const SUBPARAMS = array('Length'=>0, 'Format'=>'Text', 'Values'=>array());
 
     /* Override PluginLibraryAttribute methods */
+
+    /**
+     * Class constructor.
+     * @param Object $parent
+     * @param string $name
+     * @param mixed $default
+     * @param array $params
+     * @param boolean $isLocalised
+     * @return void
+     */
+    public function __construct(&$parent, $name, $default, $params=array(), $isLocalised=false) {
+        parent::__construct($parent, $name, $default, $params, $isLocalised);
+
+        /* Define length value */
+        if ($this->params['Length'] == 0) {
+            foreach ($this->params['Values'] as $value)
+                if (strlen((string)$value) + 4 > $this->params['Length'])
+                    $this->params['Length'] = strlen((string)$value) + 4;
+        }
+    }
+
 
     /**
      * Return read value.
