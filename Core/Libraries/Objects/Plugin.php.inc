@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre14
+ * @version 1.0pre15
  * @date Creation: Nov 2019
  * @date Modification: Jan 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -160,6 +160,80 @@ abstract class Plugin extends CaMykSLibrary {
         /* To be override by PluginType libraries or plugin themselves */
     }
 
+    /**
+     * Install plugin.
+     * @return boolean success
+     */
+    public function install() {
+        global $CaMykS;
+
+        /* Load plugin if required */
+        $this->load();
+
+        /* Check for configuration installation */
+        if ($this->has_configuration() and !$this->configuration->save()) {
+            /* Add error */
+
+            /* Return failure */
+            return false;
+        }
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Uninstall plugin.
+     * @return boolean success
+     */
+    public function uninstall() {
+        global $CaMykS;
+
+        /* Load plugin if required */
+        $this->load();
+
+        /* Check for configuration installation */
+        if ($this->has_configuration() and !$this->configuration->delete()) {
+            /* Add error */
+
+            /* Return failure */
+            return false;
+        }
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Check plugin installation.
+     * @return boolean result.
+     */
+    public function is_installed() {
+        return true;
+    }
+
+    /**
+     * Check plugin activation.
+     * @return boolean result.
+     */
+    public function is_enabled() {
+        global $CaMykS;
+
+        /* Load plugin manager */
+        $pluginManager = $CaMykS->get_module('SystemPluginManager');
+
+        /* Return plugin manager answer */
+        return $pluginManager->is_pluginEnabled($this->libraryName);
+    }
+
+    /**
+     * Check plugin availability.
+     * @return boolean result.
+     */
+    public function is_available() {
+        return ($this->is_installed() and $this->is_enabled());
+    }
+
     /* Main methods */
 
     /**
@@ -300,6 +374,26 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Create new configuration object from library */
         $this->configuration = new $libraryFullName($this);
+    }
+
+    /**
+     * Install plugin configuration.
+     * @return boolean success
+     */
+    public function install_configuration() {
+        /* Check plugin has configuration */
+        if (!$this->has_configuration())
+            return true;
+
+        /* Check plugin is already installed */
+        if ($this->in_installed())
+            return true;
+
+        /* Load plugin configuration if required */
+        $this->load_configuration();
+
+        /* Save configuration */
+        return $this->configuration->save();
     }
 
     /**

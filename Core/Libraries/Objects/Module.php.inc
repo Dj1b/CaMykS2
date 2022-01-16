@@ -1,10 +1,10 @@
 <?php
 /**
  * @brief Module object.
- * <br />Module abstract library, extends Plugin.
+ * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5.2
+ * @version 1.0pre6
  * @date Creation: Dec 2019
  * @date Modification: Jan 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -26,7 +26,7 @@ abstract class Module extends Plugin {
 
     /**
      * @var array $libraries
-     * @brief List of module internal libraries name.
+     * @brief List of module internal libraries names.
      */
     protected $libraries = array();
 
@@ -54,6 +54,72 @@ abstract class Module extends Plugin {
         $this->load_internalLibraries();
     }
 
+    /**
+     * Install plugin.
+     * @return boolean success
+     */
+    public function install() {
+        /* Check Plugin installation */
+        if (!parent::install())
+            return false;
+
+        /* Do libraries installation */
+        foreach ($this->libraries as  $library) {
+
+            if (!$this->$library->install()) {
+                /* Add error */
+
+                /* Return false */
+                return false;
+            }
+        }
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Uninstall plugin.
+     * @return boolean result.
+     */
+    public function uninstall() {
+         /* Check Plugin installation */
+        if (!parent::uninstall())
+            return false;
+
+        /* Do libraries installation */
+        foreach ($this->libraries as $library) {
+            if (!$library->uninstall()) {
+                /* Add error */
+
+                /* Return false */
+                return false;
+            }
+        }
+
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Check plugin installation.
+     * @return boolean result.
+     */
+    public function is_installed() {
+        global $CaMykS;
+
+        /* Load plugin manager */
+        $pluginManager = $CaMykS->get_module('SystemPluginManager');
+
+        /* Return plugin manager answer */
+        foreach ($this->libraries as $library)
+            if (!$pluginManager->is_pluginLibraryInstalled($library->libraryName))
+                return false;
+
+        /* Return check success */
+        return true;
+    }
+
     /* Admin mode methods */
 
     /**
@@ -77,7 +143,7 @@ abstract class Module extends Plugin {
         if (method_exists($this, $method))
             call_user_method($method, $this);
         else
-            $this->initialise_admin_main();
+            $this->initialise_admin_Main();
     }
 
     /**
@@ -93,7 +159,7 @@ abstract class Module extends Plugin {
      * Initialise object admin/main mode.
      * @return void
      */
-    protected function initialise_admin_main() {
+    protected function initialise_admin_Main() {
 
     }
 
@@ -167,8 +233,10 @@ abstract class Module extends Plugin {
                 return false;
             }
 
+            /* Compute library full name */
+            $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
+
             /* Create and check full library name */
-            $libraryFullName = 'CaMykS2\\'.$this->libraryName.$library;
             if (!class_exists($libraryFullName)) {
                 /* Log error */
                 /* @TODO */
