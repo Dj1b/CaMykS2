@@ -1,11 +1,13 @@
 /**
  * @brief DOM and HTML elements related methods.
- * @details Plugin / Plugin Javascripts
+ * @details Engine / Javascript
  * @author CaMykS Team
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Dec 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS
+ * @date Modification: Dec 2022
+ * @copyright 2021 - 2022 CaMykS Team
+ * @note This program is distributed as is - WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 /**

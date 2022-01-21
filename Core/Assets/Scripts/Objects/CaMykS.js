@@ -1,11 +1,13 @@
 /**
- * @brief CaMykS client side master script
+ * @brief CaMykS client side master script.
  * @details Engine / Javascript
  * @author CaMykS Team
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Mar 2020
- * @date Modification: Dec 2021
- * @copyright 2020 - 2021 Ideogram Design
+ * @date Modification: Jan 2022
+ * @copyright 2020 - 2022 CaMykS Team
+ * @note This program is distributed as is - WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 var CaMykS = {
     name: 'CaMykS',
