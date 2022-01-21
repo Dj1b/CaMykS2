@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre38
+ * @version 2.0pre39
  * @date Creation: Feb 2017
  * @date Modification: Jan 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -839,6 +839,10 @@ final class CaMykS {
         $this->load_library('RequestAnswer', 'Objects');
         $this->load_library('Template', 'Objects');
         $this->load_library('Theme', 'Objects');
+
+        /* Load ModuleLibrary object libraries */
+        $this->load_library('ModuleLibrary/Simple', 'Objects');
+        $this->load_library('ModuleLibrary/Advanced', 'Objects');
 
         /* Load PluginLibraryAttribute simple object libraries */
         $this->load_library('PluginLibraryAttribute/Date', 'Objects');
