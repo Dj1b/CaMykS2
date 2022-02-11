@@ -3,7 +3,7 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
  * @date Modification: Feb 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -242,7 +242,7 @@ function http_getContentsUsingPHP($params=array()) {
     );
 
     /* Check SSL peer verification */
-    if ($params['SSLVerifyPeer']) {
+    if ($params['SSLVerifyPeer'] === false) {
         $opts['ssl'] = array(
             'verify_peer'       => false,
             'verify_peer_name'  => false,
