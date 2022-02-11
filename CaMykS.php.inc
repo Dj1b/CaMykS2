@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre39
+ * @version 2.0pre40
  * @date Creation: Feb 2017
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2017 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -396,7 +396,8 @@ final class CaMykS {
         if ($this->bench !== false) $this->bench->export();
 
         /* Write HTML page footer */
-        $this->HTMLPage->write_footer();
+        if (isset($this->HTMLPage))
+            $this->HTMLPage->write_footer();
     }
 
     /* CaMykS initialisation methods */
@@ -1695,10 +1696,10 @@ final class CaMykS {
      */
     public function get_locale($key, $prefix='', $data=array(), $default=null) {
         /* Check data value */
-        if (is_string($data))
-            $data = array($data);
-        elseif (is_null($data))
+        if (is_null($data))
             $data = array();
+        if (!is_array($data))
+            $data = array($data);
 
         /* Search and return locale from key with prefix */
         if ($prefix != '' and isset($this->locales[$prefix.'_'.$key]))
