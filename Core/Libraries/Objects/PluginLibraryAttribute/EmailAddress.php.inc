@@ -3,9 +3,9 @@
  * @brief EmailAddressPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2022
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -30,7 +30,7 @@ class EmailAddressPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    protected function check_value() {
+    public function check_value() {
         /* Check generic text checks */
         if (!parent::check_value())
             return false;

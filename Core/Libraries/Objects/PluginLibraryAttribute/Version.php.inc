@@ -3,9 +3,9 @@
  * @brief VersionPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: May 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,9 +28,9 @@ final class VersionPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    protected function check_value() {
+    public function check_value() {
         /* Check value is valid version number */
-        if (!version_compare($this->value, '0.0.0.1', '>=') >= 0)
+        if (!version_compare($this->value, '0.0.0.1', '>='))
             return false;
 
         /* Return value is conform */

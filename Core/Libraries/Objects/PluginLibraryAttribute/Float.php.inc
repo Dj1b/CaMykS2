@@ -3,9 +3,9 @@
  * @brief FloatPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Feb 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,7 +42,7 @@ class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    protected function check_value() {
+    public function check_value() {
         /* Force value as a float */
         $this->value = (float)$this->value;
 
