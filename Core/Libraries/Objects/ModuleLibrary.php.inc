@@ -4,9 +4,9 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -113,7 +113,9 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @return boolean success
      */
     public function save() {
-        return true;
+        if (!$this->check_data())
+            return false;
+        return ($this->save_databaseAttributes() and $this->save_fileAttributes());
     }
 
     /**
@@ -172,7 +174,64 @@ abstract class ModuleLibrary extends PluginLibrary {
         return true;
     }
 
-    /* Attributes related methods */
+    /**
+     * Save object database attributes.
+     * @return boolean success
+     */
+    protected function save_databaseAttributes() {
+        if ($this->objectId === 0)
+            return $this->insert_databaseAttributes();
+        return $this->update_databaseAttributes();
+    }
+
+    /**
+     * Insert object database attributes.
+     * @return boolean succes
+     */
+    protected function insert_databaseAttributes() {
+
+        /* Compile data for non-localised attributes */
+        $partition = $this->attributesList['db'];
+        $values = array();
+        foreach ($this->attributesList['db'] as $attributeName)
+            $values[$attributeName] = $this->libraryAttributes[$attributeName]->get_value();
+
+        /* Build query for non-localised attributes */
+        $query = new DbQuery('insert');
+        $query->add_table($this->dbTableName);
+        //$query->set_insertPartition($partition);
+        $query->add_insertValues($values);
+
+        if (!$this->execute_DBQuery($query))
+            return false;
+
+        $this->objectId = $this->get_DBQueryGeneratedId();
+
+        /* Check for localised attributes */
+        if (count($this->attributesList['dbl']) > 0) {
+            /* Compile data form localised attributes */
+
+            /* Build query for localised attributes */
+
+        }
+        return true;
+    }
+
+    /**
+     * Update object database attributes.
+     * @return boolean success
+     */
+    protected function update_databaseAttributes() {
+
+    }
+
+    /**
+     * Save object file attributes.
+     * @return boolean success
+     */
+    protected function save_fileAttributes() {
+        return true;
+    }
 
     /**
      * Define database attribute.
@@ -299,7 +358,7 @@ abstract class ModuleLibrary extends PluginLibrary {
         global $CaMykS;
 
         /* Send error to CaMykS */
-        $CaMykS->trigger_databaseError($this->libraryName, 0, $this->get_errorCode(0), $error, $file, $line);
+        $CaMykS->trigger_databaseError($this->libraryName, 0, $this->get_errorCode(0), $error);
 
         /* Return false */
         return false;

@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre40
+ * @version 2.0pre41
  * @date Creation: Feb 2017
  * @date Modification: Feb 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -824,6 +824,7 @@ final class CaMykS {
         $this->load_library('DatabaseConnector', 'Objects');
         $this->load_library('DatabaseDriverInterface', 'Objects');
         $this->load_library('DbQuery', 'Objects');
+        $this->load_library('DbQueryWhereCondition', 'Objects');
         $this->load_library('Component', 'Objects');
         $this->load_library('Error', 'Objects');
         $this->load_library('ErrorHandler', 'Objects');

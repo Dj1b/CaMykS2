@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
- * @date Modification: Nov 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
@@ -74,11 +74,10 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      */
     protected function get_builtInsertQuery($query) {
         return  'insert into '.
-                 $this->get_tables($query->get_tables()).
-                //'partition '.
+                $this->get_tables($query->get_tables()).
                 $this->get_insertPartition($query->get_insertPartition()).
-                'values '.
-                $this->get_insertValues($query->get_selectInsertValues()).
+                ' values '.
+                $this->get_insertValues($query->get_insertValues()).
                 ';';
     }
 
@@ -149,16 +148,115 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return query where condition from data.
+     * Return query where conditions from data.
      * @param array $whereConditions
      * @return string
      */
     protected function get_whereConditions($whereConditions) {
-        /* Initialise result */
+        /* Check where conditions */
+        if (!is_array($whereConditions) or !isset($whereConditions['Operator']) or !isset($whereConditions['Conditions']))
+            return 'false';
+        if (count($whereConditions['Conditions']) == 0)
+            return '';
+
+        /* Initialise conditions list */
+        $conditions = array();
+
+        /* Read conditions list */
+        foreach ($whereConditions['Conditions'] as $condition) {
+            if (is_object($condition) and get_class($condition) == 'CaMykS2\DbQueryWhereCondition')
+                $conditions[] = $this->get_whereCondition($condition);
+            elseif (is_array($condition))
+                $conditions[] = '('.$this->get_whereConditions($condition).')';
+            else
+                $conditions[] = 'false';
+        }
+
+        /* Return result */
+        return ' where '.implode(' '.$whereConditions['Operator'].' ', $conditions);
+    }
+
+    /**
+     * Return query single where condition from DbQueryWhereCondition object.
+     * @param DbQueryWhereCondition $condition
+     * @return string
+     */
+    protected function get_whereCondition($condition) {
+        /* Initiate result */
         $result = '';
+
+        /* Add identifier */
+        $result .= ($condition->identifierTable !== '' ? $condition->identifierTable.'.' : '').'`'.$condition->identifier.'` ';
+
+        /* Check negaative */
+        if ($condition->isNot) $result .= 'not ';
+
+        /* Add operator and value */
+        switch ($condition->operator) {
+            /* String operator */
+            case 'start': $result .= 'like "%'.$this->get_escapedValue($condition->value).'"'; break;
+            case 'end': $result .= 'like "'.$this->get_escapedValue($condition->value).'%"'; break;
+            case 'contain': $result .= 'like "%'.$this->get_escapedValue($condition->value).'%"'; break;
+
+            /* List operator */
+            case 'in':
+                if (is_array($condition->value)) {
+                    if (count($condition->value))
+                        return 'false';
+                    if (count($condition->value) == 1)
+                        foreach($condition->value as $value)
+                            $result .= '= '.$this->get_whereConditionValue($value);
+                    else {
+                        $values = array();
+                        foreach ($condition->value as $value)
+                            $values = $this->get_whereConditionValue($value);
+                        $result .= 'in ('.implode(',', $values).')';
+                    }
+                } else {
+                    $result .= '= '.$this->get_whereConditionValue($condition->value, $condition->valueTable);
+                }
+                break;
+
+            /* Mathematic operators */
+            case 'between':
+                if (is_array($condition->value)) {
+                    if (count($condition->value) == 2)
+                        $result .= 'between '.$this->get_whereConditionValue($condition->value[0], $condition->valueTable).' and '.$this->get_whereConditionValue($condition->value[1], $condition->valueTable);
+                    elseif (count($condition->value) == 1)
+                        $result .= 'between 0 and '.$this->get_whereConditionValue($condition->value[0], $condition->valueTable);
+                    else
+                        return 'false';
+                } else {
+                    $result .= 'between 0 and '.$this->get_whereConditionValue($condition->value, $condition->valueTable);
+                }
+                break;
+            case '>':
+            case '<':
+            case '>=':
+            case '<=':
+            case '!=':
+
+            /* Default operator */
+            case '=':
+            default:
+                $result .= $condition->operator.' '.$this->get_whereConditionValue($condition->value, $condition->valueTable);
+        }
 
         /* Return result */
         return $result;
+    }
+
+    /**
+     * Return encoded value for single where condition.
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function get_whereConditionValue($value, $table='') {
+        if ($table !== '')
+            return $table.'`'.$value.'`';
+        if (is_numeric($value))
+            return $value;
+        return '"'.$this->get_escapedValue($value).'"';
     }
 
     /**
@@ -289,7 +387,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         foreach ($valueList as $values) {
             $v = array();
             foreach ($values as $value)
-                $v[] = $this->get_SQLValue($value);
+                $v[] = $this->get_escapedValue($value);
             $list[] = '('.implode(', ', $v).')';
         }
 
@@ -310,7 +408,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
         /* Read values */
         foreach ($assignments as $assignment)
-            $list[] = '`'.$assignment['name'].'`='.$this->get_SQLValue($value);
+            $list[] = '`'.$assignment['name'].'`='.$this->get_escapedValue($value);
 
         /* Return computed result */
         return implode(',', $list);
@@ -323,7 +421,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param mixed $value
      * @return string
      */
-    private function get_SQLValue($value) {
+    private function get_escapedValue($value) {
         return '"'.$this->escape_string($value).'"';
     }
 }

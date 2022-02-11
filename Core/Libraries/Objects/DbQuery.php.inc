@@ -3,10 +3,10 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0pre4
  * @date Creation: Oct 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -84,6 +84,12 @@ final class DbQuery extends CaMykSLibrary {
     private $whereConditions = array();
 
     /**
+     * @var string $whereOperator
+     * @brief Where level 1 operator for queries.
+     */
+    private $whereOperator = 'and';
+
+    /**
      * @var array $orderBy
      * @brief Order by conditions for queries.
      */
@@ -144,8 +150,8 @@ final class DbQuery extends CaMykSLibrary {
             return true;
 
         /* check if data is a known action */
-        elseif (in_array($action, $this->actionValues)) {
-            $this->action = $action;
+        elseif (in_array($data, $this->actionValues)) {
+            $this->action = $data;
             return true;
 
         /* check if data is a SQL command */
@@ -304,15 +310,54 @@ final class DbQuery extends CaMykSLibrary {
         return $this->tables;
     }
 
-
-
+    /**
+     * Set level 1 where operator value.
+     * @param string $operator
+     * @return boolean success
+     */
+    public function set_whereOperator($operator='and') {
+        if (!in_array($operator, array('and', 'or')))
+            return false;
+        $this->whereOperator = $operator;
+        return true;
+    }
 
     /**
-     * Return whereConditions values.
+     * Add a where condition.
+     * @param DbQueryWhereCondition $condition
+     * @return boolean success
+     */
+    public function add_whereCondition($condition) {
+        /* Check condition */
+
+        /* Add condition */
+        $this->whereConditions[] = $condition;
+        return true;
+    }
+
+    /**
+     * Return built where sub conditions.
+     * @param array $conditions
+     * @param string $operator
+     * @return array
+     */
+    public function build_whereSubConditions($conditions, $operator='and') {
+        if (!in_array($operator, array('and', 'or')))
+            return array();
+        if (!is_array($conditions))
+            return array();
+        return array(
+            'Conditions'    => $conditions,
+            'Operator'      => $operator,
+        );
+    }
+
+    /**
+     * Return where conditions values.
      * @return array
      */
     public function get_whereConditions() {
-        return $this->whereConditions;
+        return $this->build_whereSubConditions($this->whereConditions, $this->whereOperator);
     }
 
     /**
@@ -427,6 +472,8 @@ final class DbQuery extends CaMykSLibrary {
      * @return array
      */
     public function get_selectItems() {
+        if (count($this->selectItems) == 0)
+            return array(array('column'=>'*', 'table'=>'', 'alias'=>'', 'function'=>''));
         return $this->selectItems;
     }
 
@@ -502,7 +549,7 @@ final class DbQuery extends CaMykSLibrary {
             return $this->add_error(33, '', __FILE__, __LINE__);
 
         /* Check values length */
-        if ($this->insertPartition != null) {
+        if (!is_null($this->insertPartition)) {
             if (count($this->insertPartition) != count($values))
                 return $this->add_error(35, '', __FILE__, __LINE__);
         } elseif (count($this->insertValues) > 0 and count($this->insertValues[0]) != count($values))
@@ -510,7 +557,7 @@ final class DbQuery extends CaMykSLibrary {
 
         /* Add extra checks for associative array */
         if (array_isAssociative($values)) {
-            if ($this->insertPartition != null) {
+            if (!is_null($this->insertPartition)) {
                 /* Check keys are identical and put values in the partition orders */
                 $v = array();
                 foreach ($this->insertPartition as $key) {
