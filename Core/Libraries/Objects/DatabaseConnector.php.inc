@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Oct 2019
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -356,7 +356,7 @@ final class DatabaseConnector extends CaMykSLibrary {
     public function execute_query($query, $resourceName='Default') {
         if (is_string($query))
             return $this->execute_directQuery($query, $resourceName);
-        if (is_object($query) and get_class($query) == 'DbQuery')
+        if (is_object($query) and get_class($query) == 'CaMykS2\DbQuery')
             return $this->execute_builtQuery($query, $resourceName);
         return false;
     }
