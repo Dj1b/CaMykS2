@@ -3,10 +3,10 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -153,6 +153,7 @@ function http_getResponseCodeName($code=200) {
  * \e string Referer <br />
  * \e integer Timeout <br />
  * \e mixed Headers <br />
+ * \e array SSL <br />
  * @endparblock
  * @return string
  */
@@ -170,6 +171,7 @@ function http_getContents($params=array()) {
         'Referer'           => '',
         'Timeout'           => 60,
         'Headers'           => array('Content-type' => 'application/x-www-form-urlencoded'),
+        'SSL'               => array(),
     );
     $params = array_merge($defaultParams, $params);
 
@@ -195,6 +197,7 @@ function http_getContents($params=array()) {
  * \e string referer <br />
  * \e integer timeout <br />
  * \e mixed Headers <br />
+ * \e array SSL <br />
  * @endparblock
  * @return false on failure, string on success
  */
@@ -211,8 +214,13 @@ function http_getContentsUsingPHP($params=array()) {
         'Referer'       => '',
         'Timeout'       => 60,
         'Headers'       => array('Content-type' => 'application/x-www-form-urlencoded'),
+        'SSL'               => array(),
     );
     $params = array_merge($defaultParams, $params);
+
+    /* Move referer to headers */
+    if ($params['Referer'] !== '')
+        $params['headers']['Referer'] = $params['Referer'];
 
     /* Build header */
     if (is_string($params['Headers']))
@@ -229,7 +237,6 @@ function http_getContentsUsingPHP($params=array()) {
             'header'        => $header,
             'method'        => $params['Method'],
             'user_agent'    => $params['UserAgent'],
-            'referer'       => $params['Referer'],
             'timeout'       => $params['Timeout'],
         ),
     );
@@ -240,6 +247,14 @@ function http_getContentsUsingPHP($params=array()) {
             'verify_peer'       => false,
             'verify_peer_name'  => false,
         );
+    }
+
+    /* Check other SSL parameters */
+    if (count($params['SSL']) > 0) {
+        if (isset($opts['SSL']))
+            $opts['ssl'] = array_merge($opts['ssl'], $params['SSL']);
+        else
+            $opts['ssl'] = $params['SSL'];
     }
 
     /* Add content to context */
@@ -268,6 +283,7 @@ function http_getContentsUsingPHP($params=array()) {
  * \e string Referer <br />
  * \e integer Timeout <br />
  * \e mixed Headers <br />
+ * \e array SSL <br />
  * @endparblock
  * @return false on failure, string on success
  */
@@ -284,6 +300,7 @@ function http_getContentsUsingCURL($params=array()) {
         'Referer'       => '',
         'Timeout'       => 60,
         'Headers'       => array('Content-type' => 'application/x-www-form-urlencoded'),
+        'SSL'               => array(),
     );
     $params = array_merge($defaultParams, $params);
 
@@ -304,6 +321,8 @@ function http_getContentsUsingCURL($params=array()) {
     curl_setopt($request, CURLOPT_POST, $params['Method']=='POST' ? 1 : 0);
     curl_setopt($request, CURLOPT_POSTFIELDS, $params['Values']);
     curl_setopt($request, CURLOPT_SSL_VERIFYPEER, $params['SSLVerifyPeer']);
+    if (isset($params['SSL']['ciphers']))
+        curl_setopt($request, CURLOPT_SSL_CIPHER_LIST, $params['SSL']['ciphers']);
     if ($params['Timeout'] > 0)
         curl_setopt($request, CURLOPT_TIMEOUT, $params['Timeout']);
     if ($params['UserAgent'] != '')
