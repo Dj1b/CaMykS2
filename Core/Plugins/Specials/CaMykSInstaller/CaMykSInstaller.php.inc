@@ -3,9 +3,9 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: May 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -703,8 +703,33 @@ final class CaMykSInstaller extends Plugin {
         }
         $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $pluginManager->libraryName);
 
-        /* Install other system plugins */
+        /* Load other default system plugins */
+        $pluginList = $CaMykS->get_assetData('defaultPlugins');
 
+        /* Remove plugin manager */
+        if (isset($pluginList['Module']['SystemPluginManager']))
+            unset($pluginList['Module']['SystemPluginManager']);
+
+        /* Install other default system plugins */
+        foreach ($pluginList as $type => $plugins) {
+            foreach ($plugins as $name => $location) {
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        die();
+
+
+        /* Intall File Storage system plugin if required */
 
 
 

@@ -3,9 +3,9 @@
  * @brief CaMykSInstaller plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Jun 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,9 +36,6 @@ $locales = array(
     /* Webmaster configuration */
     'WebmasterConfiguration' => 'Configuration du compte administrateur principal',
 
-    /* Error */
-    'Error_ConfigurationFolderIsNotWritable' => 'Le dossier de configuration du site n\'est pas accessible en &eacute;criture.',
-
     /* Installation done */
     'Installation_Done_Title' => 'Installation termin&eacute;e.',
     'Installation_Done_Message' => 'F&eacute;licitations, l\'installation du site s\'est d&eacute;roul&eacute;e avec succ&egrave;s.',
@@ -60,5 +57,9 @@ $locales = array(
     'Manifest_SymLinkCoreAssetsAlreadyExists' => 'Utilisation du lien symbolique vers les donn&eacute;es.',
     'Manifest_SymLinkCoreAssetsCreated' => 'Cr&eacute;ation du lien symbolique vers les donn&eacute;es.',
     'Manifest_PluginInstalled' => 'Installation du plugin %s.',
+
+    /* Errors */
+    'Error_ConfigurationFolderIsNotWritable' => 'Le dossier de configuration du site n\'est pas accessible en &eacute;criture.',
+    'Error_PluginCantInstall' => 'Erreur lors de l\'installation du plugin "%s".',
 );
 ?>
