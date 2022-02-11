@@ -4,9 +4,9 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: May 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -61,6 +61,23 @@ final class SystemPluginManager extends AdminModule {
     }
 
     /* Admin mode methods */
+
+    /* Tool methods */
+
+    /**
+     * Enable plugin.
+     * @param string $ty
+     * @param string $name
+     * @param string $type
+     * @param string $location
+     * @return boolean success
+     */
+    public function enable_plugin($name, $type, $location=null) {
+        global $CaMykS;
+
+    }
+
+
 
 }
 ?>
