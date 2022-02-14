@@ -3,7 +3,7 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Oct 2019
  * @date Modification: Feb 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -635,6 +635,19 @@ final class DbQuery extends CaMykSLibrary {
         );
 
         /* Return success */
+        return true;
+    }
+
+    /**
+     * Add update assignments.
+     * @param array $values
+     * @return boolean success
+     */
+    public function add_updateAssignmentList($values) {
+        foreach ($values as $name => $value) {
+            if (!$this->add_updateAssignment($name, $value))
+                return false;
+        }
         return true;
     }
 
