@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Jan 2021
  * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -120,6 +120,8 @@ abstract class PluginLibraryAttribute {
      * @return void
      */
     public function set_value($value, $language=null) {
+        global $CaMykS;
+
         if ($this->isLocalised) {
             if (is_null($language))
                 $language = $CaMykS->get_currentLanguage();

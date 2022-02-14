@@ -4,9 +4,9 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Dec 2019
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -64,8 +64,7 @@ abstract class Module extends Plugin {
             return false;
 
         /* Do libraries installation */
-        foreach ($this->libraries as  $library) {
-
+        foreach ($this->libraries as $library) {
             if (!$this->$library->install()) {
                 /* Add error */
 
@@ -108,12 +107,9 @@ abstract class Module extends Plugin {
     public function is_installed() {
         global $CaMykS;
 
-        /* Load plugin manager */
-        $pluginManager = $CaMykS->get_module('SystemPluginManager');
-
         /* Return plugin manager answer */
         foreach ($this->libraries as $library)
-            if (!$pluginManager->is_pluginLibraryInstalled($library->libraryName))
+            if (!$this->$library->is_installed())
                 return false;
 
         /* Return check success */

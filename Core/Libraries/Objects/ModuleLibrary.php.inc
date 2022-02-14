@@ -4,7 +4,7 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Jan 2021
  * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -95,6 +95,19 @@ abstract class ModuleLibrary extends PluginLibrary {
         $this->dbLocaleTableName = $this->dbTableName.'Locale';
     }
 
+    /* Magic methods */
+
+    /**
+     * Read attribute value as variable.
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name) {
+        if (in_array($name, array('objectId')))
+            return $this->$name;
+        return parent::__get($name);
+    }
+
     /* Data management methods */
 
     /**
@@ -115,7 +128,7 @@ abstract class ModuleLibrary extends PluginLibrary {
     public function save() {
         if (!$this->check_data())
             return false;
-        return ($this->save_databaseAttributes() and $this->save_fileAttributes());
+        return $this->save_databaseAttributes() and $this->save_fileAttributes();
     }
 
     /**
@@ -143,11 +156,33 @@ abstract class ModuleLibrary extends PluginLibrary {
     }
 
     /**
+     * Check library is installed.
+     * @return boolean result
+     */
+    public function is_installed() {
+        global $CaMykS;
+
+        /* Load plugin manager */
+        $pluginManager = $CaMykS->get_module('SystemPluginManager');
+
+        /* Check localised library */
+        if (count($this->attributesList['dbl']) > 0)
+            return $pluginManager->check_tableExists($this->dbLocaleTableName) and $pluginManager->check_tableExists($this->dbTableName);
+
+        /* Check not localised library */
+        if (count($this->attributesList['db']) > 0)
+            return $pluginManager->check_tableExists($this->dbTableName);
+
+        /* Library has no database attribute, no installation required */
+        return true;
+    }
+
+    /**
      * Return a new instance of the object.
      * @param integer $objectId
      * @return Object
      */
-    public function get_newInstance($objectId) {
+    public function get_newInstance($objectId=0) {
         $class = $this->libraryNamespace.'\\'.$this->libraryName;
         return new $class($this->libraryParent, $objectId);
     }
@@ -189,9 +224,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @return boolean succes
      */
     protected function insert_databaseAttributes() {
-
         /* Compile data for non-localised attributes */
-        $partition = $this->attributesList['db'];
         $values = array();
         foreach ($this->attributesList['db'] as $attributeName)
             $values[$attributeName] = $this->libraryAttributes[$attributeName]->get_value();
@@ -199,7 +232,6 @@ abstract class ModuleLibrary extends PluginLibrary {
         /* Build query for non-localised attributes */
         $query = new DbQuery('insert');
         $query->add_table($this->dbTableName);
-        //$query->set_insertPartition($partition);
         $query->add_insertValues($values);
 
         if (!$this->execute_DBQuery($query))
@@ -222,7 +254,28 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @return boolean success
      */
     protected function update_databaseAttributes() {
+        /* Compile data for non-localised attributes */
+        $values = array();
+        foreach ($this->attributesList['db'] as $attributeName)
+            $values[$attributeName] = $this->libraryAttributes[$attributeName]->get_value();
 
+        /* Build query for non-localised attributes */
+        $query = new DbQuery('update');
+        $query->add_table($this->dbTableName);
+        $query->add_updateAssignmentList($values);
+        $query->add_whereCondition(new DbQueryWhereCondition('id', $this->objectId));
+
+        if (!$this->execute_DBQuery($query))
+            return false;
+
+        /* Check for localised attributes */
+        if (count($this->attributesList['dbl']) > 0) {
+            /* Compile data form localised attributes */
+
+            /* Build query for localised attributes */
+
+        }
+        return true;
     }
 
     /**
@@ -304,10 +357,12 @@ abstract class ModuleLibrary extends PluginLibrary {
         if (count($this->attributesList['db']) === 0 and $this->attributesList['dbl'] === 0)
             return true;
 
-        /* Create main table */
+        /* Create main table field list */
         $fields = array();
         foreach ($this->attributesList['db'] as $name)
             $fields[$name] = $this->libraryAttributes[$name]->export_databaseParameters();
+
+        /* Create main table */
         if (!$this->create_DBTable($this->dbTableName, $fields, $this->dbTableSettings)) {
             /* Add error */
 
@@ -322,8 +377,12 @@ abstract class ModuleLibrary extends PluginLibrary {
                 '_ObjectId'         => array('Type' => 'integer', 'Default' => 0, 'Min' => 0, 'Unsigned' => true, 'IndexName'=>true),
                 '_ObjectLanguage'   => array('Type' => 'text', 'Default' => '', 'Length' => 16),
             );
+
+            /* Add attribute fields */
             foreach ($this->attributesList['dbl'] as $name)
                 $fields[$name] = $this->libraryAttributes[$name]->export_databaseParameters();
+
+            /* Create table */
             if (!$this->create_DBTable($this->dbLocaleTableName, $fields, $this->dbLocaleTableSettings)) {
                 /* Add error */
 
