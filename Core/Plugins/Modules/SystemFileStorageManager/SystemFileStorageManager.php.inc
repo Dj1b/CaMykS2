@@ -4,10 +4,10 @@
  * <br />Module to manage in-database local storage.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -30,23 +30,6 @@ final class SystemFileStorageManager extends ToolModule {
     }
 
     /* Override Module methods */
-
-    /**
-     * Load module.
-     * @return void
-     */
-    protected function load() {
-        /* Check is already loaded */
-        if ($this->moduleLoaded)
-            return;
-
-        /* Load libraries */
-
-        /* Create internal object */
-
-        /* Mark module as loaded */
-        $this->moduleLoaded = true;
-    }
 
     /* Documents related methods */
 
