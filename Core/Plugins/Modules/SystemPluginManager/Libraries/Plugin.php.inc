@@ -3,7 +3,7 @@
  * @brief SystemPluginManager admin module, plugin library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: May 2021
  * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -44,7 +44,7 @@ final class SystemPluginManagerPlugin extends ModuleLibrary {
      * @param string $name
      * @return boolean success
      */
-    public function load_fromName($name=null) {
+    public function load_byName($name=null) {
         /* Check name */
         if (is_null($name)) {
             if (is_null($this->Name))
@@ -61,13 +61,15 @@ final class SystemPluginManagerPlugin extends ModuleLibrary {
         if (!$this->execute_DBQuery($query))
             return false;
 
-        if ($data = $this->get_queryDataLine()) {
+        if ($data = $this->get_DBQueryDataLine()) {
             /* Plugin has been found */
             $this->objectId = $data['id'];
             $this->load_fromArray($data);
-        } else
+        } else {
             /* Plugin has not been found */
+            $this->objectId = 0;
             $this->initialise();
+        }
 
         /* Return success */
         return true;
