@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: May 2021
  * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -608,6 +608,19 @@ final class CaMykSInstaller extends Plugin {
             }
             $installationManifest[] = $this->get_locale('Manifest_DatabaseConnectionCreated');
         }
+
+        /* Open database */
+        if (!$CaMykS->databaseConnection->select_database()) {
+            /* Define error */
+            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_DatabaseCantOpen'));
+
+            /* Update layout */
+            $this->update_selectedLayout('FinalisationError');
+
+            /* Avoid doing other checks and installation */
+            return;
+        }
+
         $installationManifest[] = $this->get_locale('Manifest_DatabaseOpened');
 
         /* Create symbolic links for websites using shared CaMykS */
@@ -713,25 +726,19 @@ final class CaMykSInstaller extends Plugin {
         /* Install other default system plugins */
         foreach ($pluginList as $type => $plugins) {
             foreach ($plugins as $name => $location) {
+                if (!$pluginManager->enable_plugin($name, $type, $location)) {
+                    /* Define error */
+                    $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_PluginCantInstall', $name));
 
+                    /* Update layout */
+                    $this->update_selectedLayout('FinalisationError');
+
+                    /* Avoid doing other checks and installation */
+                    return;
+                }
+                $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $name);
             }
         }
-
-
-
-
-
-
-
-
-
-
-        die();
-
-
-        /* Intall File Storage system plugin if required */
-
-
 
         /* Create webmaster account in admin account manager */
 
