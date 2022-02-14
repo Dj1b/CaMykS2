@@ -4,9 +4,9 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3.1
+ * @version 1.0pre3.2
  * @date Creation: Dec 2020
- * @date Modification: Jul 2021
+ * @date Modification: Feb 2022
  * @copyright 2020 - 2021 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -49,6 +49,7 @@ final class LocalStorage extends CaMykSLibrary {
     public function __construct() {
         /* Execute parent construct */
         parent::__construct();
+
     }
 
     /* Public tool methods */
@@ -257,7 +258,7 @@ final class LocalStorage extends CaMykSLibrary {
         if ($CaMykS->get_configValue('Website_LocalStorage') === 'Database') {
             $this->load_storageManager();
             if ($this->storageManager === false)
-                $this->storageMode = 'files';
+                $this->storageMode = 'Files';
         }
     }
 
