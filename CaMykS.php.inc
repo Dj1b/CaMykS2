@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre41
+ * @version 2.0pre42
  * @date Creation: Feb 2017
  * @date Modification: Feb 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -863,7 +863,7 @@ final class CaMykS {
         $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
         /* Build object from libraries */
-        $this->localStorage = new LocalStorage();
+        $this->LocalStorage = new LocalStorage();
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
