@@ -3,7 +3,7 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
  * @date Modification: Feb 2022
  * @copyright 2019 - 2022 CaMykS Team
@@ -58,7 +58,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     protected function get_builtSelectQuery($query) {
         return  'select '.
                 $this->get_selectItems($query->get_selectItems()).
-                'from '.
+                ' from '.
                 $this->get_tables($query->get_tables()).
                 $this->get_whereConditions($query->get_whereConditions()).
                 $this->get_selectGroupBy($query->get_selectGroupBy()).
@@ -89,9 +89,8 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     protected function get_builtUpdateQuery($query) {
         return  'update '.
                 $this->get_tables($query->get_tables()).
-                'set '.
+                ' set '.
                 $this->get_updateAssignments($query->get_updateAssignments()).
-                'where '.
                 $this->get_whereConditions($query->get_whereConditions()).
                 ';';
     }
@@ -104,7 +103,6 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     protected function get_builtDeleteQuery($query) {
         return  'delete from '.
                 $this->get_tables($query->get_tables()).
-                'where '.
                 $this->get_whereConditions($query->get_whereConditions()).
                 $this->get_orderBy($query->get_orderBy()).
                 $this->get_limits($query->get_limits()).
@@ -182,6 +180,8 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @return string
      */
     protected function get_whereCondition($condition) {
+
+
         /* Initiate result */
         $result = '';
 
@@ -256,7 +256,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
             return $table.'`'.$value.'`';
         if (is_numeric($value))
             return $value;
-        return '"'.$this->get_escapedValue($value).'"';
+        return $this->get_escapedValue($value);
     }
 
     /**
@@ -408,7 +408,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
         /* Read values */
         foreach ($assignments as $assignment)
-            $list[] = '`'.$assignment['name'].'`='.$this->get_escapedValue($value);
+            $list[] = '`'.$assignment['name'].'`='.$this->get_escapedValue($assignment['value']);
 
         /* Return computed result */
         return implode(',', $list);
