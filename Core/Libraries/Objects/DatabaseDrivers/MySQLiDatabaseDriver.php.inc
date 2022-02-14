@@ -3,9 +3,9 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -111,7 +111,14 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function check_database($name=null) {
-        return $this->select_database($name);
+        if (is_null($name)) {
+            if (is_null($name = $this->get_param('Name')))
+                return false;
+        }
+
+        if (!$this->execute_directQuery('show databases like "'.$name.'";'))
+            return false;
+        return $this->get_queryDataLine();
     }
 
     /**
