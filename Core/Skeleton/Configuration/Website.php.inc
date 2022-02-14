@@ -3,10 +3,10 @@
  * @brief CaMykS website configuration file.
  * @details Skeleton / Configuration File
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Sep 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,6 +21,6 @@ $configuration = array(
     'Website_Encoding' => 'UTF-8',
     'Website_Author' => '',
     'Website_DisplayCMSSignature' => true,
-    'Website_LocalStorage' => 'files', // files | database
+    'Website_LocalStorage' => 'Files', // Files | Database
 );
 ?>
