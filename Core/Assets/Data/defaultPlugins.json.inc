@@ -1,6 +1,7 @@
 {
     "Module": {
         "SystemConfigurationManager":"System",
+        "SystemFileStorageManager":"System",
         "SystemAdministratorManager":"System",
         "SystemLogManager":"System",
         "SystemPluginManager":"System",
