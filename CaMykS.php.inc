@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre42
+ * @version 2.0pre43
  * @date Creation: Feb 2017
  * @date Modification: Feb 2022
  * @copyright 2017 - 2022 CaMykS Team
@@ -893,7 +893,7 @@ final class CaMykS {
      */
     private function check_serverRequirements() {
         /* Check PHP version */
-        if (version_compare(PHP_VERSION, $this->PHPMinVersion, '<')) {
+        if (version_compare(PHP_VERSION, CAMYKS_PHPMINVERSION, '<')) {
             $this->trigger_error('CaMykS', 1, 'Current PHP version ('.PHP_VERSION.') doesn\'t meet minimum requirements.'."\n".
             'To run CaMykS2 properly, PHP engine must be, at least, version '.$this->PHPMinVersion.".\n".
             'Please update your version of PHP, before running CaMykS2.',
@@ -1626,7 +1626,7 @@ final class CaMykS {
      */
     public function load_locales($file, $prefix='', $language=null) {
         /* Check language */
-        if ($language == null)
+        if (is_null($language))
             $language = $this->get_currentLanguage();
 
         /* Load language sequence */
@@ -1669,7 +1669,8 @@ final class CaMykS {
      * @return boolean success
      */
     public function load_engineLocales($file, $prefix='', $language=null) {
-        return $this->load_locales($this->get_engineFileFullPath('/Core/Locales/'.$file), $prefix, $language);
+        if (file_exists($this->get_engineFileFullPath('/Core/Locales/'.$file)))
+            return $this->load_locales($this->get_engineFileFullPath('/Core/Locales/'.$file), $prefix, $language);
     }
 
     /**
