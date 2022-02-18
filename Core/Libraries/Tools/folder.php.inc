@@ -3,10 +3,10 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5.1
+ * @version 1.0pre5.2
  * @date Creation: Nov 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2019 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Test and rewrite most of the methods.
@@ -37,7 +37,7 @@ function folder_checkPathAccessibility($path, $mode='Read') {
  */
 function folder_completePath($path, $rights=0771) {
     /* Check folder is accessible */
-    if (folder_checkPathAccessibility($path, 'write') === false)
+    if (folder_checkPathAccessibility($path, 'Write') === false)
         return false;
 
     /* Removes double slashes */
