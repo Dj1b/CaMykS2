@@ -4,7 +4,7 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3.2
+ * @version 1.0pre4
  * @date Creation: Dec 2020
  * @date Modification: Feb 2022
  * @copyright 2020 - 2021 CaMykS Team
@@ -34,7 +34,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @var string $storageFolder
      * @brief File system folder
      */
-    private $storageFolder = 'data';
+    private $storageFolder = 'Data';
 
     /**
      * @var array $storageModes
@@ -127,10 +127,12 @@ final class LocalStorage extends CaMykSLibrary {
      * @return boolean success
      */
     public function save_configuration($plugin, $library, $name, $data) {
+        /* Load storage mode */
         $this->load_storageMode();
 
         /* Encode data */
         $data = json_encode($data);
+
 
         if ($this->storageMode === 'Database') {
             /* Save data to database */
@@ -222,6 +224,12 @@ final class LocalStorage extends CaMykSLibrary {
      * @return boolean success
      */
     private function save_configurationFile($plugin, $library, $name, $data) {
+        global $CaMykS;
+
+        /* Ensure folder path exists */
+        folder_completePath($CaMykS->get_websiteFileFullPath('').'/'.$this->storageFolder.'/'.$plugin.'/'.$library);
+
+        /* Write file */
         $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc', 'Write');
         return $file->write($data);
     }
