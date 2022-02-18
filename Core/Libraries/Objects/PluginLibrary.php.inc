@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Jan 2021
  * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
@@ -18,6 +18,12 @@ namespace CaMykS2;
  * PluginLibrary class.
  */
 abstract class PluginLibrary extends CaMykSLibrary {
+    /**
+     * @var string $libraryShortName
+     * @brief Library short name.
+     */
+    protected $libraryShortName;
+
     /**
      * @var Object $libraryParent
      * @brief Parent plugin.
@@ -53,6 +59,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
 
         /* Define library variables */
         $this->libraryParent = $parent;
+        $this->libraryShortName = str_replace($parent->libraryName, '', $this->libraryName);
     }
 
     /* Magic methods */
@@ -290,6 +297,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
 
     /**
      * Add action error.
+     * @param Error $error
      * @return void
      */
     protected function add_actionError($error) {
@@ -302,6 +310,19 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function get_actionErrors() {
         return $this->actionErrors;
+    }
+
+    /* Parent related methods */
+
+    /**
+     * Return configuration value.
+     * @param string $name
+     * @param string $language
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_configValue($name, $language=null, $default=null) {
+        return $this->libraryParent->get_configValue($name, $language, $default);
     }
 }
 ?>

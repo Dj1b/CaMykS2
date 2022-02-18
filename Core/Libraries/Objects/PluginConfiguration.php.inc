@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Jan 2021
- * @date Modification: Jan 2022
+ * @date Modification: Feb 2022
  * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -52,7 +52,7 @@ abstract class PluginConfiguration extends PluginLibrary {
         $this->initialise();
 
         /* Load saved values */
-        $values = $CaMykS->LocalStorage->get_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName);
+        $values = $CaMykS->LocalStorage->get_configuration($this->libraryParent->libraryName, $this->libraryShortName, $this->objectName);
         if ($values === false)
             return false;
 
@@ -71,7 +71,7 @@ abstract class PluginConfiguration extends PluginLibrary {
         global $CaMykS;
 
         /* Save data in LocalStorage */
-        return $CaMykS->LocalStorage->save_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName, $this->libraryValues);
+        return $CaMykS->LocalStorage->save_configuration($this->libraryParent->libraryName, $this->libraryShortName, $this->objectName, $this->toArray());
     }
 
     /**
@@ -82,7 +82,7 @@ abstract class PluginConfiguration extends PluginLibrary {
         global $camyks;
 
         /* Delete data from LocalStorage */
-        return $CaMykS->LocalStorage->delete_configuration($this->libraryParent->libraryName, $this->libraryName, $this->objectName);
+        return $CaMykS->LocalStorage->delete_configuration($this->libraryParent->libraryName, $this->libraryShortName, $this->objectName);
     }
 }
 ?>
