@@ -4,10 +4,10 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2021
- * @date Modification: Jan 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @details Accepted media :
@@ -72,7 +72,7 @@ final class MediaPopup extends Component {
         if ($this->get_configValue('Integration_StyleSource') === 'theme')
             $CaMykS->currentTheme->add_pluginStyleFile('MediaPopup');
         else
-            $this->add_styleFile('MediaPopup.css?v=1.0pre0');
+            $this->add_styleFile('MediaPopup.css?v=1.0pre1');
 
         /* Add scripts */
         $CaMykS->load_engineJSScript('dom.js', 'Tools');

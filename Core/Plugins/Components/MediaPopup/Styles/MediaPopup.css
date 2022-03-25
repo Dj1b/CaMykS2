@@ -2,10 +2,10 @@
  * @brief MediaPopup Component, default CSS styles.
  * @details Plugin / Component Styles
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Dec 2021
- * @date Modification: Dec 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Feb 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -15,7 +15,7 @@
 
 /* Media popup content */
 #MediaPopupContent {position:fixed; z-index:10001; max-width:100%;}
-#MediaPopupContent.smallContent {left: 50%; top: 50%; transform: translate(-50%, -50%);}
+#MediaPopupContent.smallContent {left: 50%; top: 50%; transform: translate(-50%, -50%); max-width:80%; max-height:80px; overflow-y:auto;}
 #MediaPopupContent.largeContent {top:0; bottom:0; left:0; right:0; overflow:auto;}
 #MediaPopupContent .closeButton {width:0; height:0; overflow:visible; float:right; position:relative; top:-20px; left:-3px; cursor:pointer; font-size:0;}
 #MediaPopupContent .mediaTitle {margin:4px 0 0; padding:2px 8px; text-align:center; color:#444444; font-weight:bold; background:white;}
