@@ -1,11 +1,11 @@
 <?php
 /**
  * @brief SystemSessionManager admin module, session library.
- * @details Session / Module Library
+ * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2022
- * @date Modification: Jan 2022
+ * @date Modification: Mar 2022
  * @copyright 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,7 +28,7 @@ final class SystemSessionManagerSession extends ModuleLibrary {
         parent::__construct($parent);
 
         /* Define management attributes */
-        $this->define_databaseAttribute('PHPSessionid',         'UniqueId',     '');
+        $this->define_databaseAttribute('PHPSessionId',         'UniqueId',     '');
         $this->define_databaseAttribute('CreationDate',         'Date',         true);
         $this->define_databaseAttribute('CloseDate',            'Date',         0);
         $this->define_databaseAttribute('Status',               'Boolean',      false);
@@ -52,7 +52,7 @@ final class SystemSessionManagerSession extends ModuleLibrary {
         /* Define application attributes for visitor/admin clients and robots */
         $this->define_databaseAttribute('ApplicationName',      'Text',         '');
         $this->define_databaseAttribute('ApplicationVersion',   'Text',         '');
-        $this->define_databaseAttribute('ApplicationType',      'ListItem',     '', array('Values'=> array(
+        $this->define_databaseAttribute('ApplicationType',      'ListItem',     '', array('Values'=> array('',
             /* client types */ 'Browser', 'HeadlessBrowser', 'CLI App', 'Mailer', 'Search App', 'Gaming Platform', 'Media Player', 'News Feed', 'Download Manager',
             /* robot types */ 'Spider', 'Crowler', 'Request Library', 'Programming Language', 'Validation Tool', 'Monitoring Tool', 'Translation', 'DataMining', 'Email Harvester', 'Form Spammer',
             /* generic types */ 'Unknown'
