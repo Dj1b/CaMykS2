@@ -3,10 +3,10 @@
  * @brief PHP related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2021
- * @date Modification: Jan 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Dec 2022
+ * @copyright 2021 - 2022 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -67,6 +67,7 @@ function php_checkModuleRequirements() {
         'Required' => array(
             'mbstring',
             'json',
+            'intl',
         ),
         'Dependences' => array(
             /* Cryptographer */
