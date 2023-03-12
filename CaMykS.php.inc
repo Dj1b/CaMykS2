@@ -3,10 +3,10 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre44
+ * @version 2.0pre45
  * @date Creation: Feb 2017
- * @date Modification: Feb 2022
- * @copyright 2017 - 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2017 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -241,6 +241,12 @@ final class CaMykS {
     private $installer;
 
     /**
+     * @var string $layoutContext
+     * @brief Selected layout context.
+     */
+    private $layoutContext;
+
+    /**
      * Class constructor.
      * @param array $configuration
      * @return void
@@ -454,6 +460,9 @@ final class CaMykS {
         /* Load bench object */
         $this->bench = new Bench();
         $this->bench->start('CaMykS loading.', $this->startMicroTime);
+
+        /* Load local storage object */
+        $this->localStorage = new LocalStorage();
     }
 
     /**
@@ -469,6 +478,7 @@ final class CaMykS {
 
         /* Make common initialisation */
         $this->initialise_common();
+
 
 
         /* Run onVisitPageLoad event handlers */

@@ -3,10 +3,10 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: May 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2021 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -46,6 +46,78 @@ final class CaMykSInstaller extends Plugin {
      * @brief Current section to configure.
      */
     protected $section;
+
+    /**
+     * @var object $welcomePicture
+     * @brief Welcome picture file.
+     */
+    protected $welcomePicture;
+
+    /**
+     * @var object $configurationForm
+     * @brief Configuration form.
+     */
+    protected $configurationForm;
+
+    /**
+     * @var array $localStorageValues
+     * @brief List of available storage values.
+     */
+    protected $localStorageValues;
+
+    /**
+     * @var array $CMSSignatureValues
+     * @brief List of available signature values.
+     */
+    protected $CMSSignatureValues;
+
+    /**
+     * @var array $encodingValues
+     * @brief List of available encoding values.
+     */
+    protected $encodingValues;
+
+    /**
+     * @var array $availableThemes
+     * @brief List of available themes.
+     */
+    protected $availableThemes;
+
+    /**
+     * @var array $availableTemplates
+     * @brief List of available templates.
+     */
+    protected $availableTemplates;
+
+    /**
+     * @var array $availableSSLModes
+     * @brief List of available SSL modes.
+     */
+    protected $availableSSLModes;
+
+    /**
+     * @var array $availableURLModes
+     * @brief List of available URL modes.
+     */
+    protected $availableURLModes;
+
+    /**
+     * @var array $availableLanguages
+     * @brief List of available languages.
+     */
+    protected $availableLanguages;
+
+    /**
+     * @var array $databaseDrivers
+     * @brief List of available database drivers.
+     */
+    protected $databaseDrivers;
+
+    /**
+     * @var array $administratorManager
+     * @brief Link to administrator manager module.
+     */
+    protected $administratorManager;
 
     /**
      * Class constructor.

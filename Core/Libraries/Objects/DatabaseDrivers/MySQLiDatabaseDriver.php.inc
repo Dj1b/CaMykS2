@@ -3,10 +3,10 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2021 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -45,7 +45,12 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function open() {
         /* Perform database server connection */
-        $this->connection = @(new\ MySQLi($this->get_param('Host').($this->get_param('Port') > 0 ? ':'.$this->get_param('Port') : ''), $this->get_param('Login'), $this->get_param('Password')));
+        try {
+            $this->connection = new \MySQLi($this->get_param('Host').($this->get_param('Port') > 0 ? ':'.$this->get_param('Port') : ''), $this->get_param('Login'), $this->get_param('Password'));
+            $this->status = ($this->connection->connect_errno === 0);
+        } catch (Exception $e) {
+            $this->status = false;
+        }
 
         /* Stores if connection is made successfully */
         $this->status = ($this->connection->connect_errno === 0);
@@ -501,7 +506,11 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_directQuery($query, $resourceName='Default') {
         $this->record_query($query);
-        $this->queryResources[$resourceName] = @$this->connection->query($query);
+        try {
+            $this->queryResources[$resourceName] = $this->connection->query($query);
+        } catch (Exception $e) {
+            return false;
+        }
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -513,7 +522,11 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_queries($queries, $resourceName='Default') {
         $this->record_query($queries);
-        $this->queryResources[$resourceName] = @$this->connection->multi_query($queries);
+        try {
+            $this->queryResources[$resourceName] = $this->connection->multi_query($queries);
+        } catch (Exception $e) {
+            return false;
+        }
         return ($this->queryResources[$resourceName] !== false);
     }
 

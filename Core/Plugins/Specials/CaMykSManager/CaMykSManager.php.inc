@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre16
+ * @version 1.0pre17
  * @date Creation: Dec 2019
- * @date Modification: Jan 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2019 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -71,6 +71,72 @@ final class CaMykSManager extends Plugin {
      * @brief Action to execute on configure.
      */
     protected $subAction;
+
+    /**
+     * @var array $panelButtons
+     * @brief List of interface panel buttons.
+     */
+    protected $panelButtons;
+
+    /**
+     * @var array $folderTree
+     * @brief Web folder tree.
+     */
+    protected $folderTree;
+
+    /**
+     * @var string $currentFolder
+     * @brief Current folder value.
+     */
+    protected $currentFolder;
+
+    /**
+     * @var string $currentLevel
+     * @brief Current level value.
+     */
+    protected $currentLevel;
+
+    /**
+     * @var object $template
+     * @brief Link to template object.
+     */
+    protected $template;
+
+    /**
+     * @var object $mediaPopupComponent
+     * @brief Link to MediaPopup component.
+     */
+    private $mediaPopupComponent;
+
+    /**
+     * @var object $externalLinksForm
+     * @brief External links form.
+     */
+    protected $externalLinksForm;
+
+    /**
+     * @var object $newFolderForm
+     * @brief New folder form.
+     */
+    protected $newFolderForm;
+
+    /**
+     * @var object $newC2SiteForm
+     * @brief New CaMykS 2 site form.
+     */
+    protected $newC2SiteForm;
+
+    /**
+     * @var object $configurationManager
+     * @brief Link to configuration manager.
+     */
+    protected $configurationManager;
+
+    /**
+     * @var array $dbDrivers
+     * @brief List of database drivers.
+     */
+    protected $dbDrivers;
 
     /**
      * Class constructor.

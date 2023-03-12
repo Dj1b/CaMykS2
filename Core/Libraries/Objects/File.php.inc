@@ -3,10 +3,10 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Nov 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2019 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo File icon collections.
@@ -59,6 +59,12 @@ final class File extends CaMykSLibrary {
      * @brief List of known mimes.
      */
     private $mimes = null;
+
+    /**
+     * @var boolean $isAccessible
+     * @brief Is file accessible.
+     */
+    private $isAccessible = null;
 
     /**
      * @var array $stats
