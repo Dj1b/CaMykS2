@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre45
+ * @version 2.0pre46
  * @date Creation: Feb 2017
  * @date Modification: Mar 2023
  * @copyright 2017 - 2023 CaMykS Team
@@ -434,11 +434,6 @@ final class CaMykS {
         /* Load engine configuration */
         $this->load_configuration('Engine');
 
-        /* Start session */
-        session_start(array(
-            'cookie_lifetime' => $this->get_configValue('Engine_SessionLifetime', 24)*60,
-        ));
-
         /* Define time zone */
         date_default_timezone_set($this->get_configValue('Engine_TimeZone', 'Europe/Paris'));
 
@@ -476,6 +471,17 @@ final class CaMykS {
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Visit_SSL'));
 
+        /* Start session */
+        session_set_cookie_params(array(
+            'Lifetime'  => $this->get_configValue('Engine_SessionLifetime', 24)*60,
+            'Path'      => parse_url($this->websiteURL, 'path').'/',
+            'Domain'    => parse_url($this->websiteURL, 'host'),
+            'Secure'    => $this->get_configValue('Visit_SSL'),
+            'HttpOnly'  => "1",
+            'SameSite'  => $this->get_configValue('Engine_SessionSameSite', "Strict"),
+        ));
+        session_start();
+
         /* Make common initialisation */
         $this->initialise_common();
 
@@ -495,6 +501,17 @@ final class CaMykS {
 
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Admin_SSL'));
+
+        /* Start session */
+        session_set_cookie_params(array(
+            'Lifetime'  =>  $this->get_configValue('Engine_SessionLifetime', 24)*60,
+            'Path'      => parse_url($this->websiteURL, 'path').'/',
+            'Domain'    => parse_url($this->websiteURL, 'host'),
+            'Secure'    => $this->get_configValue('Admin_SSL'),
+            'HttpOnly'  => "1",
+            'SameSite'  => $this->get_configValue('Engine_SessionSameSite', "Strict"),
+        ));
+        session_start();
 
         /* Make common initialisation */
         $this->initialise_common();
@@ -546,6 +563,15 @@ final class CaMykS {
 
         /* Set up base URL */
         $this->define_baseURL($this->get_configValue('Manager_SSL'));
+
+        /* Start session */
+        session_set_cookie_params(array(
+            'Lifetime' => $this->get_configValue('Engine_SessionLifetime', 24)*60,
+            'Secure' => $this->get_configValue('Manager_SSL'),
+            'HttpOnly' => "1",
+            'SameSite' => "Strict",
+        ));
+        session_start();
 
         /* Update folder links */
         $this->corePluginLink = 'Core/Plugins/';

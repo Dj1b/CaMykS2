@@ -1,5 +1,6 @@
 {
     "Engine_SessionLifetime" : 24,
+    "Engine_SessionSameSite" : "Strict",
     "Engine_TimeZone" : "Europe/Paris",
     "Engine_WebmasterEmail" : "",
     "Engine_ErrorLoggingLevel" : "auto",
