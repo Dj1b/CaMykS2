@@ -3,10 +3,10 @@
  * @brief SystemAdministratorManager admin module, user library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2022 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -29,18 +29,18 @@ final class SystemAdministratorManagerUser extends AdvancedModuleLibrary {
 
         /* Define management attributes */
         $this->define_databaseAttribute('Type',                     'ListItem',     '', array('Values'=>array('Owner', 'Webmaster', 'Editor')));
-        $this->define_databaseAttribute('Email'                     'Email',        '');
-        $this->define_databaseAttribute('Login'                     'Text',         '');
-        $this->define_databaseAttribute('Password'                  'Password',     '');
+        $this->define_databaseAttribute('Email',                    'Email',        '');
+        $this->define_databaseAttribute('Login',                    'Text',         '');
+        $this->define_databaseAttribute('Password',                 'Password',     '');
 
         /* Define personal information attributes */
-        $this->define_databaseAttribute('FirstName'                 'Text',         '');
-        $this->define_databaseAttribute('LastName'                  'Text',         '');
+        $this->define_databaseAttribute('FirstName',                'Text',         '');
+        $this->define_databaseAttribute('LastName',                 'Text',         '');
 
-        $this->define_databaseAttribute('Company'                   'Text',         '');
-        $this->define_databaseAttribute('Phone'                     'Phone',        '');
-        $this->define_databaseAttribute('Mobile'                    'Phone',        '');
-        $this->define_databaseAttribute('Address'                   'Text',         '', array('Length'=>255));
+        $this->define_databaseAttribute('Company',                  'Text',         '');
+        $this->define_databaseAttribute('Phone',                    'Phone',        '');
+        $this->define_databaseAttribute('Mobile',                   'Phone',        '');
+        $this->define_databaseAttribute('Address',                  'Text',         '', array('Length'=>255));
 
         /* Define security attributes */
         $this->define_databaseAttribute('2FAPlugin',                'Text',         '', array('Length'=>48));
