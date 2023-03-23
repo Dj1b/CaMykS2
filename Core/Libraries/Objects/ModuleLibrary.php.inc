@@ -4,10 +4,10 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Jan 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Mar 2023
+ * @copyright 2021 - 2023 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -91,8 +91,10 @@ abstract class ModuleLibrary extends PluginLibrary {
         $this->databaseConnector = &$CaMykS->get_databaseConnection($this->databaseSource);
 
         /* Set up database tables */
-        $this->dbTableName = $this->databaseConnector->get_tablePrefix().$this->libraryName;
-        $this->dbLocaleTableName = $this->dbTableName.'Locale';
+        if ($this->databaseConnector !== false) {
+            $this->dbTableName = $this->databaseConnector->get_tablePrefix().$this->libraryName;
+            $this->dbLocaleTableName = $this->dbTableName.'Locale';
+        }
     }
 
     /* Magic methods */
