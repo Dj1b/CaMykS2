@@ -6,6 +6,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "and",
+        "NumericCode"           : "020",
         "PhoneIndex"            : "376",
         "Timezones"             : [
             "Europe/Andorra"
@@ -21,6 +22,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "are",
+        "NumericCode"           : "784",
         "PhoneIndex"            : "971",
         "Timezones"             : [
             "Asia/Dubai"
@@ -37,6 +39,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "afg",
+        "NumericCode"           : "004",
         "PhoneIndex"            : "93",
         "Timezones"             : [
             "Asia/Kabul"
@@ -52,6 +55,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "atg",
+        "NumericCode"           : "028",
         "PhoneIndex"            : "1-268",
         "Timezones"             : [
             "America/Antigua",
@@ -68,6 +72,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "aia",
+        "NumericCode"           : "660",
         "PhoneIndex"            : "1-264",
         "Timezones"             : [
             "America/Anguilla"
@@ -83,6 +88,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "alb",
+        "NumericCode"           : "008",
         "PhoneIndex"            : "355",
         "Timezones"             : [
             "Europe/Tirane"
@@ -98,6 +104,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "arm",
+        "NumericCode"           : "051",
         "PhoneIndex"            : "374",
         "Timezones"             : [
             "Asia/Yerevan"
@@ -113,6 +120,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ago",
+        "NumericCode"           : "024",
         "PhoneIndex"            : "244",
         "Timezones"             : [
             "Africa/Luanda"
@@ -131,6 +139,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ata",
+        "NumericCode"           : "010",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Antarctica/Rothera",
@@ -156,6 +165,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "arg",
+        "NumericCode"           : "032",
         "PhoneIndex"            : "54",
         "Timezones"             : [
             "America/Argentina/Buenos_Aires",
@@ -183,6 +193,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "asm",
+        "NumericCode"           : "016",
         "PhoneIndex"            : "1-684",
         "Timezones"             : [
             "Pacific/Pago_Pago"
@@ -198,6 +209,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "aut",
+        "NumericCode"           : "040",
         "PhoneIndex"            : "43",
         "Timezones"             : [
             "Europe/Vienna"
@@ -213,6 +225,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "aus",
+        "NumericCode"           : "036",
         "PhoneIndex"            : "61",
         "Timezones"             : [
             "Australia/Adelaide",
@@ -239,6 +252,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "abw",
+        "NumericCode"           : "533",
         "PhoneIndex"            : "297",
         "Timezones"             : [
             "America/Aruba"
@@ -254,6 +268,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ala",
+        "NumericCode"           : "248",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Europe/Mariehamn"
@@ -269,6 +284,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "aze",
+        "NumericCode"           : "031",
         "PhoneIndex"            : "994",
         "Timezones"             : [
             "Asia/Baku"
@@ -286,6 +302,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bih",
+        "NumericCode"           : "070",
         "PhoneIndex"            : "387",
         "Timezones"             : [
             "Europe/Sarajevo"
@@ -301,6 +318,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "brb",
+        "NumericCode"           : "052",
         "PhoneIndex"            : "12463",
         "Timezones"             : [
             "America/Barbados"
@@ -316,6 +334,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bgd",
+        "NumericCode"           : "050",
         "PhoneIndex"            : "880",
         "Timezones"             : [
             "Asia/Dhaka"
@@ -333,6 +352,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bel",
+        "NumericCode"           : "056",
         "PhoneIndex"            : "32",
         "Timezones"             : [
             "Europe/Brussels"
@@ -348,6 +368,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bfa",
+        "NumericCode"           : "854",
         "PhoneIndex"            : "226",
         "Timezones"             : [
             "Africa/Ouagadougou"
@@ -363,6 +384,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bgr",
+        "NumericCode"           : "100",
         "PhoneIndex"            : "359",
         "Timezones"             : [
             "Europe/Sofia"
@@ -378,6 +400,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bhr",
+        "NumericCode"           : "048",
         "PhoneIndex"            : "973",
         "Timezones"             : [
             "Asia/Bahrain"
@@ -393,6 +416,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bdi",
+        "NumericCode"           : "108",
         "PhoneIndex"            : "257",
         "Timezones"             : [
             "Africa/Bujumbura"
@@ -408,6 +432,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ben",
+        "NumericCode"           : "204",
         "PhoneIndex"            : "229",
         "Timezones"             : [
             "Africa/Porto-Novo"
@@ -423,6 +448,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "blm",
+        "NumericCode"           : "652",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "America/St_Barthelemy"
@@ -438,6 +464,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bmu",
+        "NumericCode"           : "060",
         "PhoneIndex"            : "14413",
         "Timezones"             : [
             "Atlantic/Bermuda"
@@ -453,6 +480,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "brn",
+        "NumericCode"           : "096",
         "PhoneIndex"            : "673",
         "Timezones"             : [
             "Asia/Brunei"
@@ -471,6 +499,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bol",
+        "NumericCode"           : "068",
         "PhoneIndex"            : "591",
         "Timezones"             : [
             "America/La_Paz"
@@ -486,6 +515,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bes",
+        "NumericCode"           : "535",
         "PhoneIndex"            : "599",
         "Timezones"             : [
             "America/Kralendijk"
@@ -501,6 +531,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bra",
+        "NumericCode"           : "076",
         "PhoneIndex"            : "55",
         "Timezones"             : [
             "America/Araguaina",
@@ -531,6 +562,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bhs",
+        "NumericCode"           : "044",
         "PhoneIndex"            : "1-242",
         "Timezones"             : [
             "America/Nassau"
@@ -546,6 +578,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "btn",
+        "NumericCode"           : "064",
         "PhoneIndex"            : "975",
         "Timezones"             : [
             "Asia/Thimphu"
@@ -561,6 +594,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bvt",
+        "NumericCode"           : "074",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Europe/Oslo"
@@ -577,6 +611,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "bwa",
+        "NumericCode"           : "072",
         "PhoneIndex"            : "267",
         "Timezones"             : [
             "Africa/Gaborone"
@@ -593,6 +628,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "blr",
+        "NumericCode"           : "112",
         "PhoneIndex"            : "375",
         "Timezones"             : [
             "Europe/Minsk"
@@ -608,6 +644,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "blz",
+        "NumericCode"           : "084",
         "PhoneIndex"            : "501",
         "Timezones"             : [
             "America/Belize"
@@ -624,6 +661,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "can",
+        "NumericCode"           : "124",
         "PhoneIndex"            : "1",
         "Timezones"             : [
             "America/Atikokan",
@@ -665,6 +703,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cck",
+        "NumericCode"           : "166",
         "PhoneIndex"            : "672",
         "Timezones"             : [
             "Indian/Cocos"
@@ -680,6 +719,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cod",
+        "NumericCode"           : "180",
         "PhoneIndex"            : "243",
         "Timezones"             : [
             "Africa/Kinshasa",
@@ -697,6 +737,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "caf",
+        "NumericCode"           : "140",
         "PhoneIndex"            : "236",
         "Timezones"             : [
             "Africa/Bangui"
@@ -712,6 +753,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cog",
+        "NumericCode"           : "178",
         "PhoneIndex"            : "242",
         "Timezones"             : [
             "Africa/Brazzaville"
@@ -730,6 +772,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "che",
+        "NumericCode"           : "756",
         "PhoneIndex"            : "41",
         "Timezones"             : [
             "Europe/Zurich"
@@ -745,6 +788,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "civ",
+        "NumericCode"           : "380",
         "PhoneIndex"            : "225",
         "Timezones"             : [
             "Africa/Abidjan"
@@ -761,6 +805,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cok",
+        "NumericCode"           : "184",
         "PhoneIndex"            : "682",
         "Timezones"             : [
             "Pacific/Rarotonga"
@@ -779,6 +824,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "chl",
+        "NumericCode"           : "152",
         "PhoneIndex"            : "56",
         "Timezones"             : [
             "America/Punta_Arenas",
@@ -797,6 +843,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cmr",
+        "NumericCode"           : "120",
         "PhoneIndex"            : "237",
         "Timezones"             : [
             "Africa/Douala"
@@ -812,6 +859,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "chn",
+        "NumericCode"           : "156",
         "PhoneIndex"            : "86",
         "Timezones"             : [
             "Asia/Shanghai",
@@ -828,6 +876,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "col",
+        "NumericCode"           : "170",
         "PhoneIndex"            : "57",
         "Timezones"             : [
             "America/Bogota"
@@ -843,6 +892,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cri",
+        "NumericCode"           : "188",
         "PhoneIndex"            : "506",
         "Timezones"             : [
             "America/Costa_Rica"
@@ -858,6 +908,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cub",
+        "NumericCode"           : "192",
         "PhoneIndex"            : "53",
         "Timezones"             : [
             "America/Havana"
@@ -873,6 +924,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cpv",
+        "NumericCode"           : "132",
         "PhoneIndex"            : "238",
         "Timezones"             : [
             "Atlantic/Cape_Verde"
@@ -889,6 +941,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cuw",
+        "NumericCode"           : "531",
         "PhoneIndex"            : "599",
         "Timezones"             : [
             "America/Curacao"
@@ -904,6 +957,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cxr",
+        "NumericCode"           : "162",
         "PhoneIndex"            : "672",
         "Timezones"             : [
             "Indian/Christmas"
@@ -920,6 +974,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cyp",
+        "NumericCode"           : "196",
         "PhoneIndex"            : "357",
         "Timezones"             : [
             "Asia/Famagusta",
@@ -936,6 +991,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cze",
+        "NumericCode"           : "203",
         "PhoneIndex"            : "420",
         "Timezones"             : [
             "Europe/Prague"
@@ -951,6 +1007,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "deu",
+        "NumericCode"           : "276",
         "PhoneIndex"            : "49",
         "Timezones"             : [
             "Europe/Berlin",
@@ -970,6 +1027,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "dji",
+        "NumericCode"           : "262",
         "PhoneIndex"            : "253",
         "Timezones"             : [
             "Africa/Djibouti"
@@ -985,6 +1043,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "dnk",
+        "NumericCode"           : "208",
         "PhoneIndex"            : "45",
         "Timezones"             : [
             "Europe/Copenhagen"
@@ -1000,6 +1059,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "dma",
+        "NumericCode"           : "212",
         "PhoneIndex"            : "17673",
         "Timezones"             : [
             "America/Dominica"
@@ -1015,6 +1075,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "dom",
+        "NumericCode"           : "214",
         "PhoneIndex"            : "13",
         "Timezones"             : [
             "America/Santo_Domingo"
@@ -1030,6 +1091,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "dza",
+        "NumericCode"           : "012",
         "PhoneIndex"            : "213",
         "Timezones"             : [
             "Africa/Algiers"
@@ -1045,6 +1107,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ecu",
+        "NumericCode"           : "218",
         "PhoneIndex"            : "593",
         "Timezones"             : [
             "America/Guayaquil",
@@ -1061,6 +1124,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "est",
+        "NumericCode"           : "233",
         "PhoneIndex"            : "372",
         "Timezones"             : [
             "Europe/Tallinn"
@@ -1076,6 +1140,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "egy",
+        "NumericCode"           : "818",
         "PhoneIndex"            : "20",
         "Timezones"             : [
             "Africa/Cairo"
@@ -1093,6 +1158,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "esh",
+        "NumericCode"           : "732",
         "PhoneIndex"            : "212",
         "Timezones"             : [
             "Africa/El_Aaiun"
@@ -1110,6 +1176,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "eri",
+        "NumericCode"           : "232",
         "PhoneIndex"            : "291",
         "Timezones"             : [
             "Africa/Asmara"
@@ -1129,6 +1196,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "esp",
+        "NumericCode"           : "724",
         "PhoneIndex"            : "34",
         "Timezones"             : [
             "Atlantic/Canary",
@@ -1147,6 +1215,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "eth",
+        "NumericCode"           : "231",
         "PhoneIndex"            : "251",
         "Timezones"             : [
             "Africa/Addis_Ababa"
@@ -1164,6 +1233,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "fin",
+        "NumericCode"           : "246",
         "PhoneIndex"            : "358",
         "Timezones"             : [
             "Europe/Helsinki"
@@ -1179,6 +1249,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "fji",
+        "NumericCode"           : "242",
         "PhoneIndex"            : "679",
         "Timezones"             : [
             "Pacific/Fiji"
@@ -1194,6 +1265,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "flk",
+        "NumericCode"           : "238",
         "PhoneIndex"            : "500",
         "Timezones"             : [
             "Atlantic/Stanley"
@@ -1209,6 +1281,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "fsm",
+        "NumericCode"           : "583",
         "PhoneIndex"            : "691",
         "Timezones"             : [
             "Pacific/Chuuk",
@@ -1227,6 +1300,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "fro",
+        "NumericCode"           : "234",
         "PhoneIndex"            : "298",
         "Timezones"             : [
             "Atlantic/Faroe"
@@ -1245,6 +1319,7 @@
             "br"
         ],
         "3LettersCode"          : "fra",
+        "NumericCode"           : "250",
         "PhoneIndex"            : "33",
         "Timezones"             : [
             "Europe/Paris"
@@ -1260,6 +1335,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gab",
+        "NumericCode"           : "266",
         "PhoneIndex"            : "241",
         "Timezones"             : [
             "Africa/Libreville"
@@ -1279,6 +1355,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gbr",
+        "NumericCode"           : "826",
         "PhoneIndex"            : "44",
         "Timezones"             : [
             "Europe/London"
@@ -1294,6 +1371,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "grd",
+        "NumericCode"           : "308",
         "PhoneIndex"            : "1-473",
         "Timezones"             : [
             "America/Grenada"
@@ -1309,6 +1387,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "geo",
+        "NumericCode"           : "268",
         "PhoneIndex"            : "995",
         "Timezones"             : [
             "Asia/Tbilisi"
@@ -1324,6 +1403,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "guf",
+        "NumericCode"           : "254",
         "PhoneIndex"            : "594",
         "Timezones"             : [
             "America/Cayenne"
@@ -1339,6 +1419,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ggy",
+        "NumericCode"           : "831",
         "PhoneIndex"            : "44-1481",
         "Timezones"             : [
             "Europe/Guernsey"
@@ -1354,6 +1435,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gha",
+        "NumericCode"           : "288",
         "PhoneIndex"            : "233",
         "Timezones"             : [
             "Africa/Accra"
@@ -1369,6 +1451,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gib",
+        "NumericCode"           : "292",
         "PhoneIndex"            : "350",
         "Timezones"             : [
             "Europe/Gibraltar"
@@ -1385,6 +1468,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "grl",
+        "NumericCode"           : "304",
         "PhoneIndex"            : "299",
         "Timezones"             : [
             "America/Danmarkshavn",
@@ -1403,6 +1487,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gmb",
+        "NumericCode"           : "270",
         "PhoneIndex"            : "220",
         "Timezones"             : [
             "Africa/Banjul"
@@ -1418,6 +1503,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gin",
+        "NumericCode"           : "324",
         "PhoneIndex"            : "224",
         "Timezones"             : [
             "Africa/Conakry"
@@ -1433,6 +1519,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "glp",
+        "NumericCode"           : "312",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "America/Guadeloupe"
@@ -1450,6 +1537,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gnq",
+        "NumericCode"           : "226",
         "PhoneIndex"            : "240",
         "Timezones"             : [
             "Africa/Malabo"
@@ -1465,6 +1553,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "grc",
+        "NumericCode"           : "300",
         "PhoneIndex"            : "30",
         "Timezones"             : [
             "Europe/Athens"
@@ -1480,6 +1569,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sgs",
+        "NumericCode"           : "239",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Atlantic/South_Georgia"
@@ -1495,6 +1585,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gtm",
+        "NumericCode"           : "320",
         "PhoneIndex"            : "502",
         "Timezones"             : [
             "America/Guatemala"
@@ -1511,6 +1602,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gum",
+        "NumericCode"           : "316",
         "PhoneIndex"            : "1-671",
         "Timezones"             : [
             "Pacific/Guam"
@@ -1526,6 +1618,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "gnb",
+        "NumericCode"           : "624",
         "PhoneIndex"            : "245",
         "Timezones"             : [
             "Africa/Bissau"
@@ -1541,6 +1634,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "guy",
+        "NumericCode"           : "328",
         "PhoneIndex"            : "592",
         "Timezones"             : [
             "America/Guyana"
@@ -1557,6 +1651,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hkg",
+        "NumericCode"           : "344",
         "PhoneIndex"            : "852",
         "Timezones"             : [
             "Asia/Hong_Kong"
@@ -1572,6 +1667,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hmd",
+        "NumericCode"           : "334",
         "PhoneIndex"            : "672",
         "Timezones"             : [
             "Indian/Kerguelen"
@@ -1587,6 +1683,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hnd",
+        "NumericCode"           : "340",
         "PhoneIndex"            : "504",
         "Timezones"             : [
             "America/Tegucigalpa"
@@ -1602,6 +1699,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hrv",
+        "NumericCode"           : "191",
         "PhoneIndex"            : "385",
         "Timezones"             : [
             "Europe/Zagreb"
@@ -1618,6 +1716,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hti",
+        "NumericCode"           : "332",
         "PhoneIndex"            : "509",
         "Timezones"             : [
             "America/Port-au-Prince"
@@ -1633,6 +1732,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "hun",
+        "NumericCode"           : "348",
         "PhoneIndex"            : "36",
         "Timezones"             : [
             "Europe/Budapest"
@@ -1648,6 +1748,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "idn",
+        "NumericCode"           : "360",
         "PhoneIndex"            : "62",
         "Timezones"             : [
             "Asia/Jakarta",
@@ -1667,6 +1768,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "irl",
+        "NumericCode"           : "372",
         "PhoneIndex"            : "353",
         "Timezones"             : [
             "Europe/Dublin"
@@ -1682,6 +1784,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "isr",
+        "NumericCode"           : "376",
         "PhoneIndex"            : "972",
         "Timezones"             : [
             "Asia/Jerusalem"
@@ -1697,6 +1800,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "imn",
+        "NumericCode"           : "833",
         "PhoneIndex"            : "44-1624",
         "Timezones"             : [
             "Europe/Isle_of_Man"
@@ -1713,6 +1817,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ind",
+        "NumericCode"           : "356",
         "PhoneIndex"            : "91",
         "Timezones"             : [
             "Asia/Kolkata"
@@ -1728,6 +1833,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "iot",
+        "NumericCode"           : "086",
         "PhoneIndex"            : "246",
         "Timezones"             : [
             "Indian/Chagos"
@@ -1747,6 +1853,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "irq",
+        "NumericCode"           : "368",
         "PhoneIndex"            : "964",
         "Timezones"             : [
             "Asia/Baghdad"
@@ -1762,6 +1869,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "irn",
+        "NumericCode"           : "364",
         "PhoneIndex"            : "98",
         "Timezones"             : [
             "Asia/Tehran"
@@ -1777,6 +1885,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "isl",
+        "NumericCode"           : "352",
         "PhoneIndex"            : "354",
         "Timezones"             : [
             "Atlantic/Reykjavik"
@@ -1792,6 +1901,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ita",
+        "NumericCode"           : "380",
         "PhoneIndex"            : "39",
         "Timezones"             : [
             "Europe/Rome"
@@ -1807,6 +1917,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "jey",
+        "NumericCode"           : "832",
         "PhoneIndex"            : "44-1534",
         "Timezones"             : [
             "Europe/Jersey"
@@ -1822,6 +1933,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "jam",
+        "NumericCode"           : "388",
         "PhoneIndex"            : "1-876",
         "Timezones"             : [
             "America/Jamaica"
@@ -1837,6 +1949,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "jor",
+        "NumericCode"           : "400",
         "PhoneIndex"            : "962",
         "Timezones"             : [
             "Asia/Amman"
@@ -1852,6 +1965,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "jpn",
+        "NumericCode"           : "392",
         "PhoneIndex"            : "81",
         "Timezones"             : [
             "Asia/Tokyo"
@@ -1868,6 +1982,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ken",
+        "NumericCode"           : "404",
         "PhoneIndex"            : "254",
         "Timezones"             : [
             "Africa/Nairobi"
@@ -1884,6 +1999,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kgz",
+        "NumericCode"           : "417",
         "PhoneIndex"            : "996",
         "Timezones"             : [
             "Asia/Bishkek"
@@ -1899,6 +2015,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "khm",
+        "NumericCode"           : "116",
         "PhoneIndex"            : "855",
         "Timezones"             : [
             "Asia/Phnom_Penh"
@@ -1914,6 +2031,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kir",
+        "NumericCode"           : "296",
         "PhoneIndex"            : "686",
         "Timezones"             : [
             "Pacific/Enderbury",
@@ -1933,6 +2051,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "com",
+        "NumericCode"           : "174",
         "PhoneIndex"            : "269",
         "Timezones"             : [
             "Indian/Comoro"
@@ -1948,6 +2067,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kna",
+        "NumericCode"           : "659",
         "PhoneIndex"            : "1-869",
         "Timezones"             : [
             "America/St_Kitts"
@@ -1963,6 +2083,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "prk",
+        "NumericCode"           : "408",
         "PhoneIndex"            : "850",
         "Timezones"             : [
             "Asia/Pyongyang"
@@ -1979,6 +2100,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kor",
+        "NumericCode"           : "410",
         "PhoneIndex"            : "82",
         "Timezones"             : [
             "Asia/Seoul"
@@ -1994,6 +2116,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kwt",
+        "NumericCode"           : "414",
         "PhoneIndex"            : "965",
         "Timezones"             : [
             "Asia/Kuwait"
@@ -2009,6 +2132,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "cym",
+        "NumericCode"           : "136",
         "PhoneIndex"            : "1-345",
         "Timezones"             : [
             "America/Cayman"
@@ -2025,6 +2149,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "kaz",
+        "NumericCode"           : "398",
         "PhoneIndex"            : "7",
         "Timezones"             : [
             "Asia/Almaty",
@@ -2045,6 +2170,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lao",
+        "NumericCode"           : "418",
         "PhoneIndex"            : "856",
         "Timezones"             : [
             "Asia/Vientiane"
@@ -2061,6 +2187,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lbn",
+        "NumericCode"           : "422",
         "PhoneIndex"            : "961",
         "Timezones"             : [
             "Asia/Beirut"
@@ -2076,6 +2203,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lca",
+        "NumericCode"           : "662",
         "PhoneIndex"            : "1-758",
         "Timezones"             : [
             "America/St_Lucia"
@@ -2091,6 +2219,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lie",
+        "NumericCode"           : "438",
         "PhoneIndex"            : "423",
         "Timezones"             : [
             "Europe/Vaduz"
@@ -2107,6 +2236,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lka",
+        "NumericCode"           : "144",
         "PhoneIndex"            : "94",
         "Timezones"             : [
             "Asia/Colombo"
@@ -2122,6 +2252,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lbr",
+        "NumericCode"           : "430",
         "PhoneIndex"            : "231",
         "Timezones"             : [
             "Africa/Monrovia"
@@ -2138,6 +2269,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lso",
+        "NumericCode"           : "426",
         "PhoneIndex"            : "266",
         "Timezones"             : [
             "Africa/Maseru"
@@ -2153,6 +2285,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ltu",
+        "NumericCode"           : "440",
         "PhoneIndex"            : "370",
         "Timezones"             : [
             "Europe/Vilnius"
@@ -2170,6 +2303,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lux",
+        "NumericCode"           : "442",
         "PhoneIndex"            : "352",
         "Timezones"             : [
             "Europe/Luxembourg"
@@ -2185,6 +2319,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lva",
+        "NumericCode"           : "428",
         "PhoneIndex"            : "371",
         "Timezones"             : [
             "Europe/Riga"
@@ -2200,6 +2335,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "lby",
+        "NumericCode"           : "438",
         "PhoneIndex"            : "218",
         "Timezones"             : [
             "Africa/Tripoli"
@@ -2217,6 +2353,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mar",
+        "NumericCode"           : "504",
         "PhoneIndex"            : "212",
         "Timezones"             : [
             "Africa/Casablanca"
@@ -2232,6 +2369,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mco",
+        "NumericCode"           : "492",
         "PhoneIndex"            : "377",
         "Timezones"             : [
             "Europe/Monaco"
@@ -2249,6 +2387,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mda",
+        "NumericCode"           : "498",
         "PhoneIndex"            : "373",
         "Timezones"             : [
             "Europe/Chisinau"
@@ -2268,6 +2407,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mne",
+        "NumericCode"           : "499",
         "PhoneIndex"            : "382",
         "Timezones"             : [
             "Europe/Podgorica"
@@ -2283,6 +2423,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "maf",
+        "NumericCode"           : "663",
         "PhoneIndex"            : "590",
         "Timezones"             : [
             "America/Marigot"
@@ -2299,6 +2440,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mdg",
+        "NumericCode"           : "450",
         "PhoneIndex"            : "261",
         "Timezones"             : [
             "Indian/Antananarivo"
@@ -2315,6 +2457,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mhl",
+        "NumericCode"           : "584",
         "PhoneIndex"            : "692",
         "Timezones"             : [
             "Pacific/Kwajalein",
@@ -2331,6 +2474,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mkd",
+        "NumericCode"           : "807",
         "PhoneIndex"            : "389",
         "Timezones"             : [
             "Europe/Skopje"
@@ -2346,6 +2490,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mli",
+        "NumericCode"           : "466",
         "PhoneIndex"            : "223",
         "Timezones"             : [
             "Africa/Bamako"
@@ -2361,6 +2506,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mmr",
+        "NumericCode"           : "104",
         "PhoneIndex"            : "95",
         "Timezones"             : [
             "Asia/Yangon"
@@ -2376,6 +2522,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mng",
+        "NumericCode"           : "496",
         "PhoneIndex"            : "976",
         "Timezones"             : [
             "Asia/Choibalsan",
@@ -2394,6 +2541,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mac",
+        "NumericCode"           : "446",
         "PhoneIndex"            : "853",
         "Timezones"             : [
             "Asia/Macau"
@@ -2410,6 +2558,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mnp",
+        "NumericCode"           : "580",
         "PhoneIndex"            : "1-670",
         "Timezones"             : [
             "Pacific/Saipan"
@@ -2425,6 +2574,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mtq",
+        "NumericCode"           : "474",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "America/Martinique"
@@ -2441,6 +2591,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mrt",
+        "NumericCode"           : "478",
         "PhoneIndex"            : "222",
         "Timezones"             : [
             "Africa/Nouakchott"
@@ -2456,6 +2607,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "msr",
+        "NumericCode"           : "500",
         "PhoneIndex"            : "1-664",
         "Timezones"             : [
             "America/Montserrat"
@@ -2472,6 +2624,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mlt",
+        "NumericCode"           : "470",
         "PhoneIndex"            : "356",
         "Timezones"             : [
             "Europe/Malta"
@@ -2489,6 +2642,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mus",
+        "NumericCode"           : "480",
         "PhoneIndex"            : "230",
         "Timezones"             : [
             "Indian/Mauritius"
@@ -2504,6 +2658,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mdv",
+        "NumericCode"           : "462",
         "PhoneIndex"            : "960",
         "Timezones"             : [
             "Indian/Maldives"
@@ -2520,6 +2675,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mwi",
+        "NumericCode"           : "454",
         "PhoneIndex"            : "265",
         "Timezones"             : [
             "Africa/Blantyre"
@@ -2535,6 +2691,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mex",
+        "NumericCode"           : "484",
         "PhoneIndex"            : "52",
         "Timezones"             : [
             "America/Bahia_Banderas",
@@ -2560,6 +2717,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "mys",
+        "NumericCode"           : "458",
         "PhoneIndex"            : "60",
         "Timezones"             : [
             "Asia/Kuala_Lumpur",
@@ -2576,6 +2734,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "moz",
+        "NumericCode"           : "508",
         "PhoneIndex"            : "258",
         "Timezones"             : [
             "Africa/Maputo"
@@ -2593,6 +2752,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nam",
+        "NumericCode"           : "516",
         "PhoneIndex"            : "264",
         "Timezones"             : [
             "Africa/Windhoek"
@@ -2608,6 +2768,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ncl",
+        "NumericCode"           : "540",
         "PhoneIndex"            : "687",
         "Timezones"             : [
             "Pacific/Noumea"
@@ -2623,6 +2784,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ner",
+        "NumericCode"           : "562",
         "PhoneIndex"            : "227",
         "Timezones"             : [
             "Africa/Niamey"
@@ -2639,6 +2801,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nfk",
+        "NumericCode"           : "574",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Pacific/Norfolk"
@@ -2654,6 +2817,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nga",
+        "NumericCode"           : "566",
         "PhoneIndex"            : "234",
         "Timezones"             : [
             "Africa/Lagos"
@@ -2669,6 +2833,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nic",
+        "NumericCode"           : "558",
         "PhoneIndex"            : "505",
         "Timezones"             : [
             "America/Managua"
@@ -2684,6 +2849,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nld",
+        "NumericCode"           : "528",
         "PhoneIndex"            : "31",
         "Timezones"             : [
             "Europe/Amsterdam"
@@ -2702,6 +2868,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nor",
+        "NumericCode"           : "578",
         "PhoneIndex"            : "47",
         "Timezones"             : [
             "Arctic/Longyearbyen",
@@ -2718,6 +2885,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "npl",
+        "NumericCode"           : "524",
         "PhoneIndex"            : "977",
         "Timezones"             : [
             "Asia/Kathmandu"
@@ -2734,6 +2902,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nru",
+        "NumericCode"           : "520",
         "PhoneIndex"            : "674",
         "Timezones"             : [
             "Pacific/Nauru"
@@ -2750,6 +2919,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "niu",
+        "NumericCode"           : "570",
         "PhoneIndex"            : "683",
         "Timezones"             : [
             "Pacific/Niue"
@@ -2766,6 +2936,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "nzl",
+        "NumericCode"           : "554",
         "PhoneIndex"            : "64",
         "Timezones"             : [
             "Pacific/Auckland",
@@ -2782,6 +2953,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "omn",
+        "NumericCode"           : "512",
         "PhoneIndex"            : "968",
         "Timezones"             : [
             "Asia/Muscat"
@@ -2797,6 +2969,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pan",
+        "NumericCode"           : "591",
         "PhoneIndex"            : "507",
         "Timezones"             : [
             "America/Panama"
@@ -2812,6 +2985,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "per",
+        "NumericCode"           : "604",
         "PhoneIndex"            : "51",
         "Timezones"             : [
             "America/Lima"
@@ -2827,6 +3001,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pyf",
+        "NumericCode"           : "258",
         "PhoneIndex"            : "689",
         "Timezones"             : [
             "Pacific/Gambier",
@@ -2846,6 +3021,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "png",
+        "NumericCode"           : "598",
         "PhoneIndex"            : "675",
         "Timezones"             : [
             "Pacific/Bougainville",
@@ -2863,6 +3039,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "phl",
+        "NumericCode"           : "608",
         "PhoneIndex"            : "63",
         "Timezones"             : [
             "Asia/Manila"
@@ -2879,6 +3056,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pak",
+        "NumericCode"           : "586",
         "PhoneIndex"            : "92",
         "Timezones"             : [
             "Asia/Karachi"
@@ -2894,6 +3072,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pol",
+        "NumericCode"           : "616",
         "PhoneIndex"            : "48",
         "Timezones"             : [
             "Europe/Warsaw"
@@ -2909,6 +3088,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "spm",
+        "NumericCode"           : "666",
         "PhoneIndex"            : "508",
         "Timezones"             : [
             "America/Miquelon"
@@ -2925,6 +3105,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pcn",
+        "NumericCode"           : "612",
         "PhoneIndex"            : "64",
         "Timezones"             : [
             "Pacific/Pitcairn"
@@ -2941,6 +3122,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pri",
+        "NumericCode"           : "630",
         "PhoneIndex"            : "1-787",
         "Timezones"             : [
             "America/Puerto_Rico"
@@ -2957,6 +3139,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pse",
+        "NumericCode"           : "275",
         "PhoneIndex"            : "970",
         "Timezones"             : [
             "Asia/Gaza",
@@ -2973,6 +3156,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "prt",
+        "NumericCode"           : "620",
         "PhoneIndex"            : "351",
         "Timezones"             : [
             "Atlantic/Azores",
@@ -2994,6 +3178,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "plw",
+        "NumericCode"           : "585",
         "PhoneIndex"            : "680",
         "Timezones"             : [
             "Pacific/Palau"
@@ -3010,6 +3195,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "pry",
+        "NumericCode"           : "600",
         "PhoneIndex"            : "595",
         "Timezones"             : [
             "America/Asuncion"
@@ -3025,6 +3211,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "qat",
+        "NumericCode"           : "634",
         "PhoneIndex"            : "974",
         "Timezones"             : [
             "Asia/Qatar"
@@ -3040,6 +3227,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "reu",
+        "NumericCode"           : "638",
         "PhoneIndex"            : "262",
         "Timezones"             : [
             "Indian/Reunion"
@@ -3055,6 +3243,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "rou",
+        "NumericCode"           : "642",
         "PhoneIndex"            : "40",
         "Timezones"             : [
             "Europe/Bucharest"
@@ -3070,6 +3259,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "srb",
+        "NumericCode"           : "688",
         "PhoneIndex"            : "381",
         "Timezones"             : [
             "Europe/Belgrade"
@@ -3085,6 +3275,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "rus",
+        "NumericCode"           : "643",
         "PhoneIndex"            : "7",
         "Timezones"             : [
             "Asia/Anadyr",
@@ -3127,6 +3318,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "rwa",
+        "NumericCode"           : "646",
         "PhoneIndex"            : "250",
         "Timezones"             : [
             "Africa/Kigali"
@@ -3142,6 +3334,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sau",
+        "NumericCode"           : "682",
         "PhoneIndex"            : "966",
         "Timezones"             : [
             "Asia/Riyadh"
@@ -3157,6 +3350,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "slb",
+        "NumericCode"           : "090",
         "PhoneIndex"            : "677",
         "Timezones"             : [
             "Pacific/Guadalcanal"
@@ -3174,6 +3368,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "syc",
+        "NumericCode"           : "690",
         "PhoneIndex"            : "248",
         "Timezones"             : [
             "Indian/Mahe"
@@ -3190,6 +3385,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sdn",
+        "NumericCode"           : "729",
         "PhoneIndex"            : "249",
         "Timezones"             : [
             "Africa/Khartoum"
@@ -3205,6 +3401,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "swe",
+        "NumericCode"           : "752",
         "PhoneIndex"            : "46",
         "Timezones"             : [
             "Europe/Stockholm"
@@ -3223,6 +3420,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sgp",
+        "NumericCode"           : "702",
         "PhoneIndex"            : "65",
         "Timezones"             : [
             "Asia/Singapore"
@@ -3238,6 +3436,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "shn",
+        "NumericCode"           : "654",
         "PhoneIndex"            : "290",
         "Timezones"             : [
             "Atlantic/St_Helena"
@@ -3253,6 +3452,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "svn",
+        "NumericCode"           : "705",
         "PhoneIndex"            : "386",
         "Timezones"             : [
             "Europe/Ljubljana"
@@ -3268,6 +3468,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sjm",
+        "NumericCode"           : "744",
         "PhoneIndex"            : "47",
         "Timezones"             : [
             "Arctic/Longyearbyen"
@@ -3283,6 +3484,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "svk",
+        "NumericCode"           : "703",
         "PhoneIndex"            : "421",
         "Timezones"             : [
             "Europe/Bratislava"
@@ -3298,6 +3500,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sle",
+        "NumericCode"           : "694",
         "PhoneIndex"            : "232",
         "Timezones"             : [
             "Africa/Freetown"
@@ -3313,6 +3516,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "smr",
+        "NumericCode"           : "674",
         "PhoneIndex"            : "590",
         "Timezones"             : [
             "Europe/San_Marino"
@@ -3328,6 +3532,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sen",
+        "NumericCode"           : "686",
         "PhoneIndex"            : "221",
         "Timezones"             : [
             "Africa/Dakar"
@@ -3344,6 +3549,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "som",
+        "NumericCode"           : "706",
         "PhoneIndex"            : "252",
         "Timezones"             : [
             "Africa/Mogadishu"
@@ -3359,6 +3565,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sur",
+        "NumericCode"           : "740",
         "PhoneIndex"            : "597",
         "Timezones"             : [
             "America/Paramaribo"
@@ -3374,6 +3581,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ssd",
+        "NumericCode"           : "728",
         "PhoneIndex"            : "211",
         "Timezones"             : [
             "Africa/Juba"
@@ -3389,6 +3597,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "stp",
+        "NumericCode"           : "678",
         "PhoneIndex"            : "239",
         "Timezones"             : [
             "Africa/Sao_Tome"
@@ -3404,6 +3613,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "slv",
+        "NumericCode"           : "222",
         "PhoneIndex"            : "503",
         "Timezones"             : [
             "America/El_Salvador"
@@ -3420,6 +3630,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "sxm",
+        "NumericCode"           : "534",
         "PhoneIndex"            : "1-721",
         "Timezones"             : [
             "America/Lower_Princes"
@@ -3435,6 +3646,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "syr",
+        "NumericCode"           : "760",
         "PhoneIndex"            : "963",
         "Timezones"             : [
             "Asia/Damascus"
@@ -3451,6 +3663,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "swz",
+        "NumericCode"           : "748",
         "PhoneIndex"            : "268",
         "Timezones"             : [
             "Africa/Mbabane"
@@ -3466,6 +3679,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tca",
+        "NumericCode"           : "796",
         "PhoneIndex"            : "1-649",
         "Timezones"             : [
             "America/Grand_Turk"
@@ -3482,6 +3696,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tcd",
+        "NumericCode"           : "148",
         "PhoneIndex"            : "235",
         "Timezones"             : [
             "Africa/Ndjamena"
@@ -3497,6 +3712,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "atf",
+        "NumericCode"           : "260",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Indian/Kerguelen"
@@ -3512,6 +3728,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tgo",
+        "NumericCode"           : "768",
         "PhoneIndex"            : "228",
         "Timezones"             : [
             "Africa/Lome"
@@ -3527,6 +3744,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tha",
+        "NumericCode"           : "764",
         "PhoneIndex"            : "66",
         "Timezones"             : [
             "Asia/Bangkok"
@@ -3543,6 +3761,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tjk",
+        "NumericCode"           : "762",
         "PhoneIndex"            : "992",
         "Timezones"             : [
             "Asia/Dushanbe"
@@ -3560,6 +3779,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tkl",
+        "NumericCode"           : "772",
         "PhoneIndex"            : "690",
         "Timezones"             : [
             "Pacific/Fakaofo"
@@ -3576,6 +3796,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tls",
+        "NumericCode"           : "626",
         "PhoneIndex"            : "670",
         "Timezones"             : [
             "Asia/Dili"
@@ -3591,6 +3812,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tkm",
+        "NumericCode"           : "795",
         "PhoneIndex"            : "993",
         "Timezones"             : [
             "Asia/Ashgabat"
@@ -3607,6 +3829,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tun",
+        "NumericCode"           : "788",
         "PhoneIndex"            : "216",
         "Timezones"             : [
             "Africa/Tunis"
@@ -3622,6 +3845,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ton",
+        "NumericCode"           : "776",
         "PhoneIndex"            : "676",
         "Timezones"             : [
             "Pacific/Tongatapu"
@@ -3637,6 +3861,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tur",
+        "NumericCode"           : "792",
         "PhoneIndex"            : "90",
         "Timezones"             : [
             "Europe/Istanbul"
@@ -3652,6 +3877,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tto",
+        "NumericCode"           : "780",
         "PhoneIndex"            : "1-868",
         "Timezones"             : [
             "America/Port_of_Spain"
@@ -3667,6 +3893,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tuv",
+        "NumericCode"           : "798",
         "PhoneIndex"            : "688",
         "Timezones"             : [
             "Pacific/Funafuti"
@@ -3682,6 +3909,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "twn",
+        "NumericCode"           : "158",
         "PhoneIndex"            : "886",
         "Timezones"             : [
             "Asia/Taipei"
@@ -3698,6 +3926,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "tza",
+        "NumericCode"           : "834",
         "PhoneIndex"            : "255",
         "Timezones"             : [
             "Africa/Dar_es_Salaam"
@@ -3713,6 +3942,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ukr",
+        "NumericCode"           : "804",
         "PhoneIndex"            : "380",
         "Timezones"             : [
             "Europe/Kiev",
@@ -3732,6 +3962,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "uga",
+        "NumericCode"           : "800",
         "PhoneIndex"            : "256",
         "Timezones"             : [
             "Africa/Kampala"
@@ -3747,6 +3978,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "umi",
+        "NumericCode"           : "581",
         "PhoneIndex"            : "",
         "Timezones"             : [
             "Pacific/Midway",
@@ -3763,6 +3995,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "usa",
+        "NumericCode"           : "840",
         "PhoneIndex"            : "1",
         "Timezones"             : [
             "America/Adak",
@@ -3806,6 +4039,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ury",
+        "NumericCode"           : "858",
         "PhoneIndex"            : "598",
         "Timezones"             : [
             "America/Montevideo"
@@ -3822,6 +4056,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "uzb",
+        "NumericCode"           : "860",
         "PhoneIndex"            : "998",
         "Timezones"             : [
             "Asia/Samarkand",
@@ -3838,6 +4073,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vat",
+        "NumericCode"           : "336",
         "PhoneIndex"            : "379",
         "Timezones"             : [
             "Europe/Vatican"
@@ -3853,6 +4089,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vct",
+        "NumericCode"           : "670",
         "PhoneIndex"            : "1-784",
         "Timezones"             : [
             "America/St_Vincent"
@@ -3868,6 +4105,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "ven",
+        "NumericCode"           : "862",
         "PhoneIndex"            : "58",
         "Timezones"             : [
             "America/Caracas"
@@ -3883,6 +4121,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vgb",
+        "NumericCode"           : "092",
         "PhoneIndex"            : "1-284",
         "Timezones"             : [
             "America/Tortola"
@@ -3898,6 +4137,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vir",
+        "NumericCode"           : "850",
         "PhoneIndex"            : "1-340",
         "Timezones"             : [
             "America/St_Thomas"
@@ -3913,6 +4153,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vnm",
+        "NumericCode"           : "704",
         "PhoneIndex"            : "84",
         "Timezones"             : [
             "Asia/Ho_Chi_Minh"
@@ -3928,6 +4169,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "vut",
+        "NumericCode"           : "548",
         "PhoneIndex"            : "678",
         "Timezones"             : [
             "Pacific/Efate"
@@ -3943,6 +4185,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "wlf",
+        "NumericCode"           : "876",
         "PhoneIndex"            : "681",
         "Timezones"             : [
             "Pacific/Wallis"
@@ -3959,6 +4202,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "wsn",
+        "NumericCode"           : "882",
         "PhoneIndex"            : "685",
         "Timezones"             : [
             "Pacific/Apia"
@@ -3974,6 +4218,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "yem",
+        "NumericCode"           : "887",
         "PhoneIndex"            : "967",
         "Timezones"             : [
             "Asia/Aden"
@@ -3989,6 +4234,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "myt",
+        "NumericCode"           : "175",
         "PhoneIndex"            : "262",
         "Timezones"             : [
             "Indian/Mayotte"
@@ -4009,6 +4255,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "zaf",
+        "NumericCode"           : "710",
         "PhoneIndex"            : "27",
         "Timezones"             : [
             "Africa/Johannesburg"
@@ -4024,6 +4271,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "zmb",
+        "NumericCode"           : "894",
         "PhoneIndex"            : "260",
         "Timezones"             : [
             "Africa/Lusaka"
@@ -4041,6 +4289,7 @@
         ],
         "UnofficialLanguages"   : [],
         "3LettersCode"          : "zwe",
+        "NumericCode"           : "716",
         "PhoneIndex"            : "263",
         "Timezones"             : [
             "Africa/Harare"
