@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre17
+ * @version 1.0pre18
  * @date Creation: Dec 2019
- * @date Modification: Mar 2023
- * @copyright 2019 - 2023 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -52,7 +52,7 @@ final class CaMykSManager extends Plugin {
      */
     private $passwordEncodingLength = 64;
 
-    /* Configuration variables */
+    /* Mark: Mark: Configuration variables */
 
     /**
      * @var array $configurationSections
@@ -139,11 +139,77 @@ final class CaMykSManager extends Plugin {
     protected $dbDrivers;
 
     /**
+     * @var array $errorLoggingOutputs
+     * @brief Shortcuts to error logging available outputs for errorHandler object.
+     */
+    protected $errorLoggingOutputs;
+
+    /**
+     * @var array $errorLoggingLevels
+     * @brief Shortcuts to error logging available levels for errorHandler object.
+     */
+    protected $errorLoggingLevels;
+
+    /**
+     * @var array $availableThemes
+     * @brief List of available themes.
+     */
+    protected $availableThemes;
+
+    /**
+     * @var array $availableTemplates
+     * @brief List of available templates.
+     */
+    protected $availableTemplates;
+
+    /**
+     * @var array $availableLanguages
+     * @brief List of available languages.
+     */
+    protected $availableLanguages;
+
+    /**
+     * @var array $availableDefaultLanguages
+     * @brief List of available default languages.
+     */
+    protected $availableDefaultLanguages;
+
+    /**
+     * @var array $timeZoneLocations
+     * @brief List of available time zone locations.
+     */
+    protected $timeZoneLocations;
+
+    /**
+     * @var array $imageEditorEngines
+     * @brief List of available image editor engines.
+     */
+    protected $imageEditorEngines;
+
+    /**
+     * @var array $availableURLModes
+     * @brief List of available URL modes.
+     */
+    protected $availableURLModes;
+
+    /**
+     * @var array $availableSSLModes
+     * @brief List of available SSL modes.
+     */
+    protected $availableSSLModes;
+
+    /**
+     * @var array $databaseDrivers
+     * @brief List of available database drivers.
+     */
+    protected $databaseDrivers;
+
+    /**
      * Class constructor.
      * @param string $location
      * @return void
      */
-    public function __construct($location) {
+    public function __construct(?string $location=null) {
         /* Override Plugin variables */
         $this->pluginType = 'Special';
 
@@ -156,7 +222,7 @@ final class CaMykSManager extends Plugin {
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise(array $params=array()) {
         global $CaMykS;
         parent::initialise($params);
 
@@ -265,7 +331,7 @@ final class CaMykSManager extends Plugin {
         }
     }
 
-    /* Pre-check methods */
+    /* Mark: Mark: Pre-check methods */
 
     /**
      * Check manager security.
@@ -388,7 +454,7 @@ final class CaMykSManager extends Plugin {
         $this->action = 'Login';
     }
 
-    /* Initialise methods */
+    /* Mark: Mark: Initialise methods */
 
     /**
      * Initialise plugin in Login mode.
@@ -578,7 +644,7 @@ final class CaMykSManager extends Plugin {
      * @param boolean $adminMode
      * @return void
      */
-    private function initialise_OpenSiteVisit($adminMode=false) {
+    private function initialise_OpenSiteVisit(bool $adminMode=false) {
         global $CaMykS;
 
         /* Load folder */
@@ -781,8 +847,8 @@ final class CaMykSManager extends Plugin {
         $CaMykS->load_configuration($this->section);
 
         /* Build configuration form */
-        $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
-        $this->configurationForm->add_hidden('Section', $this->section);
+        $this->managerForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveConfiguration')));
+        $this->managerForm->add_hidden('Section', $this->section);
 
         /* Load specific data for sections */
         switch ($this->section) {
@@ -876,7 +942,7 @@ final class CaMykSManager extends Plugin {
 
     }
 
-    /* Links methods */
+    /* Mark: Mark: Links methods */
 
     /**
      * Return manager home link.
@@ -900,7 +966,7 @@ final class CaMykSManager extends Plugin {
      * @param array $params
      * @return string
      */
-    public function get_actionLink($action='', $params=array()) {
+    public function get_actionLink(string $action='', array $params=array()) {
         /* Create link base url */
         $link = client_getCurrentURL();
 
@@ -919,7 +985,7 @@ final class CaMykSManager extends Plugin {
         return $link;
     }
 
-    /* Site list methods */
+    /* Mark: Mark: Site list methods */
 
     /**
      * Load folder tree for given path and level.
@@ -927,7 +993,7 @@ final class CaMykSManager extends Plugin {
      * @param integer $level
      * @return array
      */
-    private function load_folderTree($path, $level) {
+    private function load_folderTree(string $path, int $level) {
         global $CaMykS;
 
         $content = folder_listElements($CaMykS->get_configValue('Manager_SiteListPath').$path, array(
@@ -956,7 +1022,7 @@ final class CaMykSManager extends Plugin {
      * @param string $path
      * @return string
      */
-    private function detect_folderType($path) {
+    private function detect_folderType(string $path) {
         global $CaMykS;
 
         $path = $CaMykS->get_configValue('Manager_SiteListPath').$path;
@@ -991,7 +1057,7 @@ final class CaMykSManager extends Plugin {
      * @param integer $level
      * @return void
      */
-    protected function display_folderContent($folder, $level) {
+    protected function display_folderContent(array $folder, int $level) {
         $this->currentFolder = $folder;
         $this->currentLevel = $level;
         $this->load_layout('SiteList/FolderContent');
@@ -1002,7 +1068,7 @@ final class CaMykSManager extends Plugin {
      * @param string $filePath
      * @return string
      */
-    protected function get_fileDescription($filePath) {
+    protected function get_fileDescription(string $filePath) {
         global $CaMykS;
 
         $file = new File($CaMykS->get_configValue('Manager_SiteListPath').$filePath);

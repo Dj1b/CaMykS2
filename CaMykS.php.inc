@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre47
+ * @version 2.0pre48
  * @date Creation: Feb 2017
  * @date Modification: Apr 2025
  * @copyright 2017 - 2025 CaMykS Team
@@ -1400,6 +1400,8 @@ final class CaMykS {
         /* Check for website default URL mode */
         if ($URLMode == null)
             $URLMode = $this->get_configValue('Visit_URLMode');
+        if ($URLMode == null)
+            $URLMode = 'Relative';
 
         /* Return base url from mode */
         return url_getBaseURLFromMode($URLMode, $this->websiteURL);
