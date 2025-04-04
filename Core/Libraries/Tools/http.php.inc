@@ -3,10 +3,10 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * @param string $default
  * @return string
  */
-function http_getStringRequest($name, $default='') {
+function http_getStringRequest(string $name, string $default='') {
     return (isset($_REQUEST[$name]) ? $_REQUEST[$name] : $default);
 }
 
@@ -27,17 +27,17 @@ function http_getStringRequest($name, $default='') {
  * @param integer $default
  * @return integer
  */
-function http_getIntRequest($name, $default=0) {
+function http_getIntRequest(string $name, int $default=0) {
     return (int)http_getStringRequest($name, $default);
 }
 
 /**
  * Return float value from header request.
  * @param string $name
- * @param integer $default
+ * @param float $default
  * @return integer
  */
-function http_getFloatRequest($name, $default=0) {
+function http_getFloatRequest(string $name, float $default=0) {
     return (float)http_getStringRequest($name, $default);
 }
 
@@ -133,7 +133,7 @@ function http_getResponseCodeList() {
  * @param integer $code
  * @return string
  */
-function http_getResponseCodeName($code=200) {
+function http_getResponseCodeName(int $code=200) {
     $list = http_getResponseCodeList();
     if (isset($list[$code]))
         return $list[$code];
@@ -157,7 +157,7 @@ function http_getResponseCodeName($code=200) {
  * @endparblock
  * @return string
  */
-function http_getContents($params=array()) {
+function http_getContents(array $params=array()) {
     global $CaMykS;
 
     /* Build params list */
@@ -201,7 +201,7 @@ function http_getContents($params=array()) {
  * @endparblock
  * @return false on failure, string on success
  */
-function http_getContentsUsingPHP($params=array()) {
+function http_getContentsUsingPHP(array $params=array()) {
     global $CaMykS;
 
     /* Build params list */
@@ -287,7 +287,7 @@ function http_getContentsUsingPHP($params=array()) {
  * @endparblock
  * @return false on failure, string on success
  */
-function http_getContentsUsingCURL($params=array()) {
+function http_getContentsUsingCURL(array $params=array()) {
     global $CaMykS;
 
     /* Build params list */

@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief Client specific methods
+ * @brief Client specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3.1
+ * @version 1.0pre4
  * @date Creation: Dec 2019
- * @date Modification: Nov 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -92,5 +92,4 @@ function client_getUserAgent() {
 function client_getUserAgentDetails() {
     return array();
 }
-
 ?>

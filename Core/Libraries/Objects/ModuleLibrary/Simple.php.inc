@@ -3,10 +3,10 @@
  * @brief SimpleModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2022
- * @date Modification: Jan 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(CaMykS2\Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 
@@ -31,7 +31,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
         $this->define_databaseAttribute('Status', 'Integer', 0);
     }
 
-    /* Status related methods */
+    /* Mark: Status related methods */
 
     /**
      * Return status values.
@@ -49,7 +49,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param array $params
      * @return array
      */
-    public function get_multiStatusValueList($params=array()) {
+    public function get_multiStatusValueList(array $params=array()) {
         /* Check params */
         $params = array_merge(array('AddAll'=>false), $params);
 
@@ -73,7 +73,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param integer $status
      * @return string
      */
-    public function get_statusTitle($status=null) {
+    public function get_statusTitle(?int $status=null) {
         if (is_null($status)) $status = $this->Status;
 
         $list = $this->get_statusValueList();

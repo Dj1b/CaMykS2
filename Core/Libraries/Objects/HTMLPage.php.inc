@@ -3,10 +3,10 @@
  * @brief HTML Page.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Feb 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2020 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -183,14 +183,14 @@ final class HTMLPage {
             $this->add_meta('author', $author);
     }
 
-    /* Headers related methods */
+    /* Mark: Headers related methods */
 
     /**
      * Define page status.
      * @param integer $status
      * @return void
      */
-    public function set_status($status) {
+    public function set_status(int $status) {
         $this->status = $status;
     }
 
@@ -200,18 +200,18 @@ final class HTMLPage {
      * @param string $value
      * @return void
      */
-    public function add_header($name, $value) {
+    public function add_header(string $name, string $value) {
         $this->headers[$name] = $value;
     }
 
-    /* HTML data insertion methods */
+    /* Mark: HTML data insertion methods */
 
     /**
      * Define HTML version.
      * @param mixed $version
      * @return void
      */
-    public function set_HTMLVersion($version=5) {
+    public function set_HTMLVersion(mixed $version=5) {
         $this->HTMLVersion = $version;
     }
 
@@ -229,10 +229,10 @@ final class HTMLPage {
      * @param string $description
      * @param string $keywords
      * @param string $language
-     * @param string $isHome
+     * @param bool $isHome
      * @return void
      */
-    public function set_pageInformation($title=null, $description=null, $keywords=null, $language=null, $isHome=null) {
+    public function set_pageInformation(?string $title=null, ?string $description=null, ?string $keywords=null, ?string $language=null, ?bool $isHome=null) {
         if (!is_null($title)) $this->title = $title;
         if (!is_null($description)) $this->description = $description;
         if (!is_null($keywords)) $this->keywords = $keywords;
@@ -245,7 +245,7 @@ final class HTMLPage {
      * @param string $charset
      * @return void
      */
-    public function set_charset($charset='UTF-8') {
+    public function set_charset(string $charset='UTF-8') {
         if (!is_null($charset)) $this->charset = $charset;
     }
 
@@ -255,7 +255,7 @@ final class HTMLPage {
      * @param boolean $follow
      * @return void
      */
-    public function set_robotsDirectives($index=null, $follow=null) {
+    public function set_robotsDirectives(?bool $index=null, ?bool $follow=null) {
         if (!is_null($index)) $this->robotsDirectives['index'] = $index;
         if (!is_null($follow)) $this->robotsDirectives['follow'] = $follow;
     }
@@ -267,7 +267,7 @@ final class HTMLPage {
      * @param string $method the meta displaying method
      * @return void
      */
-    public function add_meta($key, $value, $method='name') {
+    public function add_meta(string $key, string $value, string $method='name') {
         if ($method == 'link:rel')
             return $this->add_link($key, $value);
         $this->metas[$key] = array('Value' => $value, 'Method' => $method);
@@ -280,7 +280,7 @@ final class HTMLPage {
      * @param array $params the other params
      * @return void
      */
-    public function add_link($rel, $href, $params=array()) {
+    public function add_link(string $rel, string $href, array $params=array()) {
         if ($rel == null)
             $this->links[] = array_merge($params, array('Href' => $href));
         else
@@ -293,7 +293,7 @@ final class HTMLPage {
      * @param array $params
      * @return void
      */
-    public function add_JSFile($file='', $params=array()) {
+    public function add_JSFile(string $file='', array $params=array()) {
         /* Check file */
         if ($file != '' and !isset($this->JSFiles[$file]))
             $this->JSFiles[$file] = $params;
@@ -306,7 +306,7 @@ final class HTMLPage {
      * @param string $event
      * @return void
      */
-    public function add_JSScript($script='', $unique=false, $event='main') {
+    public function add_JSScript(string $script='', bool $unique=false, string $event='main') {
         /* Trim script */
         $script = trim($script);
 
@@ -332,7 +332,7 @@ final class HTMLPage {
      * @param array $data
      * @return void
      */
-    public function add_JSONStructuredData($data) {
+    public function add_JSONStructuredData(array $data) {
         $this->JSStructuredData[] = $data;
     }
 
@@ -342,7 +342,7 @@ final class HTMLPage {
      * @param string $condition
      * @return void
      */
-    public function add_styleFile($file='', $condition='') {
+    public function add_styleFile(string $file='', string $condition='') {
         /* Check file */
         if ($file == '')
             return;
@@ -361,7 +361,7 @@ final class HTMLPage {
      * @param string $condition
      * @return void
      */
-    public function add_styleScript($script='', $condition='') {
+    public function add_styleScript(string $script='', string $condition='') {
         /* Trim script */
         $script = trim($script);
 
@@ -383,7 +383,7 @@ final class HTMLPage {
      * @param string $condition
      * @return void
      */
-    public function add_styleIncludedFile($file='', $condition='') {
+    public function add_styleIncludedFile(string $file='', string $condition='') {
         /* Check file */
         if ($file == '')
             return;
@@ -401,7 +401,7 @@ final class HTMLPage {
      * @param string $content
      * @return void
      */
-    public function add_headExtra($content='') {
+    public function add_headExtra(string $content='') {
         $this->headExtras .= $content."\n";
     }
 
@@ -410,11 +410,11 @@ final class HTMLPage {
      * @param string $class
      * @return void
      */
-    public function set_bodyClass($class) {
+    public function set_bodyClass(string $class) {
         $this->bodyClass = $class;
     }
 
-    /* Shortcuts to some headers and data insertion methods */
+    /* Mark: Shortcuts to some headers and data insertion methods */
 
     /**
      * Insert RSS feed.
@@ -422,7 +422,7 @@ final class HTMLPage {
      * @param string $title
      * @return void
      */
-    public function add_RSSFeed($url='', $title='') {
+    public function add_RSSFeed(string $url='', string $title='') {
         $this->add_link('alternate', $url, array('title'=>$title, 'type'=>'application/rss+xml'));
     }
 
@@ -432,14 +432,14 @@ final class HTMLPage {
      * @param integer $delay
      * @return void
      */
-    public function set_redirect($url, $delay=0) {
+    public function set_redirect(string $url, int $delay=0) {
         if ($delay == 0)
             $this->add_header('Location', $url);
         else
             $this->add_meta('refresh', $delay.';url='.$url, 'http-equiv');
     }
 
-    /* Public writing methods */
+    /* Mark: Public writing methods */
 
     /**
      * Write page header.
@@ -500,7 +500,7 @@ final class HTMLPage {
         $this->step = 'done';
     }
 
-    /* Private special methods */
+    /* Mark: Private special methods */
 
     /**
      * Send page headers.
@@ -542,7 +542,7 @@ final class HTMLPage {
         }
     }
 
-    /* Private writing methods */
+    /* Mark: Private writing methods */
 
     /**
      * Write HTML doctype.

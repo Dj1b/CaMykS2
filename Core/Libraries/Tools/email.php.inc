@@ -3,15 +3,13 @@
  * @brief CaMykS email library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Nov 2021
- * @date Modification: Nov 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-
-/* Currency data related methods */
 
 /**
  * Check if email address is valid.

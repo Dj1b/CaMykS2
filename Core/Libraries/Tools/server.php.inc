@@ -3,15 +3,15 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Dec 2019
- * @date Modification: Jan 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* Server software related methods */
+/* Mark: Server software related methods */
 
 /**
  * Return server software description.
@@ -60,7 +60,7 @@ function server_getSoftwareModules() {
  * @param string $module
  * @return boolean result
  */
-function server_checkModuleAvailability($module='') {
+function server_checkModuleAvailability(string $module='') {
     /* Do the check for Apache httpd */
     if (server_getSoftwareName() == 'Apache') {
         return in_array($module, apache_get_modules());
@@ -134,7 +134,7 @@ function server_getDocumentRoot() {
     return '';
 }
 
-/* Server operating system related methods */
+/* Mark: Server operating system related methods */
 
 /**
  * Return server operating system description.

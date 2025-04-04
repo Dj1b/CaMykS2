@@ -3,10 +3,10 @@
  * @brief AdvancedModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2022
- * @date Modification: Jan 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(CaMykS2\Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 
@@ -35,14 +35,14 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
         $this->define_databaseAttribute('LastEditionDate', 'Date', true);
     }
 
-    /* Override ModuleLibrary methods */
+    /* Mark: Override ModuleLibrary methods */
 
     /**
      * Check object data.
      * @param boolean $loadPreviousVersion
      * @return boolean result
      */
-    public function check_data($loadPreviousVersion=false) {
+    public function check_data(bool $loadPreviousVersion=false) {
         global $CaMykS;
 
         /* Perform parent check data loading previous version */
@@ -68,7 +68,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
         return true;
     }
 
-    /* Unique id related methods */
+    /* Mark: Unique id related methods */
 
     /**
      * Load object from its unique id.
@@ -76,7 +76,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
      * @param boolean $createNew
      * @return boolean success
      */
-    public function load_fromUniqueId($uniqueId='', $createNew=false) {
+    public function load_fromUniqueId(string $uniqueId='', bool $createNew=false) {
 
         /* Check empty unique ID value */
         if ($uniqueId == '') {

@@ -1,24 +1,24 @@
 <?php
 /**
- * @brief HTML related methods
+ * @brief HTML related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0pre1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* Tags specific methods */
+/* Mark: Tags specific methods */
 
 /**
  * Build and return img tag from given data.
  * @param array $params
  * @return string
  */
-function html_getImg($params=array()) {
+function html_getImg(array $params=array()) {
     /* Merge default params */
     $params = array_merge(array(
         'src'   => '',
@@ -43,7 +43,7 @@ function html_getImg($params=array()) {
  * @param array $params
  * @return string
  */
-function html_getA($params=array()) {
+function html_getA(array $params=array()) {
     /* Merge default params */
     $params = array_merge(array(
         'href'          => '',
@@ -81,14 +81,14 @@ function html_getA($params=array()) {
     return $s;
 }
 
-/* Generic methods */
+/* Mark: Generic methods */
 
 /**
  * Return html tag attributes for default parameters.
  * @param array $params
  * @return string
  */
-function html_getTagDefaultAttributes($params) {
+function html_getTagDefaultAttributes(array $params) {
     /* Merge default params */
     $params = array_merge(array(
         'id'        => '',

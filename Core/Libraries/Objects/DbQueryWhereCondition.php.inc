@@ -3,10 +3,10 @@
  * @brief CaMykS Database query, where condition builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Creation of where conditions from the parsing from a SQL query fragment
@@ -61,27 +61,27 @@ final class DbQueryWhereCondition {
      * @param string $operator
      * @param boolean $isNot
      */
-    public function __construct($identifier='', $value='', $operator='=', $isNot=false) {
+    public function __construct(string $identifier='', mixed $value='', string $operator='=', bool $isNot=false) {
         $this->define_identifier($identifier);
         $this->define_value($value);
         $this->define_operator($operator);
         $this->define_isNot($isNot);
     }
 
-    /* Override magic methods */
+    /* Mark: Override magic methods */
 
     /**
      * Makes some variables accessible in read-only
      * @param string $variableName
      * @return mixed
      */
-    public function __get($variableName) {
+    public function __get(string $variableName) {
         if (isset($this->$variableName))
             return $this->$variableName;
         return null;
     }
 
-    /* Variable defining methods */
+    /* Mark: Variable defining methods */
 
     /**
      * Define identifier.
@@ -89,7 +89,7 @@ final class DbQueryWhereCondition {
      * @param string $table
      * @return void
      */
-    public function define_identifier($identifier=null, $table=null) {
+    public function define_identifier(string $identifier=null, string $table=null) {
         if (!is_null($identifier))
             $this->identifier = $identifier;
         if (!is_null($table))
@@ -102,7 +102,7 @@ final class DbQueryWhereCondition {
      * @param string $table
      * @return void
      */
-    public function define_value($value=null, $table=null) {
+    public function define_value(string $value=null, string $table=null) {
         if (!is_null($value))
             $this->value = $value;
         if (!is_null($table))
@@ -114,7 +114,7 @@ final class DbQueryWhereCondition {
      * @param string $operator
      * @return void
      */
-    public function define_operator($operator) {
+    public function define_operator(string $operator) {
         switch ($operator) {
             /* Mathematic operators */
             case '>':
@@ -166,7 +166,7 @@ final class DbQueryWhereCondition {
      * @param boolean $iNot
      * @return void
      */
-    public function define_isNot($isNot) {
+    public function define_isNot(bool $isNot) {
         if (is_bool($isNot))
             $this->isNot = $isNot;
     }

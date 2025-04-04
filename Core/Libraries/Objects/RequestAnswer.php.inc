@@ -3,10 +3,10 @@
  * @brief CaMykS request answer object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -39,18 +39,18 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function __construct($params=array()) {
+    public function __construct(array $params=array()) {
         parent::__construct($params);
     }
 
-    /* Public methods */
+    /* Mark: Public methods */
 
     /**
      * Set answer as success.
      * @param string $msg
      * @return void
      */
-    public function set_asSuccess($msg='') {
+    public function set_asSuccess(string $msg='') {
         $this->params['status'] = 'success';
         if ($msg != '')
             $this->params['message'] = $msg;
@@ -62,7 +62,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param string $error
      * @return void
      */
-    public function set_asFailure($msg='', $error='') {
+    public function set_asFailure(string $msg='', string $error='') {
         $this->params['status'] = 'failure';
         if ($msg != '')
             $this->params['message'] = $msg;
@@ -91,7 +91,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send($params=array()) {
+    public function send(array $params=array()) {
         if ($this->get_param('output') == 'xml')
             $this->send_asXML($params);
         else
@@ -103,7 +103,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send_asXML($params=array()) {
+    public function send_asXML(array $params=array()) {
         global $CaMykS;
 
         /* Load XML library */
@@ -125,7 +125,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send_asJSON($params=array()) {
+    public function send_asJSON(array $params=array()) {
         global $CaMykS;
 
         /* Prepare for sending */
@@ -142,14 +142,14 @@ final class RequestAnswer extends CaMykSLibrary {
         $CaMykS->close();
     }
 
-    /* Private methods */
+    /* Mark: Private methods */
 
     /**
      * Prepare object for sending.
      * @param array $params
      * @return void
      */
-    private function prepare_forSending($params) {
+    private function prepare_forSending(array $params) {
         /* Check for new parameters */
         if (count($params) > 0)
             $this->update_params($params);

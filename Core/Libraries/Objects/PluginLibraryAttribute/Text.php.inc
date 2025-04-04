@@ -3,10 +3,10 @@
  * @brief TextPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Feb 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,14 +24,14 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      */
     const DEFAULTPARAMS = array('Length'=>32, 'StripPHPTags'=>true, 'StripJSTags'=>true, 'StripHTMLTags'=>false, 'AutoTrim'=>false,);
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Return read value from save.
      * @param mixed $value
      * @return mixed
      */
-    protected function read_valueFromSave($value) {
+    protected function read_valueFromSave(mixed $value) {
         return stripSlashes($value);
     }
 
@@ -40,7 +40,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return $mixed
      */
-    protected function optimise_valueToSave($value) {
+    protected function optimise_valueToSave(mixed $value) {
         return addSlashes($value);
     }
 

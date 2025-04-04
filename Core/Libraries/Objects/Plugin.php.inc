@@ -4,10 +4,10 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre16
+ * @version 1.0pre17
  * @date Creation: Nov 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -117,14 +117,14 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $location
      * @return void
      */
-    public function __construct($location=null) {
+    public function __construct(?string $location=null) {
         parent::__construct();
 
         /* Save plugin location */
         $this->pluginLocation = $location;
     }
 
-    /* System methods */
+    /* Mark: System methods */
 
     /**
      * Load plugin.
@@ -234,14 +234,14 @@ abstract class Plugin extends CaMykSLibrary {
         return ($this->is_installed() and $this->is_enabled());
     }
 
-    /* Main methods */
+    /* Mark: Main methods */
 
     /**
      * Initialise plugin.
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise(array $params=array()) {
         /* Load plugin */
         $this->load();
 
@@ -257,7 +257,7 @@ abstract class Plugin extends CaMykSLibrary {
         return $this->load_layout($this->selectedLayout);
     }
 
-    /* Location related methods */
+    /* Mark: Location related methods */
 
     /**
      * Set up plugin location value and path.
@@ -303,7 +303,7 @@ abstract class Plugin extends CaMykSLibrary {
         return ucwords(strtolower($this->pluginType.'s'));
     }
 
-    /* Data related methods */
+    /* Mark: Data related methods */
 
     /**
      * Return plugin version.
@@ -329,14 +329,14 @@ abstract class Plugin extends CaMykSLibrary {
         return $this->pluginPackage;
     }
 
-    /* Libraries related methods */
+    /* Mark: Libraries related methods */
 
     /**
      * Load library file.
      * @param string $library
      * @return boolean success
      */
-    public function load_library($library='') {
+    public function load_library(string $library='') {
         global $CaMykS;
 
         /* build file path */
@@ -348,7 +348,7 @@ abstract class Plugin extends CaMykSLibrary {
         return false;
     }
 
-    /* Configuration related methods */
+    /* Mark: Configuration related methods */
 
     /**
      * Check plugin has a configuration.
@@ -411,9 +411,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue($name, $language=null, $default=null) {
-        global $CaMykS;
-
+    public function get_configValue(string $name, ?string $language=null, mixed $default=null) {
         /* Check for plugin configuration */
         if ($this->has_configuration()) {
             /* Load configuration if required */
@@ -432,14 +430,14 @@ abstract class Plugin extends CaMykSLibrary {
         }
 
         /* Return configuration value from CaMykS */
-        return $CaMykS->get_configValue($name, $default);
+        return $this->get_engineConfigValue($name, $default);
     }
 
-    /* Management related methods */
+    /* Mark: Management related methods */
 
-    /* Extensions related methods */
+    /* Mark: Extensions related methods */
 
-    /* Dependencies related methods */
+    /* Mark: Dependencies related methods */
 
     /**
      * Check Plugin dependencies.
@@ -449,16 +447,16 @@ abstract class Plugin extends CaMykSLibrary {
 
     }
 
-    /* Request mode methods */
+    /* Mark: Request mode methods */
 
-    /* Locales related methods */
+    /* Mark: Locales related methods */
 
     /**
      * Check if locale exists.
      * @param string $locale
      * @return boolean result
      */
-    public function check_locale($locale='') {
+    public function check_locale(string $locale='') {
         global $CaMykS;
 
         /* Check locale in CaMykS object */
@@ -471,7 +469,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    public function get_locale($locale='', $data=null) {
+    public function get_locale(string $locale='', mixed $data=null) {
         global $CaMykS;
 
         /* Return locale from CaMykS object */
@@ -484,7 +482,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $language
      * @return boolean success
      */
-    public function load_locales($folder='', $language=null) {
+    public function load_locales(string $folder='', ?string $language=null) {
         global $CaMykS;
 
         /* Load locales in plugin folder */
@@ -496,7 +494,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $folder
      * @return array
      */
-    public function get_availableLocaleLanguages($folder='') {
+    public function get_availableLocaleLanguages(string $folder='') {
         /* Load file list */
         $files = glob($this->pluginPath.'Locales'.($folder != '' ? '/'.$folder : '').'/*');
 
@@ -514,14 +512,14 @@ abstract class Plugin extends CaMykSLibrary {
         return $result;
     }
 
-    /* Files related methods */
+    /* Mark: Files related methods */
 
     /**
      * Return file path, allowing file overriding.
      * @param string $filePath
      * @return string
      */
-    public function get_filePath($filePath) {
+    public function get_filePath(string $filePath) {
         global $CaMykS;
 
         /* Complete file path */
@@ -561,7 +559,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return string
      */
-    public function get_fileURL($file, $URLMode=null) {
+    public function get_fileURL(string $file, ?string $URLMode=null) {
         global $CaMykS;
 
         /* Keep back QueryString for versioned files */
@@ -606,7 +604,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $filePath
      * @return boolean result
      */
-    public function load_file($filePath) {
+    public function load_file(string $filePath) {
         $filePath = $this->get_filePath($filePath);
         if ($filePath == '')
             return false;
@@ -614,14 +612,14 @@ abstract class Plugin extends CaMykSLibrary {
         return true;
     }
 
-    /* Layout related methods */
+    /* Mark: Layout related methods */
 
     /**
      * Update selected layout.
      * @param string $layout
      * @return void
      */
-    protected function update_selectedLayout($layout='') {
+    protected function update_selectedLayout(string $layout='') {
         $this->selectedLayout = $layout;
     }
 
@@ -630,20 +628,20 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $file
      * @return boolean result
      */
-    protected function load_layout($file) {
+    protected function load_layout(string $file) {
         return $this->load_file('Layouts/'.$file.CAMYKS_LAYOUTEXTENSION);
     }
 
-    /* Javascript related methods */
+    /* Mark: Javascript related methods */
 
     /**
      * Attach a javascript file to HTML page.
      * @param string $file
-     * @param string $params
+     * @param array $params
      * @param string $URLMode
      * @return void
      */
-    protected function add_JSFile($file, $params=array(), $URLMode=null) {
+    protected function add_JSFile(string $file, array $params=array(), ?string $URLMode=null) {
         global $CaMykS;
         $CaMykS->HTMLPage->add_JSFile($this->get_fileURL('Scripts/'.$file, $URLMode), $params);
     }
@@ -655,12 +653,12 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $event
      * @return void
      */
-    public function add_JSScript($script='', $unique=false, $event='Main') {
+    public function add_JSScript(string $script='', bool $unique=false, string $event='Main') {
         global $CaMykS;
         $CaMykS->HTMLPage->add_JSScript($script, $unique, $event);
     }
 
-    /* Styles related methods */
+    /* Mark: Styles related methods */
 
     /**
      * Load generic styles files.
@@ -674,9 +672,10 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * Load admin specific styles files.
+     * @param string $mode
      * @return void
      */
-    public function load_adminStyleFiles($mode = 'Attached') {
+    public function load_adminStyleFiles(string $mode = 'Attached') {
         if ($mode === 'Attached') {
             /* Attach admin style files to HTML page */
             foreach ($this->adminStyleFiles as $file => $condition)
@@ -695,7 +694,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return void
      */
-    protected function add_styleFile($file, $condition='', $URLMode=null) {
+    protected function add_styleFile(string $file, string $condition='', ?string $URLMode=null) {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleFile($this->get_fileURL('Styles/'.$file, $URLMode), $condition);
     }
@@ -707,7 +706,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return void
      */
-    protected function add_styleIncludedFile($file, $condition='', $URLMode=null) {
+    protected function add_styleIncludedFile(string $file, string $condition='', ?string $URLMode=null) {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleIncludedFile($this->get_filePath('Styles/'.$file, $URLMode), $condition);
     }
@@ -718,13 +717,13 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $condition
      * @return void
      */
-    public function add_styleScript($script='', $condition='') {
+    public function add_styleScript(string $script='', string $condition='') {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleScript($script, $condition);
     }
 
-    /* CaMykS events related methods */
+    /* Mark: CaMykS events related methods */
 
-    /* CaMykS page related methods */
+    /* Mark: CaMykS page related methods */
 }
 ?>

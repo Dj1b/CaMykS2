@@ -4,10 +4,10 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Dec 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -35,7 +35,7 @@ abstract class Module extends Plugin {
      * @param string $location
      * @return void
      */
-    public function __construct($location) {
+    public function __construct(?string $location=null) {
         /* Override Plugin variables */
         $this->pluginType = 'Module';
 
@@ -43,7 +43,7 @@ abstract class Module extends Plugin {
         parent::__construct($location);
     }
 
-    /* Override Plugin methods */
+    /* Mark: Override Plugin methods */
 
     /**
      * Load module data.
@@ -116,14 +116,14 @@ abstract class Module extends Plugin {
         return true;
     }
 
-    /* Admin mode methods */
+    /* Mark: Admin mode methods */
 
     /**
      * Initialise object in admin mode.
      * @param array $params
      * return void
      */
-    public function initialise_admin($params=array()) {
+    public function initialise_admin(array $params=array()) {
         /* Do generic initialisation */
         $this->initialise($params);
 
@@ -159,7 +159,7 @@ abstract class Module extends Plugin {
 
     }
 
-    /* Configuration mode methods */
+    /* Mark: Configuration mode methods */
 
     /**
      * Return button for configuration panel.
@@ -212,7 +212,7 @@ abstract class Module extends Plugin {
 
     }
 
-    /* Private methods */
+    /* Mark: Private methods */
 
     /**
      * Load libraries.

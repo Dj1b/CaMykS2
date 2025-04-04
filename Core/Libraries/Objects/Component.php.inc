@@ -4,10 +4,10 @@
  * <br />Component abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Dec 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -29,7 +29,7 @@ abstract class Component extends Plugin {
      * @param string $location
      * @return void
      */
-    public function __construct($location) {
+    public function __construct(string $location) {
         /* Override Plugin variables */
         $this->pluginType = 'Component';
 
@@ -37,13 +37,13 @@ abstract class Component extends Plugin {
         parent::__construct($location);
     }
 
-    /* Action related methods */
+    /* Mark: Action related methods */
 
     /**
      * Plug component to page, to be overrided.
      * @return void
      */
-    public function plug($params=array()) {
+    public function plug(array $params=array()) {
         /* Check component is initialised */
         if ($this->pluginStatus !== 'loaded')
             $this->initialise($params);
@@ -53,7 +53,7 @@ abstract class Component extends Plugin {
         /* Add styles and scripts in components */
     }
 
-    /* Data related methods */
+    /* Mark: Data related methods */
 
     /**
      * Return component type value.

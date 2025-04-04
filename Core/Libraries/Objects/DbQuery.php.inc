@@ -3,10 +3,10 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -142,7 +142,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    public function __construct($data='') {
+    public function __construct(string $data='') {
         parent::__construct();
 
         /* check if data is empty */
@@ -162,7 +162,7 @@ final class DbQuery extends CaMykSLibrary {
         return false;
     }
 
-    /* Override CaMykSLibrary methods */
+    /* Mark: Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
@@ -207,7 +207,7 @@ final class DbQuery extends CaMykSLibrary {
         );
     }
 
-    /* Check methods */
+    /* Mark: Check methods */
 
     /**
      * Check query is ready to be run.
@@ -219,7 +219,7 @@ final class DbQuery extends CaMykSLibrary {
         return true;
     }
 
-    /* Export methods */
+    /* Mark: Export methods */
 
     /**
      * Export query as array.
@@ -242,14 +242,14 @@ final class DbQuery extends CaMykSLibrary {
         return json_encode($this->export());
     }
 
-    /* Generic data methods */
+    /* Mark: Generic data methods */
 
     /**
      * Define action to execute.
      * @param string $action
      * @return boolean success
      */
-    public function set_action($action='') {
+    public function set_action(string $action='') {
         /* Check action is already set */
         if ($this->action != '')
             return $this->add_error(2, $this->action, __FILE__, __LINE__);
@@ -278,7 +278,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $join
      * @return boolean success
      */
-    public function add_table($table=null, $alias=null, $join='inner') {
+    public function add_table(string $table=null, string $alias=null, string $join='inner') {
         /* Check if query action is defined */
         if ($this->action == '')
             return $this->add_error(3, '', __FILE__, __LINE__);
@@ -315,7 +315,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $operator
      * @return boolean success
      */
-    public function set_whereOperator($operator='and') {
+    public function set_whereOperator(string $operator='and') {
         if (!in_array($operator, array('and', 'or')))
             return false;
         $this->whereOperator = $operator;
@@ -327,7 +327,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param DbQueryWhereCondition $condition
      * @return boolean success
      */
-    public function add_whereCondition($condition) {
+    public function add_whereCondition(CaMykS2\DbQueryWhereCondition $condition) {
         /* Check condition */
 
         /* Add condition */
@@ -341,7 +341,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $operator
      * @return array
      */
-    public function build_whereSubConditions($conditions, $operator='and') {
+    public function build_whereSubConditions(array $conditions, string $operator='and') {
         if (!in_array($operator, array('and', 'or')))
             return array();
         if (!is_array($conditions))
@@ -368,7 +368,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $type
      * @return boolean success
      */
-    public function add_orderBy($value, $way='asc', $table='', $type='column') {
+    public function add_orderBy(string $value, string $way='asc', string $table='', string $type='column') {
         /* Put some values in lower case */
         $way = strtolower($way);
         $type = strtolower($type);
@@ -413,7 +413,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param integer $offset
      * @return boolean success
      */
-    public function set_limit($count=-1, $offset=-1) {
+    public function set_limit(int $count=-1, int $offset=-1) {
         $this->limitCount = (int)$count;
         $this->limitOffset = (int)$offset;
         return true;
@@ -443,7 +443,7 @@ final class DbQuery extends CaMykSLibrary {
         return array('count'=>$this->limitCount, 'offset'=>$this->limitOffset);
     }
 
-    /* Select specific methods */
+    /* Mark: Select specific methods */
 
     /**
      * Add select item.
@@ -453,7 +453,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $function
      * @return boolean success
      */
-    public function add_selectItem($column, $alias='', $table='', $function='') {
+    public function add_selectItem(mixed $column, string $alias='', string $table='', string $function='') {
         /* Check for null value */
         if (is_null($column))
             return $this->add_error(21, '', __FILE__, __LINE__);
@@ -483,7 +483,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $table
      * @return boolean success
      */
-    public function add_selectGroupBy($column, $table='') {
+    public function add_selectGroupBy(string $column, string $table='') {
         /* Check for null value */
         if (is_null($column))
             return $this->add_error(22, '', __FILE__, __LINE__);
@@ -503,14 +503,14 @@ final class DbQuery extends CaMykSLibrary {
         return $this->selectGroupBy;
     }
 
-    /* Insert specific methods */
+    /* Mark: Insert specific methods */
 
     /**
      * Set insert partition.
      * @param array $partition
      * @return boolean succes
      */
-    public function set_insertPartition($partition=null) {
+    public function set_insertPartition(array $partition=null) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
@@ -536,10 +536,10 @@ final class DbQuery extends CaMykSLibrary {
 
     /**
      * Add insert values.
-     * @param string $values
+     * @param array $values
      * @return boolean success
      */
-     public function add_insertValues($values) {
+     public function add_insertValues(array $values) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
@@ -585,7 +585,7 @@ final class DbQuery extends CaMykSLibrary {
       * @param array $list
       * @return boolean success
       */
-     public function add_insertValuesList($list) {
+     public function add_insertValuesList(array $list) {
         /* Check if query action is defined to insert */
         if ($this->action != 'insert')
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
@@ -619,7 +619,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param mixed $value
      * @return boolean success
      */
-    public function add_updateAssignment($name=null, $value=null) {
+    public function add_updateAssignment(string $name=null, mixed $value=null) {
         /* Check if query action is defined to update */
         if ($this->action != 'update')
             return $this->add_error(41, $this->action, __FILE__, __LINE__);
@@ -643,7 +643,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param array $values
      * @return boolean success
      */
-    public function add_updateAssignmentList($values) {
+    public function add_updateAssignmentList(array $values) {
         foreach ($values as $name => $value) {
             if (!$this->add_updateAssignment($name, $value))
                 return false;
@@ -659,14 +659,14 @@ final class DbQuery extends CaMykSLibrary {
         return $this->updateAssignments;
     }
 
-    /* SQL based methods */
+    /* Mark: SQL based methods */
 
     /**
      * Update query reading and parsing a SQL query.
      * @param string $query
      * @return boolean success
      */
-    public function read_fromSQL($query='') {
+    public function read_fromSQL(string $query='') {
         /* Trim query */
         $query = trim($query);
 
@@ -692,13 +692,13 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $conditions
      * @return boolean success
      */
-    public function read_whereConditionsFromSQL($conditions='') {
+    public function read_whereConditionsFromSQL(string $conditions='') {
 
         /* Return success */
         return true;
     }
 
-    /* Private export methods */
+    /* Mark: Private export methods */
 
     /**
      * Export select query.
@@ -758,14 +758,14 @@ final class DbQuery extends CaMykSLibrary {
         return $result;
     }
 
-    /* Private read SQL methods */
+    /* Mark: Private read SQL methods */
 
     /**
      * Update query reading and parsing a select SQL query.
      * @param string $query
      * @return boolean success
      */
-    private function _read_fromSQLSelect($query) {
+    private function _read_fromSQLSelect(string $query) {
         /* Check SQL query */
         if (!preg_match('/^select (.+) from ([\w\s\,]+)( where (.+))?( group by (.+))?( order by (.+))?( limit ([0-9]+(\s*(\,|offset)\s*[0-9]+)?))?;?$/Ui', $query, $matches))
           return $this->add_error(61, '', __FILE__, __LINE__);
@@ -807,7 +807,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $query
      * @return boolean success
      */
-    private function _read_fromSQLInsert($query) {
+    private function _read_fromSQLInsert(string $query) {
         /* Check SQL query */
         if (!preg_match('/^insert into ([\w]+)( partition)?( \([\w, `]*\))? values (.*);?$/Ui', $query, $matches))
             return $this->add_error(61, '', __FILE__, __LINE__);
@@ -838,7 +838,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $query
      * @return boolean success
      */
-    private function _read_fromSQLUpdate($query) {
+    private function _read_fromSQLUpdate(string $query) {
         /* Check SQL query */
         if (!preg_match('/^update ([\w]+) set (.*) where (.*);?$/Ui', $query, $matches))
             return $this->add_error(61, '', __FILE__, __LINE__);
@@ -868,7 +868,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $query
      * @return boolean success
      */
-    private function _read_fromSQLDelete($query) {
+    private function _read_fromSQLDelete(string $query) {
         /* Check SQL query */
         if (!preg_match('/^delete from ([\w]+) where (.*)( order by (.+))?( limit ([0-9]+(\s*(\,|offset)\s*[0-9]+)?))?;?$/Ui', $query, $matches))
             return $this->add_error(61, '', __FILE__, __LINE__);
@@ -902,7 +902,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    private function _read_tablesFromSQL($data) {
+    private function _read_tablesFromSQL(string $data) {
         $data = trim($data);
 
         /* Split tables */
@@ -932,7 +932,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolnean success
      */
-    private function _read_orderByFromSQL($data) {
+    private function _read_orderByFromSQL(string $data) {
         $data = trim($data);
 
         /* Split all values */
@@ -980,7 +980,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    private function _read_limitFromSQL($data) {
+    private function _read_limitFromSQL(string $data) {
         $data = trim($data);
 
         /* Check for count and offset separated by a comma */
@@ -1009,7 +1009,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    private function _read_itemsFromSQLSelect($data) {
+    private function _read_itemsFromSQLSelect(string $data) {
         $data = trim($data);
 
         /* Split all values */
@@ -1039,7 +1039,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolnean success
      */
-    private function _read_groupByFromSQLSelect($data) {
+    private function _read_groupByFromSQLSelect(string $data) {
         $data = trim($data);
 
         /* Split all values */
@@ -1071,7 +1071,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    private function _read_partitionFromSQLInsert($data) {
+    private function _read_partitionFromSQLInsert(string $data) {
         $data = trim($data);
 
         /* Remove parenthesis */
@@ -1105,7 +1105,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return boolean success
      */
-    private function _read_valuesFromSQLInsert($data) {
+    private function _read_valuesFromSQLInsert(string $data) {
         $data = trim($data);
 
         /* Go through all values */
@@ -1128,7 +1128,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * return boolean success
      */
-    private function _read_assignmentsFromSQLUpdate($data) {
+    private function _read_assignmentsFromSQLUpdate(string $data) {
         /* Read assignment values */
         $values = explode(',', $data);
         foreach ($values as $value) {
@@ -1142,14 +1142,14 @@ final class DbQuery extends CaMykSLibrary {
         return true;
     }
 
-    /* Sub reading methods */
+    /* Mark: Sub reading methods */
 
     /**
      * Read and return column details.
      * @param string $data
      * @return array
      */
-    private function _read_columnFromSQL($data) {
+    private function _read_columnFromSQL(string $data) {
         /* Initialise result */
         $column = array('column'=>'', 'alias'=>'', 'table'=>'', 'function'=>'');
 
@@ -1183,7 +1183,7 @@ final class DbQuery extends CaMykSLibrary {
      * @param string $data
      * @return srting
      */
-    private function _read_singleValuesFromSQLInsert($data) {
+    private function _read_singleValuesFromSQLInsert(string $data) {
         /* Initialise result */
         $values = array();
 
@@ -1297,14 +1297,14 @@ final class DbQuery extends CaMykSLibrary {
         return $data;
     }
 
-    /* Private tool methods */
+    /* Mark: Private tool methods */
 
     /**
      * Read value from string.
      * @param string $data
      * @return mixed
      */
-    private function _read_string($data) {
+    private function _read_string(string $data) {
         $data = trim($data);
 
         /* Check is data a string */

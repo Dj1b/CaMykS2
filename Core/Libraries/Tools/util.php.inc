@@ -3,10 +3,10 @@
  * @brief Util methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.1
+ * @version 1.0pre2
  * @date Creation: Dec 2019
- * @date Modification: Feb 2020
- * @copyright 2019 - 2020 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -19,7 +19,7 @@
  * @param string $format
  * @return string
  */
-function util_getHumanReadableSize($size, $format='Binary') {
+function util_getHumanReadableSize(int $size, string $format='Binary') {
     /* Check size */
     $size = (int)$size;
 
@@ -53,7 +53,7 @@ function util_getHumanReadableSize($size, $format='Binary') {
  * @param array $params
  * @return string
  */
-function util_getRecentRandomUserAgent($params=array()) {
+function util_getRecentRandomUserAgent(array $params=array()) {
     global $camyks;
 
     /* Default params */

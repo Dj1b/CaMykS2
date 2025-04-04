@@ -3,13 +3,12 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Oct 2019
- * @date Modification: Jan 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @warning This library is not loaded with CaMykS initialisation.
  */
 
 namespace CaMykS2;
@@ -31,7 +30,7 @@ abstract class CaMykSLibrary {
      */
     protected $libraryNamespace;
 
-    /* Parameters */
+    /* Mark: Parameters */
 
     /**
      * @var array $params
@@ -39,7 +38,7 @@ abstract class CaMykSLibrary {
      */
     protected $params = array();
 
-    /* Errors related variables */
+    /* Mark: Errors related variables */
 
     /**
      * @var array $errorList.
@@ -58,7 +57,7 @@ abstract class CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function __construct($params=array()) {
+    public function __construct(array $params=array()) {
         /* Define library namespace */
         $this->libraryNamespace = __NAMESPACE__;
 
@@ -69,7 +68,7 @@ abstract class CaMykSLibrary {
         $this->update_params($params);
     }
 
-    /* Public parameters related methods */
+    /* Mark: Public parameters related methods */
 
     /**
      * Update single parameter.
@@ -77,7 +76,7 @@ abstract class CaMykSLibrary {
      * @param mixed $value
      * @return void
      */
-    public function update_param($name, $value) {
+    public function update_param(array $name, mixed $value) {
         $this->params[$name] = $value;
     }
 
@@ -86,7 +85,7 @@ abstract class CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function update_params($params) {
+    public function update_params(array $params) {
         $this->params = array_merge($this->params, $params);
     }
 
@@ -95,26 +94,26 @@ abstract class CaMykSLibrary {
      * @param string $name
      * @return mixed
      */
-    public function get_param($name) {
+    public function get_param(string $name) {
         if (isset($this->params[$name]))
             return $this->params[$name];
         return false;
     }
 
-    /* Public configuration related methods */
+    /* Mark: Public configuration related methods */
 
     /**
-     * Return configuration value.
+     * Return engine configuration value.
      * @param string $name
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue($name, $default=null) {
+    public function get_engineConfigValue(string $name, mixed $default=null) {
         global $CaMykS;
         return $CaMykS->get_configValue($name, $default);
     }
 
-    /* Public errors related methods */
+    /* Mark: Public errors related methods */
 
     /**
      * Check if errors have been recorded.
@@ -142,14 +141,14 @@ abstract class CaMykSLibrary {
         );
     }
 
-    /* Public locales related methods */
+    /* Mark: Public locales related methods */
 
     /**
      * Check if locale exists.
      * @param string $locale
      * @return boolean result
      */
-    public function check_locale($locale='') {
+    public function check_locale(string $locale='') {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
@@ -166,7 +165,7 @@ abstract class CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    public function get_locale($locale='', $data=null) {
+    public function get_locale(string $locale='', mixed $data=null) {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
@@ -176,14 +175,15 @@ abstract class CaMykSLibrary {
         return $CaMykS->get_locale($locale, $this->libraryName, $data);
     }
 
-    /* Protected locales related methods */
+    /* Mark: Protected locales related methods */
 
     /**
      * Load library locales.
+     * @param string $folder
      * @param string $language
      * @return boolean success
      */
-    protected function load_locales($language=null) {
+    protected function load_locales(string $folder='', ?string $language=null) {
         global $CaMykS;
 
         /* Check CaMykS object */
@@ -191,10 +191,10 @@ abstract class CaMykSLibrary {
             return false;
 
         /* Load library locales in CaMykS */
-        return $CaMykS->load_engineLocales('Libraries/'.$this->libraryName, $this->libraryName, $language);
+        return $CaMykS->load_engineLocales('Libraries/'.$this->libraryName.($folder != '' ? '/'.$folder : ''), $this->libraryName, $language);
     }
 
-    /* Protected errors related methods */
+    /* Mark: Protected errors related methods */
 
     /**
      * Add an error.
@@ -205,7 +205,7 @@ abstract class CaMykSLibrary {
      * @param boolean $isFatal
      * @return false
      */
-    protected function add_error($errorId, $details, $file='', $line=0, $isFatal=false) {
+    protected function add_error(int $errorId, string $details, string $file='', int $line=0, bool $isFatal=false) {
         global $CaMykS;
 
         /* Add error at the beginning of the list */
@@ -226,14 +226,14 @@ abstract class CaMykSLibrary {
         $this->errorCodes = array();
     }
 
-    /* Private errors related methods */
+    /* Mark: Private errors related methods */
 
     /**
      * Return error code from its id.
      * @param integer $errorId
      * @return string
      */
-    protected function get_errorCode($errorId) {
+    protected function get_errorCode(int $errorId) {
         /* Load error codes if needed */
         if ($this->errorCodes === null)
             $this->define_errorCodes();
@@ -251,7 +251,7 @@ abstract class CaMykSLibrary {
      * @param integer $errorId
      * @return string
      */
-    protected function get_errorMessage($errorId) {
+    protected function get_errorMessage(int $errorId) {
         global $CaMykS;
 
         /* Load error code */

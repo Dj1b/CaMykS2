@@ -3,10 +3,10 @@
  * @brief PHP related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2021
- * @date Modification: Dec 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * @param string $separator
  * @return string
  */
-function php_displayErrorReportingLevelAsString($errorLevel=null, $separator=', ') {
+function php_displayErrorReportingLevelAsString(int $errorLevel=null, string $separator=', ') {
     /* Check level value */
     if (is_null($errorLevel)) $errorLevel = error_reporting();
 

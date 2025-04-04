@@ -4,10 +4,10 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Jan 2021
- * @date Modification: Mar 2023
- * @copyright 2021 - 2023 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -79,7 +79,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(CaMykS2\Module &$parent, int $id=0) {
         global $CaMykS;
         /* Execute parent construct */
         parent::__construct($parent);
@@ -97,27 +97,27 @@ abstract class ModuleLibrary extends PluginLibrary {
         }
     }
 
-    /* Magic methods */
+    /* Mark: Magic methods */
 
     /**
      * Read attribute value as variable.
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name) {
         if (in_array($name, array('objectId')))
             return $this->$name;
         return parent::__get($name);
     }
 
-    /* Data management methods */
+    /* Mark: Data management methods */
 
     /**
      * Load object.
      * @param mixed $language
      * @return boolean success
      */
-    public function load($language=true) {
+    public function load(mixed $language=true) {
         if ($this->objectId === 0)
             return $this->initialise($language);
         return $this->load_fromDatabase($language) and $this->load_files($language) and $this->load_temporary();
@@ -184,19 +184,19 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param integer $objectId
      * @return Object
      */
-    public function get_newInstance($objectId=0) {
+    public function get_newInstance(int $objectId=0) {
         $class = $this->libraryNamespace.'\\'.$this->libraryName;
         return new $class($this->libraryParent, $objectId);
     }
 
-    /* Data management sub methods */
+    /* Mark: Data management sub methods */
 
     /**
      * Check object data.
      * @param boolean $loadPreviousVersion
      * @return boolean result
      */
-    public function check_data($loadPreviousVersion=false) {
+    public function check_data(bool $loadPreviousVersion=false) {
         /* Check attributes */
         if (!$this->check_attributesValues())
             return false;
@@ -297,7 +297,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param boolean $isLocalised
      * @return boolean success
      */
-    protected function define_databaseAttribute($name, $type, $default=null, $params=array(), $isLocalised=false) {
+    protected function define_databaseAttribute(string $name, string $type, mixed $default=null, array $params=array(), bool $isLocalised=false) {
         /* Define attribute */
         if (!$this->define_attribute($name, $type, $default, $params, $isLocalised))
             return;
@@ -317,7 +317,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param boolean $isLocalised
      * @return boolean success
      */
-    protected function define_fileAttribute($name, $type='File', $params=array(), $isLocalised=false) {
+    protected function define_fileAttribute(string $name, string $type='File', array $params=array(), bool $isLocalised=false) {
         /* Define attribute */
         if (!$this->define_attribute($name, $type, null, $params, $isLocalised))
             return;
@@ -338,7 +338,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param boolean $isLocalised
      * @return boolean success
      */
-    protected function define_temporaryAttribute($name, $type, $default=null, $params=array(), $isLocalised=false) {
+    protected function define_temporaryAttribute(string $name, string $type, mixed $default=null, array $params=array(), bool $isLocalised=false) {
         /* Define attribute */
         if (!$this->define_attribute($name, $type, $default, $params, $isLocalised))
             return;
@@ -405,17 +405,17 @@ abstract class ModuleLibrary extends PluginLibrary {
         return true;
     }
 
-    /* Multi object management methods */
+    /* Mark: Multi object management methods */
 
 
-    /* Database methods */
+    /* Mark: Database methods */
 
     /**
      * Send a database error to CaMykS.
      * @param string $error
      * @return false
      */
-    protected function add_databaseError($error) {
+    protected function add_databaseError(string $error) {
         global $CaMykS;
 
         /* Send error to CaMykS */
@@ -431,7 +431,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_DBQuery($query, $resourceName=null) {
+    public function execute_DBQuery(mixed $query, ?string $resourceName=null) {
         return $this->databaseConnector->execute_query($query, $resourceName) or $this->add_databaseError($this->get_DBQueryError($resourceName));
     }
 
@@ -441,7 +441,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_DBDirectQuery($query, $resourceName=null) {
+    public function execute_DBDirectQuery(string $query, ?string $resourceName=null) {
         return $this->databaseConnector->execute_directQuery($query, $resourceName) or $this->add_databaseError($this->get_DBQueryError($resourceName));
     }
 
@@ -451,7 +451,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_DBBuiltQuery($query, $resourceName=null) {
+    public function execute_DBBuiltQuery(CaMykS2\DbQuery $query, ?string $resourceName=null) {
         return $this->databaseConnector->execute_builtQuery($query, $resourceName) or $this->add_databaseError($this->get_DBQueryError($resourceName));
     }
 
@@ -460,7 +460,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $queries
      * @param string $resourceName
      */
-    public function execute_DBMultiQueries($queries='', $resourceName=null) {
+    public function execute_DBMultiQueries(string $queries='', ?string $resourceName=null) {
         return $this->databaseConnector->execute_queries($queries, $resourceName) or $this->add_databaseError($this->get_DBQueryError($resourceName));
     }
 
@@ -469,7 +469,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_DBQueryGeneratedId($resourceName=null) {
+    public function get_DBQueryGeneratedId(?string $resourceName=null) {
         return $this->databaseConnector->get_queryGeneratedId($resourceName);
     }
 
@@ -478,7 +478,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_DBQueryDataLine($resourceName=null) {
+    public function get_DBQueryDataLine(?string $resourceName=null) {
         return $this->databaseConnector->get_queryDataLine($resourceName);
     }
 
@@ -487,7 +487,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_DBQueryNumDataLine($resourceName=null) {
+    public function get_DBQueryNumDataLine(?string $resourceName=null) {
         return $this->databaseConnector->get_queryNumDataLine($resourceName);
     }
 
@@ -496,7 +496,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return integer
      */
-    public function get_DBQueryAffectedRows($resourceName=null) {
+    public function get_DBQueryAffectedRows(?string $resourceName=null) {
         return $this->databaseConnector->get_queryAffectedRows($resourceName);
     }
 
@@ -505,7 +505,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $resourceName
      * @return string
      */
-    public function get_DBQueryError($resourceName=null) {
+    public function get_DBQueryError(?string $resourceName=null) {
         return $this->databaseConnector->get_queryError($resourceName);
     }
 
@@ -516,7 +516,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param array $params
      * @return boolean success
      */
-    public function create_DBTable($name, $fields, $params=array()) {
+    public function create_DBTable(string $name, array $fields, array $params=array()) {
         return $this->databaseConnector->create_table($name, $fields, $params);
     }
 
@@ -525,7 +525,7 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param string $string
      * @return string
      */
-    public function escape_string($string) {
+    public function escape_string(string $string) {
         return $this->databaseConnector->escape_string($string);
     }
 }

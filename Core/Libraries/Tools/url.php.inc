@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief URL specific methods
+ * @brief URL specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -25,7 +25,7 @@ function url_getCurrentURL() {
  * @param string $URL
  * @return string
  */
-function url_getBaseURLFromMode($mode='Relative', $URL=null) {
+function url_getBaseURLFromMode(string $mode='Relative', ?string $URL=null) {
     switch ($mode) {
         case 'Absolute':
         case 'AbsoluteLong':
@@ -67,7 +67,7 @@ function url_getBaseURLModes() {
  * @param string $URL
  * @return string
  */
-function url_getURLWithSSLMode($mode='Default', $URL=null) {
+function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null) {
     /* Check URL */
     $tempURL = url_getCurrentURL();
     if (is_null($URL))
@@ -125,7 +125,7 @@ function url_getSSLModes() {
  * @param boolean $strict check also subdomain if true
  * @return boolean result
  */
-function url_haveSameHost($urls=array(), $strict=false) {
+function url_haveSameHost(array $urls=array(), bool $strict=false) {
     if (!is_array($urls))
       return false;
 
@@ -168,7 +168,7 @@ function url_haveSameHost($urls=array(), $strict=false) {
  * @param string $scheme
  * @return string
  */
-function url_getAsComplete($url, $scheme='http') {
+function url_getAsComplete(string $url, string $scheme='http') {
     /* Trim URL */
     $url = trim($url);
 
@@ -189,7 +189,7 @@ function url_getAsComplete($url, $scheme='http') {
  * @param string $url
  * @return string
  */
-function url_getAsSmart($url) {
+function url_getAsSmart(string $url) {
     /* Remove tailing / char */
     $url = preg_replace('#/$#', '', $url);
 

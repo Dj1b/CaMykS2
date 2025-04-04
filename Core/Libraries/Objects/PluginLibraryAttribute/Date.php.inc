@@ -3,10 +3,10 @@
  * @brief DatePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @details Available formats
@@ -28,14 +28,14 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
      */
     const DEFAULTPARAMS = array('Format'=>'DateTime');
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Return read value from save.
      * @param mixed $value
      * @return mixed
      */
-    protected function read_valueFromSave($value) {
+    protected function read_valueFromSave(mixed $value) {
         return strtotime($value);
     }
 
@@ -44,7 +44,7 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return $mixed
      */
-    protected function optimise_valueToSave($value) {
+    protected function optimise_valueToSave(mixed $value) {
         return $this->format_date($value);
     }
 
@@ -89,14 +89,14 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
         return $params;
     }
 
-    /* Specific methods */
+    /* Mark: Specific methods */
 
     /**
      * Return formated date.
      * @param mixed $value
      * @return string
      */
-    private function format_date($value) {
+    private function format_date(mixed $value) {
         if ($this->params['Format'] == 'DateTime')
             return date('Y-m-d H:i:s', $value);
 

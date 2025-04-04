@@ -3,10 +3,10 @@
  * @brief Image manipulating object
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.2
+ * @version 1.0pre2
  * @date Creation: Dec 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -34,7 +34,7 @@ final class Image extends CaMykSLibrary {
     private $source;
 
     /**
-     * @var Ressource $resource
+     * @var GDImage $resource
      * @brief Image ressource to manipulate.
      */
     private $resource;
@@ -93,7 +93,7 @@ final class Image extends CaMykSLibrary {
      * @param string $engine
      * @return void
      */
-    public function __construct($source='', $engine='') {
+    public function __construct(string $source='', string $engine='') {
         /* Check engine */
         $this->check_imageManipulationEngine($engine);
 
@@ -101,7 +101,7 @@ final class Image extends CaMykSLibrary {
         $this->load_image($source);
     }
 
-    /* Override CaMykSLibrary methods */
+    /* Mark: Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
@@ -118,14 +118,14 @@ final class Image extends CaMykSLibrary {
         );
     }
 
-    /* Image related public methods */
+    /* Mark: Image related public methods */
 
     /**
      * Load image resource.
      * @param string $source
      * @return boolean result
      */
-    public function load_image($source='') {
+    public function load_image(string $source='') {
         /* Check engine */
         if ($this->engine === false)
             return false;
@@ -165,7 +165,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $quality
      * @return void
      */
-    public function update_JPGQuality($quality=75) {
+    public function update_JPGQuality(int $quality=75) {
         $this->jpgQuality = max(0, min(100, (int)$quality));
     }
 
@@ -193,7 +193,7 @@ final class Image extends CaMykSLibrary {
      * @param string $type
      * @return boolean success
      */
-    public function save_image($filename, $type='') {
+    public function save_image(string $filename, string $type='') {
         if (!$this->is_loaded()) return false;
         switch ($this->engine) {
             case 'gd':
@@ -202,7 +202,7 @@ final class Image extends CaMykSLibrary {
         return false;
     }
 
-    /* Public manipulation methods */
+    /* Mark: Public manipulation methods */
 
     /**
      * Crop image.
@@ -212,7 +212,7 @@ final class Image extends CaMykSLibrary {
      * @param string $bgColor (\#transp for transparent background)
      * @return boolean success
      */
-    public function crop($width, $height, $position='', $bgColor='#FFFFFF') {
+    public function crop(int $width, int $height, mixed $position='', string $bgColor='#FFFFFF') {
         if (!$this->is_loaded()) return false;
         switch ($this->engine) {
             case 'gd':
@@ -228,7 +228,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $homothetic (0 : no / 1 : yes, use min value / 2 : yes, use max value)
      * @return boolean success
      */
-    public function resize($width, $height=0, $homothetic=0) {
+    public function resize(int $width, int $height=0, int $homothetic=0) {
         if (!$this->is_loaded()) return false;
         switch ($this->engine) {
             case 'gd':
@@ -242,7 +242,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $gain
      * @return boolean success
      */
-    public function sharp($gain=40) {
+    public function sharp(int $gain=40) {
         if (!$this->is_loaded()) return false;
 
         /* Check value */
@@ -261,7 +261,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $loss
      * @return boolean success
      */
-    public function blur($loss=50) {
+    public function blur(int $loss=50) {
         if (!$this->is_loaded()) return false;
 
         /* Check value */
@@ -280,7 +280,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $factor
      * @return boolean success
      */
-    public function darken($factor=0) {
+    public function darken(int $factor=0) {
         if (!$this->is_loaded()) return false;
 
         /* Check value */
@@ -299,7 +299,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $factor
      * @return boolean success
      */
-    public function lighten($factor=0) {
+    public function lighten(int $factor=0) {
         if (!$this->is_loaded()) return false;
 
         /* Check value */
@@ -318,7 +318,7 @@ final class Image extends CaMykSLibrary {
      * @param array $params
      * @return boolean success
      */
-    public function trim($params=array()) {
+    public function trim(array $params=array()) {
         if (!$this->is_loaded()) return false;
 
         /* Check params */
@@ -338,7 +338,7 @@ final class Image extends CaMykSLibrary {
      * @param array $params
      * @return boolean success
      */
-    public function rotate($params=array()) {
+    public function rotate(array $params=array()) {
         if (!$this->is_loaded()) return false;
 
         /* Check params */
@@ -353,14 +353,14 @@ final class Image extends CaMykSLibrary {
         return false;
     }
 
-    /* Private methods */
+    /* Mark: Private methods */
 
     /**
      * Check which image manipulation to use.
      * @param string $engine
      * @return boolean result
      */
-    private function check_imageManipulationEngine($engine) {
+    private function check_imageManipulationEngine(string $engine) {
         /* Normalise engine */
         $engine = strToLower($engine);
 
@@ -383,13 +383,14 @@ final class Image extends CaMykSLibrary {
         return true;
     }
 
-    /* GD methods */
+    /* Mark: GD methods */
 
     /**
      * Load image with GD.
+     * @param string $source
      * @return boolean success
      */
-    private function _gd_load_image($source) {
+    private function _gd_load_image(string $source) {
         /* Save source */
         $this->source = $source;
 
@@ -415,7 +416,7 @@ final class Image extends CaMykSLibrary {
      * @param string $type
      * @return boolean success
      */
-    private function _gd_save_image($filename, $type) {
+    private function _gd_save_image(string $filename, string $type) {
         /* Check resource */
         if ($this->resource == null) return false;
 
@@ -451,7 +452,7 @@ final class Image extends CaMykSLibrary {
      * @param string $bgColor
      * @return boolean success
      */
-    private function _gd_crop($width, $height, $position, $bgColor) {
+    private function _gd_crop(int $width, int $height, mixed $position, string $bgColor) {
         /* Check resource */
         if ($this->resource == null) return false;
 
@@ -684,7 +685,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $homothetic
      * @return result success
      */
-    private function _gd_resize($width, $height, $homothetic) {
+    private function _gd_resize(int $width, int $height, int $homothetic) {
         /* Check sizes */
         if ($width == 0 and $height == 0) {
             return false;
@@ -719,7 +720,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $gain
      * @return boolean success
      */
-    private function _gd_sharp($gain) {
+    private function _gd_sharp(int $gain) {
         if ($gain >= 80) {
             $gain = 4 + ((100-$gain)*5)/100;
         } else {
@@ -733,7 +734,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $loss
      * @return boolean success
      */
-    private function _gd_blur($loss) {
+    private function _gd_blur(int $loss) {
         $loss = 17 - ($loss/5);
 
         return $this->_gd_convolution(array(array(1, 1, 1), array(1, $loss, 1), array(1, 1, 1)));
@@ -744,7 +745,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $factor
      * @return boolean success
      */
-    private function _gd_darken($factor) {
+    private function _gd_darken(int $factor) {
         $factor = 100 - min(100, max(0, $factor));
 
         return $this->_gd_convolution(array(array(0, 0, 0), array(0, $factor, 0), array(0, 0, 0)), 100);
@@ -755,7 +756,7 @@ final class Image extends CaMykSLibrary {
      * @param integer $factor
      * @return boolean success
      */
-    private function _gd_lighten($factor) {
+    private function _gd_lighten(int $factor) {
         $factor = 100 - min(100, max(0, $factor));
 
         return $this->_gd_convolution(array(array(0, 0, 0), array(0, 100, 0), array(0, 0, 0)), $factor);
@@ -766,7 +767,7 @@ final class Image extends CaMykSLibrary {
      * @param array $params
      * @return boolean success
      */
-    private function _gd_trim($params) {
+    private function _gd_trim(array $params) {
         /* Auto detect color */
         if ($params['color'] == 'auto') {
             $cc = array();
@@ -866,7 +867,7 @@ final class Image extends CaMykSLibrary {
      * @param array $params
      * @return boolean success
      */
-    private function _gd_rotate($params) {
+    private function _gd_rotate(array $params) {
         if ($params['angle'] == 0)
             return true;
         if ($params['angle'] == 180) {
@@ -906,15 +907,15 @@ final class Image extends CaMykSLibrary {
         return true;
     }
 
-    /* GD sub methods */
+    /* Mark: GD sub methods */
 
     /**
      * Return allocated color for GD.
      * @param string $color
-     * @param resource $resource
+     * @param GDImage $resource
      * @return resource
      */
-    private function _gd_getAllocatedColor($color, $resource=false) {
+    private function _gd_getAllocatedColor(string $color, ?GDImage $resource=null) {
 
         /* Check color */
         if (preg_match('/#?([0-9A-Fa-f]{6})/', $color, $matches)) {
@@ -926,7 +927,7 @@ final class Image extends CaMykSLibrary {
             $r = 255; $g = 255; $b = 255;
         }
 
-        if ($resource == false)
+        if (is_null($resource))
             return imagecolorallocate($this->resource, $r, $g, $b);
         return imagecolorallocate($resource, $r, $g, $b);
     }
@@ -938,7 +939,7 @@ final class Image extends CaMykSLibrary {
      * @param float $offset
      * @return boolean success
      */
-    private function _gd_convolution($matrix, $divisor=false, $offset=0) {
+    private function _gd_convolution(array $matrix, ?float $divisor=null, float $offset=0) {
         /* Check for convolution method (PHP > 5.1) */
         if (!function_exists("imageconvolution"))
             return false;
@@ -948,7 +949,7 @@ final class Image extends CaMykSLibrary {
             return false;
 
         /* Check divisor, if required set neutral divisor */
-        if ($divisor === false)
+        if (is_null($divisor))
             $divisor = array_sum(array_map('array_sum', $matrix));
 
         /* Return result */
@@ -973,7 +974,7 @@ final class Image extends CaMykSLibrary {
         $this->hasTransparency = true;
     }
 
-    /* Static public methods */
+    /* Mark: Static public methods */
 
     /**
      * Return available engine list.

@@ -3,22 +3,22 @@
  * @brief Network methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2020 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* Generic IP methods */
+/* Mark: Generic IP methods */
 
 /**
  * Check IP format.
  * @param string $ip
  * @return string
  */
-function network_checkIPFormat($ip) {
+function network_checkIPFormat(string $ip) {
     if (network_isIPv4Valid($ip)) return 'IPv4';
     if (network_isIPv6Valid($ip)) return 'IPv6';
     if (network_isIPCIDRValid($ip)) return 'CIDR';
@@ -30,19 +30,19 @@ function network_checkIPFormat($ip) {
  * @param string $ip
  * @return boolean result
  */
-function network_isIPValid($ip) {
+function network_isIPValid(string $ip) {
     if (network_isIPv4Valid($ip)) return true;
     return network_isIPv6Valid($ip);
 }
 
-/* IPv4 methods */
+/* Mark: IPv4 methods */
 
 /**
  * Check IP is a valid IPv4.
  * @param string $ip
  * @return boolean result
  */
-function network_isIPv4Valid($ip) {
+function network_isIPv4Valid(string $ip) {
     return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
 }
 
@@ -51,7 +51,7 @@ function network_isIPv4Valid($ip) {
  * @param string $cidr
  * @return boolean result
  */
-function network_isIPCIDRValid($cidr) {
+function network_isIPCIDRValid(string $cidr) {
     list ($ip, $mask) = explode ('/', $cidr);
     return (!is_null($mask) and $mask > 0 and $mask < 24 and filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
 }
@@ -62,7 +62,7 @@ function network_isIPCIDRValid($cidr) {
  * @param string $cidr
  * @return boolean result
  */
-function network_isIPv4InCIDR($ip, $cidr) {
+function network_isIPv4InCIDR(string $ip, string $cidr) {
     list ($net, $mask) = explode ('/', $cidr);
 
     $ip_net = ip2long($net);
@@ -73,14 +73,14 @@ function network_isIPv4InCIDR($ip, $cidr) {
     return (($ip_ip & $ip_mask) == ($ip_net & $ip_mask));
 }
 
-/* IPv6 methods */
+/* Mark: IPv6 methods */
 
 /**
  * Check IP is a valid IPv6.
  * @param string $ip
  * @return boolean result
  */
-function network_isIPv6Valid($ip) {
+function network_isIPv6Valid(string $ip) {
     return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
 }
 ?>

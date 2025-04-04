@@ -4,10 +4,10 @@
  * <br />Theme abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Dec 2019
- * @date Modification: Dec 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -65,7 +65,7 @@ abstract class Theme extends Plugin {
      * @param string $location
      * @return void
      */
-    public function __construct($location) {
+    public function __construct(?string $location=null) {
         /* Override Plugin variables */
         $this->pluginType = 'Theme';
 
@@ -73,7 +73,7 @@ abstract class Theme extends Plugin {
         parent::__construct($location);
     }
 
-    /* Override Plugin methods */
+    /* Mark: Override Plugin methods */
 
     /**
      * Initialise theme.
@@ -87,7 +87,7 @@ abstract class Theme extends Plugin {
         $this->shortName = preg_replace('/(Style|Design)$/', '', $this->libraryName);
     }
 
-    /* Check methods */
+    /* Mark: Check methods */
 
     /**
      * Check if theme supports visit mode.
@@ -105,14 +105,14 @@ abstract class Theme extends Plugin {
         return (count($this->adminStyleFiles) > 0);
     }
 
-    /* Graphical elements building */
+    /* Mark: Graphical elements building */
 
     /**
      * Create and display a button.
      * @param array $params
      * @return boolean success.
      */
-    public function display_button($params=array()) {
+    public function display_button(array $params=array()) {
         global $CaMykS;
 
         /* Build default params */
@@ -150,7 +150,7 @@ abstract class Theme extends Plugin {
         return $CaMykS->load_assetLayout('Theme/Button', $this->layoutContext);
     }
 
-    /* Plugin related methods */
+    /* Mark: Plugin related methods */
 
     /**
      * Attach a plugin specific style file to HTML page.
@@ -159,7 +159,7 @@ abstract class Theme extends Plugin {
      * @param string $URLMode
      * @return void
      */
-    public function add_pluginStyleFile($plugin, $condition='', $URLMode=null) {
+    public function add_pluginStyleFile(string $plugin, string $condition='', ?string $URLMode=null) {
         if (isset($this->pluginStyleFiles[$plugin]))
             $this->add_styleFile('Plugins/'.$this->pluginStyleFiles[$plugin], $condition, $URLMode);
     }

@@ -4,10 +4,10 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Dec 2020
- * @date Modification: Feb 2022
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2020 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -52,7 +52,7 @@ final class LocalStorage extends CaMykSLibrary {
 
     }
 
-    /* Public tool methods */
+    /* Mark: Public tool methods */
 
     /**
      * Return available modes.
@@ -65,7 +65,7 @@ final class LocalStorage extends CaMykSLibrary {
         return $list;
     }
 
-    /* Documents related methods */
+    /* Mark: Documents related methods */
 
     /**
      * Return documents URL.
@@ -75,7 +75,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $URLMode
      * @return mixed
      */
-    public function get_documentsURL($plugin, $path, $files=array(), $URLMode=null) {
+    public function get_documentsURL(string $plugin, string $path, array $files=array(), ?string $URLMode=null) {
 
     }
 
@@ -86,11 +86,11 @@ final class LocalStorage extends CaMykSLibrary {
      * @param array $files
      * @return mixed
      */
-    public function save_uploadedDocuments($plugin, $path, $files=array()) {
+    public function save_uploadedDocuments(string $plugin, string $path, array $files=array()) {
 
     }
 
-    /* Configuration related methods */
+    /* Mark: Configuration related methods */
 
     /**
      * Return configuration data.
@@ -99,7 +99,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $name
      * @return array
      */
-    public function get_configuration($plugin, $library, $name) {
+    public function get_configuration(string $plugin, string $library, string $name) {
         $this->load_storageMode();
 
         if ($this->storageMode === 'Database') {
@@ -126,7 +126,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param array $data
      * @return boolean success
      */
-    public function save_configuration($plugin, $library, $name, $data) {
+    public function save_configuration(string $plugin, string $library, string $name, array $data) {
         /* Load storage mode */
         $this->load_storageMode();
 
@@ -150,7 +150,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $name
      * @return boolean success
      */
-    public function delete_configuration($plugin, $library, $name) {
+    public function delete_configuration(string $plugin, string $library, string $name) {
         $this->load_storageMode();
 
         if ($this->storageMode === 'Database') {
@@ -162,7 +162,7 @@ final class LocalStorage extends CaMykSLibrary {
         }
     }
 
-    /* Event methods */
+    /* Mark: Event methods */
 
     /**
      * On configuration switch from files to database.
@@ -201,7 +201,7 @@ final class LocalStorage extends CaMykSLibrary {
         /* @todo */
     }
 
-    /* File system related methods */
+    /* Mark: File system related methods */
 
     /**
      * Return configuration data from file.
@@ -210,7 +210,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $name
      * @return array
      */
-    private function get_configurationFile($plugin, $library, $name) {
+    private function get_configurationFile(string $plugin, string $library, string $name) {
         $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
         return $file->get_contents();
     }
@@ -223,7 +223,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param array $data
      * @return boolean success
      */
-    private function save_configurationFile($plugin, $library, $name, $data) {
+    private function save_configurationFile(string $plugin, string $library, string $name, array $data) {
         global $CaMykS;
 
         /* Ensure folder path exists */
@@ -241,12 +241,12 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $name
      * @return boolean success
      */
-    private function delete_configurationFile($plugin, $library, $name) {
+    private function delete_configurationFile(string $plugin, string $library, string $name) {
         $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
         return $file->delete();
     }
 
-    /* Private specific tool methods */
+    /* Mark: Private specific tool methods */
 
     /**
      * Load storage mode.

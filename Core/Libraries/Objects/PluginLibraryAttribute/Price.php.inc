@@ -3,10 +3,10 @@
  * @brief PricePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jan 2022
- * @date Modification: Jan 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,7 +24,7 @@ class PricePluginLibraryAttribute extends FloatPluginLibraryAttribute {
      */
     protected const SUBPARAMS = array('Decimals'=>2);
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Export for table creation in database.

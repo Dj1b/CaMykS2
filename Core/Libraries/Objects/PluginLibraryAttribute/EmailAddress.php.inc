@@ -3,10 +3,10 @@
  * @brief EmailAddressPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,7 +24,7 @@ class EmailAddressPluginLibraryAttribute extends TextPluginLibraryAttribute {
      */
     protected const SUBPARAMS = array('Length'=>255, 'StripHTMLTags'=>true, 'AutoTrim'=>true);
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Check and optimise stored value.

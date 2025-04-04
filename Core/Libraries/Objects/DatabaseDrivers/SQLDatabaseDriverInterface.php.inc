@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
@@ -28,7 +28,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         parent::__construct($parent);
     }
 
-    /* Override DatabaseDriverInterface methods */
+    /* Mark: Override DatabaseDriverInterface methods */
 
     /**
      * Execute prepared query using DbQuery builder.
@@ -36,7 +36,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_builtQuery($query, $resourceName='Default') {
+    public function execute_builtQuery(CaMykS2\DbQuery $query, string $resourceName='Default') {
         switch ($query->get_action()) {
             case 'select': return $this->execute_directQuery($this->get_builtSelectQuery($query), $resourceName);
             case 'insert': return $this->execute_directQuery($this->get_builtInsertQuery($query), $resourceName);
@@ -48,23 +48,23 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return false;
     }
 
-    /* Execute built query methods */
+    /* Mark: Execute built query methods */
 
     /**
      * Return select query using DbQuery builder.
      * @param Object $query
      * @return string
      */
-    protected function get_builtSelectQuery($query) {
+    protected function get_builtSelectQuery(CaMykS2\DbQuery $query) {
         return  'select '.
-                $this->get_selectItems($query->get_selectItems()).
-                ' from '.
-                $this->get_tables($query->get_tables()).
-                $this->get_whereConditions($query->get_whereConditions()).
-                $this->get_selectGroupBy($query->get_selectGroupBy()).
-                $this->get_orderBy($query->get_orderBy()).
-                $this->get_limits($query->get_limits()).
-                ';';
+            $this->get_selectItems($query->get_selectItems()).
+            ' from '.
+            $this->get_tables($query->get_tables()).
+            $this->get_whereConditions($query->get_whereConditions()).
+            $this->get_selectGroupBy($query->get_selectGroupBy()).
+            $this->get_orderBy($query->get_orderBy()).
+            $this->get_limits($query->get_limits()).
+            ';';
     }
 
     /**
@@ -72,13 +72,13 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtInsertQuery($query) {
+    protected function get_builtInsertQuery(CaMykS2\DbQuery$query) {
         return  'insert into '.
-                $this->get_tables($query->get_tables()).
-                $this->get_insertPartition($query->get_insertPartition()).
-                ' values '.
-                $this->get_insertValues($query->get_insertValues()).
-                ';';
+            $this->get_tables($query->get_tables()).
+            $this->get_insertPartition($query->get_insertPartition()).
+            ' values '.
+            $this->get_insertValues($query->get_insertValues()).
+            ';';
     }
 
     /**
@@ -86,13 +86,13 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtUpdateQuery($query) {
+    protected function get_builtUpdateQuery(CaMykS2\DbQuery $query) {
         return  'update '.
-                $this->get_tables($query->get_tables()).
-                ' set '.
-                $this->get_updateAssignments($query->get_updateAssignments()).
-                $this->get_whereConditions($query->get_whereConditions()).
-                ';';
+            $this->get_tables($query->get_tables()).
+            ' set '.
+            $this->get_updateAssignments($query->get_updateAssignments()).
+            $this->get_whereConditions($query->get_whereConditions()).
+            ';';
     }
 
     /**
@@ -100,23 +100,23 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtDeleteQuery($query) {
+    protected function get_builtDeleteQuery(CaMykS2\DbQuery $query) {
         return  'delete from '.
-                $this->get_tables($query->get_tables()).
-                $this->get_whereConditions($query->get_whereConditions()).
-                $this->get_orderBy($query->get_orderBy()).
-                $this->get_limits($query->get_limits()).
-                ';';
+            $this->get_tables($query->get_tables()).
+            $this->get_whereConditions($query->get_whereConditions()).
+            $this->get_orderBy($query->get_orderBy()).
+            $this->get_limits($query->get_limits()).
+            ';';
     }
 
-    /* Execute built query generic sub methods */
+    /* Mark: Execute built query generic sub methods */
 
     /**
      * Return query tables from data.
      * @param array $tables
      * @return string
      */
-    protected function get_tables($tables) {
+    protected function get_tables(array $tables) {
         /* Initialise result */
         $result = '';
 
@@ -309,7 +309,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return '';
     }
 
-    /* Execute built select query sub methods */
+    /* Mark: Execute built select query sub methods */
 
     /**
      * Return select query items from data.
@@ -363,7 +363,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return ' group by '.implode(',', $list);
     }
 
-    /* Execute built insert query sub methods */
+    /* Mark: Execute built insert query sub methods */
 
     /**
      * Return insert query partition from data.
@@ -395,7 +395,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return implode(',', $list);
     }
 
-    /* Execute built update query sub methods */
+    /* Mark: Execute built update query sub methods */
 
     /**
      * Return update query assignments from data.
@@ -414,7 +414,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return implode(',', $list);
     }
 
-    /* Specific tool methods */
+    /* Mark: Specific tool methods */
 
     /**
      * Return SQL way to write given value.

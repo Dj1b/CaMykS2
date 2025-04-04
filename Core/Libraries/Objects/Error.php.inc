@@ -3,10 +3,10 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3.3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -83,7 +83,7 @@ final class Error {
      * @param array $backtrace
      * @return void
      */
-    public function __construct($origin, $type, $code=0, $file='', $line=0, $message='', $details='', $backtrace=array()) {
+    public function __construct(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message='', string $details='', array $backtrace=array()) {
         $this->origin = $origin;
         $this->type = $type;
         $this->code = $code;
@@ -94,7 +94,7 @@ final class Error {
         $this->backtrace = $backtrace;
     }
 
-    /* Data related methods */
+    /* Mark: Data related methods */
 
     /**
      * Return error header value.
@@ -164,7 +164,7 @@ final class Error {
      * @param boolean $HTMLFormat
      * @return string
      */
-    public function get_message($HTMLFormat=false) {
+    public function get_message(bool $HTMLFormat=false) {
         /* Build full message with details */
         $message = $this->message;
         if ($this->details !== '')
@@ -189,7 +189,7 @@ final class Error {
      * @param boolean $HTMLFormat
      * @return string
      */
-    public function get_backtrace($HTMLFormat=false) {
+    public function get_backtrace(bool $HTMLFormat=false) {
 
         $lines = array();
 
@@ -230,7 +230,7 @@ final class Error {
         $this->count ++;
     }
 
-    /* Check methods */
+    /* Mark: Check methods */
 
     /**
      * Check error is similar.
@@ -242,7 +242,7 @@ final class Error {
      * @param string $message
      * @return boolean success
      */
-    public function is_similar($origin, $type, $code=0, $file='', $line=0, $message='') {
+    public function is_similar(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message='') {
         if ($this->origin != $origin)
             return false;
 
@@ -265,7 +265,7 @@ final class Error {
         return true;
     }
 
-    /* Export methods */
+    /* Mark: Export methods */
 
     /**
      * Export error as HTML.

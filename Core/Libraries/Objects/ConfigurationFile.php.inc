@@ -3,10 +3,10 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Mar 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2020 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -63,15 +63,16 @@ final class ConfigurationFile {
      * Class constructor.
      * @param string $file
      * @param string $source
+     * @param string $mode
      * @return void
      */
-    public function __construct($file, $source, $mode='Read') {
+    public function __construct(string $file, string $source, string $mode='Read') {
         $this->file = $file;
         $this->source = $source;
         $this->mode = $mode;
     }
 
-    /*  Public methods */
+    /* Mark:  Public methods */
 
     /**
      * Load configuration file.
@@ -138,7 +139,7 @@ final class ConfigurationFile {
      * @param string $name
      * @return mixed
      */
-    public function value($name) {
+    public function value(string $name) {
         if (!$this->status)
             $this->load();
         if (!isset($this->data[$name]))
@@ -152,7 +153,7 @@ final class ConfigurationFile {
      * @param mixed $value
      * @return void
      */
-    public function define($name, $value) {
+    public function define(string $name, mixed $value) {
         if (!$this->status)
             $this->load();
         $this->data[$name] = $value;
@@ -163,13 +164,13 @@ final class ConfigurationFile {
      * @param array $values
      * @return void
      */
-    public function merge($values) {
+    public function merge(array $values) {
         if (!$this->status)
             $this->load();
         $this->data = array_merge($this->data, $values);
     }
 
-    /* Private load methods */
+    /* Mark: Private load methods */
 
     /**
      * Load engine configuration file.
@@ -241,7 +242,7 @@ final class ConfigurationFile {
             $this->data = $configuration;
     }
 
-    /* Private save methods */
+    /* Mark: Private save methods */
 
     /**
      * Save JSON data in configuration file.

@@ -4,10 +4,10 @@
  * <br /> Developers can add their own steps in CaMykS running bench, or create their own bench.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0.2
+ * @version 1.0b3
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -50,19 +50,19 @@ final class Bench extends CaMykSLibrary {
      * @endparblock
      * @return void
      */
-    public function __construct($params=array()) {
+    public function __construct(array $params=array()) {
         parent::__construct($params);
     }
 
-    /* Public methods */
+    /* Mark: Public methods */
 
     /**
      * Start bench.
      * @param string $title
-     * @param integer $startTime
+     * @param float $startTime
      * @return void
      */
-    public function start($title='Start', $startTime=null) {
+    public function start(string $title='Start', ?float $startTime=null) {
         $this->status = 'running';
         $this->bench[] = array('title' => $title, 'time' => (is_null($startTime)? microtime(true) : $startTime));
     }
@@ -72,7 +72,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function add_step($title='Step') {
+    public function add_step(string $title='Step') {
         $this->status = 'running';
         if ($title == 'Step') $title .= '-'.count($this->bench);
         $this->bench[] = array('title' => $title, 'time' => microtime(true));
@@ -83,7 +83,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function stop($title='Stop') {
+    public function stop(string $title='Stop') {
         $this->status = 'stopped';
         $this->bench[] = array('title' => $title, 'time' => microtime(true));
     }
@@ -93,7 +93,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $output
      * @return mixed
      */
-    public function export($output='') {
+    public function export(string $output='') {
         /* Check if bench is stopped */
         if ($this->status != 'stopped')
             $this->stop();
@@ -123,7 +123,7 @@ final class Bench extends CaMykSLibrary {
         return $this->results;
     }
 
-    /* Private methods */
+    /* Mark: Private methods */
 
     /**
      * Export results to CaMykS shared data.

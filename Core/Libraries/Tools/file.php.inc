@@ -3,10 +3,10 @@
  * @brief File specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0
+ * @version 1.0pre1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * @param string $path
  * @return boolean result
  */
-function file_checkIsInPath($element='', $path='') {
+function file_checkIsInPath(string $element='', string $path='') {
     /* Check path exists, is not empty, and is a directory */
     if (!file_exists($path) or !is_dir($path) or $path == '')
         return false;
@@ -42,7 +42,7 @@ function file_checkIsInPath($element='', $path='') {
  * @param string $element
  * @return string
  */
-function file_getVirtualRealPath($element='') {
+function file_getVirtualRealPath(string $element='') {
     /* Explode element path in array */
     $path = explode('/', $element);
 
@@ -66,7 +66,7 @@ function file_getVirtualRealPath($element='') {
  * @param integer $globFlags
  * @return array
  */
-function file_search($pattern='*', $rootPath='./', $globFlags=0) {
+function file_search(string $pattern='*', string $rootPath='./', int $globFlags=0) {
     /* Check source is accessible */
     if (folder_checkPathAccessibility($rootPath, 'Read') === false)
         return array();

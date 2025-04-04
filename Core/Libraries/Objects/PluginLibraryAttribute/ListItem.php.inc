@@ -3,10 +3,10 @@
  * @brief ListItemPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: May 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,7 +24,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      */
     protected const SUBPARAMS = array('Length'=>0, 'Format'=>'Text', 'Values'=>array());
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Class constructor.
@@ -35,7 +35,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @param boolean $isLocalised
      * @return void
      */
-    public function __construct(&$parent, $name, $default, $params=array(), $isLocalised=false) {
+    public function __construct(CaMykS2\Plugin &$parent, string $name, mixed $default, array $params=array(), bool $isLocalised=false) {
         parent::__construct($parent, $name, $default, $params, $isLocalised);
 
         /* Define length value */
@@ -52,7 +52,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value($value) {
+    protected function read_value(mixed $value) {
         if ($this->params['Format'] == 'Integer')
             return (int)$value;
         if ($this->params['Format'] == 'Float')

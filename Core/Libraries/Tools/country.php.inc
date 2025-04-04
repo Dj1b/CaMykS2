@@ -3,15 +3,15 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8.1
+ * @version 1.0pre9
  * @date Creation: Oct 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* Country data related methods */
+/* Mark: Country data related methods */
 
 /**
  * Return countries data.
@@ -23,14 +23,14 @@ function country_getCountriesData() {
     return $CaMykS->get_assetData('countries');
 }
 
-/* Country locale related methods */
+/* Mark: Country locale related methods */
 
 /**
  * Load countries locale.
  * @param string $language
  * @return void
  */
-function country_loadCountriesLocale($language=null) {
+function country_loadCountriesLocale(?string $language=null) {
     global $CaMykS;
 
     $CaMykS->load_engineLocales('Libraries/country', 'country', $language);
@@ -42,7 +42,7 @@ function country_loadCountriesLocale($language=null) {
  * @param string $language
  * @return array
  */
-function country_getLocalisedTitles($params=array(), $language=null) {
+function country_getLocalisedTitles(array $params=array(), ?string $language=null) {
     global $CaMykS;
 
     /* Define default params and merge with params */
@@ -79,7 +79,7 @@ function country_getLocalisedTitles($params=array(), $language=null) {
  * @param string $language
  * @return array
  */
-function country_getLocalisedTitle($country, $language=null) {
+function country_getLocalisedTitle(string $country, ?string $language=null) {
     global $CaMykS;
 
     /* Optimise country */
@@ -105,11 +105,11 @@ function country_getLocalisedTitle($country, $language=null) {
  * @param string $language
  * @return string
  */
-function countries_getCodeFromLocalisedTitle($title, $language=null) {
+function countries_getCodeFromLocalisedTitle(string $title, ?string $language=null) {
     global $CaMykS;
 
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
 
     /* Check country */
     if (!isset($countriesData[$country]))
@@ -133,16 +133,26 @@ function countries_getCodeFromLocalisedTitle($title, $language=null) {
     return false;
 }
 
-/* Country languages related methods */
+/* Mark: Country languages related methods */
 
 /**
  * Return country official languages.
  * @param string $country
  * @return array
  */
-function country_getOfficialLanguages($country) {
+function country_getOfficialLanguages(?string $country=null) {
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
+
+    /* Check for all countries */
+    if (is_null($country)) {
+        $list = array();
+        foreach ($countriesData as $country => $data) {
+            if (isset($data['OfficialLanguages']))
+                $list[$country] = $data['OfficialLanguages'];
+        }
+        return $list;
+    }
 
     /* Check country */
     if (!isset($countriesData[$country]))
@@ -157,9 +167,9 @@ function country_getOfficialLanguages($country) {
  * @param string $country
  * @return array
  */
-function country_getUnofficialLanguages($country) {
+function country_getUnofficialLanguages(string $country) {
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
 
     /* Check country */
     if (!isset($countriesData[$country]))
@@ -174,9 +184,9 @@ function country_getUnofficialLanguages($country) {
  * @param string $country
  * @return string
  */
-function country_getDefaultLanguage($country) {
+function country_getDefaultLanguage(string $country) {
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
 
     /* Check country */
     if (!isset($countriesData[$country]) or count($countriesData[$country]['OfficialLanguages']) == 0)
@@ -186,11 +196,11 @@ function country_getDefaultLanguage($country) {
     return $countriesData[$country]['OfficialLanguages'][0];
 }
 
-/* Country phone index related methods */
+/* Mark: Country phone index related methods */
 
 
 
-/* Country zipcode related methods */
+/* Mark: Country zipcode related methods */
 
 /**
  * Check if provided zipcode is valid for given country.
@@ -198,9 +208,9 @@ function country_getDefaultLanguage($country) {
  * @param string $zipcode
  * @return boolean result
  */
-function country_checkZipcode($country, $zipcode) {
+function country_checkZipcode(string $country, string $zipcode) {
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
 
     /* Check country */
     if (!isset($countriesData[$country]))
@@ -210,16 +220,16 @@ function country_checkZipcode($country, $zipcode) {
     return preg_match($countriesData[$country]['ZipCodeCheck'], $zipcode);
 }
 
-/* Country currency related methods */
+/* Mark: Country currency related methods */
 
 /**
  * Return currency code for given country.
  * @param string $country
  * @return boolean string
  */
-function country_getCurrencyCode($country) {
+function country_getCurrencyCode(string $country) {
     /* Load data file */
-    $countriesData = language_getCountriesData();
+    $countriesData = country_getCountriesData();
 
     /* Check country */
     if (!isset($countriesData[$country]))
@@ -234,12 +244,12 @@ function country_getCurrencyCode($country) {
  * @param string $country
  * @return boolean string
  */
-function country_getCurrencyTitle($country) {
+function country_getCurrencyTitle(string $country) {
     /* Return currency title */
     return currency_getLocalisedTitle(country_getCurrencyCode($country));
 }
 
-/* Country flag related methods */
+/* Mark: Country flag related methods */
 
 /**
  * Return country flag URL
@@ -249,7 +259,7 @@ function country_getCurrencyTitle($country) {
  * @param mixed $URLMode
  * @return string
  */
-function country_getFlagURL($country, $collection='Flat', $size=16, $URLMode=false) {
+function country_getFlagURL(string $country, string $collection='Flat', int $size=16, mixed $URLMode=false) {
     global $CaMykS;
 
     /* Load data file */
@@ -304,7 +314,7 @@ function country_getFlagURL($country, $collection='Flat', $size=16, $URLMode=fal
  * @param string $language
  * @return string
  */
-function country_getFlagTag($country, $collection=null, $size=null, $URLMode=false, $imgParams=array(), $language=null) {
+function country_getFlagTag(string $country, ?string $collection=null, ?int $size=null, mixed $URLMode=false, array $imgParams=array(), ?string $language=null) {
     /* Add source to image parameters */
     $imgParams['src'] = country_getFlagURL($country, $collection, $size, $URLMode);
 
@@ -319,14 +329,14 @@ function country_getFlagTag($country, $collection=null, $size=null, $URLMode=fal
     return html_getImg($imgParams);
 }
 
-/* Timezone related methods */
+/* Mark: Timezone related methods */
 
 /**
  * Return timezone list for given country.
  * @param string $country
  * @return array
  */
-function country_getTimezones($country) {
+function country_getTimezones(string $country) {
     /* Load data file */
     $countriesData = country_getCountriesData();
 

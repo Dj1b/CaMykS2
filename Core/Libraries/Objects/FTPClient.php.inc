@@ -3,10 +3,10 @@
  * @brief FTP client object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0pre1
  * @date Creation: Nov 2019
- * @date Modification: Nov 2019
- * @copyright 2019 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -47,7 +47,7 @@ final class FTPClient {
      * @param array $arguments
      * @return mixed
      */
-    public function __call($method, $arguments) {
+    public function __call(string $method, array $arguments) {
         /* Add php method prefix */
         $function = 'ftp_' . $method;
         if (function_exists($function)) {
@@ -70,7 +70,7 @@ final class FTPClient {
      * @param integer $timeout
      * @return boolean success
      */
-    public function connect($host, $ssl=false, $port=21, $timeout=60) {
+    public function connect(string $host, bool $ssl=false, int $port=21, int $timeout=60) {
         /* Check if ftp is available */
         if (!extension_loaded('ftp'))
             return false;
@@ -93,11 +93,11 @@ final class FTPClient {
      * @param integer $timeout
      * @return boolean success
      */
-    public function ssl_connect($host, $port=21, $timeout=60) {
+    public function ssl_connect(string $host, int $port=21, int $timeout=60) {
         return $this->connect($host, true, $port, $timeout);
     }
 
-    /* specific methods */
+    /* Mark: Mark: specific methods */
 
     /**
      * Write a file to the server directly from given content.
@@ -105,7 +105,7 @@ final class FTPClient {
      * @param string $content
      * @return boolean success
      */
-    public function write_content($remoteFilePath, $content) {
+    public function write_content(string $remoteFilePath, string $content) {
         $temp = fopen('php://temp', 'w');
         fwrite($temp, $content);
         rewind($temp);

@@ -3,10 +3,10 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5.2
+ * @version 1.0pre6
  * @date Creation: Nov 2019
- * @date Modification: Feb 2022
- * @copyright 2019 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Test and rewrite most of the methods.
@@ -18,7 +18,7 @@
  * @param string $mode
  * @return boolean result
  */
-function folder_checkPathAccessibility($path, $mode='Read') {
+function folder_checkPathAccessibility(string $path, string $mode='Read') {
     global $CaMykS;
 
     /* Check CaMykS exists */
@@ -32,10 +32,10 @@ function folder_checkPathAccessibility($path, $mode='Read') {
 /**
  * Create all folder needed to complete path.
  * @param string $path
- * @param string $rights
+ * @param int $permissions
  * @return boolean
  */
-function folder_completePath($path, $rights=0771) {
+function folder_completePath(string $path, int $permissions=0771) {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($path, 'Write') === false)
         return false;
@@ -61,7 +61,7 @@ function folder_completePath($path, $rights=0771) {
         if (is_file($folder) or $dir == '') {
             return false;
         } else if (!is_dir($folder)) {
-            if (!@mkdir ($folder, $rights)) {
+            if (!@mkdir ($folder, $permissions)) {
                 return false;
             }
         }
@@ -75,7 +75,7 @@ function folder_completePath($path, $rights=0771) {
  * @param boolean $recursive
  * @return boolean
  */
-function folder_delete($folder, $recursive=false) {
+function folder_delete(string $folder, bool $recursive=false) {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($folder, 'write') === false)
         return false;
@@ -112,13 +112,13 @@ function folder_delete($folder, $recursive=false) {
  * @param string $target
  * @return boolean
  */
-function folder_copy($source, $target) {
+function folder_copy(string $source, string $target) {
     /* Check source is accessible */
     if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
 
     /* Check target is accessible */
-    if (folder_checkPathAccessibility($target, 'write') === false)
+    if (folder_checkPathAccessibility($target, 'Write') === false)
         return false;
 
     /* Copy folder */
@@ -151,13 +151,13 @@ function folder_copy($source, $target) {
  * @param string $target the target folder path
  * @return boolean
  */
-function folder_move($source, $target) {
+function folder_move(string $source, string $target) {
     /* Check source is accessible */
-    if (folder_checkPathAccessibility($source, 'write') === false)
+    if (folder_checkPathAccessibility($source, 'Write') === false)
         return false;
 
     /* Check target is accessible */
-    if (folder_checkPathAccessibility($target, 'write') === false)
+    if (folder_checkPathAccessibility($target, 'Write') === false)
         return false;
 
     /* test if source and target exist and if target is writable */
@@ -211,7 +211,7 @@ function folder_getTemporaryFolder() {
  * @param array $params
  * @return array
  */
-function folder_listElements($folder, $params=array()) {
+function folder_listElements(string $folder, array $params=array()) {
     /* Update folder */
     $folder = trim(preg_replace('#/$#', '', $folder));
 
@@ -245,7 +245,7 @@ function folder_listElements($folder, $params=array()) {
  * @param string $subFolder
  * @return array
  */
-function folder_listFiles($folder, $recursive=false, $excluded_folders=array(), $excluded_files=array(), $subFolder='') {
+function folder_listFiles(string $folder, bool $recursive=false, array $excluded_folders=array(), array $excluded_files=array(), string $subFolder='') {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
@@ -287,7 +287,7 @@ function folder_listFiles($folder, $recursive=false, $excluded_folders=array(), 
  * @param string $folder
  * @return array
  */
-function folder_listFolders($folder) {
+function folder_listFolders(string $folder) {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
@@ -322,7 +322,7 @@ function folder_listFolders($folder) {
  * @param array $matching_folders
  * @return array
  */
-function folder_listMatchingFolders($folder, $matching_folders = array()) {
+function folder_listMatchingFolders(string $folder, array $matching_folders=array()) {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
@@ -361,7 +361,7 @@ function folder_listMatchingFolders($folder, $matching_folders = array()) {
  * @param boolean $recursive
  * @return integer
  */
-function folder_countFiles($path, $recursive=true) {
+function folder_countFiles(string $path, bool $recursive=true) {
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($path, 'Read') === false)
         return false;
@@ -389,10 +389,10 @@ function folder_countFiles($path, $recursive=true) {
  * Create a zip archive from given folder.
  * @param string $source
  * @param string $target
- * @param string $includeRootFolder
+ * @param bool $includeRootFolder
  * @return boolean success
  */
-function folder_createZipArchive($source='', $target='',  $includeRootFolder=false) {
+function folder_createZipArchive(string $source='', string $target='', bool $includeRootFolder=false) {
     /* Check source is accessible */
     if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
@@ -450,7 +450,7 @@ function folder_createZipArchive($source='', $target='',  $includeRootFolder=fal
  * @param string $source
  * @return array
  */
-function folder_getFlatStructure($source='') {
+function folder_getFlatStructure(string $source='') {
     /* Check source is accessible */
     if (folder_checkPathAccessibility($source, 'Read') === false)
         return false;
@@ -484,7 +484,7 @@ function folder_getFlatStructure($source='') {
  * @param string $path
  * @return boolean result
  */
-function folder_checkIsInPath($folder='', $path='') {
+function folder_checkIsInPath(string $folder='', string $path='') {
     return file_checkIsInPath($folder, $path);
 }
 
@@ -495,7 +495,7 @@ function folder_checkIsInPath($folder='', $path='') {
  * @param string $hrFormat
  * @return string
  */
-function folder_getSize($folder, $humanReadable=false, $hrFormat='Binary') {
+function folder_getSize(string $folder, bool $humanReadable=false, string $hrFormat='Binary') {
     /* Check source is accessible */
     if (folder_checkPathAccessibility($folder, 'Read') === false)
         return false;
@@ -517,7 +517,7 @@ function folder_getSize($folder, $humanReadable=false, $hrFormat='Binary') {
     return util_getHumanReadableSize($s, $hrFormat);
 }
 
-/* Sub methods */
+/* Mark: Sub methods */
 
 /**
  * List elements of a folder.
@@ -526,7 +526,7 @@ function folder_getSize($folder, $humanReadable=false, $hrFormat='Binary') {
  * @param integer $depth
  * @return array
  */
-function _folder_listElements($folder, $params, $depth) {
+function _folder_listElements(string $folder, array $params, int $depth) {
     /* Initialise elements list */
     $elements = array('Path'=>$folder, 'Files'=>array(), 'Folders'=>array());
 

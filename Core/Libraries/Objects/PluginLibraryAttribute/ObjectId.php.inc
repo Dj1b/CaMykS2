@@ -3,10 +3,10 @@
  * @brief ObjectIdPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -24,14 +24,14 @@ final class ObjectIdPluginLibraryAttribute extends IntegerPluginLibraryAttribute
      */
     protected const SUBPARAMS = array('Min'=>0, 'Max'=>null, 'Unsigned'=>true);
 
-    /* Override PluginLibraryAttribute methods */
+    /* Mark: Override PluginLibraryAttribute methods */
 
     /**
      * Return read value.
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value($value) {
+    protected function read_value(mixed $value) {
         return (int)$value;
     }
 

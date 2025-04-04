@@ -3,10 +3,10 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Mar 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2020 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -111,7 +111,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * @param Object $parent
      * @return void
      */
-    public function __construct($params=array(), &$parent=null) {
+    public function __construct(array $params=array(), HTMLForm &$parent=null) {
         /* Merge generic attributes default values in params */
         foreach ($this->genericAttributes as $name => $attribute)
             $this->params[$name] = $attribute['default'];
@@ -128,14 +128,14 @@ class HTMLFormInput extends CaMykSLibrary {
         if (!is_null($parent)) $this->parent = $parent;
     }
 
-    /* Main methods */
+    /* Mark: Main methods */
 
     /**
      * Set default value.
      * @param mixed $value
      * @return void
      */
-    public function set_default($value=null) {
+    public function set_default(mixed $value=null) {
         $this->params['default'] = $value;
     }
 
@@ -158,7 +158,7 @@ class HTMLFormInput extends CaMykSLibrary {
         }
     }
 
-    /* Tool methods */
+    /* Mark: Tool methods */
 
     /**
      * Return input full name.
@@ -173,7 +173,7 @@ class HTMLFormInput extends CaMykSLibrary {
         return $name;
     }
 
-    /* Display sub methods */
+    /* Mark: Display sub methods */
 
     /**
      * Display generic input.
@@ -298,7 +298,7 @@ class HTMLFormInput extends CaMykSLibrary {
         echo $html;
     }
 
-    /* Protected methods */
+    /* Mark: Protected methods */
 
     /**
      * Build html for default attributes.

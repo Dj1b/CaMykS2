@@ -3,10 +3,10 @@
  * @brief Date related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: May 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,14 +31,14 @@ define('TOMORROW',  mktime(0, 0, 0, date('m'), date('d')+1, date('Y')));
  */
 define('YESTERDAY', mktime(0, 0, 0, date('m'), date('d')-1, date('Y')));
 
-/* Textual display methods */
+/* Mark: Textual display methods */
 
 /**
  * Return textual representation of day, date and hour.
- * @param date $date
+ * @param int $date
  * @return string
  */
-function date_getTextualDayDateHour($date=NOW) {
+function date_getTextualDayDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -63,7 +63,7 @@ function date_getTextualDayDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getTextualDateHour($date=NOW) {
+function date_getTextualDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -88,7 +88,7 @@ function date_getTextualDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getTextualDayDate($date=NOW) {
+function date_getTextualDayDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -113,7 +113,7 @@ function date_getTextualDayDate($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getTextualDate($date=NOW) {
+function date_getTextualDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -133,14 +133,14 @@ function date_getTextualDate($date=NOW) {
     }
 }
 
-/* Long display methods */
+/* Mark: Long display methods */
 
 /**
  * Display long representation of day, date and hour.
  * @param date $date
  * @return string
  */
-function date_getLongDayDateHour($date=NOW) {
+function date_getLongDayDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -165,7 +165,7 @@ function date_getLongDayDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getLongDateHour($date=NOW) {
+function date_getLongDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -190,7 +190,7 @@ function date_getLongDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getLongDayDate($date=NOW) {
+function date_getLongDayDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -215,7 +215,7 @@ function date_getLongDayDate($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getLongDate($date=NOW) {
+function date_getLongDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -241,7 +241,7 @@ function date_getLongDate($date=NOW) {
  * @param date $date2
  * @return string
  */
-function date_getLongDateInterval($date1=NOW, $date2=NOW) {
+function date_getLongDateInterval(int $date1=NOW, int $date2=NOW) {
     global $CaMykS;
     $l = $CaMykS->get_currentLanguage();
 
@@ -264,14 +264,14 @@ function date_getLongDateInterval($date1=NOW, $date2=NOW) {
     return ucwords(strftime('%e %B %Y', $date1)).' - '.ucwords(strftime('%e %B %Y', $date2));
 }
 
-/* Short display methods */
+/* Mark: Short display methods */
 
 /**
  * Display short textual representation of day, date and hour.
  * @param date $date
  * @return string
  */
-function date_getShortDayDateHour($date=NOW) {
+function date_getShortDayDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -294,7 +294,7 @@ function date_getShortDayDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getShortDateHour($date=NOW) {
+function date_getShortDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -317,7 +317,7 @@ function date_getShortDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getShortDayDate($date=NOW) {
+function date_getShortDayDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -340,7 +340,7 @@ function date_getShortDayDate($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getShortDate($date=NOW) {
+function date_getShortDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -364,7 +364,7 @@ function date_getShortDate($date=NOW) {
  * @param date $date2
  * @return string
  */
-function date_getShortDateInterval($date1=NOW, $date2=NOW) {
+function date_getShortDateInterval(int $date1=NOW, int $date2=NOW) {
     global $CaMykS;
     $l = $CaMykS->get_currentLanguage();
 
@@ -387,14 +387,14 @@ function date_getShortDateInterval($date1=NOW, $date2=NOW) {
     return ucwords(strftime('%e %b %y', $date1)).' - '.ucwords(strftime('%e %b %y', $date2));
 }
 
-/* Nimeric display methods */
+/* Mark: Nimeric display methods */
 
 /**
  * Display numeric representation of date and hour.
  * @param date $date
  * @return string
  */
-function date_getNumericDateHour($date=NOW) {
+function date_getNumericDateHour(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -417,7 +417,7 @@ function date_getNumericDateHour($date=NOW) {
  * @param date $date
  * @return string
  */
-function date_getNumericDate($date=NOW) {
+function date_getNumericDate(int $date=NOW) {
     global $CaMykS;
 
     /* Load language */
@@ -435,14 +435,14 @@ function date_getNumericDate($date=NOW) {
     }
 }
 
-/* Other quick display methods */
+/* Mark: Other quick display methods */
 
 /**
  * Display time.
  * @param date $date
  * @return string
  */
-function date_getTime($date=NOW) {
+function date_getTime(int $date=NOW) {
     return strftime('%H:%M', $date);
 }
 
@@ -451,13 +451,13 @@ function date_getTime($date=NOW) {
  * @param date $date can be a week day
  * @return string
  */
-function date_getDay($date=NOW) {
+function date_getDay(int $date=NOW) {
     if ($date <= 7)
         $date = mktime(0, 0, 0, 1, 2+$date, 0);
     return strftime('%A', $date);
 }
 
-/* Test methods */
+/* Mark: Test methods */
 
 /**
  * Check if dates are the same day.
@@ -465,7 +465,7 @@ function date_getDay($date=NOW) {
  * @param date $date2
  * @return boolean result
  */
-function date_isSameDay($date1=NOW, $date2=NOW) {
+function date_isSameDay(int $date1=NOW, int $date2=NOW) {
     return mktime(0, 0, 0, date('m', $date1), date('d', $date1), date('Y', $date1)) == mktime(0, 0, 0, date('m', $date2), date('d', $date2), date('Y', $date2));
 }
 
@@ -475,7 +475,7 @@ function date_isSameDay($date1=NOW, $date2=NOW) {
  * @param date $date2
  * @return boolean result
  */
-function date_isSameMonth($date1=NOW, $date2=NOW) {
+function date_isSameMonth(int $date1=NOW, int $date2=NOW) {
     return mktime(0, 0, 0, date('m', $date1), 1, date('Y', $date1)) == mktime(0, 0, 0, date('m', $date2), 1, date('Y', $date2));
 }
 
@@ -485,7 +485,7 @@ function date_isSameMonth($date1=NOW, $date2=NOW) {
  * @param date $date2
  * @return boolean result
  */
-function date_isSameYear($date1=NOW, $date2=NOW) {
+function date_isSameYear(int $date1=NOW, int $date2=NOW) {
     return date('Y', $date1) == date('Y', $date2);
 }
 
@@ -494,7 +494,7 @@ function date_isSameYear($date1=NOW, $date2=NOW) {
  * @param date $date
  * @return boolean result
  */
-function date_isToday($date=NOW) {
+function date_isToday(int $date=NOW) {
     return date_isSameDay($date);
 }
 
@@ -503,7 +503,7 @@ function date_isToday($date=NOW) {
  * @param date $date
  * @return boolean result
  */
-function date_isTomorrow($date=NOW) {
+function date_isTomorrow(int $date=NOW) {
     return mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $date)) == TOMORROW;
 }
 
@@ -512,22 +512,23 @@ function date_isTomorrow($date=NOW) {
  * @param date $date
  * @return boolean result
  */
-function date_isYesterday($date=NOW) {
+function date_isYesterday(int $date=NOW) {
     return mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $date)) == YESTERDAY;
 }
 
-/* Time specific methods */
+/* Mark: Time specific methods */
 
 /**
  * Transform an float to a time.
- * @param integer $value
+ * @param float $value
  * @param string $hSep
  * @param mixed $mSep
  * @return string
  */
-function date_float2Time($value=0, $hSep=':', $mSep=false) {
-    /* Make sure value is a float  */
+function date_float2Time(float $value=0, string $hSep=':', mixed $mSep=false) {
+    /* Make sure value is a float  *
     $value = (float)$value;
+    */
 
     /* Make sure value is a correct hour of a day */
     $value = fmod($value, 24);

@@ -3,10 +3,10 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Nov 2019
- * @date Modification: Mar 2023
- * @copyright 2019 - 2023 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo File icon collections.
@@ -89,7 +89,7 @@ final class File extends CaMykSLibrary {
      * @param string $mode
      * @return void
      */
-    public function __construct($path='', $file=null, $mode='Read') {
+    public function __construct(string $path='', ?string $file=null, string $mode='Read') {
         parent::__construct(array());
 
         /* Define full path */
@@ -116,7 +116,7 @@ final class File extends CaMykSLibrary {
         $this->ext = pathinfo($this->file, PATHINFO_EXTENSION);
     }
 
-    /* Override CaMykSLibrary methods */
+    /* Mark: Override CaMykSLibrary methods */
 
     /**
      * Define error code list.
@@ -129,7 +129,7 @@ final class File extends CaMykSLibrary {
         );
     }
 
-    /* Check methods */
+    /* Mark: Check methods */
 
     /**
      * Is file readable.
@@ -159,7 +159,7 @@ final class File extends CaMykSLibrary {
      * @param string $mode
      * @return boolean result
      */
-    public function is_accessible($mode='All') {
+    public function is_accessible(string $mode='All') {
         if ($mode !== 'All' and $this->mode !== $mode)
             return false;
         return $this->isAccessible;
@@ -173,7 +173,7 @@ final class File extends CaMykSLibrary {
         return ($this->get_genericType() === 'image');
     }
 
-    /* Information request methods */
+    /* Mark: Information request methods */
 
     /**
      * Return file name.
@@ -215,14 +215,14 @@ final class File extends CaMykSLibrary {
         return $this->queryString;
     }
 
-    /* File mode methods */
+    /* Mark: File mode methods */
 
     /**
      * Change mode.
      * @param string $mode
      * @return void
      */
-    public function change_mode($mode) {
+    public function change_mode(string $mode) {
         /* Check mode */
         $this->mode = ucwords(strtolower($mode));
         if (!in_array($this->mode, array('Read', 'Write', 'Detete')))
@@ -238,7 +238,7 @@ final class File extends CaMykSLibrary {
     }
 
 
-    /* Read mode methods */
+    /* Mark: Read mode methods */
 
     /**
      * Return mime.
@@ -322,7 +322,7 @@ final class File extends CaMykSLibrary {
      * @param array $params
      * @return string
      */
-    public function get_description($params=array()) {
+    public function get_description(array $params=array()) {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -368,11 +368,11 @@ final class File extends CaMykSLibrary {
     /**
      * Return icon URL.
      * @param string $collection
-     * @param string $size
-     * @param string $URLMode
+     * @param int $size
+     * @param mixed $URLMode
      * @return string
      */
-    public function get_iconURL($collection='', $size=16, $URLMode=false) {
+    public function get_iconURL(string $collection='', int $size=16, mixed $URLMode=false) {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -421,12 +421,12 @@ final class File extends CaMykSLibrary {
     /**
      * return icon tag.
      * @param string $collection
-     * @param string $size
+     * @param int $size
      * @param string $URLMode
-     * @param string $imgParams
+     * @param array $imgParams
      * @return string
      */
-    public function get_iconTag($collection='', $size=16, $URLMode=false, $imgParams=array()) {
+    public function get_iconTag(string $collection='', int $size=16, mixed $URLMode=false, array $imgParams=array()) {
         /* Add source to image parameters */
         $imgParams['src'] = $this->get_iconURL($collection, $size, $URLMode);
 
@@ -446,7 +446,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $humanReadable
      * @return string
      */
-    public function get_size($humanReadable=false) {
+    public function get_size(mixed $humanReadable=false) {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -466,7 +466,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $format
      * @return string
      */
-    public function get_humanReadableSize($format='Binary') {
+    public function get_humanReadableSize(mixed $format='Binary') {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -477,14 +477,14 @@ final class File extends CaMykSLibrary {
         return util_getHumanReadableSize($this->stats['size'], $format);
     }
 
-    /* Checksum methods */
+    /* Mark: Checksum methods */
 
     /**
      * Return MD5 checksum for the file.
      * @param boolean $rawOutput
      * @return string
      */
-    public function md5($rawOutput=false) {
+    public function md5(bool $rawOutput=false) {
         if (!$this->is_accessible('Read'))
             return false;
         return md5_file($this->filePath, $rawOutput);
@@ -495,20 +495,20 @@ final class File extends CaMykSLibrary {
      * @param boolean $rawOutput
      * @return string
      */
-    public function crc32($rawOutput=false) {
+    public function crc32(bool $rawOutput=false) {
         if (!$this->is_accessible('Read'))
             return false;
         return hash_file('CRC32', $this->filePath, $rawOutput);
     }
 
-    /* File download methods */
+    /* Mark: File download methods */
 
     /**
      * Download file to client browser.
      * @param string $title
      * @return void
      */
-    public function download($title=null) {
+    public function download(?string $title=null) {
         global $CaMykS;
 
         /* Check file is accessible */
@@ -541,7 +541,7 @@ final class File extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function send($title=null) {
+    public function send(?string $title=null) {
         global $CaMykS;
 
         /* Check file is accessible */
@@ -566,7 +566,7 @@ final class File extends CaMykSLibrary {
         $CaMykS->close();
     }
 
-    /* Write mode methods */
+    /* Mark: Write mode methods */
 
     /**
      * Write content to file.
@@ -574,7 +574,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $deleteOPCache
      * @return boolean success
      */
-    public function write($content, $deleteOPCache=false) {
+    public function write(string $content, bool $deleteOPCache=false) {
        if (!$this->is_accessible('Write'))
             return false;
 
@@ -596,7 +596,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $content
      * @return boolean success
      */
-    public function append($content) {
+    public function append(mixed $content) {
        if (!$this->is_accessible('Write'))
             return false;
 
@@ -614,7 +614,7 @@ final class File extends CaMykSLibrary {
         return false;
     }
 
-    /* Delete mode methods */
+    /* Mark: Delete mode methods */
 
     /**
      * Delete file.
@@ -626,7 +626,7 @@ final class File extends CaMykSLibrary {
         return @unlink($this->filePath);
     }
 
-    /* Content reading related methods */
+    /* Mark: Content reading related methods */
 
     /**
      * Return file content.
@@ -653,7 +653,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $default
      * @return array
      */
-    public function get_JSONData($default=null) {
+    public function get_JSONData(mixed $default=null) {
         /* Load file content */
         $data = $this->get_contents();
 
@@ -672,7 +672,7 @@ final class File extends CaMykSLibrary {
         return $data;
     }
 
-    /* Content writing related methods */
+    /* Mark: Content writing related methods */
 
     /**
      * Write data as JSON in file.
@@ -680,7 +680,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $deleteOPCache
      * @return boolean success
      */
-    public function write_JSONData($data=array(), $deleteOPCache=false) {
+    public function write_JSONData(array $data=array(), bool $deleteOPCache=false) {
         /* Encode data */
         $data = json_encode($data, JSON_PRETTY_PRINT);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -692,7 +692,7 @@ final class File extends CaMykSLibrary {
         return $this->write($data, $deleteOPCache);
     }
 
-    /* Picture related methods */
+    /* Mark: Picture related methods */
 
     /**
      * Return picture size as an array.
@@ -742,7 +742,7 @@ final class File extends CaMykSLibrary {
         return $this->stats['height'];
     }
 
-    /* Information loading methods */
+    /* Mark: Information loading methods */
 
     /**
      * Load mime information.
@@ -803,7 +803,7 @@ final class File extends CaMykSLibrary {
         $this->stats['height'] = $data[1];
     }
 
-    /* MIME loading sub methods */
+    /* Mark: MIME loading sub methods */
 
     /**
      * Load file mime from finfo method.

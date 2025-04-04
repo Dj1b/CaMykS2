@@ -3,10 +3,10 @@
  * @brief ObjectAssociationModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -35,7 +35,7 @@ class ObjectAssociationModuleLibrary extends ModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(CaMykS2\Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 

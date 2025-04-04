@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Jan 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Apr 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -30,7 +30,7 @@ abstract class PluginConfiguration extends PluginLibrary {
      * @param string $name
      * @return void
      */
-    public function __construct(&$parent, $name='config') {
+    public function __construct(Object &$parent, string $name='config') {
         /* Execute parent construct */
         parent::__construct($parent);
 
@@ -38,7 +38,7 @@ abstract class PluginConfiguration extends PluginLibrary {
         $this->objectName = $name;
     }
 
-    /* Data management methods */
+    /* Mark: Data management methods */
 
     /**
      * Load object from its main source.
