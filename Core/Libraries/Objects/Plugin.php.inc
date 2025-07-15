@@ -4,9 +4,9 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre17
+ * @version 1.0pre18
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
+ * @date Modification: Jul 2025
  * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,7 +68,7 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * @var array $pluginDependencies
-     * @brief Plugin list of dependencies, including version and mandatoriness.
+     * @brief Plugin list of dependencies, including version and necessity (mandatory / recommended / optional).
      */
     protected $pluginDependencies = array();
 
