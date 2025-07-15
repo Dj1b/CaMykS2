@@ -3,9 +3,9 @@
  * @brief AdvancedModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Apr 2025
+ * @date Modification: Jul 2025
  * @copyright 2022 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,11 +28,11 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
         parent::__construct($parent, $id);
 
         /* Advanced module library attributes */
-        $this->define_databaseAttribute('UniqueId', 'UniqueId', '', array());
-        $this->define_databaseAttribute('CreationUser', 'ObjectId', 0);
-        $this->define_databaseAttribute('CreationDate', 'Date', true);
-        $this->define_databaseAttribute('LastEditionUser', 'ObjectId', 0);
-        $this->define_databaseAttribute('LastEditionDate', 'Date', true);
+        $this->define_databaseAttribute('UniqueId',         'UniqueId', '', array());
+        $this->define_databaseAttribute('CreationUser',     'ObjectId', 0);
+        $this->define_databaseAttribute('CreationDate',     'Date',     true);
+        $this->define_databaseAttribute('LastEditionUser',  'ObjectId', 0);
+        $this->define_databaseAttribute('LastEditionDate',  'Date',     true);
     }
 
     /* Mark: Override ModuleLibrary methods */
