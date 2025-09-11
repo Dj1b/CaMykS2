@@ -3,9 +3,9 @@
  * @brief CaMykS time zone(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation:  Mar 2021
- * @date Modification: Apr 2025
+ * @date Modification: Sep 2025
  * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,7 +21,7 @@
 function timezone_getTimezonesData() {
     global $CaMykS;
 
-    return $CaMykS->get_assetData('timeZones');
+    return $CaMykS->get_assetData('TimeZones');
 }
 
 
@@ -32,7 +32,7 @@ function timezone_getTimezonesData() {
 function timezone_getTimezoneLocationsData() {
     global $CaMykS;
 
-    return $CaMykS->get_assetData('timeZoneLocations');
+    return $CaMykS->get_assetData('TimeZoneLocations');
 }
 
 /* Mark: Time zone list related methods */

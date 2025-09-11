@@ -3,9 +3,9 @@
  * @brief CaMykS currency(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
+ * @date Modification: Sep 2025
  * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,7 +21,7 @@
 function currency_getCurrenciesData() {
     global $CaMykS;
 
-    return $CaMykS->get_assetData('currencies');
+    return $CaMykS->get_assetData('Currencies');
 }
 
 /* Mark: Currency locale related methods */

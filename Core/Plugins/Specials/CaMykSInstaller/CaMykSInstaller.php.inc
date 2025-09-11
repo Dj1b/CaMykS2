@@ -3,10 +3,10 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: May 2021
- * @date Modification: Mar 2023
- * @copyright 2021 - 2023 CaMykS Team
+ * @date Modification: Sep 2025
+ * @copyright 2021 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -789,7 +789,7 @@ final class CaMykSInstaller extends Plugin {
         $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $pluginManager->libraryName);
 
         /* Load other default system plugins */
-        $pluginList = $CaMykS->get_assetData('defaultPlugins');
+        $pluginList = $CaMykS->get_assetData('DefaultPlugins');
 
         /* Remove plugin manager */
         if (isset($pluginList['Module']['SystemPluginManager']))

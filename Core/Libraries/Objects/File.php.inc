@@ -3,9 +3,9 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
+ * @date Modification: Sep 2025
  * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -864,7 +864,7 @@ final class File extends CaMykSLibrary {
         global $CaMykS;
 
         /* Load for mimes list */
-        $mimesData = $CaMykS->get_assetData('fileMimes');
+        $mimesData = $CaMykS->get_assetData('FileMimes');
 
         /* Check ext in mimes */
         if (isset($mimesData[$this->ext]))

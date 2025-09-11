@@ -3,9 +3,9 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
+ * @date Modification: Sep 2025
  * @copyright 2019 - 2025 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,7 +23,7 @@
 function language_getLanguagesData() {
     global $CaMykS;
 
-    return $CaMykS->get_assetData('languages');
+    return $CaMykS->get_assetData('Languages');
 }
 
 /* Mark: Language structure related method */
