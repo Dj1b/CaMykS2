@@ -3,10 +3,10 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre48
+ * @version 2.0pre49
  * @date Creation: Feb 2017
- * @date Modification: Apr 2025
- * @copyright 2017 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2017 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -844,6 +844,7 @@ final class CaMykS {
         $this->load_library('language', 'Tools');
         $this->load_library('network', 'Tools');
         $this->load_library('password', 'Tools');
+        $this->load_library('phone', 'Tools');
         $this->load_library('php', 'Tools');
         $this->load_library('server', 'Tools');
         $this->load_library('string', 'Tools');
@@ -884,6 +885,7 @@ final class CaMykS {
         $this->load_library('ModuleLibrary/ObjectAssociation', 'Objects');
 
         /* Load PluginLibraryAttribute simple object libraries */
+        $this->load_library('PluginLibraryAttribute/Blob', 'Objects');
         $this->load_library('PluginLibraryAttribute/Date', 'Objects');
         $this->load_library('PluginLibraryAttribute/Float', 'Objects');
         $this->load_library('PluginLibraryAttribute/Integer', 'Objects');
@@ -891,12 +893,17 @@ final class CaMykS {
 
         /* Load PluginLibraryAttribute advanced object libraries */
         $this->load_library('PluginLibraryAttribute/Boolean', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Color', 'Objects');
         $this->load_library('PluginLibraryAttribute/EmailAddress', 'Objects');
         $this->load_library('PluginLibraryAttribute/IPAddress', 'Objects');
         $this->load_library('PluginLibraryAttribute/ListItem', 'Objects');
         $this->load_library('PluginLibraryAttribute/Name', 'Objects');
         $this->load_library('PluginLibraryAttribute/ObjectId', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Password', 'Objects');
+        $this->load_library('PluginLibraryAttribute/Phone', 'Objects');
         $this->load_library('PluginLibraryAttribute/Price', 'Objects');
+        $this->load_library('PluginLibraryAttribute/SymbolicName', 'Objects');
+        $this->load_library('PluginLibraryAttribute/URL', 'Objects');
         $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
         /* Build object from libraries */
@@ -1318,6 +1325,15 @@ final class CaMykS {
      */
     public function get_websiteFileFullPath(string $filePath) {
         return realpath($this->websitePath.'/'.$filePath);
+    }
+
+    /**
+     * Return website data file full path.
+     * @param string $filePath
+     * @return string
+     */
+    public function get_websiteDataFileFullPath(string $filePath) {
+        return realpath($this->websitePath.'/Data/'.$filePath);
     }
 
     /**

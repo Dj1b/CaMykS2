@@ -3,10 +3,10 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Oct 2019
- * @date Modification: Sep 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -196,9 +196,45 @@ function country_getDefaultLanguage(string $country) {
     return $countriesData[$country]['OfficialLanguages'][0];
 }
 
-/* Mark: Country phone index related methods */
+/* Mark: Country phone related methods */
 
+/**
+ * Return phone code for given country.
+ * @param string $country
+ * @return string
+ */
+function country_getPhoneCode(string $country) {
+    /* Load data file */
+    $countriesData = country_getCountriesData();
 
+    /* Check country */
+    if (!isset($countriesData[$country]))
+        return '';
+
+    /* Return phone code */
+    return $countriesData[$country]['PhoneAreaCode'];
+}
+
+/**
+ * Return phone length for given country.
+ * @param string $country
+ * @return integer
+ */
+function country_getPhoneLength(string $country) {
+    /* Load data file */
+    $countriesData = country_getCountriesData();
+
+    /* Check country */
+    if (!isset($countriesData[$country]))
+        return 0;
+
+    /* Check phone length availability */
+    if (!isset($countriesData[$country]['PhoneLength']))
+        return 0;
+
+    /* Return phone length */
+    return $countriesData[$country]['PhoneLength'];
+}
 
 /* Mark: Country zipcode related methods */
 
