@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -117,25 +117,22 @@ abstract class DatabaseDriverInterface {
 
     /**
      * Select database.
-     * @param string $name
      * @return boolean success
      */
-    abstract public function select_database(?string $name=null);
+    abstract public function select_database();
 
     /**
      * Check database exists.
-     * @param string $name
      * @return boolean success
      */
-    abstract public function check_database(?string $name=null);
+    abstract public function check_database();
 
     /**
      * Create a database.
-     * @param string $name
      * @param string $charset
      * @return boolean
      */
-    abstract public function create_database(string $name, string $charset='UTF8');
+    abstract public function create_database(string $charset='UTF8');
 
     /**
      * Dump database.

@@ -3,10 +3,10 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -101,27 +101,21 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function select_database($name=null) {
+    public function select_database() {
         /* Check connection is open */
         if (!$this->is_active())
             return false;
 
         /* Select database */
-        return $this->connection->select_db($name);
+        return $this->connection->select_db($this->get_param('Name'));
     }
 
     /**
      * Check database exists.
-     * @param string $name
      * @return boolean success
      */
-    public function check_database($name=null) {
-        if (is_null($name)) {
-            if (is_null($name = $this->get_param('Name')))
-                return false;
-        }
-
-        if (!$this->execute_directQuery('show databases like "'.$name.'";'))
+    public function check_database() {
+        if (!$this->execute_directQuery('show databases like "'.$this->get_param('Name').'";'))
             return false;
         return $this->get_queryDataLine();
     }
@@ -132,8 +126,8 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8') {
-        return $this->execute_directQuery('create database `'.$name.'` default character set '.$this->charsets[$encoding].';');
+    public function create_database($encoding='UTF8') {
+        return $this->execute_directQuery('create database `'.$this->get_param('Name').'` default character set '.$this->charsets[$encoding].';');
     }
 
     /**
@@ -145,7 +139,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Build header comments */
         $content = "-- ************************\n";
-        $content .= "-- Database \"".$this->get_param('Database')."\" dump\n";
+        $content .= "-- Database \"".$this->get_param('Name')."\" dump\n";
         $content .= "-- ".date('r')."\n";
         $content .= "-- ************************\n\n";
 

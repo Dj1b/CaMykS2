@@ -3,10 +3,10 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -78,17 +78,17 @@ final class DatabaseConnector extends CaMykSLibrary {
 
             /* Define driver library */
             switch ($this->params['Driver']) {
-                case 'SQLite3':
-                    $driver = 'SQLite3DatabaseDriver';
+                case 'SQLite':
+                    $driver = 'SQLiteDatabaseDriver';
                     break;
-                case 'PgSQL':
-                    $driver = 'PgSQLDatabaseDriver';
+                case 'PostgreSQL':
+                    $driver = 'PostgreSQLDatabaseDriver';
                     break;
                 case 'MySQLi':
                     $driver = 'MySQLiDatabaseDriver';
                     break;
-                case 'MySQL':
-                    $driver = 'MySQLDatabaseDriver';
+                case 'MSSQL':
+                    $driver = 'MSSQLDatabaseDriver';
                     break;
                 default :
                     return $this->add_error(1, '');
@@ -510,16 +510,14 @@ final class DatabaseConnector extends CaMykSLibrary {
     public static function get_availableDrivers() {
         $list = array();
 
-        if (extension_loaded('mysql'))
-            $list['MySQL'] = 'MySQL';
         if (extension_loaded('mysqli'))
             $list['MySQLi'] = 'MySQLi';
-        if (extension_loaded('PDO'))
-            $list['PDO:MySQL'] = 'PDO:MySQL';
         if (extension_loaded('sqlite3'))
-            $list['SQLite3'] = 'SQLite3';
+            $list['SQLite3'] = 'SQLite';
         if (extension_loaded('pgsql'))
-            $list['PgSQL'] = 'PgSQL';
+            $list['PgSQL'] = 'PostgreSQL';
+        if (extension_loaded('sqlsrv'))
+            $list['MSSQL'] = 'MSSQL';
 
         return $list;
     }
