@@ -3,7 +3,7 @@
  * @brief Phone specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
  * @date Modification: Feb 2026
  * @copyright 2026 CaMykS Team
@@ -30,7 +30,7 @@ function phone_validate(string $phone, string $country='') {
             /* Clean phone to count digits */
             $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
             $actualLength = strlen($cleanPhone);
-            
+
             /* Parse length specification */
             if (strpos($lengthSpec, '-') !== false) {
                 /* Range format: "10-12" */
@@ -83,11 +83,11 @@ function phone_getCountryFromNumber(string $phone) {
 
     foreach ($countries as $code => $data) {
         /* Check if phone area code is defined */
-        if (!isset($data['PhoneAreaCode']) or $data['PhoneAreaCode'] == '')
+        if (!isset($data['Phone']['IntlAreaCode']) or $data['Phone']['IntlAreaCode'] == '')
             continue;
 
         /* Clean area code (remove potential non-digits like -) */
-        $areaCode = preg_replace('/[^0-9]/', '', $data['PhoneAreaCode']);
+        $areaCode = preg_replace('/[^0-9]/', '', $data['Phone']['IntlAreaCode']);
 
         /* Check if phone starts with this area code */
         if (strpos($phone, $areaCode) === 0) {

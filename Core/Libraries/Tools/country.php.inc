@@ -3,7 +3,7 @@
  * @brief CaMykS country(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Oct 2019
  * @date Modification: Feb 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -212,7 +212,7 @@ function country_getPhoneCode(string $country) {
         return '';
 
     /* Return phone code */
-    return $countriesData[$country]['PhoneAreaCode'];
+    return $countriesData[$country]['Phone']['IntlAreaCode'];
 }
 
 /**
@@ -229,11 +229,11 @@ function country_getPhoneLength(string $country) {
         return 0;
 
     /* Check phone length availability */
-    if (!isset($countriesData[$country]['PhoneLength']))
+    if (!isset($countriesData[$country]['Phone']['Length']))
         return 0;
 
     /* Return phone length */
-    return $countriesData[$country]['PhoneLength'];
+    return $countriesData[$country]['Phone']['Length'];
 }
 
 /* Mark: Country zipcode related methods */
