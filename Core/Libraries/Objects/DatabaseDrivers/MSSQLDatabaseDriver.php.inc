@@ -3,7 +3,7 @@
  * @brief MSSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre
+ * @version 1.0pre0
  * @date Creation: Feb 2026
  * @date Modification: Feb 2026
  * @copyright 2026 CaMykS Team
@@ -25,39 +25,33 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     protected $architecture = 'server';
 
     /**
-     * @var object $connection
-     * @brief Internal PDO connection to MSSQL server.
+     * @var resource $connection
+     * @brief Internal connection to MSSQL server.
      */
     private $connection;
-
-    /**
-     * @var array $charsets
-     * @brief Return default charsets for encoding values.
-     */
-    private $charsets = array(
-        'UTF8'  => 'UTF-8',
-        'UTF16' => 'UTF-16',
-        'UTF32' => 'UTF-32',
-    );
 
     /**
      * Open connection.
      * @return boolean success
      */
     public function open() {
-        /* Build DSN */
-        $dsn = 'sqlsrv:Server=' . $this->get_param('Host');
+        /* Build connection settings */
+        $server = $this->get_param('Host');
         if ($this->get_param('Port') > 0)
-            $dsn .= ',' . $this->get_param('Port');
-        if ($this->get_param('Name') !== '')
-            $dsn .= ';Database=' . $this->get_param('Name');
+            $server .= ',' . $this->get_param('Port');
+
+        $options = array(
+            'UID' => $this->get_param('Login'),
+            'PWD' => $this->get_param('Password'),
+            'Database' => $this->get_param('Name'),
+            'CharacterSet' => 'UTF-8',
+        );
 
         /* Perform database server connection */
         try {
-            $this->connection = new \PDO($dsn, $this->get_param('Login'), $this->get_param('Password'));
-            $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $this->status = true;
-        } catch (\PDOException $e) {
+            $this->connection = sqlsrv_connect($server, $options);
+            $this->status = ($this->connection !== false);
+        } catch (\Exception $e) {
             $this->status = false;
         }
 
@@ -75,7 +69,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             return true;
 
         /* Close database server connection */
-        $this->connection = null;
+        if (!sqlsrv_close($this->connection))
+            return false;
 
         /* Update status */
         $this->status = false;
@@ -96,35 +91,33 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             return '';
 
         /* Return MSSQL version */
-        return $this->connection->query('SELECT @@VERSION')->fetchColumn();
+        $info = sqlsrv_server_info($this->connection);
+        return $info['SQLServerVersion'] ?? '';
     }
 
     /* Mark: Database methods */
 
     /**
      * Select database.
+     * @param string $name
      * @return boolean success
      */
-    public function select_database() {
-        /* Check connection is open */
-        if (!$this->is_active())
-            return false;
-
-        if (is_null($this->get_param('Name')))
-            return true;
-
-        /* Use database */
-        return $this->execute_directQuery('USE ['.$this->get_param('Name').'];');
+    public function select_database($name=null) {
+        if (is_null($name)) $name = $this->get_param('Name');
+        $sql = 'USE ['.$name.'];';
+        return $this->execute_directQuery($sql);
     }
 
     /**
      * Check database exists.
+     * @param string $name
      * @return boolean success
      */
-    public function check_database() {
-        if (!$this->execute_directQuery("SELECT 1 FROM sys.databases WHERE name='".$this->escape_string($this->get_param('Name'))."';"))
+    public function check_database($name=null) {
+        $sql = "SELECT 1 FROM sys.databases WHERE name='".$this->escape_string($name ?? $this->get_param('Name'))."';";
+        if (!$this->execute_directQuery($sql, 'checkDb'))
             return false;
-        return $this->get_queryDataLine() !== false;
+        return $this->get_queryDataLine('checkDb') !== false;
     }
 
     /**
@@ -133,8 +126,9 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($encoding='UTF8') {
-        return $this->execute_directQuery('CREATE DATABASE ['.$this->get_param('Name').'] COLLATE SQL_Latin1_General_CP1_CI_AS;');
+    public function create_database($name, $encoding='UTF8') {
+        $sql = 'CREATE DATABASE ['.$name.'];';
+        return $this->execute_directQuery($sql);
     }
 
     /**
@@ -160,9 +154,6 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             $content .= "-- Table \"".$table."\"\n";
             $content .= "-- ************************\n";
 
-            /* Get table creation SQL (simplified) */
-            $content .= "-- Table structure for ".$table."\n\n";
-
             /* Build table content */
             if ($this->execute_directQuery('SELECT * FROM ['.$table.'];', 'tableItemList')) {
                 while ($insertData = $this->get_queryNumDataLine('tableItemList')) {
@@ -170,12 +161,14 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
                     for ($i=0; $i < count($insertData); $i++) {
                         if ($i != 0)
                             $content .=  ", ";
-                        if (is_string($insertData[$i]))
-                            $content .=  "'" . addslashes($insertData[$i]) . "'";
-                        elseif (is_null($insertData[$i]))
+
+                        if (is_null($insertData[$i])) {
                             $content .= 'NULL';
-                        else
-                            $content .= $insertData[$i];
+                        } elseif (is_string($insertData[$i])) {
+                            $content .=  "'" . $this->escape_string($insertData[$i]) . "'";
+                        } else {
+                            $content .= addslashes($insertData[$i]);
+                        }
                     }
                     $content .=  ");\n";
                 }
@@ -192,16 +185,14 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_databaseSize() {
-        /* Initialise size */
-        $size = 0;
-
-        /* Load information from database */
-        if ($this->execute_directQuery("SELECT SUM(size) * 8 * 1024 as size FROM sys.database_files;")) {
-            if ($data = $this->get_queryDataLine()) {
-                $size = $data['size'];
+        /* Simplified for MSSQL native */
+        $sql = "SELECT SUM(size) * 8 * 1024 FROM sys.master_files WHERE database_id = DB_ID('".$this->escape_string($this->get_param('Name'))."');";
+        if ($this->execute_directQuery($sql, 'dbSize')) {
+            if ($data = $this->get_queryNumDataLine('dbSize')) {
+                return (int)$data[0];
             }
         }
-        return $size;
+        return 0;
     }
 
     /**
@@ -223,7 +214,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $list = array();
 
         /* Load list from database */
-        $sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';";
+        $sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';";
         if ($this->execute_directQuery($sql))
             while ($data = $this->get_queryDataLine())
                 $list[] = $data['TABLE_NAME'];
@@ -240,8 +231,6 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function create_table($name, $fields=array(), $params=array()) {
-        global $camyks;
-
         /* Merge params with default ones */
         $params = array_merge(array(
             'Charset'       => '',
@@ -255,7 +244,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Add auto id */
         if ($params['AutoId'])
-            $sql .= '[id] BIGINT IDENTITY(1,1),';
+            $sql .= '[id] BIGINT IDENTITY(1,1) NOT NULL,';
 
         /* Add fields description */
         foreach ($fields as $field => $data) {
@@ -291,23 +280,19 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
                 case 'text':
                     if (is_int($data['Length'])) {
                         if ($data['Length'] < 256)
-                            $s .= 'VARCHAR('.$data['Length'].') DEFAULT \''.addslashes($data['Default']).'\'';
-                        elseif ($data['Length'] < 8000)
-                            $s .= 'VARCHAR(MAX)';
-                        else
-                            $s .= 'NVARCHAR(MAX)';
-                    } elseif (is_string($data['Length'])) {
-                        $data['Length'] = strtolower($data['Length']);
-                        if ($data['Length'] === 'small')
-                            $s .= 'VARCHAR(255) DEFAULT \''.addslashes($data['Default']).'\'';
+                            $s .= 'NVARCHAR('.$data['Length'].')';
+                        elseif ($data['Length'] < 4000)
+                            $s .= 'NVARCHAR('.$data['Length'].')';
                         else
                             $s .= 'NVARCHAR(MAX)';
                     } else {
                         $s .= 'NVARCHAR(MAX)';
                     }
+                    if ($data['Default'] !== '')
+                        $s .= ' DEFAULT \''.addslashes($data['Default']).'\'';
                     break;
                 case 'tinytext':
-                    $s .= 'VARCHAR(255)';
+                    $s .= 'NVARCHAR(255)';
                     break;
                 case 'mediumtext':
                 case 'longtext':
@@ -320,7 +305,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
                             $s .= 'TINYINT';
                         elseif ($data['Size'] === 'small')
                             $s .= 'SMALLINT';
-                        elseif ($data['Size'] === 'medium' || $data['Size'] === '')
+                        elseif ($data['Size'] === 'medium')
                             $s .= 'INT';
                         elseif ($data['Size'] === 'big')
                             $s .= 'BIGINT';
@@ -350,16 +335,18 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
                         $s .= ' DEFAULT '.(float)$data['Default'];
                     break;
                 case 'date':
-                    $s .= 'DATE DEFAULT GETDATE()';
+                    $s .= 'DATE';
                     break;
                 case 'datetime':
-                    $s .= 'DATETIME DEFAULT GETDATE()';
+                    $s .= 'DATETIME2';
                     break;
                 case 'time':
-                    $s .= 'TIME DEFAULT CONVERT(TIME, GETDATE())';
+                    $s .= 'TIME';
+                    break;
+                case 'blob':
+                    $s .= 'VARBINARY(MAX)';
                     break;
                 default:
-                    /* Type not known */
                     $s .= 'NVARCHAR(MAX)';
             }
 
@@ -390,7 +377,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Add primary keys */
         if (count($params['PrimaryKeys']) > 0)
-            $sql .= ' PRIMARY KEY (['.implode('],[', $params['PrimaryKeys']).']' . '),';
+            $sql .= ' PRIMARY KEY (['.implode('],[', $params['PrimaryKeys']).']),';
 
         /* Remove trailing comma */
         $sql = rtrim($sql, ',');
@@ -399,21 +386,22 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $sql .= ');';
 
         /* Execute table creation */
-        $result = $this->execute_directQuery($sql);
+        if (!$this->execute_directQuery($sql))
+            return false;
 
         /* Create indexes separately */
-        foreach ($params['Indexes'] as $name => $indexes) {
+        foreach ($params['Indexes'] as $iname => $indexes) {
             if (is_string($indexes)) {
-                $indexSql = 'CREATE INDEX idx_'.$name.'_'.$indexes.' ON ['.$name.'] (['.$indexes.']);';
+                $indexSql = 'CREATE INDEX [idx_'.$name.'_'.$iname.'] ON ['.$name.'] (['.$indexes.']);';
                 $this->execute_directQuery($indexSql);
             } elseif (is_array($indexes)) {
-                $indexSql = 'CREATE INDEX idx_'.$name.' ON ['.$name.'] (['.implode('],[', $indexes).']);';
+                $indexSql = 'CREATE INDEX [idx_'.$name.'_'.$iname.'] ON ['.$name.'] (['.implode('],[', $indexes).']);';
                 $this->execute_directQuery($indexSql);
             }
         }
 
         /* Return result */
-        return $result;
+        return true;
     }
 
     /**
@@ -431,8 +419,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function drop_table($name) {
-        $sql = 'DROP TABLE IF EXISTS ['.$name.'];';
-        return $this->execute_directQuery($sql);
+        return $this->execute_directQuery('DROP TABLE IF EXISTS ['.$name.'];');
     }
 
     /**
@@ -441,8 +428,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function truncate_table($name) {
-        $sql = 'TRUNCATE TABLE ['.$name.'];';
-        return $this->execute_directQuery($sql);
+        return $this->execute_directQuery('TRUNCATE TABLE ['.$name.'];');
     }
 
     /**
@@ -464,11 +450,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_directQuery($query, $resourceName='Default') {
         $this->record_query($query);
-        try {
-            $this->queryResources[$resourceName] = $this->connection->query($query);
-        } catch (\PDOException $e) {
-            return false;
-        }
+        $this->queryResources[$resourceName] = sqlsrv_query($this->connection, $query);
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -480,11 +462,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_queries($queries, $resourceName='Default') {
         $this->record_query($queries);
-        try {
-            $this->queryResources[$resourceName] = $this->connection->exec($queries);
-        } catch (\PDOException $e) {
-            return false;
-        }
+        $this->queryResources[$resourceName] = sqlsrv_query($this->connection, $queries);
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -496,8 +474,12 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryGeneratedId(string $resourceName='Default') {
-        if ($this->is_active())
-            return $this->connection->lastInsertId();
+        if (!$this->is_active()) return false;
+        $res = sqlsrv_query($this->connection, "SELECT SCOPE_IDENTITY();");
+        if ($res) {
+            $data = sqlsrv_fetch_array($res, SQLSRV_FETCH_NUMERIC);
+            return (int)$data[0];
+        }
         return false;
     }
 
@@ -507,8 +489,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_ASSOC);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return sqlsrv_fetch_array($this->queryResources[$resourceName], SQLSRV_FETCH_ASSOC);
         return false;
     }
 
@@ -518,8 +500,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryNumDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_NUM);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return sqlsrv_fetch_array($this->queryResources[$resourceName], SQLSRV_FETCH_NUMERIC);
         return false;
     }
 
@@ -529,8 +511,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryAffectedRows(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->rowCount();
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return sqlsrv_rows_affected($this->queryResources[$resourceName]);
         return 0;
     }
 
@@ -540,8 +522,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryFieldCount(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->columnCount();
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return sqlsrv_num_fields($this->queryResources[$resourceName]);
         return false;
     }
 
@@ -552,9 +534,29 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryFieldType($fIndex=0, $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName])) {
-            $meta = $this->queryResources[$resourceName]->getColumnMeta($fIndex);
-            return $this->get_compatibleType($meta['pdo_type'] ?? \PDO::PARAM_STR);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
+            $meta = sqlsrv_field_metadata($this->queryResources[$resourceName]);
+            if (isset($meta[$fIndex])) {
+                $type = $meta[$fIndex]['Type'];
+                /* Simplified mapping */
+                switch ($type) {
+                    case -5: // bigint
+                    case 4:  // int
+                    case 5:  // smallint
+                    case -6: // tinyint
+                        return 'int';
+                    case 6:  // float
+                    case 7:  // real
+                    case 3:  // decimal
+                        return 'float';
+                    case -2: // binary
+                    case -3: // varbinary
+                    case -4: // image
+                        return 'blob';
+                    default:
+                        return 'string';
+                }
+            }
         }
         return false;
     }
@@ -565,9 +567,9 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryError(string $resourceName='Default') {
-        if ($this->is_active()) {
-            $error = $this->connection->errorInfo();
-            return $error[2] ?? '';
+        $errors = sqlsrv_errors(SQLSRV_ERR_ALL);
+        if ($errors) {
+            return $errors[0]['message'];
         }
         return '';
     }
@@ -580,7 +582,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean result
      */
     public function close_ressource(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName])) {
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
+            sqlsrv_free_stmt($this->queryResources[$resourceName]);
             $this->queryResources[$resourceName] = null;
             unset($this->queryResources[$resourceName]);
         }
@@ -595,30 +598,8 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function escape_string($string='') {
-        /* PDO quote returns quoted string, so we need to remove quotes */
-        $quoted = $this->connection->quote($string);
-        return substr($quoted, 1, -1);
-    }
-
-    /* Mark: Private tool methods */
-
-    /**
-     * Return MSSQL compatible type from given PDO type.
-     * @param integer $type
-     * @return string
-     */
-    private function get_compatibleType($type=\PDO::PARAM_STR) {
-        switch ($type) {
-            case \PDO::PARAM_INT:
-                return 'int';
-            case \PDO::PARAM_BOOL:
-                return 'bool';
-            case \PDO::PARAM_NULL:
-                return 'null';
-            case \PDO::PARAM_STR:
-            default:
-                return 'string';
-        }
+        /* sqlsrv doesn't have a native escape function, use str_replace for single quotes */
+        return str_replace("'", "''", $string);
     }
 }
 ?>

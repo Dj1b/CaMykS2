@@ -1,6 +1,6 @@
 <?php
 /**
- * @brief PostgreSQL database driver.
+ * @brief PDO MySQLi database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
  * @version 1.0pre0
@@ -15,9 +15,9 @@
 namespace CaMykS2;
 
 /**
- * PostgreSQLDatabaseDriver class.
+ * PDOMySQLiDatabaseDriver class.
  */
-final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
+final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
@@ -25,8 +25,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     protected $architecture = 'server';
 
     /**
-     * @var resource $connection
-     * @brief Internal connection to PostgreSQL server.
+     * @var \PDO $connection
+     * @brief Internal PDO connection to MySQL server.
      */
     private $connection;
 
@@ -35,9 +35,9 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @brief Return default charsets for encoding values.
      */
     private $charsets = array(
-        'UTF8'  => 'UTF8',
-        'UTF16' => 'UTF16',
-        'UTF32' => 'UTF32',
+        'UTF8'  => 'utf8mb4',
+        'UTF16' => 'utf16',
+        'UTF32' => 'utf32',
     );
 
     /**
@@ -45,22 +45,19 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function open() {
-        /* Build connection string */
-        $string = 'host=' . $this->get_param('Host');
+        /* Build DSN */
+        $dsn = 'mysql:host='.$this->get_param('Host');
         if ($this->get_param('Port') > 0)
-            $string .= ' port=' . $this->get_param('Port');
+            $dsn .= ';port='.$this->get_param('Port');
         if ($this->get_param('Name') !== '')
-            $string .= ' dbname=' . $this->get_param('Name');
-        if ($this->get_param('Login') !== '')
-            $string .= ' user=' . $this->get_param('Login');
-        if ($this->get_param('Password') !== '')
-            $string .= ' password=' . $this->get_param('Password');
+            $dsn .= ';dbname='.$this->get_param('Name');
 
         /* Perform database server connection */
         try {
-            $this->connection = pg_connect($string);
-            $this->status = ($this->connection !== false);
-        } catch (\Exception $e) {
+            $this->connection = new \PDO($dsn, $this->get_param('Login'), $this->get_param('Password'));
+            $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->status = true;
+        } catch (\PDOException $e) {
             $this->status = false;
         }
 
@@ -78,8 +75,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             return true;
 
         /* Close database server connection */
-        if (!pg_close($this->connection))
-            return false;
+        $this->connection = null;
 
         /* Update status */
         $this->status = false;
@@ -99,9 +95,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         if (!$this->is_active())
             return '';
 
-        /* Return PostgreSQL version */
-        $v = pg_version($this->connection);
-        return $v['server'] ?? '';
+        /* Return database server version */
+        return $this->connection->getAttribute(\PDO::ATTR_SERVER_VERSION);
     }
 
     /* Mark: Database methods */
@@ -112,18 +107,17 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function select_database($name=null) {
-        /* PostgreSQL requires reconnection to change database */
-        if (is_null($name) or $name == $this->get_param('Name'))
+        /* Check connection is open */
+        if (!$this->is_active())
+            return false;
+
+        /* Select database */
+        try {
+            $this->connection->exec('USE `'.($name ?? $this->get_param('Name')).'`;');
             return true;
-
-        /* Close current connection */
-        $this->close();
-
-        /* Update name */
-        $this->set_param('Name', $name);
-
-        /* Open new connection */
-        return $this->open();
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
 
     /**
@@ -132,10 +126,9 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function check_database($name=null) {
-        $sql = "SELECT 1 FROM pg_database WHERE datname='".$this->escape_string($name ?? $this->get_param('Name'))."';";
-        if (!$this->execute_directQuery($sql, 'checkDb'))
+        if (!$this->execute_directQuery('SHOW DATABASES LIKE "'.$this->escape_string($name ?? $this->get_param('Name')).'";'))
             return false;
-        return $this->get_queryDataLine('checkDb') !== false;
+        return $this->get_queryDataLine() !== false;
     }
 
     /**
@@ -145,8 +138,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean
      */
     public function create_database($name, $encoding='UTF8') {
-        $sql = 'CREATE DATABASE "'.$name.'" ENCODING \''.$this->charsets[$encoding].'\';';
-        return $this->execute_directQuery($sql);
+        return $this->execute_directQuery('CREATE DATABASE `'.($name ?? $this->get_param('Name')).'` DEFAULT CHARACTER SET '.$this->charsets[$encoding].';');
     }
 
     /**
@@ -163,38 +155,46 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $content .= "-- ************************\n\n";
 
         /* Load table list */
-        $tables = $this->get_tableList();
+        if ($this->execute_directQuery('SHOW TABLES;', 'tableList')) {
 
-        /* Build tables to content */
-        foreach ($tables as $table) {
-            /* Build table comments */
-            $content .= "-- ************************\n";
-            $content .= "-- Table \"".$table."\"\n";
-            $content .= "-- ************************\n";
+            /* Build tables to content */
+            while ($table = $this->get_queryNumDataLine('tableList')) {
 
-            /* Get table creation (simplified for PgSQL native) */
-            $content .= "-- structure not available in simplified native dump\n\n";
+                /* Build table */
+                if ($this->execute_directQuery('SHOW CREATE TABLE `'.$table[0].'`;', 'createTable')) {
+                    if ($createTable = $this->get_queryNumDataLine('createTable')) {
 
-            /* Build table content */
-            if ($this->execute_directQuery('SELECT * FROM "'.$table.'";', 'tableItemList')) {
-                while ($insertData = $this->get_queryNumDataLine('tableItemList')) {
-                    $content .= "INSERT INTO \"".$table."\" VALUES(";
-                    for ($i=0; $i < count($insertData); $i++) {
-                        if ($i != 0)
-                            $content .=  ", ";
-                        
-                        if (is_null($insertData[$i])) {
-                            $content .= 'NULL';
-                        } elseif (is_string($insertData[$i])) {
-                            $content .=  "'" . pg_escape_string($this->connection, $insertData[$i]) . "'";
-                        } else {
-                            $content .= $insertData[$i];
+                        /* Build table comments */
+                        $content .= "-- ************************\n";
+                        $content .= "-- Table \"".$table[0]."\"\n";
+                        $content .= "-- ************************\n";
+
+                        /* Build table creation */
+                        $content .= $createTable[1].";\n\n";
+
+                        /* Build table content */
+                        if ($this->execute_directQuery('SELECT * FROM `'.$table[0].'`;', 'tableItemList')) {
+                            while ($insertData = $this->get_queryNumDataLine('tableItemList')) {
+                                $content .= "INSERT INTO `".$table[0]."` VALUES(";
+                                for ($i=0; $i < $this->get_queryFieldCount('tableItemList'); $i++) {
+                                    if ($i != 0)
+                                        $content .=  ", ";
+
+                                    if (is_null($insertData[$i])) {
+                                        $content .= 'NULL';
+                                    } elseif ($this->get_queryFieldType($i, 'tableItemList') == "string" || $this->get_queryFieldType($i, 'tableItemList') == "blob") {
+                                        $content .=  "'" . addslashes($insertData[$i]) . "'";
+                                    } else {
+                                        $content .= addslashes($insertData[$i]);
+                                    }
+                                }
+                                $content .=  ");\n";
+                            }
                         }
                     }
-                    $content .=  ");\n";
+                    $content .= "\n\n";
                 }
             }
-            $content .= "\n\n";
         }
 
         /* Return built content */
@@ -210,10 +210,10 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $size = 0;
 
         /* Load information from database */
-        $sql = "SELECT pg_database_size('".$this->escape_string($this->get_param('Name'))."');";
-        if ($this->execute_directQuery($sql, 'dbSize')) {
-            if ($data = $this->get_queryNumDataLine('dbSize')) {
-                $size = (int)$data[0];
+        if ($this->execute_directQuery('SHOW TABLE STATUS;')) {
+            /* set size with infos */
+            while ($data = $this->get_queryDataLine()) {
+                $size += $data['Data_length'] + $data['Index_length'];
             }
         }
         return $size;
@@ -238,10 +238,10 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $list = array();
 
         /* Load list from database */
-        $sql = "SELECT tablename FROM pg_tables WHERE schemaname='public';";
+        $sql = 'SHOW TABLES;';
         if ($this->execute_directQuery($sql))
-            while ($data = $this->get_queryDataLine())
-                $list[] = $data['tablename'];
+            while ($data = $this->get_queryNumDataLine())
+                $list[] = $data[0];
 
         /* Return result */
         return $list;
@@ -264,11 +264,11 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         ), $params);
 
         /* Build sql query */
-        $sql = 'CREATE TABLE IF NOT EXISTS "'.$name.'" (';
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.$name.'` (';
 
         /* Add auto id */
         if ($params['AutoId'])
-            $sql .= '"id" BIGSERIAL,';
+            $sql .= '`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,';
 
         /* Add fields description */
         foreach ($fields as $field => $data) {
@@ -297,70 +297,97 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             ), $data);
 
             /* Add field name */
-            $s = ' "'.$field.'" ';
+            $s = ' `'.$field.'` ';
 
             /* Add field description from type */
             switch ($data['Type']) {
                 case 'text':
                     if (is_int($data['Length'])) {
                         if ($data['Length'] < 256)
-                            $s .= 'VARCHAR('.$data['Length'].')';
+                            $s .= 'VARCHAR('.$data['Length'].') DEFAULT "'.addslashes($data['Default']).'"';
+                        elseif ($data['Length'] < 65535)
+                            $s .= 'TEXT';
+                        elseif ($data['Length'] < 16777215)
+                            $s .= 'MEDIUMTEXT';
+                        else
+                            $s .= 'LONGTEXT';
+                    } elseif (is_string($data['Length'])) {
+                        $data['Length'] = strtolower($data['Length']);
+                        if ($data['Length'] === 'small')
+                            $s .= 'VARCHAR(255) DEFAULT "'.addslashes($data['Default']).'"';
+                        elseif ($data['Length'] === 'medium')
+                            $s .= 'MEDIUMTEXT';
+                        elseif ($data['Length'] === 'long')
+                            $s .= 'LONGTEXT';
                         else
                             $s .= 'TEXT';
                     } else {
                         $s .= 'TEXT';
                     }
-                    if ($data['Default'] !== '')
-                        $s .= ' DEFAULT \''.addslashes($data['Default']).'\'';
                     break;
                 case 'tinytext':
+                    $s .= 'TINYTEXT';
+                    break;
                 case 'mediumtext':
+                    $s .= 'MEDIUMTEXT';
+                    break;
                 case 'longtext':
-                case 'blob':
-                    $s .= 'BYTEA';
+                    $s .= 'LONGTEXT';
                     break;
                 case 'integer':
                     if (!is_null($data['Size'])) {
                         $data['Size'] = strtolower($data['Size']);
-                        if ($data['Size'] === 'tiny' || $data['Size'] === 'small')
+                        if ($data['Size'] === 'tiny')
+                            $s .= 'TINYINT';
+                        elseif ($data['Size'] === 'small')
                             $s .= 'SMALLINT';
-                        elseif ($data['Size'] === 'medium')
-                            $s .= 'INTEGER';
+                        elseif ($data['Size'] === 'medium' || $data['Size'] === '')
+                            $s .= 'INT';
                         elseif ($data['Size'] === 'big')
                             $s .= 'BIGINT';
                         else
-                            $s .= 'INTEGER';
+                            $s .= 'INT';
                     } else {
-                        if ($data['Max'] <= 32767)
+                        if ($data['Max'] <= 255)
+                            $s .= 'TINYINT';
+                        elseif ($data['Max'] <= 65535)
                             $s .= 'SMALLINT';
-                        elseif ($data['Max'] <= 2147483647)
-                            $s .= 'INTEGER';
+                        elseif ($data['Max'] <= 16777215)
+                            $s .= 'MEDIUMINT';
+                        elseif ($data['Max'] <= 4294967295)
+                            $s .= 'INT';
                         else
                             $s .= 'BIGINT';
                     }
+                    if ($data['Unsigned'])
+                        $s .= ' UNSIGNED';
                     if (is_numeric($data['Default']))
                         $s .= ' DEFAULT '.(int)$data['Default'];
                     break;
                 case 'float':
-                    $s .= 'DOUBLE PRECISION';
+                    $s .= 'DOUBLE';
                     if (is_numeric($data['Default']))
                         $s .= ' DEFAULT '.(float)$data['Default'];
                     break;
                 case 'price':
-                    $s .= 'NUMERIC(14,2)';
+                    $s .= 'DECIMAL(14,2)';
                     if (is_numeric($data['Default']))
                         $s .= ' DEFAULT '.(float)$data['Default'];
                     break;
                 case 'date':
-                    $s .= 'DATE DEFAULT CURRENT_DATE';
+                    $s .= 'DATE';
                     break;
                 case 'datetime':
-                    $s .= 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP';
+                    $s .= 'DATETIME';
                     break;
                 case 'time':
-                    $s .= 'TIME DEFAULT CURRENT_TIME';
+                    $s .= 'TIME';
+                    break;
+                case 'blob':
+                    $s .= 'BLOB';
                     break;
                 default:
+                    /* Type not known */
                     $s .= 'TEXT';
             }
 
@@ -391,31 +418,35 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Add primary keys */
         if (count($params['PrimaryKeys']) > 0)
-            $sql .= ' PRIMARY KEY ("'.implode('","', $params['PrimaryKeys']).'"),';
+            $sql .= ' PRIMARY KEY (`'.implode('`,`', $params['PrimaryKeys']).'`),';
+
+        /* Add indexes */
+        foreach ($params['Indexes'] as $name => $indexes) {
+            if (is_string($indexes))
+                $sql .= ' INDEX `idx_'.$name.'` (`'.$indexes.'`),';
+            elseif (is_array($indexes))
+                $sql .= ' INDEX `idx_'.$name.'` (`'.implode('`,`', $indexes).'`),';
+        }
 
         /* Remove trailing comma */
         $sql = rtrim($sql, ',');
 
         /* Close fields information */
-        $sql .= ');';
+        $sql .= ')';
+
+        /* Add engine and charset */
+        $sql .= ' ENGINE=InnoDB';
+        if ($params['Charset'] != '')
+            $sql .= ' DEFAULT CHARSET='.$this->charsets[$params['Charset']];
+        elseif ($this->get_param('Charset') != '')
+             $sql .= ' DEFAULT CHARSET='.$this->charsets[$this->get_param('Charset')];
+        else
+            $sql .= ' DEFAULT CHARSET='.$this->charsets['UTF8'];
+
+        $sql .= ';';
 
         /* Execute table creation */
-        if (!$this->execute_directQuery($sql))
-            return false;
-
-        /* Create indexes separately */
-        foreach ($params['Indexes'] as $iname => $indexes) {
-            if (is_string($indexes)) {
-                $indexSql = 'CREATE INDEX IF NOT EXISTS "idx_'.$name.'_'.$iname.'" ON "'.$name.'" ("'.$indexes.'");';
-                $this->execute_directQuery($indexSql);
-            } elseif (is_array($indexes)) {
-                $indexSql = 'CREATE INDEX IF NOT EXISTS "idx_'.$name.'_'.$iname.'" ON "'.$name.'" ("'.implode('","', $indexes).'");';
-                $this->execute_directQuery($indexSql);
-            }
-        }
-
-        /* Return result */
-        return true;
+        return $this->execute_directQuery($sql);
     }
 
     /**
@@ -433,7 +464,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function drop_table($name) {
-        return $this->execute_directQuery('DROP TABLE IF EXISTS "'.$name.'";');
+        $sql = 'DROP TABLE IF EXISTS `'.$name.'`;';
+        return $this->execute_directQuery($sql);
     }
 
     /**
@@ -442,7 +474,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function truncate_table($name) {
-        return $this->execute_directQuery('TRUNCATE TABLE "'.$name.'";');
+        $sql = 'TRUNCATE TABLE `'.$name.'`;';
+        return $this->execute_directQuery($sql);
     }
 
     /**
@@ -464,7 +497,11 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_directQuery($query, $resourceName='Default') {
         $this->record_query($query);
-        $this->queryResources[$resourceName] = pg_query($this->connection, $query);
+        try {
+            $this->queryResources[$resourceName] = $this->connection->query($query);
+        } catch (\PDOException $e) {
+            return false;
+        }
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -476,7 +513,11 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_queries($queries, $resourceName='Default') {
         $this->record_query($queries);
-        $this->queryResources[$resourceName] = pg_query($this->connection, $queries);
+        try {
+            $this->queryResources[$resourceName] = $this->connection->exec($queries);
+        } catch (\PDOException $e) {
+            return false;
+        }
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -488,14 +529,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryGeneratedId(string $resourceName='Default') {
-        /* PostgreSQL doesn't have lastInsertId, requires RETURNING clause or OID */
-        /* Simplified for native driver */
-        if (!$this->is_active()) return false;
-        $res = pg_query($this->connection, "SELECT lastval();");
-        if ($res) {
-            $data = pg_fetch_row($res);
-            return (int)$data[0];
-        }
+        if ($this->is_active())
+            return $this->connection->lastInsertId();
         return false;
     }
 
@@ -505,8 +540,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
-            return pg_fetch_assoc($this->queryResources[$resourceName]);
+        if (isset($this->queryResources[$resourceName]) && $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_ASSOC);
         return false;
     }
 
@@ -516,8 +551,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryNumDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
-            return pg_fetch_row($this->queryResources[$resourceName]);
+        if (isset($this->queryResources[$resourceName]) && $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_NUM);
         return false;
     }
 
@@ -527,8 +562,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryAffectedRows(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
-            return pg_affected_rows($this->queryResources[$resourceName]);
+        if (isset($this->queryResources[$resourceName]) && $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->rowCount();
         return 0;
     }
 
@@ -538,8 +573,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryFieldCount(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
-            return pg_num_fields($this->queryResources[$resourceName]);
+        if (isset($this->queryResources[$resourceName]) && $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->columnCount();
         return false;
     }
 
@@ -550,16 +585,31 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryFieldType($fIndex=0, $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
-            $type = pg_field_type($this->queryResources[$resourceName], $fIndex);
+        if (isset($this->queryResources[$resourceName]) && $this->queryResources[$resourceName] !== false) {
+            $meta = $this->queryResources[$resourceName]->getColumnMeta($fIndex);
+
+            /* Map PDO types to CaMykS types */
+            $type = $meta['native_type'] ?? '';
             switch ($type) {
-                case 'int2':
-                case 'int4':
-                case 'int8': return 'int';
-                case 'float4':
-                case 'float8':
-                case 'numeric': return 'float';
-                case 'bytea': return 'blob';
+                case 'TINY':
+                case 'SHORT':
+                case 'LONG':
+                case 'LONGLONG':
+                case 'INT24':
+                    return 'int';
+                case 'FLOAT':
+                case 'DOUBLE':
+                case 'DECIMAL':
+                case 'NEWDECIMAL':
+                    return 'float';
+                case 'BLOB':
+                case 'TINY_BLOB':
+                case 'MEDIUM_BLOB':
+                case 'LONG_BLOB':
+                    return 'blob';
+                case 'STRING':
+                case 'VAR_STRING':
+                    return 'string';
                 default:
                     return 'string';
             }
@@ -573,8 +623,10 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryError(string $resourceName='Default') {
-        if ($this->is_active())
-            return pg_last_error($this->connection);
+        if ($this->is_active()) {
+            $error = $this->connection->errorInfo();
+            return $error[2] ?? '';
+        }
         return '';
     }
 
@@ -586,8 +638,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean result
      */
     public function close_ressource(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
-            pg_free_result($this->queryResources[$resourceName]);
+        if (isset($this->queryResources[$resourceName])) {
             $this->queryResources[$resourceName] = null;
             unset($this->queryResources[$resourceName]);
         }
@@ -602,7 +653,15 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function escape_string($string='') {
-        return pg_escape_string($this->connection, $string);
+        /* PDO quote returns quoted string, so we need to remove quotes */
+        /* If not active, use addslashes as fallback */
+        if (!$this->is_active())
+            return addslashes($string);
+
+        $quoted = $this->connection->quote($string);
+        if ($quoted === false)
+             return addslashes($string);
+        return substr($quoted, 1, -1);
     }
 }
 ?>

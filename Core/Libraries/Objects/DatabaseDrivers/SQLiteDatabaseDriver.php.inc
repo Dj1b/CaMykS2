@@ -25,8 +25,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
     protected $architecture = 'file';
 
     /**
-     * @var object $connection
-     * @brief Internal PDO connection to SQLite database.
+     * @var \SQLite3 $connection
+     * @brief Internal connection to SQLite database.
      */
     private $connection;
 
@@ -44,10 +44,12 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
 
     /**
      * Class constructor.
+     * @param Object $parent
+     * @return void
      */
-    public function __construct() {
+    public function __construct(&$parent) {
         global $CaMykS;
-        parent::__construct();
+        parent::__construct($parent);
 
         /* Loading database path */
         $this->dbPath = $CaMykS->get_websiteDataFileFullPath('Databases');
@@ -58,21 +60,29 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function open() {
-        /* Build DSN */
-        $dsn = 'sqlite:'.$this->get_fullDatabaseName($this->get_param('Name'));
+        /* Build database full path */
+        $path = $this->get_fullDatabaseName($this->get_param('Name'));
 
         /* Perform database file connection */
         try {
-            $this->connection = new \PDO($dsn);
-            $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->connection = new \SQLite3($path);
 
-            /* Set encryption key if password parameter is provided (for SQLCipher) */
+            /* Check connection */
+            if ($this->connection->lastErrorCode() !== 0) {
+                 $this->status = false;
+                 return false;
+            }
+
+            /* Set encryption key if provided (requires specific SQLite3 libraries) */
             if ($this->get_param('Password') !== '') {
-                $this->connection->exec("PRAGMA key = '".$this->escape_encryptionKey($this->get_param('Password')."'"));
+                /* Note: Standard PHP SQLite3 doesn't support PRAGMA key easily,
+                 * but some libraries do. We'll try it just in case.
+                 */
+                $this->connection->exec("PRAGMA key = '".$this->escape_string($this->get_param('Password'))."';");
             }
 
             $this->status = true;
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             $this->status = false;
         }
 
@@ -90,7 +100,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
             return true;
 
         /* Close database connection */
-        $this->connection = null;
+        if (!$this->connection->close())
+            return false;
 
         /* Update status */
         $this->status = false;
@@ -107,11 +118,13 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function get_driverVersion() {
         /* Check connection is open */
-        if (!$this->is_active())
-            return '';
+        if (!$this->is_active()) {
+            $v = \SQLite3::version();
+            return $v['versionString'];
+        }
 
-        /* Return SQLite version */
-        return $this->connection->query('SELECT sqlite_version()')->fetchColumn();
+        /* Return SQLite version from connection */
+        return $this->connection->querySingle('SELECT sqlite_version()');
     }
 
     /* Mark: Database methods */
@@ -122,8 +135,18 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function select_database($name=null) {
-        /* SQLite uses file-based databases, no selection needed */
-        return true;
+        /* SQLite uses file-based databases, changing name means reopening */
+        if (is_null($name) or $name == $this->get_param('Name'))
+            return true;
+
+        /* Close current connection */
+        $this->close();
+
+        /* Update name */
+        $this->set_param('Name', $name);
+
+        /* Open new connection */
+        return $this->open();
     }
 
     /**
@@ -132,11 +155,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function check_database($name=null) {
-        /* For SQLite, check if file exists */
-        if (is_null($name))
-            $name = $this->get_fullDatabaseName($this->get_param('Name'));
-
-        return file_exists($name);
+        return file_exists($this->get_fullDatabaseName($name ?? $this->get_param('Name')));
     }
 
     /**
@@ -147,8 +166,12 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function create_database($name, $encoding='UTF8') {
         /* SQLite creates database file on connection */
-        /* Just touch the file to create it */
-        return touch($name);
+        /* Just check if we can create the file */
+        $path = $this->get_fullDatabaseName($name);
+        if (file_exists($path))
+            return true;
+
+        return touch($path);
     }
 
     /**
@@ -160,7 +183,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Build header comments */
         $content = "-- ************************\n";
-        $content .= "-- Database \"".$this->get_fullDatabaseName($this->get_param('Name'))."\" dump\n";
+        $content .= "-- Database \"".$this->get_param('Name')."\" dump\n";
         $content .= "-- ".date('r')."\n";
         $content .= "-- ************************\n\n";
 
@@ -175,23 +198,28 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
             $content .= "-- ************************\n";
 
             /* Get table creation SQL */
-            if ($this->execute_directQuery("SELECT sql FROM sqlite_master WHERE type='table' AND name='".$this->escape_string($table)."';", 'createTable')) {
-                if ($createTable = $this->get_queryDataLine('createTable')) {
-                    $content .= $createTable['sql'].";\n\n";
-                }
+            $sql = "SELECT sql FROM sqlite_master WHERE type='table' AND name='".$this->escape_string($table)."';";
+            $createTable = $this->connection->querySingle($sql, true);
+            if ($createTable and isset($createTable['sql'])) {
+                $content .= $createTable['sql'].";\n\n";
             }
 
             /* Build table content */
-            if ($this->execute_directQuery('SELECT * FROM '.$table.';', 'tableItemList')) {
-                while ($insertData = $this->get_queryNumDataLine('tableItemList')) {
-                    $content .= "INSERT INTO ".$table." VALUES(";
+            $res = $this->connection->query('SELECT * FROM `'.$table.'`;');
+            if ($res) {
+                while ($insertData = $res->fetchArray(SQLITE3_NUM)) {
+                    $content .= "INSERT INTO `".$table."` VALUES(";
                     for ($i=0; $i < count($insertData); $i++) {
                         if ($i != 0)
                             $content .=  ", ";
-                        if (is_string($insertData[$i]))
+
+                        if (is_null($insertData[$i])) {
+                            $content .= 'NULL';
+                        } elseif (is_string($insertData[$i])) {
                             $content .=  "'" . addslashes($insertData[$i]) . "'";
-                        else
-                            $content .= $insertData[$i] ?? 'NULL';
+                        } else {
+                            $content .= $insertData[$i];
+                        }
                     }
                     $content .=  ");\n";
                 }
@@ -208,9 +236,9 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_databaseSize() {
-        $file = $this->get_fullDatabaseName($this->get_param('Name'));
-        if (file_exists($file))
-            return filesize($file);
+        $path = $this->get_fullDatabaseName($this->get_param('Name'));
+        if (file_exists($path))
+            return filesize($path);
         return 0;
     }
 
@@ -234,9 +262,11 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Load list from database */
         $sql = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';";
-        if ($this->execute_directQuery($sql))
-            while ($data = $this->get_queryDataLine())
+        $res = $this->connection->query($sql);
+        if ($res) {
+            while ($data = $res->fetchArray(SQLITE3_ASSOC))
                 $list[] = $data['name'];
+        }
 
         /* Return result */
         return $list;
@@ -250,8 +280,6 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function create_table($name, $fields=array(), $params=array()) {
-        global $camyks;
-
         /* Merge params with default ones */
         $params = array_merge(array(
             'Charset'       => '',
@@ -261,11 +289,11 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
         ), $params);
 
         /* Build sql query */
-        $sql = 'CREATE TABLE IF NOT EXISTS '.$name.' (';
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.$name.'` (';
 
         /* Add auto id */
         if ($params['AutoId'])
-            $sql .= 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+            $sql .= '`id` INTEGER PRIMARY KEY AUTOINCREMENT,';
 
         /* Add fields description */
         foreach ($fields as $field => $data) {
@@ -296,12 +324,16 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
             /* Add field name */
             $s = ' `'.$field.'` ';
 
-            /* Add field description from type - SQLite has limited types */
+            /* Add field description from type */
             switch ($data['Type']) {
                 case 'text':
                 case 'tinytext':
                 case 'mediumtext':
                 case 'longtext':
+                case 'blob':
+                case 'date':
+                case 'datetime':
+                case 'time':
                     $s .= 'TEXT';
                     if ($data['Default'] !== '')
                         $s .= ' DEFAULT "'.addslashes($data['Default']).'"';
@@ -317,14 +349,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
                     if (is_numeric($data['Default']))
                         $s .= ' DEFAULT '.(float)$data['Default'];
                     break;
-                case 'date':
-                case 'datetime':
-                case 'time':
-                    $s .= 'TEXT';  // SQLite stores dates as TEXT or INTEGER
-                    $s .= ' DEFAULT CURRENT_TIMESTAMP';
-                    break;
                 default:
-                    /* Type not known */
                     $s .= 'TEXT';
             }
 
@@ -360,21 +385,22 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
         $sql .= ');';
 
         /* Execute table creation */
-        $result = $this->execute_directQuery($sql);
+        $result = $this->connection->exec($sql);
+        if (!$result) return false;
 
         /* Create indexes separately in SQLite */
-        foreach ($params['Indexes'] as $name => $indexes) {
+        foreach ($params['Indexes'] as $iname => $indexes) {
             if (is_string($indexes)) {
-                $indexSql = 'CREATE INDEX IF NOT EXISTS idx_'.$name.' ON '.$name.' (`'.$indexes.'`);';
-                $this->execute_directQuery($indexSql);
+                $indexSql = 'CREATE INDEX IF NOT EXISTS `idx_'.$name.'_'.$iname.'` ON `'.$name.'` (`'.$indexes.'`);';
+                $this->connection->exec($indexSql);
             } elseif (is_array($indexes)) {
-                $indexSql = 'CREATE INDEX IF NOT EXISTS idx_'.$name.' ON '.$name.' (`'.implode('`,`', $indexes).'`);';
-                $this->execute_directQuery($indexSql);
+                $indexSql = 'CREATE INDEX IF NOT EXISTS `idx_'.$name.'_'.$iname.'` ON `'.$name.'` (`'.implode('`,`', $indexes).'`);';
+                $this->connection->exec($indexSql);
             }
         }
 
         /* Return result */
-        return $result;
+        return true;
     }
 
     /**
@@ -392,8 +418,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function drop_table($name) {
-        $sql = 'DROP TABLE IF EXISTS '.$name.';';
-        return $this->execute_directQuery($sql);
+        return $this->connection->exec('DROP TABLE IF EXISTS `'.$name.'`;');
     }
 
     /**
@@ -402,8 +427,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function truncate_table($name) {
-        $sql = 'DELETE FROM '.$name.';';
-        return $this->execute_directQuery($sql);
+        return $this->connection->exec('DELETE FROM `'.$name.'`;');
     }
 
     /**
@@ -425,11 +449,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_directQuery($query, $resourceName='Default') {
         $this->record_query($query);
-        try {
-            $this->queryResources[$resourceName] = $this->connection->query($query);
-        } catch (\PDOException $e) {
-            return false;
-        }
+        $this->queryResources[$resourceName] = $this->connection->query($query);
         return ($this->queryResources[$resourceName] !== false);
     }
 
@@ -441,12 +461,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function execute_queries($queries, $resourceName='Default') {
         $this->record_query($queries);
-        try {
-            $this->queryResources[$resourceName] = $this->connection->exec($queries);
-        } catch (\PDOException $e) {
-            return false;
-        }
-        return ($this->queryResources[$resourceName] !== false);
+        return $this->connection->exec($queries);
     }
 
     /* Mark: Query return methods */
@@ -458,7 +473,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function get_queryGeneratedId(string $resourceName='Default') {
         if ($this->is_active())
-            return $this->connection->lastInsertId();
+            return $this->connection->lastInsertRowID();
         return false;
     }
 
@@ -468,8 +483,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_ASSOC);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->fetchArray(SQLITE3_ASSOC);
         return false;
     }
 
@@ -479,8 +494,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return array
      */
     public function get_queryNumDataLine(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_NUM);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->fetchArray(SQLITE3_NUM);
         return false;
     }
 
@@ -490,8 +505,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryAffectedRows(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->rowCount();
+        if ($this->is_active())
+            return $this->connection->changes();
         return 0;
     }
 
@@ -501,8 +516,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return integer
      */
     public function get_queryFieldCount(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName]))
-            return $this->queryResources[$resourceName]->columnCount();
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
+            return $this->queryResources[$resourceName]->numColumns();
         return false;
     }
 
@@ -513,9 +528,16 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryFieldType($fIndex=0, $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName])) {
-            $meta = $this->queryResources[$resourceName]->getColumnMeta($fIndex);
-            return $this->get_compatibleType($meta['pdo_type'] ?? \PDO::PARAM_STR);
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
+            $type = $this->queryResources[$resourceName]->columnType($fIndex);
+            switch ($type) {
+                case SQLITE3_INTEGER: return 'int';
+                case SQLITE3_FLOAT: return 'float';
+                case SQLITE3_BLOB: return 'blob';
+                case SQLITE3_TEXT:
+                default:
+                    return 'string';
+            }
         }
         return false;
     }
@@ -526,10 +548,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function get_queryError(string $resourceName='Default') {
-        if ($this->is_active()) {
-            $error = $this->connection->errorInfo();
-            return $error[2] ?? '';
-        }
+        if ($this->is_active())
+            return $this->connection->lastErrorMsg();
         return '';
     }
 
@@ -541,7 +561,8 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean result
      */
     public function close_ressource(string $resourceName='Default') {
-        if (isset($this->queryResources[$resourceName])) {
+        if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
+            $this->queryResources[$resourceName]->finalize();
             $this->queryResources[$resourceName] = null;
             unset($this->queryResources[$resourceName]);
         }
@@ -556,41 +577,10 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function escape_string($string='') {
-        /* PDO quote returns quoted string, so we need to remove quotes */
-        $quoted = $this->connection->quote($string);
-        return substr($quoted, 1, -1);
+        return \SQLite3::escapeString($string);
     }
 
     /* Mark: Private tool methods */
-
-    /**
-     * Return SQLite compatible type from given PDO type.
-     * @param integer $type
-     * @return string
-     */
-    private function get_compatibleType($type=\PDO::PARAM_STR) {
-        switch ($type) {
-            case \PDO::PARAM_INT:
-                return 'int';
-            case \PDO::PARAM_BOOL:
-                return 'int';
-            case \PDO::PARAM_NULL:
-                return 'null';
-            case \PDO::PARAM_STR:
-            default:
-                return 'string';
-        }
-    }
-
-    /**
-     * Escape encryption key for PRAGMA key statement.
-     * @param string $key
-     * @return string
-     */
-    private function escape_encryptionKey($key) {
-        /* Escape single quotes in the key */
-        return str_replace("'", "''", $key);
-    }
 
     /**
      * Return full database path.
@@ -598,9 +588,6 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     private function get_fullDatabaseName($dbName) {
-        /* Check name : to do */
-
-
         /* Return database path */
         return $this->dbPath.'/'.$dbName.$this->dbExtension;
     }

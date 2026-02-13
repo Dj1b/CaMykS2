@@ -3,7 +3,7 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Oct 2019
  * @date Modification: Feb 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -68,31 +68,41 @@ final class DatabaseConnector extends CaMykSLibrary {
         /* Merge parameters in parent object */
         parent::__construct($params);
 
-        /* Check driver */
-        if ($this->params['PDO']) {
-            $driver = 'PDODBConnection';
-        } else {
-            /* Preload SQL interface for SQL drivers */
-            if (preg_match('/sql/i', $this->params['Driver']))
-                $CaMykS->load_library('DatabaseDrivers/SQLDatabaseDriverInterface', 'Objects');
+        /* Preload SQL interface for SQL drivers */
+        if (preg_match('/sql/i', $this->params['Driver']))
+            $CaMykS->load_library('DatabaseDrivers/SQLDatabaseDriverInterface', 'Objects');
 
-            /* Define driver library */
-            switch ($this->params['Driver']) {
-                case 'SQLite':
-                    $driver = 'SQLiteDatabaseDriver';
-                    break;
-                case 'PostgreSQL':
-                    $driver = 'PostgreSQLDatabaseDriver';
-                    break;
-                case 'MySQLi':
-                    $driver = 'MySQLiDatabaseDriver';
-                    break;
-                case 'MSSQL':
-                    $driver = 'MSSQLDatabaseDriver';
-                    break;
-                default :
-                    return $this->add_error(1, '');
-            }
+        /* Define driver library */
+        switch ($this->params['Driver']) {
+            case 'MySQLi':
+                $driver = 'MySQLiDatabaseDriver';
+                break;
+            case 'SQLite':
+                $driver = 'SQLiteDatabaseDriver';
+                break;
+            case 'PostgreSQL':
+                $driver = 'PostgreSQLDatabaseDriver';
+                break;
+            case 'MSSQL':
+                $driver = 'MSSQLDatabaseDriver';
+                break;
+            case 'Oracle':
+                $driver = 'OracleDatabaseDriver';
+                break;
+            case 'PDOMySQLi':
+                $driver = 'PDOMySQLiDatabaseDriver';
+                break;
+            case 'PDOSQLite':
+                $driver = 'PDOSQLiteDatabaseDriver';
+                break;
+            case 'PDOPostgreSQL':
+                $driver = 'PDOPostgreSQLDatabaseDriver';
+                break;
+            case 'PDOMSSQL':
+                $driver = 'PDOMSSQLDatabaseDriver';
+                break;
+            default :
+                return $this->add_error(1, '');
         }
 
         /* Load driver library */
@@ -504,7 +514,7 @@ final class DatabaseConnector extends CaMykSLibrary {
 
     /**
      * Return available driver list.
-     * <br />Method is static to be called without having a working database connection.
+     * <br />Method is static, to be called without having a running database connection.
      * @return array
      */
     public static function get_availableDrivers() {
@@ -518,7 +528,16 @@ final class DatabaseConnector extends CaMykSLibrary {
             $list['PgSQL'] = 'PostgreSQL';
         if (extension_loaded('sqlsrv'))
             $list['MSSQL'] = 'MSSQL';
-
+        if (extension_loaded('oci8'))
+            $list['Oracle'] = 'Oracle';
+        if (extension_loaded('mysqli') and class_exists('PDO'))
+            $list['PDOMySQLi'] = 'PDOMySQLi';
+        if (extension_loaded('sqlite3') and class_exists('PDO'))
+            $list['PDOSQLite3'] = 'PDOSQLite';
+        if (extension_loaded('pgsql') and class_exists('PDO'))
+            $list['PDOPgSQL'] = 'PDOPostgreSQL';
+        if (extension_loaded('sqlsrv') and class_exists('PDO'))
+            $list['PDOMSSQL'] = 'PDOMSSQL';
         return $list;
     }
 
