@@ -3,10 +3,10 @@
  * @brief URL specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Sep 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -70,12 +70,11 @@ function url_getBaseURLModes() {
 function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null) {
     /* Check URL */
     $tempURL = url_getCurrentURL();
-    if (is_null($URL))
+    if (empty($URL))
         $URL = $tempURL;
 
     /* Parse URL */
     $parsedURL = parse_url($URL);
-    $parseTempURL = parse_url($tempURL);
 
     /* Check scheme from SSLMode */
     switch ($mode) {
@@ -90,12 +89,11 @@ function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null) {
             break;
         case 'Default' : // default / client's choice
         default :
-            /* Do not change scheme */
+            /* Do not change sheme */
     }
 
     /* Finalise URL */
-    return $parsedURL['scheme'].'://'.
-        (!empty($parsedURL['host']) ? $parsedURL['host'] : $parseTempURL['host']).'/'.
+    return $parsedURL['scheme'].'://'.$parsedURL['host'].'/'.
         (!empty($parsedURL['path']) ? $parsedURL['path'].'/' : '').
         (!empty($parsedURL['query']) ? $parsedURL['query'].'/' : '');
 }
