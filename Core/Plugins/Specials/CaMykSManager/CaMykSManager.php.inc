@@ -3,10 +3,10 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre18
+ * @version 1.0pre19
  * @date Creation: Dec 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -58,7 +58,7 @@ final class CaMykSManager extends Plugin {
      * @var array $configurationSections
      * @brief List sections available to configure.
      */
-    protected $configurationSections = array('Manager', 'Engine', 'Visit', 'Admin', 'Database', 'Plugins'/*, 'Request'*/);
+    protected $configurationSections = array('Manager', 'Engine', 'Visit', 'Admin', 'Database', 'DefaultPlugins'/*, 'Request'*/);
 
     /**
      * @var string $section

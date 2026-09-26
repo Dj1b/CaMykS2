@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre15
+ * @version 1.0pre16
  * @date Creation: Mar 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Feb 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -114,7 +114,7 @@ $locales = array(
     'Configuration_VisitSettings' => 'Mode visiteur',
     'Configuration_AdminSettings' => 'Mode administration',
     'Configuration_DatabaseSettings' => 'Base de donn&eacute;es',
-    'Configuration_PluginsSettings' => 'Plugins par d&eacute;faut',
+    'Configuration_DefaultPluginsSettings' => 'Plugins par d&eacute;faut',
     'Configuration_NoneTitle' => 'S&eacute;lectionnez une section &agrave; configurer.',
 
     /* Configuration panel all interface */
