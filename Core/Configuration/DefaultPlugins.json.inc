@@ -1,19 +1,20 @@
 {
-    "Component": [
+    "DefaultComponents": [
     ],
-    "Module": [
-        "SystemPluginManager"
-        "SystemAdministratorManager"
-        "SystemConfigurationManager"
-        "SystemFileStorageManager"
-        "SystemLogManager"
-        "SystemPrivacyPolicyManager"
-        "SystemSessionManager"
-        "SystemSitePageManager"
+    "DefaultModules": [
+        "SystemPluginManager",
+        "SystemAdministratorManager",
+        "SystemConfigurationManager",
+        "SystemFileStorageManager",
+        "SystemLogManager",
+        "SystemPrivacyPolicyManager",
+        "SystemSessionManager",
+        "SystemSitePageManager",
         "SystemUniqueIdManager"
     ],
-    "Template": [
+    "DefaultTemplates": [
+        "AdminPage"
     ],
-    "Theme": [
+    "DefaultThemes": [
     ]
 }

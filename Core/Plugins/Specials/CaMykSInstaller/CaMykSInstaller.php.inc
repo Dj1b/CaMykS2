@@ -3,10 +3,10 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: May 2021
- * @date Modification: Sep 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Sep 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -789,16 +789,16 @@ final class CaMykSInstaller extends Plugin {
         $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $pluginManager->libraryName);
 
         /* Load other default system plugins */
-        $pluginList = $CaMykS->get_assetData('DefaultPlugins');
+        $CaMykS->load_configuration('DefaultPlugins');
 
         /* Remove plugin manager */
         if (isset($pluginList['Module']['SystemPluginManager']))
             unset($pluginList['Module']['SystemPluginManager']);
 
         /* Install other default system plugins */
-        foreach ($pluginList as $type => $plugins) {
-            foreach ($plugins as $name => $location) {
-                if (!$pluginManager->enable_plugin($name, $type, $location)) {
+        foreach ($CaMykS->get_pluginTypes() as $type) {
+            foreach ($CaMyk->get_configValue('Default'.$type.'s') as $name) {
+                if (!$pluginManager->enable_plugin($name, $type, 'System')) {
                     /* Define error */
                     $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_PluginCantInstall', $name));
 
