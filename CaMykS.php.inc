@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre51
+ * @version 2.0pre52
  * @date Creation: Feb 2017
  * @date Modification: Oct 2026
  * @copyright 2017 - 2026 CaMykS Team
@@ -125,10 +125,10 @@ final class CaMykS {
     /* Mark: Language variables */
 
     /**
-     * @var string $currentLanguage
+     * @var Object $currentLanguage
      * @brief Optimised language currently used.
      */
-    private string $currentLanguage = 'fr_FR';
+    private ?Language $currentLanguage = null;
 
     /**
      * @var array $locales
@@ -191,16 +191,16 @@ final class CaMykS {
     /* Mark: Links to internal object libraries */
 
     /**
-     * @var Bench|false $bench
+     * @var Bench|null $bench
      * @brief CaMykS internal bench object.
      */
-    private Bench|false $bench = false;
+    private ?Bench $bench = null;
 
     /**
-     * @var ErrorHandler|false $errorHandler
+     * @var ErrorHandler|null $errorHandler
      * @brief CaMykS internal error handler.
      */
-    private ErrorHandler|false $errorHandler = false;
+    private ?ErrorHandler $errorHandler = null;
 
     /**
      * @var HTMLPage $HTMLPage
@@ -387,7 +387,7 @@ final class CaMykS {
      */
     public function terminate(): void {
         /* Add bench step */
-        if ($this->bench !== false) $this->bench->add_step('CaMykS terminate.');
+        if (!is_null($this->bench)) $this->bench->add_step('CaMykS terminate.');
 
         /* Close database connections */
         $this->close_databaseConnections();
@@ -399,7 +399,7 @@ final class CaMykS {
         if ($this->errorHandler !== false) $this->errorHandler->export();
 
         /* Export bench result */
-        if ($this->bench !== false) $this->bench->export();
+        if (!is_null($this->bench)) $this->bench->export();
 
         /* Write HTML page footer */
         if (isset($this->HTMLPage))
@@ -877,6 +877,7 @@ final class CaMykS {
         $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('ConfigurationFile', 'Objects');
         $this->load_library('File', 'Objects');
+        $this->load_library('Language', 'Objects');
     }
 
     /**
@@ -1705,17 +1706,16 @@ final class CaMykS {
      * @param string $language
      * @return boolean success
      */
-    public function set_currentLanguage(string $language): bool {
-        /* Get optimised language */
-        $l = language_read($language);
-        if ($language === false)
-            return false;
-
-        /* Store language */
-        $this->currentLanguage = $language;
+    public function set_currentLanguage(string|Language $language): bool {
+        /* Read language */
+        if ($language instanceof Language) {
+            $this->currentLanguage = $language;
+        } else {
+            $this->currentLanguage = new Language($language);
+        }
 
         /* Change system language */
-        if (setlocale(LC_ALL, language_getSystemLanguages($l)) === false)
+        if (setlocale(LC_ALL, language_getSystemLanguages($this->currentLanguage->get_value())) === false)
             return false;
 
         /* Return success */
@@ -1726,7 +1726,9 @@ final class CaMykS {
      * Return current language.
      * @return string
      */
-    public function get_currentLanguage(): string {
+    public function get_currentLanguage(): Language {
+        if (is_null($this->currentLanguage))
+            $this->currentLanguage = new Language('fr_FR');
         return $this->currentLanguage;
     }
 
@@ -1735,7 +1737,7 @@ final class CaMykS {
      * @return string
      */
     public function get_currentLanguageValue(): string {
-        return language_export($this->currentLanguage);
+        return $this->currentLanguage->get_value();
     }
 
     /* Mark: Locale related methods */

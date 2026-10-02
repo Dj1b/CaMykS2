@@ -3,7 +3,7 @@
  * @brief Date related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -42,8 +42,7 @@ function date_getTextualDayDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -67,8 +66,7 @@ function date_getTextualDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -92,8 +90,7 @@ function date_getTextualDayDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -117,8 +114,7 @@ function date_getTextualDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -144,8 +140,7 @@ function date_getLongDayDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -169,8 +164,7 @@ function date_getLongDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -194,8 +188,7 @@ function date_getLongDayDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -219,8 +212,7 @@ function date_getLongDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -275,8 +267,7 @@ function date_getShortDayDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -298,8 +289,7 @@ function date_getShortDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -321,8 +311,7 @@ function date_getShortDayDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -344,8 +333,7 @@ function date_getShortDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -398,8 +386,7 @@ function date_getNumericDateHour(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {
@@ -421,8 +408,7 @@ function date_getNumericDate(int $date=NOW): string {
     global $CaMykS;
 
     /* Load language */
-    $language = $CaMykS->get_currentLanguage();
-    $language = $language['Language'];
+    $language = $CaMykS->get_currentLanguage(true);
 
     /* Check language for result */
     switch ($language) {

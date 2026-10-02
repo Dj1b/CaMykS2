@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Jan 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -100,14 +100,14 @@ abstract class PluginLibraryAttribute {
      * @param string $language
      * @return mixed
      */
-    public function get_value(?string $language=null): mixed {
+    public function get_value(mixed $language=null): mixed {
         global $CaMykS;
 
         if ($this->isLocalised) {
             if (is_null($language))
                 $language = $CaMykS->get_currentLanguage();
-            if (isset($this->value[$language]))
-                return $this->value[$language];
+            if (isset($this->value[(string)$language]))
+                return $this->value[(string)$language];
             return null;
         }
         return $this->value;
@@ -119,14 +119,14 @@ abstract class PluginLibraryAttribute {
      * @param string $language
      * @return void
      */
-    public function set_value(mixed $value, ?string $language=null): void {
+    public function set_value(mixed $value, mixed $language=null): void {
         global $CaMykS;
 
         if ($this->isLocalised) {
             if (is_null($language))
                 $language = $CaMykS->get_currentLanguage();
-            if (isset($this->value[$language]))
-                $this->value[$language] = $value;
+            if (isset($this->value[(string)$language]))
+                $this->value[(string)$language] = $value;
         }
         $this->value = $value;
     }
@@ -139,7 +139,7 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             $this->value = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
-                $this->value[$language] = $this->get_defaultValue();
+                $this->value[(string)$language] = $this->get_defaultValue();
             }
         } else {
             $this->value = $this->get_defaultValue();
@@ -155,9 +155,9 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (isset($array[$this->get_fullName($language)]))
-                    $this->value[$language] = $this->read_valueFromSave($array[$this->get_fullName($language)]);
+                    $this->value[(string)$language] = $this->read_valueFromSave($array[$this->get_fullName($language)]);
                 else
-                    $this->value[$language] = $this->get_defaultValue();
+                    $this->value[(string)$language] = $this->get_defaultValue();
             }
         } else {
             if (isset($array[$this->get_fullName()]))
@@ -185,9 +185,9 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (!is_null($value = $this->load_valueFromHeader($this->get_fullName($language, $prefix))))
-                    $this->value[$language] = $value;
+                    $this->value[(string)$language] = $value;
                 elseif ($update === false)
-                    $this->value[$language] = $this->get_defaultValue();
+                    $this->value[(string)$language] = $this->get_defaultValue();
             }
         } else {
             if (!is_null($value = $this->load_valueFromHeader($this->get_fullName(null, $prefix))))
@@ -207,9 +207,9 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (isset($array[$this->get_fullName($language)]))
-                    $this->value[$language] = $this->read_value($array[$this->get_fullName($language)]);
+                    $this->value[(string)$language] = $this->read_value($array[$this->get_fullName($language)]);
                 elseif ($update === false)
-                    $this->value[$language] = $this->get_defaultValue();
+                    $this->value[(string)$language] = $this->get_defaultValue();
             }
         } else {
             if (isset($array[$this->get_fullName()]))
@@ -227,7 +227,7 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             $result = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
-                $result[$this->get_fullName($language)] = $this->value[$language];
+                $result[$this->get_fullName($language)] = $this->value[(string)$language];
             }
             return $result;
         }
