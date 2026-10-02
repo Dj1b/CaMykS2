@@ -3,10 +3,10 @@
  * @brief Password specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Mar 2020
- * @date Modification: Apr 2025
- * @copyright 2020 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,7 +18,7 @@
  * @param string $salt
  * @return string
  */
-function password_encode(string $password, mixed $algorythm=null, string $salt='') {
+function password_encode(string $password, mixed $algorythm=null, string $salt=''): string {
     switch ($algorythm) {
         case 128:
         case 'sha512':
@@ -47,7 +47,7 @@ function password_encode(string $password, mixed $algorythm=null, string $salt='
  * @param string $salt
  * @return boolean result
  */
-function password_check(string $password, string $hash, mixed $algorythm=null, string $salt='') {
+function password_check(string $password, string $hash, mixed $algorythm=null, string $salt=''): bool {
     /* Check for integrated salt in hash */
     if ($salt == '' and preg_match('#\:[0-9a-z]*$#', $hash)) {
         $hash = explode(':', $hash);

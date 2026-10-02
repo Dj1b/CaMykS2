@@ -3,10 +3,10 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ abstract class CaMykSLibrary {
      * @var string $libraryName
      * @brief Library name.
      */
-    protected $libraryName = '';
+    protected string $libraryName = '';
 
     /**
      * @var string $libraryNamespace
      * @brief Library namespace.
      */
-    protected $libraryNamespace;
+    protected string $libraryNamespace;
 
     /* Mark: Parameters */
 
@@ -36,7 +36,7 @@ abstract class CaMykSLibrary {
      * @var array $params
      * @brief Object "public" parameters.
      */
-    protected $params = array();
+    protected array $params = array();
 
     /* Mark: Errors related variables */
 
@@ -44,13 +44,13 @@ abstract class CaMykSLibrary {
      * @var array $errorList.
      * @brief List of recorded errors.
      */
-    protected $errorList = array();
+    protected array $errorList = array();
 
     /**
-     * @var array $errorCodes.
+     * @var array|null $errorCodes.
      * @brief List known errors with their codes.
      */
-    protected $errorCodes = null;
+    protected ?array $errorCodes = null;
 
     /**
      * Class constructor.
@@ -68,6 +68,16 @@ abstract class CaMykSLibrary {
         $this->update_params($params);
     }
 
+    /* Mark : Data display methods */
+
+    /**
+     * Return library name.
+     * @return string
+     */
+    public function get_libraryName(): string {
+        return $this->libraryName;
+    }
+
     /* Mark: Public parameters related methods */
 
     /**
@@ -76,7 +86,7 @@ abstract class CaMykSLibrary {
      * @param mixed $value
      * @return void
      */
-    public function update_param(array $name, mixed $value) {
+    public function update_param(string $name, mixed $value): void {
         $this->params[$name] = $value;
     }
 
@@ -85,7 +95,7 @@ abstract class CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function update_params(array $params) {
+    public function update_params(array $params): void {
         $this->params = array_merge($this->params, $params);
     }
 
@@ -94,7 +104,7 @@ abstract class CaMykSLibrary {
      * @param string $name
      * @return mixed
      */
-    public function get_param(string $name) {
+    public function get_param(string $name): mixed {
         if (isset($this->params[$name]))
             return $this->params[$name];
         return false;
@@ -108,7 +118,7 @@ abstract class CaMykSLibrary {
      * @param mixed $default
      * @return mixed
      */
-    public function get_engineConfigValue(string $name, mixed $default=null) {
+    public function get_engineConfigValue(string $name, mixed $default=null): mixed {
         global $CaMykS;
         return $CaMykS->get_configValue($name, $default);
     }
@@ -119,15 +129,15 @@ abstract class CaMykSLibrary {
      * Check if errors have been recorded.
      * @return boolean result
      */
-    public function has_errors() {
+    public function has_errors(): bool {
         return (count($this->errorList) > 0);
     }
 
     /**
      * Return last error.
-     * @return array
+     * @return array|false
      */
-    public function get_lastError() {
+    public function get_lastError(): array|false {
         /* Check has error */
         if ($this->has_errors() === false)
             return false;
@@ -148,7 +158,7 @@ abstract class CaMykSLibrary {
      * @param string $locale
      * @return boolean result
      */
-    public function check_locale(string $locale='') {
+    public function check_locale(string $locale=''): bool {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
@@ -165,7 +175,7 @@ abstract class CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    public function get_locale(string $locale='', mixed $data=null) {
+    public function get_locale(string $locale='', mixed $data=null): string {
         global $CaMykS;
 
         /* Load library locales in CaMykS */
@@ -183,7 +193,7 @@ abstract class CaMykSLibrary {
      * @param string $language
      * @return boolean success
      */
-    protected function load_locales(string $folder='', ?string $language=null) {
+    protected function load_locales(string $folder='', ?string $language=null): bool {
         global $CaMykS;
 
         /* Check CaMykS object */
@@ -205,7 +215,7 @@ abstract class CaMykSLibrary {
      * @param boolean $isFatal
      * @return false
      */
-    protected function add_error(int $errorId, string $details, string $file='', int $line=0, bool $isFatal=false) {
+    protected function add_error(int $errorId, string $details, string $file='', int $line=0, bool $isFatal=false): false {
         global $CaMykS;
 
         /* Add error at the beginning of the list */
@@ -222,7 +232,7 @@ abstract class CaMykSLibrary {
      * Define error code list, to be overrided by libraries.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         $this->errorCodes = array();
     }
 
@@ -233,7 +243,7 @@ abstract class CaMykSLibrary {
      * @param integer $errorId
      * @return string
      */
-    protected function get_errorCode(int $errorId) {
+    protected function get_errorCode(int $errorId): string {
         /* Load error codes if needed */
         if ($this->errorCodes === null)
             $this->define_errorCodes();
@@ -251,7 +261,7 @@ abstract class CaMykSLibrary {
      * @param integer $errorId
      * @return string
      */
-    protected function get_errorMessage(int $errorId) {
+    protected function get_errorMessage(int $errorId): string {
         global $CaMykS;
 
         /* Load error code */

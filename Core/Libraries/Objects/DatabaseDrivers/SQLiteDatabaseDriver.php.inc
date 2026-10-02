@@ -3,9 +3,9 @@
  * @brief SQLite database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,25 +22,25 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
      */
-    protected $architecture = 'file';
+    protected string $architecture = 'file';
 
     /**
      * @var \SQLite3 $connection
      * @brief Internal connection to SQLite database.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * @var string $dbPath
      * @brief Database file path.
      */
-    private $dbPath;
+    private string $dbPath = '';
 
     /**
      * @var string $dbExtension
      * @brief Database file extension.
      */
-    private $dbExtension = '.sqlite3.inc';
+    private string $dbExtension = '\.sqlite3\.inc';
 
     /**
      * Class constructor.
@@ -59,7 +59,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Open connection.
      * @return boolean success
      */
-    public function open() {
+    public function open(): bool {
         /* Build database full path */
         $path = $this->get_fullDatabaseName($this->get_param('Name'));
 
@@ -94,7 +94,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Close connection.
      * @return boolean success
      */
-    public function close() {
+    public function close(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return true;
@@ -116,7 +116,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database driver version.
      * @return string
      */
-    public function get_driverVersion() {
+    public function get_driverVersion(): string {
         /* Check connection is open */
         if (!$this->is_active()) {
             $v = \SQLite3::version();
@@ -134,7 +134,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function select_database($name=null) {
+    public function select_database($name=null): bool {
         /* SQLite uses file-based databases, changing name means reopening */
         if (is_null($name) or $name == $this->get_param('Name'))
             return true;
@@ -154,7 +154,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function check_database($name=null) {
+    public function check_database($name=null): bool {
         return file_exists($this->get_fullDatabaseName($name ?? $this->get_param('Name')));
     }
 
@@ -164,7 +164,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8') {
+    public function create_database($name, $encoding='UTF8'): bool {
         /* SQLite creates database file on connection */
         /* Just check if we can create the file */
         $path = $this->get_fullDatabaseName($name);
@@ -178,7 +178,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Dump database.
      * @return mixed
      */
-    public function dump_database() {
+    public function dump_database(): mixed {
         $content = '';
 
         /* Build header comments */
@@ -235,7 +235,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database size.
      * @return integer
      */
-    public function get_databaseSize() {
+    public function get_databaseSize(): int|false {
         $path = $this->get_fullDatabaseName($this->get_param('Name'));
         if (file_exists($path))
             return filesize($path);
@@ -246,7 +246,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database summary.
      * @return array
      */
-    public function get_databaseSummary() {
+    public function get_databaseSummary(): array {
         // To be implemented
     }
 
@@ -256,7 +256,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database table list.
      * @return array
      */
-    public function get_tableList() {
+    public function get_tableList(): array|false {
         /* Initialise table list */
         $list = array();
 
@@ -279,7 +279,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function create_table($name, $fields=array(), $params=array()) {
+    public function create_table(string $name, array $fields, array $params=array()): bool {
         /* Merge params with default ones */
         $params = array_merge(array(
             'Charset'       => '',
@@ -408,7 +408,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function duplicate_table($params=array()) {
+    public function duplicate_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -417,7 +417,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function drop_table($name) {
+    public function drop_table(string $name): bool {
         return $this->connection->exec('DROP TABLE IF EXISTS `'.$name.'`;');
     }
 
@@ -426,7 +426,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function truncate_table($name) {
+    public function truncate_table(string $name): bool {
         return $this->connection->exec('DELETE FROM `'.$name.'`;');
     }
 
@@ -435,7 +435,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function alter_table($params=array()) {
+    public function alter_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -447,7 +447,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query, $resourceName='Default') {
+    public function execute_directQuery(string $query, string $resourceName='Default'): mixed {
         $this->record_query($query);
         $this->queryResources[$resourceName] = $this->connection->query($query);
         return ($this->queryResources[$resourceName] !== false);
@@ -459,7 +459,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_queries($queries, $resourceName='Default') {
+    public function execute_queries(string $queries, string $resourceName='Default'): mixed {
         $this->record_query($queries);
         return $this->connection->exec($queries);
     }
@@ -471,7 +471,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryGeneratedId(string $resourceName='Default') {
+    public function get_queryGeneratedId(string $resourceName='Default'): mixed {
         if ($this->is_active())
             return $this->connection->lastInsertRowID();
         return false;
@@ -482,7 +482,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryDataLine(string $resourceName='Default') {
+    public function get_queryDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return $this->queryResources[$resourceName]->fetchArray(SQLITE3_ASSOC);
         return false;
@@ -493,7 +493,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryNumDataLine(string $resourceName='Default') {
+    public function get_queryNumDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return $this->queryResources[$resourceName]->fetchArray(SQLITE3_NUM);
         return false;
@@ -504,7 +504,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows(string $resourceName='Default') {
+    public function get_queryAffectedRows(string $resourceName='Default'): int|false {
         if ($this->is_active())
             return $this->connection->changes();
         return 0;
@@ -515,7 +515,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryFieldCount(string $resourceName='Default') {
+    public function get_queryFieldCount(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return $this->queryResources[$resourceName]->numColumns();
         return false;
@@ -527,7 +527,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
+    public function get_queryFieldType(int $fIndex=0, string $resourceName='Default'): string|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             $type = $this->queryResources[$resourceName]->columnType($fIndex);
             switch ($type) {
@@ -547,7 +547,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError(string $resourceName='Default') {
+    public function get_queryError(string $resourceName='Default'): string {
         if ($this->is_active())
             return $this->connection->lastErrorMsg();
         return '';
@@ -560,7 +560,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource(string $resourceName='Default') {
+    public function close_ressource(string $resourceName='Default'): bool {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             $this->queryResources[$resourceName]->finalize();
             $this->queryResources[$resourceName] = null;
@@ -576,7 +576,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $string
      * @return string
      */
-    public function escape_string($string='') {
+    public function escape_string(string $string=''): string {
         return \SQLite3::escapeString($string);
     }
 
@@ -587,7 +587,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $dbName
      * @return string
      */
-    private function get_fullDatabaseName($dbName) {
+    private function get_fullDatabaseName($dbName): string {
         /* Return database path */
         return $this->dbPath.'/'.$dbName.$this->dbExtension;
     }

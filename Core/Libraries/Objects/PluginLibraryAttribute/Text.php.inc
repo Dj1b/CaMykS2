@@ -3,10 +3,10 @@
  * @brief TextPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Feb 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,7 +31,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_valueFromSave(mixed $value) {
+    protected function read_valueFromSave(mixed $value): mixed {
         return stripSlashes($value);
     }
 
@@ -40,7 +40,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return $mixed
      */
-    protected function optimise_valueToSave(mixed $value) {
+    protected function optimise_valueToSave(mixed $value): mixed {
         return addSlashes($value);
     }
 
@@ -48,7 +48,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Check tags stripping */
         if ($this->params['StripHTMLTags']) {
             $this->value = strip_tags($value, '<br>');
@@ -75,7 +75,7 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * Return attribute parameters for table creation in database.
      * @return array
      */
-    public function export_databaseParameters() {
+    public function export_databaseParameters(): array {
         return array(
             /* Generic values */
             'Type'      => 'text',  /* text, integer, float, date, datetime, time */

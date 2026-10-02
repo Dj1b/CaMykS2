@@ -3,10 +3,10 @@
  * @brief SystemAdministratorManager admin module, user group link library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,13 +21,13 @@ final class SystemAdministratorManagerUserGroup extends ObjectAssociationModuleL
      * @var string $object1
      * @brief Object 1 name.
      */
-    protected $object1 = 'UserId';
+    protected string $object1 = 'UserId';
 
     /**
      * @var string $object2
      * @brief Object 2 name.
      */
-    protected $object2 = 'GroupId';
+    protected string $object2 = 'GroupId';
     /**
      * Class constructor.
      * @param Object $parent

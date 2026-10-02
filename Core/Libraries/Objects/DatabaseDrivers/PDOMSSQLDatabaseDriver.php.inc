@@ -3,9 +3,9 @@
  * @brief PDO MSSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,19 +22,19 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
      */
-    protected $architecture = 'server';
+    protected string $architecture = 'server';
 
     /**
      * @var object $connection
      * @brief Internal PDO connection to MSSQL server.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private $charsets = array(
+    private array $charsets = array(
         'UTF8'  => 'UTF-8',
         'UTF16' => 'UTF-16',
         'UTF32' => 'UTF-32',
@@ -44,7 +44,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Open connection.
      * @return boolean success
      */
-    public function open() {
+    public function open(): bool {
         /* Build DSN */
         $dsn = 'sqlsrv:Server=' . $this->get_param('Host');
         if ($this->get_param('Port') > 0)
@@ -69,7 +69,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Close connection.
      * @return boolean success
      */
-    public function close() {
+    public function close(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return true;
@@ -90,7 +90,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database driver version.
      * @return string
      */
-    public function get_driverVersion() {
+    public function get_driverVersion(): string {
         /* Check connection is open */
         if (!$this->is_active())
             return '';
@@ -105,7 +105,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Select database.
      * @return boolean success
      */
-    public function select_database() {
+    public function select_database(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return false;
@@ -121,7 +121,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Check database exists.
      * @return boolean success
      */
-    public function check_database() {
+    public function check_database(): bool {
         if (!$this->execute_directQuery("SELECT 1 FROM sys.databases WHERE name='".$this->escape_string($this->get_param('Name'))."';"))
             return false;
         return $this->get_queryDataLine() !== false;
@@ -133,7 +133,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($encoding='UTF8') {
+    public function create_database(string $encoding='UTF8'): bool {
         return $this->execute_directQuery('CREATE DATABASE ['.$this->get_param('Name').'] COLLATE SQL_Latin1_General_CP1_CI_AS;');
     }
 
@@ -141,7 +141,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Dump database.
      * @return mixed
      */
-    public function dump_database() {
+    public function dump_database(): mixed {
         $content = '';
 
         /* Build header comments */
@@ -191,7 +191,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database size.
      * @return integer
      */
-    public function get_databaseSize() {
+    public function get_databaseSize(): int|false {
         /* Initialise size */
         $size = 0;
 
@@ -208,7 +208,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database summary.
      * @return array
      */
-    public function get_databaseSummary() {
+    public function get_databaseSummary(): array {
         // To be implemented
     }
 
@@ -218,7 +218,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database table list.
      * @return array
      */
-    public function get_tableList() {
+    public function get_tableList(): array|false {
         /* Initialise table list */
         $list = array();
 
@@ -239,7 +239,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function create_table($name, $fields=array(), $params=array()) {
+    public function create_table(string $name, array $fields, array $params=array()): bool {
         global $camyks;
 
         /* Merge params with default ones */
@@ -421,7 +421,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function duplicate_table($params=array()) {
+    public function duplicate_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -430,7 +430,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function drop_table($name) {
+    public function drop_table(string $name): bool {
         $sql = 'DROP TABLE IF EXISTS ['.$name.'];';
         return $this->execute_directQuery($sql);
     }
@@ -440,7 +440,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function truncate_table($name) {
+    public function truncate_table(string $name): bool {
         $sql = 'TRUNCATE TABLE ['.$name.'];';
         return $this->execute_directQuery($sql);
     }
@@ -450,7 +450,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function alter_table($params=array()) {
+    public function alter_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -462,7 +462,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query, $resourceName='Default') {
+    public function execute_directQuery(string $query, string $resourceName='Default'): mixed {
         $this->record_query($query);
         try {
             $this->queryResources[$resourceName] = $this->connection->query($query);
@@ -478,7 +478,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_queries($queries, $resourceName='Default') {
+    public function execute_queries(string $queries, string $resourceName='Default'): mixed {
         $this->record_query($queries);
         try {
             $this->queryResources[$resourceName] = $this->connection->exec($queries);
@@ -495,7 +495,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryGeneratedId(string $resourceName='Default') {
+    public function get_queryGeneratedId(string $resourceName='Default'): mixed {
         if ($this->is_active())
             return $this->connection->lastInsertId();
         return false;
@@ -506,7 +506,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryDataLine(string $resourceName='Default') {
+    public function get_queryDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_ASSOC);
         return false;
@@ -517,7 +517,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryNumDataLine(string $resourceName='Default') {
+    public function get_queryNumDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->fetch(\PDO::FETCH_NUM);
         return false;
@@ -528,7 +528,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows(string $resourceName='Default') {
+    public function get_queryAffectedRows(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->rowCount();
         return 0;
@@ -539,7 +539,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryFieldCount(string $resourceName='Default') {
+    public function get_queryFieldCount(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->columnCount();
         return false;
@@ -551,7 +551,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
+    public function get_queryFieldType(int $fIndex=0, string $resourceName='Default'): string|false {
         if (isset($this->queryResources[$resourceName])) {
             $meta = $this->queryResources[$resourceName]->getColumnMeta($fIndex);
             return $this->get_compatibleType($meta['pdo_type'] ?? \PDO::PARAM_STR);
@@ -564,7 +564,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError(string $resourceName='Default') {
+    public function get_queryError(string $resourceName='Default'): string {
         if ($this->is_active()) {
             $error = $this->connection->errorInfo();
             return $error[2] ?? '';
@@ -579,7 +579,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource(string $resourceName='Default') {
+    public function close_ressource(string $resourceName='Default'): bool {
         if (isset($this->queryResources[$resourceName])) {
             $this->queryResources[$resourceName] = null;
             unset($this->queryResources[$resourceName]);
@@ -594,7 +594,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $string
      * @return string
      */
-    public function escape_string($string='') {
+    public function escape_string(string $string=''): string {
         /* PDO quote returns quoted string, so we need to remove quotes */
         $quoted = $this->connection->quote($string);
         return substr($quoted, 1, -1);
@@ -607,7 +607,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param integer $type
      * @return string
      */
-    private function get_compatibleType($type=\PDO::PARAM_STR) {
+    private function get_compatibleType(int $type=\PDO::PARAM_STR): string {
         switch ($type) {
             case \PDO::PARAM_INT:
                 return 'int';

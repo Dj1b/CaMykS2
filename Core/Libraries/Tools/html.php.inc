@@ -3,10 +3,10 @@
  * @brief HTML related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,7 +18,7 @@
  * @param array $params
  * @return string
  */
-function html_getImg(array $params=array()) {
+function html_getImg(array $params=array()): string {
     /* Merge default params */
     $params = array_merge(array(
         'src'   => '',
@@ -43,7 +43,7 @@ function html_getImg(array $params=array()) {
  * @param array $params
  * @return string
  */
-function html_getA(array $params=array()) {
+function html_getA(array $params=array()): string {
     /* Merge default params */
     $params = array_merge(array(
         'href'          => '',
@@ -88,7 +88,7 @@ function html_getA(array $params=array()) {
  * @param array $params
  * @return string
  */
-function html_getTagDefaultAttributes(array $params) {
+function html_getTagDefaultAttributes(array $params): string {
     /* Merge default params */
     $params = array_merge(array(
         'id'        => '',

@@ -3,9 +3,9 @@
  * @brief Oracle database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,19 +22,19 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
      */
-    protected $architecture = 'server';
+    protected string $architecture = 'server';
 
     /**
      * @var resource $connection
      * @brief Internal connection to Oracle server.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * Open connection.
      * @return boolean success
      */
-    public function open() {
+    public function open(): bool {
         /* Build connection string */
         $db = '';
         if ($this->get_param('Host') !== '') {
@@ -63,7 +63,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Close connection.
      * @return boolean success
      */
-    public function close() {
+    public function close(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return true;
@@ -85,7 +85,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database driver version.
      * @return string
      */
-    public function get_driverVersion() {
+    public function get_driverVersion(): string {
         /* Check connection is open */
         if (!$this->is_active())
             return '';
@@ -101,7 +101,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function select_database($name=null) {
+    public function select_database($name=null): bool {
         /* Oracle matches database with user/schema or service name in connection */
         return true;
     }
@@ -111,7 +111,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function check_database($name=null) {
+    public function check_database($name=null): bool {
         /* Check if schema exists */
         $sql = "SELECT count(*) FROM all_users WHERE username = '".strtoupper($this->escape_string($name ?? $this->get_param('Name')))."'";
         if (!$this->execute_directQuery($sql, 'checkDb'))
@@ -126,7 +126,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8') {
+    public function create_database($name, $encoding='UTF8'): bool {
         /* Creating a database in Oracle is a complex task usually done by DBA. */
         /* We'll assume we're creating a user/schema. */
         $sql = 'CREATE USER "'.$name.'" IDENTIFIED BY "'.$this->get_param('Password').'";';
@@ -139,7 +139,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Dump database.
      * @return mixed
      */
-    public function dump_database() {
+    public function dump_database(): mixed {
         // Simplified dump for Oracle
         return "-- Oracle native dump not implemented\n";
     }
@@ -148,7 +148,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database size.
      * @return integer
      */
-    public function get_databaseSize() {
+    public function get_databaseSize(): int|false {
         $sql = "SELECT sum(bytes) FROM user_segments";
         if ($this->execute_directQuery($sql, 'dbSize')) {
             if ($data = $this->get_queryNumDataLine('dbSize')) {
@@ -162,7 +162,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database summary.
      * @return array
      */
-    public function get_databaseSummary() {
+    public function get_databaseSummary(): array {
         // To be implemented
     }
 
@@ -172,7 +172,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database table list.
      * @return array
      */
-    public function get_tableList() {
+    public function get_tableList(): array|false {
         /* Initialise table list */
         $list = array();
 
@@ -193,7 +193,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function create_table($name, $fields=array(), $params=array()) {
+    public function create_table(string $name, array $fields, array $params=array()): bool {
         /* Merge params with default ones */
         $params = array_merge(array(
             'Charset'       => '',
@@ -345,7 +345,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function duplicate_table($params=array()) {
+    public function duplicate_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -354,7 +354,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function drop_table($name) {
+    public function drop_table(string $name): bool {
         $sql = 'DROP TABLE "'.$name.'" CASCADE CONSTRAINTS';
         return $this->execute_directQuery($sql);
     }
@@ -364,7 +364,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function truncate_table($name) {
+    public function truncate_table(string $name): bool {
         $sql = 'TRUNCATE TABLE "'.$name.'"';
         return $this->execute_directQuery($sql);
     }
@@ -374,7 +374,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function alter_table($params=array()) {
+    public function alter_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -386,7 +386,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query, $resourceName='Default') {
+    public function execute_directQuery(string $query, string $resourceName='Default'): mixed {
         $this->record_query($query);
         $this->queryResources[$resourceName] = oci_parse($this->connection, $query);
         if ($this->queryResources[$resourceName] === false)
@@ -400,7 +400,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_queries($queries, $resourceName='Default') {
+    public function execute_queries(string $queries, string $resourceName='Default'): mixed {
         /* Oracle doesn't support multiple queries in oci_parse by default */
         /* We'll split them (naively) */
         $list = explode(';', $queries);
@@ -421,7 +421,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryGeneratedId(string $resourceName='Default') {
+    public function get_queryGeneratedId(string $resourceName='Default'): mixed {
         /* Oracle requires RETURNING clause or manual sequence management. */
         /* Simplified: we don't have enough context here. */
         return false;
@@ -432,7 +432,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryDataLine(string $resourceName='Default') {
+    public function get_queryDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return oci_fetch_array($this->queryResources[$resourceName], OCI_ASSOC + OCI_RETURN_NULLS);
         return false;
@@ -443,7 +443,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryNumDataLine(string $resourceName='Default') {
+    public function get_queryNumDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return oci_fetch_array($this->queryResources[$resourceName], OCI_NUM + OCI_RETURN_NULLS);
         return false;
@@ -454,7 +454,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows(string $resourceName='Default') {
+    public function get_queryAffectedRows(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return oci_num_rows($this->queryResources[$resourceName]);
         return 0;
@@ -465,7 +465,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryFieldCount(string $resourceName='Default') {
+    public function get_queryFieldCount(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return oci_num_fields($this->queryResources[$resourceName]);
         return false;
@@ -477,7 +477,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
+    public function get_queryFieldType(int $fIndex=0, string $resourceName='Default'): string|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             $type = oci_field_type($this->queryResources[$resourceName], $fIndex + 1);
             switch ($type) {
@@ -496,7 +496,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError(string $resourceName='Default') {
+    public function get_queryError(string $resourceName='Default'): string {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             $e = oci_error($this->queryResources[$resourceName]);
         } else {
@@ -512,7 +512,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource(string $resourceName='Default') {
+    public function close_ressource(string $resourceName='Default'): bool {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             oci_free_statement($this->queryResources[$resourceName]);
             $this->queryResources[$resourceName] = null;
@@ -528,7 +528,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $string
      * @return string
      */
-    public function escape_string($string='') {
+    public function escape_string(string $string=''): string {
         /* oci8 doesn't have an escape function, use str_replace for single quotes */
         return str_replace("'", "''", $string);
     }

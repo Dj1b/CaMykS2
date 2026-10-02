@@ -4,10 +4,10 @@
  * <br />Sub module abstract library for admin modules.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Dec 2020
- * @date Modification: May 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -35,7 +35,7 @@ abstract class AdminModule extends Module {
      * Return button for admin control panel.
      * @return false|array
      */
-    public function get_adminControlPanelButton() {
+    public function get_adminControlPanelButton(): false|array {
         return false;
 
         return array(

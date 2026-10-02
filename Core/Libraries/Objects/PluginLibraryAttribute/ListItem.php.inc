@@ -3,10 +3,10 @@
  * @brief ListItemPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: May 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -35,7 +35,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @param boolean $isLocalised
      * @return void
      */
-    public function __construct(CaMykS2\Plugin &$parent, string $name, mixed $default, array $params=array(), bool $isLocalised=false) {
+    public function __construct(Object &$parent, string $name, mixed $default, array $params=array(), bool $isLocalised=false) {
         parent::__construct($parent, $name, $default, $params, $isLocalised);
 
         /* Define length value */
@@ -52,7 +52,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value(mixed $value) {
+    protected function read_value(mixed $value): mixed {
         if ($this->params['Format'] == 'Integer')
             return (int)$value;
         if ($this->params['Format'] == 'Float')
@@ -64,7 +64,7 @@ final class ListItemPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Check value is in authorised values */
         if (!in_array($this->value, $this->params['Values']))
             return false;

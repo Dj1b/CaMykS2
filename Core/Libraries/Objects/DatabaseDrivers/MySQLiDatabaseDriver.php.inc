@@ -3,9 +3,9 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Nov 2021
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,19 +21,19 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
      */
-    protected $architecture = 'server';
+    protected string $architecture = 'server';
 
     /**
      * @var object $connection
      * @brief Internal connection to MySQL server.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private $charsets = array(
+    private array $charsets = array(
         'UTF8'  => 'utf8mb4',
         'UTF16' => 'utf16',
         'UTF32' => 'utf32',
@@ -43,7 +43,10 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Open connection.
      * @return boolean success
      */
-    public function open() {
+    public function open(): bool {
+        /* Updates MySQLi error reporting to avoid fatal error on failed connection */
+        mysqli_report(MYSQLI_REPORT_OFF);
+
         /* Perform database server connection */
         try {
             $this->connection = new \MySQLi($this->get_param('Host').($this->get_param('Port') > 0 ? ':'.$this->get_param('Port') : ''), $this->get_param('Login'), $this->get_param('Password'));
@@ -51,9 +54,6 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
         } catch (Exception $e) {
             $this->status = false;
         }
-
-        /* Stores if connection is made successfully */
-        $this->status = ($this->connection->connect_errno === 0);
 
         /* Return result */
         return $this->is_active();
@@ -63,7 +63,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Close connection.
      * @return boolean success
      */
-    public function close() {
+    public function close(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return true;
@@ -85,7 +85,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database driver version.
      * @return string
      */
-    public function get_driverVersion() {
+    public function get_driverVersion(): string {
         /* Check connection is open */
         if (!$this->is_active())
             return '';
@@ -101,7 +101,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function select_database() {
+    public function select_database(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return false;
@@ -114,10 +114,16 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Check database exists.
      * @return boolean success
      */
-    public function check_database() {
+    public function check_database(): bool {
+        /* Execute query */
         if (!$this->execute_directQuery('show databases like "'.$this->get_param('Name').'";'))
             return false;
-        return $this->get_queryDataLine();
+
+        /* Check result */
+        $result = $this->get_queryDataLine();
+        if (is_null($result))
+            return false;
+        return $result;
     }
 
     /**
@@ -126,15 +132,15 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($encoding='UTF8') {
+    public function create_database(string $encoding='UTF8'): bool {
         return $this->execute_directQuery('create database `'.$this->get_param('Name').'` default character set '.$this->charsets[$encoding].';');
     }
 
     /**
      * Dump database.
-     * @return mixed
+     * @return string
      */
-    public function dump_database() {
+    public function dump_database(): string {
         $content = '';
 
         /* Build header comments */
@@ -190,7 +196,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database size.
      * @return integer
      */
-    public function get_databaseSize() {
+    public function get_databaseSize(): int|false {
         /* Initialise size */
         $size = 0;
 
@@ -208,7 +214,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database summary.
      * @return array
      */
-    public function get_databaseSummary() {
+    public function get_databaseSummary(): array {
 
     }
 
@@ -218,7 +224,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database table list.
      * @return array
      */
-    public function get_tableList() {
+    public function get_tableList(): array|false {
         /* Initialise table list */
         $list = array();
 
@@ -239,7 +245,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function create_table($name, $fields=array(), $params=array()) {
+    public function create_table(string $name, array $fields, array $params=array()): bool {
         global $camyks;
 
         /* Merge params with default ones */
@@ -290,11 +296,11 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             switch ($data['Type']) {
                 case 'text':
                     if (is_int($data['Length'])) {
-                        if ($data['Length'] < 256)
+                        if ($data['Length'] <= 256)
                             $s .= 'varchar('.$data['Length'].') default "'.addslashes($data['Default']).'"';
-                        elseif ($data['Length'] < 65535)
+                        elseif ($data['Length'] <= 65535)
                             $s .= 'text ';
-                        elseif ($data['Length'] < 16777215)
+                        elseif ($data['Length'] <= 16777215)
                             $s .= 'mediumtext';
                         else
                             $s .= ' longtext';
@@ -456,7 +462,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function duplicate_table($params=array()) {
+    public function duplicate_table(array $params=array()): bool {
 
     }
 
@@ -465,7 +471,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function drop_table($name) {
+    public function drop_table(string $name): bool {
         $sql = 'drop table '.$name.';';
         return $this->execute_directQuery($sql);
     }
@@ -475,7 +481,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function truncate_table($name) {
+    public function truncate_table(string $name): bool {
         $sql = 'trauncate table '.$name.';';
         return $this->execute_directQuery($sql);
 
@@ -486,7 +492,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function alter_table($params=array()) {
+    public function alter_table(array $params=array()): bool {
 
     }
 
@@ -498,7 +504,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query, $resourceName='Default') {
+    public function execute_directQuery(string $query, string $resourceName='Default'): bool {
         $this->record_query($query);
         try {
             $this->queryResources[$resourceName] = $this->connection->query($query);
@@ -514,7 +520,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_queries($queries, $resourceName='Default') {
+    public function execute_queries(string $queries, string $resourceName='Default'): bool {
         $this->record_query($queries);
         try {
             $this->queryResources[$resourceName] = $this->connection->multi_query($queries);
@@ -529,9 +535,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Return id generated by last query.
      * @param string $resourceName
-     * @return integer
+     * @return integer|false
      */
-    public function get_queryGeneratedId(string $resourceName='Default') {
+    public function get_queryGeneratedId(string $resourceName='Default'): int|false {
         if ($this->is_active())
             return $this->connection->insert_id;
         return false;
@@ -540,9 +546,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Return next query data line.
      * @param string $resourceName
-     * @return array
+     * @return array|null|false
      */
-    public function get_queryDataLine(string $resourceName='Default') {
+    public function get_queryDataLine(string $resourceName='Default'): array|null|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->fetch_assoc();
         return false;
@@ -551,9 +557,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Return next query data line with numeric index.
      * @param string $resourceName
-     * @return array
+     * @return array|null|false
      */
-    public function get_queryNumDataLine(string $resourceName='Default') {
+    public function get_queryNumDataLine(string $resourceName='Default'): array|null|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->fetch_row();
         return false;
@@ -564,7 +570,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows(string $resourceName='Default') {
+    public function get_queryAffectedRows(string $resourceName='Default'): int {
         if ($this->is_active())
             return $this->connection->affected_rows;
         return 0;
@@ -573,9 +579,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Return latest query field count.
      * @param string $resourceName
-     * @return integer
+     * @return integer|false
      */
-    public function get_queryFieldCount(string $resourceName='Default') {
+    public function get_queryFieldCount(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]))
             return $this->queryResources[$resourceName]->field_count();
         return false;
@@ -587,7 +593,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
+    public function get_queryFieldType(int $fIndex=0, string $resourceName='Default'): string|false {
         if (isset($this->queryResources[$resourceName])) {
             $finfo = $this->queryResources[$resourceName]->fetch_field_direct($fIndex);
             return $this->get_compatibleType($finfo->type);
@@ -600,7 +606,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError(string $resourceName='Default') {
+    public function get_queryError(string $resourceName='Default'): string {
         if ($this->is_active())
             return $this->connection->error;
         return '';
@@ -613,7 +619,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource(string $resourceName='Default') {
+    public function close_ressource(string $resourceName='Default'): bool {
         if (isset($this->queryResources[$resourceName])) {
             if (!$this->queryResources[$resourceName]->close())
                 return false;
@@ -629,7 +635,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $string
      * @return string
      */
-    public function escape_string($string='') {
+    public function escape_string(string $string=''): string {
         return mysqli_real_escape_string($this->connection, $string);
     }
 
@@ -640,7 +646,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param integer $type
      * @return string
      */
-    private function get_compatibleType($type=1) {
+    private function get_compatibleType($type=1): string {
         switch ($type) {
             /* int */
             case 1 /* tinyint */: case 2 /* smallint */: case 3 /* int */:  case 8 /* bigint */: case 9 /* mediumint */: case 16 /* bit */: return 'int';

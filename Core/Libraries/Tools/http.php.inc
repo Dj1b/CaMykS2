@@ -3,10 +3,10 @@
  * @brief HTTP specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * @param string $default
  * @return string
  */
-function http_getStringRequest(string $name, string $default='') {
+function http_getStringRequest(string $name, string $default=''): string {
     return (isset($_REQUEST[$name]) ? $_REQUEST[$name] : $default);
 }
 
@@ -27,7 +27,7 @@ function http_getStringRequest(string $name, string $default='') {
  * @param integer $default
  * @return integer
  */
-function http_getIntRequest(string $name, int $default=0) {
+function http_getIntRequest(string $name, int $default=0): int {
     return (int)http_getStringRequest($name, $default);
 }
 
@@ -37,7 +37,7 @@ function http_getIntRequest(string $name, int $default=0) {
  * @param float $default
  * @return integer
  */
-function http_getFloatRequest(string $name, float $default=0) {
+function http_getFloatRequest(string $name, float $default=0): int {
     return (float)http_getStringRequest($name, $default);
 }
 
@@ -45,7 +45,7 @@ function http_getFloatRequest(string $name, float $default=0) {
  * Return HTTP response code list.
  * @return array
  */
-function http_getResponseCodeList() {
+function http_getResponseCodeList(): array {
     return array(
         /* 1xx - Information */
         100 => 'Continue',
@@ -133,7 +133,7 @@ function http_getResponseCodeList() {
  * @param integer $code
  * @return string
  */
-function http_getResponseCodeName(int $code=200) {
+function http_getResponseCodeName(int $code=200): string {
     $list = http_getResponseCodeList();
     if (isset($list[$code]))
         return $list[$code];
@@ -157,7 +157,7 @@ function http_getResponseCodeName(int $code=200) {
  * @endparblock
  * @return string
  */
-function http_getContents(array $params=array()) {
+function http_getContents(array $params=array()): string {
     global $CaMykS;
 
     /* Build params list */
@@ -201,7 +201,7 @@ function http_getContents(array $params=array()) {
  * @endparblock
  * @return false on failure, string on success
  */
-function http_getContentsUsingPHP(array $params=array()) {
+function http_getContentsUsingPHP(array $params=array()): false {
     global $CaMykS;
 
     /* Build params list */
@@ -287,7 +287,7 @@ function http_getContentsUsingPHP(array $params=array()) {
  * @endparblock
  * @return false on failure, string on success
  */
-function http_getContentsUsingCURL(array $params=array()) {
+function http_getContentsUsingCURL(array $params=array()): false {
     global $CaMykS;
 
     /* Build params list */

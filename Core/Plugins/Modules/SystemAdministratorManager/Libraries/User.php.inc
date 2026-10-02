@@ -3,10 +3,10 @@
  * @brief SystemAdministratorManager admin module, user library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2022
- * @date Modification: Mar 2023
- * @copyright 2022 - 2023 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -16,7 +16,7 @@ namespace CaMykS2;
 /**
  * SystemAdministratorManagerUser class.
  */
-final class SystemAdministratorManagerUser extends AdvancedModuleLibrary {
+final class SystemAdministratorManagerUser extends SimpleModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent

@@ -3,10 +3,10 @@
  * @brief CaMykS errors handler library.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,13 +21,13 @@ final class ErrorHandler extends CaMykSLibrary {
      * @var array $params
      * @brief ErrorHandler parameters.
      */
-    protected $params = array('output'  => 'auto');
+    protected array $params = array('output'  => 'auto');
 
     /**
      * @var array $errors
      * @brief ErrorHandler saved steps.
      */
-    private $errors = array();
+    private array $errors = array();
 
     /**
      * Object constructor.
@@ -61,7 +61,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param integer $line
      * @return void
      */
-    public function handle_PHPError(int $code, string $message, string $file, int $line) {
+    public function handle_PHPError(int $code, string $message, string $file, int $line): void {
         /* Define type from error code */
         $type = $this->get_typeFromCode($code);
 
@@ -78,7 +78,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param Exception $exception
      * @return void
      */
-    public function handle_PHPException(Object $exception) {
+    public function handle_PHPException(Object $exception): void {
         /* Save error */
         $this->stack_error('PHP', 'Exception', $exception->getCode(), $exception->getFile(), $exception->getLine(), $exception->getMessage(), '', $exception->getTrace());
     }
@@ -94,7 +94,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param boolean $isFatal
      * @return void
      */
-    public function handle_CaMykSError(string $origin, int $code, string $message, string $details, string $file, int $line, bool $isFatal) {
+    public function handle_CaMykSError(string $origin, int $code, string $message, string $details, string $file, int $line, bool $isFatal): void {
         /* Save error */
         $error = $this->stack_error('CaMykS '.$origin, 'Error', $code, $file, $line, $message, $details);
 
@@ -112,7 +112,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param int $line
      * @return void
      */
-    public function handle_CaMykSDatabaseError(int $code, string $message, string $details, string $file, int $line) {
+    public function handle_CaMykSDatabaseError(int $code, string $message, string $details, string $file, int $line): void {
         global $CaMykS;
 
         /* Save error */
@@ -136,12 +136,12 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param array $backtrace
      * @return Object
      */
-    private function stack_error(string $origin, string $type, int $code, string $file, int $line, string $message, string $details='', ?array $backtrace=null) {
+    private function stack_error(string $origin, string $type, int $code, string $file, int $line, string $message, string $details="", ?array $backtrace=null): Error {
         /* Check error exists */
         foreach ($this->errors as $error) {
             if ($error->is_similar($origin, $type, $code, $file, $line, $message)) {
                 $error->update_count();
-                return;
+                return null;
             }
         }
 
@@ -169,7 +169,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param string $output
      * @return mixed
      */
-    public function export(string $output='') {
+    public function export(string $output=''): mixed {
         global $CaMykS;
 
         /* Check output method */
@@ -181,14 +181,14 @@ final class ErrorHandler extends CaMykSLibrary {
             case 'session': return $this->export_toSession();
             case 'logs': return $this->export_toCaMykSLogs();
             case 'html': return $this->export_toHTML();
-            case 'none': return;
+            case 'none': return null;
             case 'auto': default:
                 if ($CaMykS->get_configValue('Website_Status') == 1)
                     return $this->export('logs');
                 else
                     return $this->export('html');
         }
-        return;
+        return null;
     }
 
     /* Mark: Private error methods */
@@ -198,7 +198,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return integer
      * @todo
      */
-    private function get_errorReportingLevel() {
+    private function get_errorReportingLevel(): int {
         return E_ALL;
     }
 
@@ -207,7 +207,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param integer $code
      * @return string
      */
-    private function get_typeFromCode(int $code) {
+    private function get_typeFromCode(int $code): string {
         /* Return value from known errors */
         switch ($code) {
             case E_ERROR: // 1
@@ -253,7 +253,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @param Error $error
      * @return void
      */
-    private function throw_fatalError(CaMykS2\Error $error) {
+    private function throw_fatalError(CaMykS2\Error $error): void {
         global $CaMykS;
 
         /* Log fatal error */
@@ -279,7 +279,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      * @todo
      */
-    private function export_toSharedData() {
+    private function export_toSharedData(): void {
         global $CaMykS;
 
         /* Save errors to shared data  */
@@ -291,7 +291,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      * @todo
      */
-    private function export_toSession() {
+    private function export_toSession(): void {
         global $CaMykS;
 
         /* Save errors to session */
@@ -303,7 +303,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * @return void
      * @todo
      */
-    private function export_toCaMykSLogs() {
+    private function export_toCaMykSLogs(): void {
         global $CaMykS;
 
         $messages = array();
@@ -329,7 +329,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * Export results to HTML.
      * @return void
      */
-    private function export_toHTML() {
+    private function export_toHTML(): void {
         /* Check if there are errors to display */
         if (count($this->errors) == 0) return;
 
@@ -348,15 +348,17 @@ final class ErrorHandler extends CaMykSLibrary {
 
         /* Display results as HTML */
         echo '<div style="position:fixed; bottom:0; left:0; right:0; max-width:1200px; max-height:100%; overflow:auto; margin:0 auto; background:#57488e; border:solid 1px white; z-index:9999999;">'."\n";
+        echo '<div style="display:flex; border-bottom:solid 1px white;">';
+        echo '<div style="flex:5; padding:8px 12px; color:white; font-family:arial; font-size:14px;">'."\n";
+        echo 'CaMykS Error Console </div>'."\n";
         if (count($this->errors) > 1) {
-            echo '<div style="padding:8px 12px; border-bottom:solid 1px white; border-left:solid 1px white; float:right; width:80px; text-align:center; box-sizing:border-box; line-height:15px;">'."\n";
+            echo '<div style="padding:8px 12px; border-left:solid 1px white; flex:1; min-width:80px; max-width:80px; text-align:center; box-sizing:border-box; line-height:15px;">'."\n";
             echo '<a href="javascript:display_previous_error();" style="color:white; font-family:arial; font-size:14px; font-weight:bold; text-decoration:none;"> &lt; </a>'."\n";
             echo '<span id="CaMykSErrorIndex" style="color:white; font-family:arial; font-size:14px;"> 1 </span><span style="color:white; font-family:arial; font-size:14px;">  / '.count($this->errors).'</span>'."\n";
             echo '<a href="javascript:display_next_error();" style="color:white; font-family:arial; font-size:14px; font-weight:bold; text-decoration:none;"> &gt; </a>'."\n";
             echo '</div>';
         }
-        echo '<div style="padding:8px 12px; border-bottom:solid 1px white; color:white; font-family:arial; font-size:14px;">'."\n";
-        echo 'CaMykS Error Console </div>'."\n";
+        echo '</div>';
 
         foreach ($this->errors as $index => $error) {
             echo '<div id="CaMykSError'.$index.'" style="padding:12px; color:white; font-family:arial; font-size:12px; line-height:16px; display:'.($index === 0 ? 'block' : 'none').';">';
@@ -372,7 +374,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * Return available error logging output list.
      * @return array
      */
-    public function get_availableLoggingOutputs() {
+    public function get_availableLoggingOutputs(): array {
         return array(
             'auto'      => $this->get_locale('Output_Auto'),
             'html'      => $this->get_locale('Output_HTML'),
@@ -387,7 +389,7 @@ final class ErrorHandler extends CaMykSLibrary {
      * Return available error logging level list.
      * @return array
      */
-    public function get_availableLoggingLevels() {
+    public function get_availableLoggingLevels(): array {
         return array(
             'auto'      => $this->get_locale('Level_Auto'),
             'mini'      => $this->get_locale('Level_Mini'),

@@ -3,10 +3,10 @@
  * @brief SystemUniqueIdManager admin module, key library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -16,14 +16,14 @@ namespace CaMykS2;
 /**
  * SystemUniqueIdManagerKey class.
  */
-final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
+final class SystemUniqueIdManagerKey extends ModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent);
 
@@ -41,7 +41,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Define error code list.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         parent::define_errorCodes();
 
         $this->errorCodes = array_merge($this->errorCodes, array(
@@ -56,7 +56,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Check object data
      * @return boolean success
      */
-    public function check_data($loadPreviousVersion=false) {
+    public function check_data($loadPreviousVersion=false): bool {
         /* Perform generic check_data method */
         if (parent::check_data(false) === false)
             return false;
@@ -75,7 +75,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Return status values.
      * @return array
      */
-    public function get_statusValueList() {
+    public function get_statusValueList(): array {
         return array(
             1 => $this->get_locale('KeyStatus_Free'),
             2 => $this->get_locale('KeyStatus_Used'),
@@ -87,7 +87,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * @param array $params
      * @return array
      */
-    public function get_multiStatusValueList($params=array()) {
+    public function get_multiStatusValueList($params=array()): array {
         /* Check params */
         $params = array_merge(array('AddAll'=>false), $params);
 
@@ -112,7 +112,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Load free item from database.
      * @return boolean success
      */
-    public function load_freeItem() {
+    public function load_freeItem(): bool {
         /* Build query */
         $query = new DbQuery('select');
         $query->add_table($this->dbTableName);
@@ -137,7 +137,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Generate a new unique id.
      * @return mixed
      */
-    public function generate_uniqueIdValue() {
+    public function generate_uniqueIdValue(): mixed {
         /* Initialise attempts count */
         $c = 0;
 
@@ -183,7 +183,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Compute text unique id.
      * @return string
      */
-    private function compute_textUniqueId() {
+    private function compute_textUniqueId(): string {
         $maxLength = isset($this->Params['Length']) ? $this->Params['Length'] : $this->get_configValue('Generating_TextLength');
         return substr(uniqid(null, true), 0, $maxLength);
     }
@@ -192,7 +192,7 @@ final class SystemUniqueIdManagerKey extends SimpleModuleLibrary {
      * Compute UUID unique id.
      * @return string
      */
-    private function compute_UUIDUniqueId() {
+    private function compute_UUIDUniqueId(): string {
         /* Compute random bytes */
         if (version_compare(PHP_VERSION, 7, '>='))
             $bytes = random_bytes(16);

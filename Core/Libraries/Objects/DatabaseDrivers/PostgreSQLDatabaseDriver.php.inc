@@ -3,9 +3,9 @@
  * @brief PostgreSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,19 +22,19 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
      */
-    protected $architecture = 'server';
+    protected string $architecture = 'server';
 
     /**
      * @var resource $connection
      * @brief Internal connection to PostgreSQL server.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private $charsets = array(
+    private array $charsets = array(
         'UTF8'  => 'UTF8',
         'UTF16' => 'UTF16',
         'UTF32' => 'UTF32',
@@ -44,7 +44,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Open connection.
      * @return boolean success
      */
-    public function open() {
+    public function open(): bool {
         /* Build connection string */
         $string = 'host=' . $this->get_param('Host');
         if ($this->get_param('Port') > 0)
@@ -72,7 +72,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Close connection.
      * @return boolean success
      */
-    public function close() {
+    public function close(): bool {
         /* Check connection is open */
         if (!$this->is_active())
             return true;
@@ -94,7 +94,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database driver version.
      * @return string
      */
-    public function get_driverVersion() {
+    public function get_driverVersion(): string {
         /* Check connection is open */
         if (!$this->is_active())
             return '';
@@ -111,7 +111,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function select_database($name=null) {
+    public function select_database($name=null): bool {
         /* PostgreSQL requires reconnection to change database */
         if (is_null($name) or $name == $this->get_param('Name'))
             return true;
@@ -131,7 +131,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function check_database($name=null) {
+    public function check_database($name=null): bool {
         $sql = "SELECT 1 FROM pg_database WHERE datname='".$this->escape_string($name ?? $this->get_param('Name'))."';";
         if (!$this->execute_directQuery($sql, 'checkDb'))
             return false;
@@ -144,7 +144,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $encoding
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8') {
+    public function create_database($name, $encoding='UTF8'): bool {
         $sql = 'CREATE DATABASE "'.$name.'" ENCODING \''.$this->charsets[$encoding].'\';';
         return $this->execute_directQuery($sql);
     }
@@ -153,7 +153,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Dump database.
      * @return mixed
      */
-    public function dump_database() {
+    public function dump_database(): mixed {
         $content = '';
 
         /* Build header comments */
@@ -205,7 +205,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database size.
      * @return integer
      */
-    public function get_databaseSize() {
+    public function get_databaseSize(): int|false {
         /* Initialise size */
         $size = 0;
 
@@ -223,7 +223,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database summary.
      * @return array
      */
-    public function get_databaseSummary() {
+    public function get_databaseSummary(): array {
         // To be implemented
     }
 
@@ -233,7 +233,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * Return database table list.
      * @return array
      */
-    public function get_tableList() {
+    public function get_tableList(): array|false {
         /* Initialise table list */
         $list = array();
 
@@ -254,7 +254,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function create_table($name, $fields=array(), $params=array()) {
+    public function create_table(string $name, array $fields, array $params=array()): bool {
         /* Merge params with default ones */
         $params = array_merge(array(
             'Charset'       => '',
@@ -423,7 +423,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function duplicate_table($params=array()) {
+    public function duplicate_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -432,7 +432,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function drop_table($name) {
+    public function drop_table(string $name): bool {
         return $this->execute_directQuery('DROP TABLE IF EXISTS "'.$name.'";');
     }
 
@@ -441,7 +441,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $name
      * @return boolean success
      */
-    public function truncate_table($name) {
+    public function truncate_table(string $name): bool {
         return $this->execute_directQuery('TRUNCATE TABLE "'.$name.'";');
     }
 
@@ -450,7 +450,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param array $params
      * @return boolean success
      */
-    public function alter_table($params=array()) {
+    public function alter_table(array $params=array()): bool {
         // To be implemented
     }
 
@@ -462,7 +462,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_directQuery($query, $resourceName='Default') {
+    public function execute_directQuery(string $query, string $resourceName='Default'): mixed {
         $this->record_query($query);
         $this->queryResources[$resourceName] = pg_query($this->connection, $query);
         return ($this->queryResources[$resourceName] !== false);
@@ -474,7 +474,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_queries($queries, $resourceName='Default') {
+    public function execute_queries(string $queries, string $resourceName='Default'): mixed {
         $this->record_query($queries);
         $this->queryResources[$resourceName] = pg_query($this->connection, $queries);
         return ($this->queryResources[$resourceName] !== false);
@@ -487,7 +487,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryGeneratedId(string $resourceName='Default') {
+    public function get_queryGeneratedId(string $resourceName='Default'): mixed {
         /* PostgreSQL doesn't have lastInsertId, requires RETURNING clause or OID */
         /* Simplified for native driver */
         if (!$this->is_active()) return false;
@@ -504,7 +504,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryDataLine(string $resourceName='Default') {
+    public function get_queryDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return pg_fetch_assoc($this->queryResources[$resourceName]);
         return false;
@@ -515,7 +515,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return array
      */
-    public function get_queryNumDataLine(string $resourceName='Default') {
+    public function get_queryNumDataLine(string $resourceName='Default'): array|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return pg_fetch_row($this->queryResources[$resourceName]);
         return false;
@@ -526,7 +526,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryAffectedRows(string $resourceName='Default') {
+    public function get_queryAffectedRows(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return pg_affected_rows($this->queryResources[$resourceName]);
         return 0;
@@ -537,7 +537,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return integer
      */
-    public function get_queryFieldCount(string $resourceName='Default') {
+    public function get_queryFieldCount(string $resourceName='Default'): int|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false)
             return pg_num_fields($this->queryResources[$resourceName]);
         return false;
@@ -549,7 +549,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryFieldType($fIndex=0, $resourceName='Default') {
+    public function get_queryFieldType(int $fIndex=0, string $resourceName='Default'): string|false {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             $type = pg_field_type($this->queryResources[$resourceName], $fIndex);
             switch ($type) {
@@ -572,7 +572,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return string
      */
-    public function get_queryError(string $resourceName='Default') {
+    public function get_queryError(string $resourceName='Default'): string {
         if ($this->is_active())
             return pg_last_error($this->connection);
         return '';
@@ -585,7 +585,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean result
      */
-    public function close_ressource(string $resourceName='Default') {
+    public function close_ressource(string $resourceName='Default'): bool {
         if (isset($this->queryResources[$resourceName]) and $this->queryResources[$resourceName] !== false) {
             pg_free_result($this->queryResources[$resourceName]);
             $this->queryResources[$resourceName] = null;
@@ -601,7 +601,7 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $string
      * @return string
      */
-    public function escape_string($string='') {
+    public function escape_string(string $string=''): string {
         return pg_escape_string($this->connection, $string);
     }
 }

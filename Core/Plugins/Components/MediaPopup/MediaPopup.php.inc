@@ -4,10 +4,10 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @details Accepted media :
@@ -29,7 +29,7 @@ final class MediaPopup extends Component {
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
      */
-    protected $hasConfiguration = true;
+    protected bool $hasConfiguration = true;
 
     /**
      * Class constructor.
@@ -59,7 +59,7 @@ final class MediaPopup extends Component {
      * Plug component to page.
      * @return void
      */
-    public function plug($params=array()) {
+    public function plug($params=array()): void {
         global $CaMykS;
 
         /* Perform parent plug action */

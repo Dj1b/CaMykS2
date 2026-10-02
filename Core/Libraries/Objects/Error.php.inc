@@ -3,10 +3,10 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,55 +21,55 @@ final class Error {
      * @var string $origin
      * @brief Error origin.
      */
-    private $origin;
+    private string $origin;
 
     /**
      * @var string $type
      * @brief Error type.
      */
-    private $type;
+    private string $type;
 
     /**
      * @var integer $code
      * @brief Error code.
      */
-    private $code;
+    private int $code;
 
     /**
      * @var string $file
      * @brief File where error was initiated.
      */
-    private $file = '';
+    private string $file = '';
 
     /**
      * @var integer $line
      * @brief Line where error was initiated.
      */
-    private $line = 0;
+    private int $line = 0;
 
     /**
      * @var string $message
      * @brief Message associated with error.
      */
-    private $message;
+    private string $message;
 
     /**
-     * var string $details
+     * @var string $details
      * @brief Details attached to message.
      */
-    private $details;
+    private string $details;
 
     /**
-     * var integer $count
+     * @var integer $count
      * @brief Count error occurences.
      */
-    private $count = 1;
+    private int $count = 1;
 
     /**
-     * var array $backtrace
+     * @var array $backtrace
      * @brief Stored generated backtrace.
      */
-    private $backtrace;
+    private array $backtrace;
 
     /**
      * Object constructor.
@@ -100,7 +100,7 @@ final class Error {
      * Return error header value.
      * @return string
      */
-    public function get_header() {
+    public function get_header(): string {
         $s = '';
 
         /* Add origin */
@@ -133,7 +133,7 @@ final class Error {
      * Check error has location values.
      * @return boolean result
      */
-    public function has_location() {
+    public function has_location(): bool {
         return ($this->file != '');
     }
 
@@ -141,11 +141,11 @@ final class Error {
      * Return error location value.
      * @return string
      */
-    public function get_location() {
-        if (is_null($this->file))
+    public function get_location(): string {
+        if ($this->file === '')
             return '';
         $s = $this->file;
-        if (!$this->line > 0)
+        if (!($this->line > 0))
             return $s;
         $s .= ' (L'.$this->line.')';
         return $s;
@@ -155,7 +155,7 @@ final class Error {
      * Check error has a message.
      * @return boolean result
      */
-    public function has_message() {
+    public function has_message(): bool {
         return ($this->message != '');
     }
 
@@ -164,7 +164,7 @@ final class Error {
      * @param boolean $HTMLFormat
      * @return string
      */
-    public function get_message(bool $HTMLFormat=false) {
+    public function get_message(bool $HTMLFormat=false): string {
         /* Build full message with details */
         $message = $this->message;
         if ($this->details !== '')
@@ -180,7 +180,7 @@ final class Error {
      * Check error has a backtrace.
      * @return boolean result
      */
-    public function has_backtrace() {
+    public function has_backtrace(): bool {
         return (count($this->backtrace) > 0);
     }
 
@@ -189,7 +189,7 @@ final class Error {
      * @param boolean $HTMLFormat
      * @return string
      */
-    public function get_backtrace(bool $HTMLFormat=false) {
+    public function get_backtrace(bool $HTMLFormat=false): string {
 
         $lines = array();
 
@@ -212,7 +212,7 @@ final class Error {
             if (isset($trace['args']) and is_string($trace['args']))
                 $m .= '('.implode(', ', $trace['args']).')';
             elseif (isset($trace['args']) and is_object($trace['args']))
-                $m .= '('.implode(', ', getClass($trace['args'])).')';
+                $m .= '('.implode(', ', get_class($trace['args'])).')';
 
             $lines[] = $m;
         }
@@ -224,9 +224,9 @@ final class Error {
 
     /**
      * Update error count.
-     * return void
+     * @return void
      */
-    public function update_count() {
+    public function update_count(): void {
         $this->count ++;
     }
 
@@ -242,7 +242,7 @@ final class Error {
      * @param string $message
      * @return boolean success
      */
-    public function is_similar(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message='') {
+    public function is_similar(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message=''): bool {
         if ($this->origin != $origin)
             return false;
 
@@ -271,7 +271,7 @@ final class Error {
      * Export error as HTML.
      * @return string
      */
-    public function export_asHTML() {
+    public function export_asHTML(): string {
         $s = '<strong style="color:inherit;">'.$this->get_header();
         if ($this->has_message())
             $s .= '<br /> Error: '.$this->get_message(true);
@@ -286,7 +286,7 @@ final class Error {
      * Export error as array.
      * @return array
      */
-    public function export_asArray() {
+    public function export_asArray(): array {
         return get_object_vars($this);
     }
 }

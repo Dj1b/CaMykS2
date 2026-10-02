@@ -3,10 +3,10 @@
  * @brief FTP client object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -19,17 +19,16 @@ namespace CaMykS2;
  */
 final class FTPClient {
     /**
-     * @var Resource $connection
+     * @var mixed $connection
      * @brief Connection to server.
      */
-    private $connection;
+    private mixed $connection = null;
 
     /**
      * Class constructor.
      * @return void
      */
     public function __construct() {
-        $this->connection = null;
     }
 
     /**
@@ -47,7 +46,7 @@ final class FTPClient {
      * @param array $arguments
      * @return mixed
      */
-    public function __call(string $method, array $arguments) {
+    public function __call(string $method, array $arguments): mixed {
         /* Add php method prefix */
         $function = 'ftp_' . $method;
         if (function_exists($function)) {
@@ -70,7 +69,7 @@ final class FTPClient {
      * @param integer $timeout
      * @return boolean success
      */
-    public function connect(string $host, bool $ssl=false, int $port=21, int $timeout=60) {
+    public function connect(string $host, bool $ssl=false, int $port=21, int $timeout=60): bool {
         /* Check if ftp is available */
         if (!extension_loaded('ftp'))
             return false;
@@ -93,7 +92,7 @@ final class FTPClient {
      * @param integer $timeout
      * @return boolean success
      */
-    public function ssl_connect(string $host, int $port=21, int $timeout=60) {
+    public function ssl_connect(string $host, int $port=21, int $timeout=60): bool {
         return $this->connect($host, true, $port, $timeout);
     }
 
@@ -105,7 +104,7 @@ final class FTPClient {
      * @param string $content
      * @return boolean success
      */
-    public function write_content(string $remoteFilePath, string $content) {
+    public function write_content(string $remoteFilePath, string $content): bool {
         $temp = fopen('php://temp', 'w');
         fwrite($temp, $content);
         rewind($temp);

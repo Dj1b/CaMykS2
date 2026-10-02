@@ -3,10 +3,10 @@
  * @brief CaMykS currency(ies) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Oct 2019
- * @date Modification: Sep 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Add short title (US$, GB£, JP¥, €, ... ) to data, and write methods to read them (list & single)
@@ -18,7 +18,7 @@
  * Return currencies data.
  * @return array
  */
-function currency_getCurrenciesData() {
+function currency_getCurrenciesData(): array {
     global $CaMykS;
 
     return $CaMykS->get_assetData('Currencies');
@@ -31,7 +31,7 @@ function currency_getCurrenciesData() {
  * @param string $language
  * @return void
  */
-function currency_loadCurrenciesLocale(?string $language=null) {
+function currency_loadCurrenciesLocale(?string $language=null): void {
     global $CaMykS;
 
     $CaMykS->load_locales('Libraries/currencies', $language);
@@ -43,7 +43,7 @@ function currency_loadCurrenciesLocale(?string $language=null) {
  * @param string $language
  * @return array
  */
-function currency_getLocalisedTitles(array $params=array(), ?string $language=null) {
+function currency_getLocalisedTitles(array $params=array(), ?string $language=null): array {
     global $CaMykS;
 
     /* Define default params and merge with params */
@@ -79,7 +79,7 @@ function currency_getLocalisedTitles(array $params=array(), ?string $language=nu
  * @param string $language
  * @return array
  */
-function currency_getLocalisedTitle(string $currency, ?string $language=null) {
+function currency_getLocalisedTitle(string $currency, ?string $language=null): array {
     global $CaMykS;
 
     /* Load data file */

@@ -3,10 +3,10 @@
  * @brief Push Notification library
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -35,7 +35,7 @@ final class PushNotification extends CaMykSLibrary {
      * @var array $params
      * @brief Notification parameters.
      */
-    protected $params = array(
+    protected array $params = array(
         /* Device data */
         'devicePlatform' => 0,
         'deviceIdentifier' => '',
@@ -74,7 +74,7 @@ final class PushNotification extends CaMykSLibrary {
      * Define error code list.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         $this->errorCodes = array(
             1 => 'UnknownPlatform',
             2 => 'UndefinedIdentifier',
@@ -88,9 +88,9 @@ final class PushNotification extends CaMykSLibrary {
     /**
      * Send notification.
      * @param array $params
-     * @return boolean result
+     * @return mixed
      */
-    public function send(array $params=array()) {
+    public function send(array $params=array()): mixed {
         /* Update params */
         $this->update_params($params);
 
@@ -114,9 +114,9 @@ final class PushNotification extends CaMykSLibrary {
     /**
      * Send notification to iOS device.
      * @param array $params
-     * @return boolean result
+     * @return mixed
      */
-    public function send_toIOsDevice(array $params=array()) {
+    public function send_toIOsDevice(array $params=array()): mixed {
         /* Compile params */
         $this->params = array_merge($this->params, $params);
 
@@ -171,9 +171,9 @@ final class PushNotification extends CaMykSLibrary {
     /**
      * Send notification to Android device.
      * @param array $params
-     * @return boolean result
+     * @return bool
      */
-    public function send_toAndroidDevice(array $params=array()) {
+    public function send_toAndroidDevice(array $params=array()): bool {
         /* Compile params */
         $this->params = array_merge($this->params, $params);
 
@@ -210,10 +210,12 @@ final class PushNotification extends CaMykSLibrary {
 
         /* Send request */
         $result = $this->send_usingCurl($url, $headers, json_encode($fields));
+        if ($result === false)
+            return false;
 
         /* Check result */
         $result = json_decode($result);
-        if ($result->success > 0)
+        if (isset($result->success) && $result->success > 0)
             return true;
 
         /* Set error */
@@ -225,9 +227,9 @@ final class PushNotification extends CaMykSLibrary {
     /**
      * send notification to Windows Phone device
      * @param array $params
-     * @return boolean result
+     * @return mixed
      */
-    public function send_toWindowsPhoneDevice(array $params=array()) {
+    public function send_toWindowsPhoneDevice(array $params=array()): mixed {
         /* compile params */
         $this->params = array_merge($this->params, $params);
 
@@ -250,6 +252,8 @@ final class PushNotification extends CaMykSLibrary {
 
         /* get response from request */
         $response = $this->send_usingCurl($this->params['deviceIdentifier'], $headers, $msg);
+        if ($response === false)
+            return false;
 
         /* compile result */
         $result = array();
@@ -269,10 +273,10 @@ final class PushNotification extends CaMykSLibrary {
      * Send notification through curl
      * @param string $url
      * @param array $headers
-     * @param array $fields
-     * @return boolean result
+     * @param string $fields
+     * @return mixed
      */
-    private function send_usingCurl(string $url, array $headers, array $fields) {
+    private function send_usingCurl(string $url, array $headers, string $fields): mixed {
         /* open connection */
         $ch = curl_init();
         if ($url) {
@@ -284,7 +288,7 @@ final class PushNotification extends CaMykSLibrary {
 
             /*  Disabling SSL Certificate support temporarly */
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            if ($fields) {
+            if ($fields !== '') {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
             }
 

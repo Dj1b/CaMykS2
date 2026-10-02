@@ -2,9 +2,9 @@
  * @brief CaMykSStyle theme, admin CSS styles
  * @details Plugin / Theme Styles
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre15
+ * @version 1.0pre16
  * @date Creation: Mar 2020
- * @date Modification: Jan 2022
+ * @date Modification: Oct 2026
  * @copyright 2020 - 2022 Ideogram Design
 
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
@@ -146,10 +146,9 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 .mainFrame .listLine .cell {flex:2; padding:6px; font-size:15px;}
 
 /* Columns */
-.columns {display:flex;}
-.columns .column {margin-left:40px; flex:1;}
-.columns .column:first-child {margin-left:0;}
-.columns .column.half {flex:2;}
+.columns {display:flex; flex-wrap:wrap;}
+.columns .column {margin:0 20px; flex:1;}
+.columns .column.half {flex:2; min-width:calc(50% - 40px); max-width:calc(50% - 40px);}
 .columns .column.quarter {flex:1;}
 .columns .column.quarters3 {flex:3;}
 .columns .column.third {}
@@ -230,12 +229,12 @@ input[type=checkbox]:checked + label + autoBox {height:auto;}
 #WebsiteInfoPanel .formValue {color:white;}
 
 /* Manager - Configuration Panel */
-.configurationPanel .buttonList {max-width:350px;}
+.configurationPanel .buttonList {max-width:350px; margin-left:0;}
 .configurationPanel .configButton {display:block; background:#f9f9f9; border-right:solid 1px #d8cffa; padding:8px 16px; width:100%; max-width:350px; text-transform:uppercase; color:#262334; transition:all 0.3s ease-in;}
 .configurationPanel .configButton img {vertical-align:-9px; margin-right:8px;}
 .configurationPanel .configButton:hover {background:#d8cffa;}
 
-.configurationPanel .configurationForm {}
+.configurationPanel .configurationForm {margin-right:0;}
 .configurationPanel .configurationForm .noneSection {text-align:center; margin:40px 0 0;}
 .configurationPanel .configurationForm .noneSection:after {background:none;}
 

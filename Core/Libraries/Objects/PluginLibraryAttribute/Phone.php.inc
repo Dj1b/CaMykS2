@@ -3,9 +3,9 @@
  * @brief PhonePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -30,7 +30,7 @@ class PhonePluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         global $CaMykS;
 
         /* Load phone tool library */

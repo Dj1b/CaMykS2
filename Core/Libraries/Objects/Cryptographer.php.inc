@@ -3,10 +3,10 @@
  * @brief Encryption library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -22,13 +22,13 @@ final class Cryptographer extends CaMykSLibrary {
      * @var array $engines
      * @brief Available engines.
      */
-    private $engines = array('OpenSSL', 'Mcrypt', 'Sodium');
+    private array $engines = array('OpenSSL', 'Mcrypt', 'Sodium');
 
     /**
      * @var array $params
      * @brief Engine parameters.
      */
-    protected $params = array(
+    protected array $params = array(
         'engine'    => 'OpenSSL',
         'cipher'    => 'aes-256-cbc',
         'mode'      => '',              // specific to Mcrypt
@@ -51,7 +51,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Define error code list.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         $this->errorCodes = array(
             /* Engine errors */
             1 => 'UnknownEngine',
@@ -78,7 +78,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check engine availability.
      * @return boolean success
      */
-    public function check_engineAvailability() {
+    public function check_engineAvailability(): bool {
         switch($this->params['engine']) {
             case 'OpenSSL': return $this->_OpenSSL_check_engineAvailability();
             case 'Mcrypt': return $this->_Mcrypt_check_engineAvailability();
@@ -93,21 +93,23 @@ final class Cryptographer extends CaMykSLibrary {
      * Check encryption configuration.
      * @return boolean success
      */
-    public function check_encryptionConfiguration() {
+    public function check_encryptionConfiguration(): bool {
         switch($this->params['engine']) {
             case 'OpenSSL': return $this->_OpenSSL_check_encryptionConfiguration();
             case 'Mcrypt': return $this->_Mcrypt_check_encryptionConfiguration();
             case 'Sodium': return $this->_Sodium_check_encryptionConfiguration();
         }
+
+        return false;
     }
 
     /**
      * Encrypt data.
      * @param string $data
      * @param boolean $base64Encode
-     * @return false on failure, string on success
+     * @return string|false
      */
-    public function encrypt(sting $data, bool $base64Encode=true) {
+    public function encrypt(string $data, bool $base64Encode=true): string|false {
         if (!$this->check_engineAvailability())
             return false;
 
@@ -118,6 +120,7 @@ final class Cryptographer extends CaMykSLibrary {
             case 'OpenSSL': $result = $this->_OpenSSL_encrypt($data); break;
             case 'Mcrypt': $result = $this->_Mcrypt_encrypt($data); break;
             case 'Sodium': $result = $this->_Sodium_encrypt($data); break;
+            default: $result = false; break;
         }
 
         if ($result === false)
@@ -131,9 +134,9 @@ final class Cryptographer extends CaMykSLibrary {
      * Decrypt data.
      * @param string $data
      * @param boolean $base64Decode
-     * @return false on failure, string on success
+     * @return string|false
      */
-    public function decrypt(string $data, bool $base64Decode=true) {
+    public function decrypt(string $data, bool $base64Decode=true): string|false {
         if (!$this->check_engineAvailability())
             return false;
 
@@ -155,9 +158,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Return unique Id.
      * @param int $size
-     * @return string
+     * @return string|false
      */
-    public function get_uniqueId(int $size=16) {
+    public function get_uniqueId(int $size=16): string|false {
         if (!$this->check_engineAvailability())
             return false;
 
@@ -176,7 +179,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check OpenSSL availability.
      * @return boolean result
      */
-    private function _OpenSSL_check_engineAvailability() {
+    private function _OpenSSL_check_engineAvailability(): bool {
         if (!extension_loaded('openssl'))
             return $this->add_error(2, 'OpenSSL', __FILE__, __LINE__);
 
@@ -187,7 +190,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check OpenSSL encryption configuration.
      * @return boolean result
      */
-    private function _OpenSSL_check_encryptionConfiguration() {
+    private function _OpenSSL_check_encryptionConfiguration(): bool {
         if (!in_array($this->params['cipher'], openssl_get_cipher_methods()))
             return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
@@ -203,9 +206,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Encrypt data using OpenSSL engine.
      * @param string $data
-     * @return string
+     * @return string|false
      */
-    private function _OpenSSL_encrypt(string $data) {
+    private function _OpenSSL_encrypt(string $data): string|false {
         /* Compute key and iv */
         $key = hash('sha256', $this->params['key']);
         $iv = substr(hash('sha256', $this->params['iv']), 0, openssl_cipher_iv_length($this->params['cipher']));
@@ -217,9 +220,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Decrypt data using OpenSSL engine.
      * @param string $data.
-     * @return string
+     * @return string|false
      */
-    private function _OpenSSL_decrypt(string $data) {
+    private function _OpenSSL_decrypt(string $data): string|false {
         /* Compute key and iv */
         $key = hash('sha256', $this->params['key']);
         $iv = substr(hash('sha256', $this->params['iv']), 0, openssl_cipher_iv_length($this->params['cipher']));
@@ -233,7 +236,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @param int $size
      * @return string
      */
-    private function _OpenSSL_getUniqueId(string $size) {
+    private function _OpenSSL_getUniqueId(int $size): string {
         return bin2hex(openssl_random_pseudo_bytes((int)($size/2)));
     }
 
@@ -243,7 +246,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check Mcrypt availability.
      * @return boolean result
      */
-    private function _Mcrypt_check_engineAvailability() {
+    private function _Mcrypt_check_engineAvailability(): bool {
         if (!extension_loaded('mcrypt'))
             return $this->add_error(2, 'MCrypt', __FILE__, __LINE__);
 
@@ -254,7 +257,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check Mcrypt encryption configuration.
      * @return boolean result
      */
-    private function _Mcrypt_check_encryptionConfiguration() {
+    private function _Mcrypt_check_encryptionConfiguration(): bool {
         if (!in_array($this->params['cipher'], mcrypt_list_algorithms()))
             return $this->add_error(11, $this->params['cipher'], __FILE__, __LINE__);
 
@@ -270,9 +273,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Encrypt data using Mcrypt engine.
      * @param string $data
-     * @return string
+     * @return string|false
      */
-    private function _Mcrypt_encrypt(string $data) {
+    private function _Mcrypt_encrypt(string $data): string|false {
         /* Compute key and iv */
         $keyHash = hash('sha256', $this->params['key']);
         $key = substr($keyHash, 0,   mcrypt_get_key_size($this->params['cipher'], $this->params['mode']));
@@ -285,9 +288,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Decrypt data using Mcrypt engine.
      * @param string $data.
-     * @return string
+     * @return string|false
      */
-    private function _Mcrypt_decrypt(string $data) {
+    private function _Mcrypt_decrypt(string $data): string|false {
         /* Compute key and iv */
         $keyHash = hash('sha256', $this->params['key']);
         $key = substr($keyHash, 0,   mcrypt_get_key_size($this->params['cipher'], $this->params['mode']));
@@ -302,7 +305,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @param int $size
      * @return string
      */
-    private function _Mcrypt_getUniqueId(int $size) {
+    private function _Mcrypt_getUniqueId(int $size): string {
         return mcrypt_create_iv($size);
     }
 
@@ -312,7 +315,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check Sodium availability.
      * @return boolean result
      */
-    private function _Sodium_check_engineAvailability() {
+    private function _Sodium_check_engineAvailability(): bool {
         if (!extension_loaded('sodium'))
             return $this->add_error(2, 'Sodium', __FILE__, __LINE__);
 
@@ -323,7 +326,7 @@ final class Cryptographer extends CaMykSLibrary {
      * Check Sodium encryption configuration.
      * @return boolean result
      */
-    private function _Sodium_check_encryptionConfiguration() {
+    private function _Sodium_check_encryptionConfiguration(): bool {
         if ($this->params['key'] == '')
             return $this->add_error(21, '', __FILE__, __LINE__);
 
@@ -333,9 +336,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Encrypt data using Sodium engine.
      * @param string $data
-     * @return string
+     * @return string|false
      */
-    private function _Sodium_encrypt(string $data) {
+    private function _Sodium_encrypt(string $data): string|false {
         /* Compute key and iv */
         if ($this->params['iv'] != '') {
             $key = substr(hash('sha256', $this->params['key']), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
@@ -353,9 +356,9 @@ final class Cryptographer extends CaMykSLibrary {
     /**
      * Decrypt data using Sodium engine.
      * @param string $data.
-     * @return string
+     * @return string|false
      */
-    private function _Sodium_decrypt(string $data) {
+    private function _Sodium_decrypt(string $data): string|false {
         /* Compute key and iv */
         if ($this->params['iv'] != '') {
             $key = substr(hash('sha256', $this->params['key']), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
@@ -380,7 +383,7 @@ final class Cryptographer extends CaMykSLibrary {
      * @param int $size
      * @return string
      */
-    private function _Sodium_getUniqueId(int $size) {
+    private function _Sodium_getUniqueId(int $size): string {
         /* Define minimum size */
         $tsize = max(16, (int)($size/2));
 

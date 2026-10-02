@@ -3,10 +3,10 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,31 +22,31 @@ final class CaMykSStyle extends Theme {
      * @var array $params
      * @brief Object "public" parameters.
      */
-    protected $params = array('FileMode'=>'Attached');
+    protected array $params = array('FileMode'=>'Attached');
 
     /**
      * @var boolean $supportAdminMode
      * @brief Is theme capable to design admin mode.
      */
-    protected $supportAdminMode = true;
+    protected bool $supportAdminMode = true;
 
     /**
      * @var boolean $supportManagerMode
      * @brief Is theme capable to design manager mode.
      */
-    protected $supportManagerMode = true;
+    protected bool $supportManagerMode = true;
 
     /**
      * @var boolean $supportVisitMode
      * @brief Is theme capable to design visit mode.
      */
-    protected $supportVisitMode = false;
+    protected bool $supportVisitMode = false;
 
     /**
      * @var array $adminStyleFiles.
      * @brief List of styles to be attached in admin mode.
      */
-    protected $adminStyleFiles = array('admin.css?v=1.0pre15'=>'');
+    protected array $adminStyleFiles = array('admin.css?v=1.0pre15'=>'');
 
     /**
      * Class constructor.
@@ -65,7 +65,7 @@ final class CaMykSStyle extends Theme {
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise($params=array()): void {
         parent::initialise($params);
     }
 }

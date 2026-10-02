@@ -4,10 +4,10 @@
  * <br />Module to manage logs and errors.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -40,7 +40,7 @@ final class SystemLogManager extends AdminModule {
      * @param string $message
      * @return boolean success
      */
-    public function log_message($object, $action, $message) {
+    public function log_message($object, $action, $message): bool {
 
     }
 
@@ -50,7 +50,7 @@ final class SystemLogManager extends AdminModule {
      * @param array $messages
      * @return boolean success
      */
-    public function log_messages($object, $messages) {
+    public function log_messages($object, $messages): bool {
 
     }
 
@@ -59,7 +59,7 @@ final class SystemLogManager extends AdminModule {
      * @param Object $error
      * @return boolean success
      */
-    public function log_error($error) {
+    public function log_error($error): bool {
 
     }
 }

@@ -3,10 +3,10 @@
  * @brief CaMykSInstaller plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Jun 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,7 +31,7 @@ $locales = array(
     /* Database messages */
     'Message_DatabaseConnected' => 'Connexion &eacute;tablie au serveur de base de donn&eacute;es.',
     'Message_DatabaseExists' => 'La base de donn&eacute;es existe et sera utilis&eacute;e.',
-    'Message_DatabaseDoesntExist' => 'La base de donn&eacute;es n\'existe pas et sera cr&eacute;&eacute;e',
+    'Message_DatabaseDoesntExist' => 'La base de donn&eacute;es n\'existe pas et sera cr&eacute;&eacute;e.',
 
     /* Webmaster configuration */
     'WebmasterConfiguration' => 'Configuration du compte administrateur principal',

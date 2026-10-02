@@ -3,10 +3,10 @@
  * @brief Color object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jul 2024
- * @date Modification: Jul 2025
- * @copyright 2024 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2024 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -22,30 +22,30 @@ final class Color {
      * @var integer $red
      * @brief Red value.
      */
-    private $red = 255;
+    private int $red = 255;
 
     /**
      * @var integer $green
      * @brief Green value.
      */
-    private $green = 255;
+    private int $green = 255;
 
     /**
      * @var integer $blue
      * @brief Blue value.
      */
-    private $blue = 255;
+    private int $blue = 255;
 
     /**
      * @var integer $alpha
      * @brief Alpha value.
      */
-    private $alpha = 0;
+    private int $alpha = 0;
 
     /**
      * Object constructor.
      * @param mixed $value
-     * @return boolean success
+     * @return void
      */
     public function __construct(mixed $value=null) {
         $this->set($value);
@@ -58,9 +58,10 @@ final class Color {
      * @param string $variableName
      * @return mixed
      */
-    public function __get(string $variableName) {
+    public function __get(string $variableName): mixed {
         if (in_array($variableName, array('red', 'green', 'blue', 'alpha')))
             return $this->$variableName;
+        return null;
     }
 
     /* Mark: In/out methods */
@@ -70,7 +71,7 @@ final class Color {
      * @param mixed $value
      * @return boolean success
      */
-    public function set(mixed $value=null) {
+    public function set(mixed $value=null): bool {
 
         /* Check value is array */
         if (is_array($value)) {
@@ -141,7 +142,7 @@ final class Color {
      * @param boolean $withHash
      * @return string
      */
-    public function get_asHexa(bool $withHash=true) {
+    public function get_asHexa(bool $withHash=true): string {
         $value = $withHash ? '#' : '';
         $value .= str_pad(dechex($this->red), 2, '0', STR_PAD_LEFT);
         $value .= str_pad(dechex($this->green), 2, '0', STR_PAD_LEFT);
@@ -154,7 +155,7 @@ final class Color {
      * @param boolean $associative
      * @return array
      */
-    public function get_asRGB(bool $associative=true) {
+    public function get_asRGB(bool $associative=true): array {
         $value = array(
             'red'   => $this->red,
             'green' => $this->green,
@@ -170,7 +171,7 @@ final class Color {
      * @param boolean $associative
      * @return array
      */
-    public function get_asRGBA(bool $associative=true) {
+    public function get_asRGBA(bool $associative=true): array {
         $value = array(
             'red'   => $this->red,
             'green' => $this->green,
@@ -190,10 +191,10 @@ final class Color {
      * @param boolean $checkAlpha
      * @return boolean
      */
-    public function is_identical(mixed $color, bool $checkAlpha=true) {
+    public function is_identical(mixed $color, bool $checkAlpha=true): bool {
         /* Check color value */
-        if (!is_object($color) or get_class($color) !== 'CColor') {
-            $c = new CColor();
+        if (!is_object($color) or get_class($color) !== 'CaMykS2\Color') {
+            $c = new Color();
             if (!$c->set($color))
                 return false;
             $color = $c;
@@ -217,7 +218,7 @@ final class Color {
      * Check color is transparent.
      * @return boolean
      */
-    public function is_transparent() {
+    public function is_transparent(): bool {
         return ($this->alpha == 127);
     }
 }

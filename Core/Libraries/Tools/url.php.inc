@@ -3,9 +3,9 @@
  * @brief URL specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2019
- * @date Modification: Sep 2026
+ * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -15,7 +15,7 @@
  * Return current URL.
  * @return string
  */
-function url_getCurrentURL() {
+function url_getCurrentURL(): string {
      return ((isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 }
 
@@ -25,7 +25,7 @@ function url_getCurrentURL() {
  * @param string $URL
  * @return string
  */
-function url_getBaseURLFromMode(string $mode='Relative', ?string $URL=null) {
+function url_getBaseURLFromMode(string $mode='Relative', ?string $URL=null): string {
     switch ($mode) {
         case 'Absolute':
         case 'AbsoluteLong':
@@ -47,7 +47,7 @@ function url_getBaseURLFromMode(string $mode='Relative', ?string $URL=null) {
  * Return available base URL modes.
  * @return array
  */
-function url_getBaseURLModes() {
+function url_getBaseURLModes(): array {
     global $CaMykS;
 
     /* Load locales file */
@@ -67,7 +67,7 @@ function url_getBaseURLModes() {
  * @param string $URL
  * @return string
  */
-function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null) {
+function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null): string {
     /* Check URL */
     $tempURL = url_getCurrentURL();
     if (empty($URL))
@@ -102,7 +102,7 @@ function url_getURLWithSSLMode(string $mode='Default', ?string $URL=null) {
  * Return available SSL modes.
  * @return array
  */
-function url_getSSLModes() {
+function url_getSSLModes(): array {
     global $CaMykS;
 
     /* Load locales file */
@@ -123,7 +123,7 @@ function url_getSSLModes() {
  * @param boolean $strict check also subdomain if true
  * @return boolean result
  */
-function url_haveSameHost(array $urls=array(), bool $strict=false) {
+function url_haveSameHost(array $urls=array(), bool $strict=false): bool {
     if (!is_array($urls))
       return false;
 
@@ -166,7 +166,7 @@ function url_haveSameHost(array $urls=array(), bool $strict=false) {
  * @param string $scheme
  * @return string
  */
-function url_getAsComplete(string $url, string $scheme='http') {
+function url_getAsComplete(string $url, string $scheme='http'): string {
     /* Trim URL */
     $url = trim($url);
 
@@ -187,7 +187,7 @@ function url_getAsComplete(string $url, string $scheme='http') {
  * @param string $url
  * @return string
  */
-function url_getAsSmart(string $url) {
+function url_getAsSmart(string $url): string {
     /* Remove tailing / char */
     $url = preg_replace('#/$#', '', $url);
 

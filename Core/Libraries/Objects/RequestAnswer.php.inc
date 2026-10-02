@@ -3,10 +3,10 @@
  * @brief CaMykS request answer object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,7 +21,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @var array $params
      * @brief Build default object parameters.
      */
-    protected $params = array(
+    protected array $params = array(
         /**< Output value : json / xml */
         'output' => 'json',
         /**< Answer status : success / failure ( / fail ) */
@@ -50,7 +50,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param string $msg
      * @return void
      */
-    public function set_asSuccess(string $msg='') {
+    public function set_asSuccess(string $msg=''): void {
         $this->params['status'] = 'success';
         if ($msg != '')
             $this->params['message'] = $msg;
@@ -62,7 +62,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param string $error
      * @return void
      */
-    public function set_asFailure(string $msg='', string $error='') {
+    public function set_asFailure(string $msg='', string $error=''): void {
         $this->params['status'] = 'failure';
         if ($msg != '')
             $this->params['message'] = $msg;
@@ -72,17 +72,17 @@ final class RequestAnswer extends CaMykSLibrary {
 
     /**
      * Return is request a success.
-     * @return boolean result
+     * @return bool
      */
-    public function is_success() {
+    public function is_success(): bool {
         return ($this->params['status'] == 'success');
     }
 
     /**
      * Return is request a failure.
-     * @return boolean result
+     * @return bool
      */
-    public function is_failure() {
+    public function is_failure(): bool {
         return (in_array($this->params['status'], array('failure', 'fail')));
     }
 
@@ -91,7 +91,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send(array $params=array()) {
+    public function send(array $params=array()): void {
         if ($this->get_param('output') == 'xml')
             $this->send_asXML($params);
         else
@@ -103,7 +103,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send_asXML(array $params=array()) {
+    public function send_asXML(array $params=array()): void {
         global $CaMykS;
 
         /* Load XML library */
@@ -125,7 +125,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function send_asJSON(array $params=array()) {
+    public function send_asJSON(array $params=array()): void {
         global $CaMykS;
 
         /* Prepare for sending */
@@ -149,7 +149,7 @@ final class RequestAnswer extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    private function prepare_forSending(array $params) {
+    private function prepare_forSending(array $params): void {
         /* Check for new parameters */
         if (count($params) > 0)
             $this->update_params($params);

@@ -3,10 +3,10 @@
  * @brief SystemConfigurationManager admin module, configuration library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -48,7 +48,7 @@ final class SystemConfigurationManagerConfiguration extends PluginConfiguration 
      * Return login identifier values.
      * @return array
      */
-    public function get_loginIdentifierList() {
+    public function get_loginIdentifierList(): array {
         return array(
             0 => $this->get_locale('LoginIdentifier_LoginEmail'),
             1 => $this->get_locale('LoginIdentifier_EmailOnly'),
@@ -60,7 +60,7 @@ final class SystemConfigurationManagerConfiguration extends PluginConfiguration 
      * Return security 2FA status values.
      * @return array
      */
-    public function get_security2FAStatusList() {
+    public function get_security2FAStatusList(): array {
         return array(
             0 => $this->get_locale('Security2FAStatus_Disabled'),
             1 => $this->get_locale('Security2FAStatus_Optional'),
@@ -72,7 +72,7 @@ final class SystemConfigurationManagerConfiguration extends PluginConfiguration 
      * Return lost password mode values.
      * @return array
      */
-    public function get_passwordLostModeList() {
+    public function get_passwordLostModeList(): array {
         return array(
             0 => $this->get_locale('PasswordLostMode_Email'),
             1 => $this->get_locale('PasswordLostMode_Admin'),

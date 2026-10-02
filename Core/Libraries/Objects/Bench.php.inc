@@ -4,10 +4,10 @@
  * <br /> Developers can add their own steps in CaMykS running bench, or create their own bench.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0b3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,25 +22,25 @@ final class Bench extends CaMykSLibrary {
      * @var array $params
      * @brief Bench parameters.
      */
-    protected $params = array('output'    => 'none');
+    protected array $params = array('output' => 'none');
 
     /**
      * @var string $status
      * @brief Bench status.
      */
-    private $status = 'idle';
+    private string $status = 'idle';
 
     /**
      * @var array $bench
      * @brief Bench saved steps.
      */
-    private $bench = array();
+    private array $bench = array();
 
     /**
      * @var array $results
      * @brief Bench computed results.
      */
-    private $results = array();
+    private array $results = array();
 
     /**
      * Object constructor.
@@ -62,7 +62,7 @@ final class Bench extends CaMykSLibrary {
      * @param float $startTime
      * @return void
      */
-    public function start(string $title='Start', ?float $startTime=null) {
+    public function start(string $title='Start', ?float $startTime=null): void {
         $this->status = 'running';
         $this->bench[] = array('title' => $title, 'time' => (is_null($startTime)? microtime(true) : $startTime));
     }
@@ -72,7 +72,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function add_step(string $title='Step') {
+    public function add_step(string $title='Step'): void {
         $this->status = 'running';
         if ($title == 'Step') $title .= '-'.count($this->bench);
         $this->bench[] = array('title' => $title, 'time' => microtime(true));
@@ -83,7 +83,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function stop(string $title='Stop') {
+    public function stop(string $title='Stop'): void {
         $this->status = 'stopped';
         $this->bench[] = array('title' => $title, 'time' => microtime(true));
     }
@@ -93,7 +93,7 @@ final class Bench extends CaMykSLibrary {
      * @param string $output
      * @return mixed
      */
-    public function export(string $output='') {
+    public function export(string $output=''): mixed {
         /* Check if bench is stopped */
         if ($this->status != 'stopped')
             $this->stop();
@@ -112,14 +112,14 @@ final class Bench extends CaMykSLibrary {
             case 'html': return $this->export_toHTML();
             case 'none': default : return $this->get_results();
         }
-        return;
+        return null;
     }
 
     /**
      * Return results.
      * @return array
      */
-    public function get_results() {
+    public function get_results(): array {
         return $this->results;
     }
 
@@ -129,7 +129,7 @@ final class Bench extends CaMykSLibrary {
      * Export results to CaMykS shared data.
      * @return void
      */
-    private function export_toSharedData() {
+    private function export_toSharedData(): void {
         global $CaMykS;
 
         /* save bench to shared data  */
@@ -140,7 +140,7 @@ final class Bench extends CaMykSLibrary {
      * Export results to session.
      * @return void
      */
-    private function export_toSession() {
+    private function export_toSession(): void {
         global $CaMykS;
 
         /* save bench to session */
@@ -151,7 +151,7 @@ final class Bench extends CaMykSLibrary {
      * Export results to CaMykS logs.
      * @return void
      */
-    private function export_toCaMykSLogs() {
+    private function export_toCaMykSLogs(): void {
         global $CaMykS;
 
         /* log information */
@@ -162,7 +162,7 @@ final class Bench extends CaMykSLibrary {
      * Export results to HTML.
      * @return void
      */
-    private function export_toHTML() {
+    private function export_toHTML(): void {
         /* display results as HTML */
         echo '<div style="display:none">'."\n";
         foreach ($this->results as $r) {
@@ -175,7 +175,7 @@ final class Bench extends CaMykSLibrary {
      * Compute results.
      * @return void
      */
-    private function compute_results() {
+    private function compute_results(): void {
 
         /* Read all steps to build result */
         for ($i=0; $i<count($this->bench)-1; $i++) {

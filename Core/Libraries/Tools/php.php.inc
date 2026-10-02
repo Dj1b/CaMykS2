@@ -3,10 +3,10 @@
  * @brief PHP related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * @param string $separator
  * @return string
  */
-function php_displayErrorReportingLevelAsString(int $errorLevel=null, string $separator=', ') {
+function php_displayErrorReportingLevelAsString(?int $errorLevel=null, string $separator=', '): string {
     /* Check level value */
     if (is_null($errorLevel)) $errorLevel = error_reporting();
 
@@ -58,7 +58,7 @@ function php_displayErrorReportingLevelAsString(int $errorLevel=null, string $se
  * Check if required PHP modules are available.
  * @return array
  */
-function php_checkModuleRequirements() {
+function php_checkModuleRequirements(): array {
     /* Load available modules */
     $availableModules = get_loaded_extensions();
 

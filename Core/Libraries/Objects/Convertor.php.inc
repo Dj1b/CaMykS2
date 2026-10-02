@@ -3,10 +3,10 @@
  * @brief Convertor object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Sep 2025
- * @date Modification: Sep 2025
- * @copyright 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2025 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -22,13 +22,13 @@ final class Convertor {
      * @var array $conversionData
      * @brief Available conversion data.
      */
-    private $conversionData;
+    private array $conversionData;
 
     /**
      * Object constructor.
      */
     public function __construct() {
-        global $camyks;
+        global $CaMykS;
 
         /* Load data */
         $this->conversionData = $CaMykS->get_assetData('Conversions');
@@ -39,9 +39,9 @@ final class Convertor {
      * @param float $value
      * @param string $from
      * @param string $to
-     * @return mixed
+     * @return float|false
      */
-    public function convert($value, $from, $to) {
+    public function convert(float $value, string $from, string $to): float|false {
         /* Check from and to available in conversion data */
         if (empty($this->conversionData[$from]))
             return false;

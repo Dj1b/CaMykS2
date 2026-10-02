@@ -3,10 +3,10 @@
  * @brief HTML Form Input.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Mar 2020
- * @date Modification: Apr 2025
- * @copyright 2020 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ class HTMLFormInput extends CaMykSLibrary {
      * @var Object $parent
      * @brief Link to parent form object.
      */
-    protected $parent = null;
+    protected mixed $parent = null;
 
     /**
-     * @var array $params
-     * @brief Parameters list for input.
+     * @var array $defaultParams
+     * @brief Default parameters list for input.
      */
-    protected $params = array(
+    protected $defaultParams = array(
         'type'          => '',
         'name'          => '',
         'language'      => null,
@@ -111,7 +111,10 @@ class HTMLFormInput extends CaMykSLibrary {
      * @param Object $parent
      * @return void
      */
-    public function __construct(array $params=array(), HTMLForm &$parent=null) {
+    public function __construct(array $params=array(), ?HTMLForm &$parent=null) {
+        /* Merc default parameters in params */
+        $this->params = $this->defaultParams;
+
         /* Merge generic attributes default values in params */
         foreach ($this->genericAttributes as $name => $attribute)
             $this->params[$name] = $attribute['default'];
@@ -135,7 +138,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * @param mixed $value
      * @return void
      */
-    public function set_default(mixed $value=null) {
+    public function set_default(mixed $value=null): void {
         $this->params['default'] = $value;
     }
 
@@ -143,10 +146,10 @@ class HTMLFormInput extends CaMykSLibrary {
      * Display input.
      * @return void
      */
-    public function display() {
+    public function display(): mixed {
         /* Check name */
         if ($this->params['name'] == '')
-            return;
+            return null;
 
         /* Dispatch display regarding type */
         switch ($this->params['type']) {
@@ -164,7 +167,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Return input full name.
      * @return string
      */
-    public function get_fullName() {
+    public function get_fullName(): string {
         $name = $this->params['name'];
         if (!is_null($this->params['language']))
             $name = '_'.$this->params['language'];
@@ -179,7 +182,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Display generic input.
      * @return void
      */
-    protected function display_generic() {
+    protected function display_generic(): void {
         /* Build html */
         $html = '<input type="'.$this->params['type'].'"';
         $html .= $this->build_attributes();
@@ -194,7 +197,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Display textarea input.
      * @return void
      */
-    protected function display_textArea() {
+    protected function display_textArea(): void {
         /* Build HTML */
         $html = '<textarea';
         $html .= $this->build_attributes();
@@ -210,7 +213,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Display tickbox input.
      * @return void
      */
-    protected function display_tickBox() {
+    protected function display_tickBox(): void {
         /* Check label for automatic id */
         if ($this->params['labelTitle'] != '' and $this->params['id'] == '') {
             if (!is_null($this->parent))
@@ -250,7 +253,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Display select input.
      * @return void
      */
-    protected function display_select() {
+    protected function display_select(): void {
         /* Check for first empty item */
         if ($this->params['hasEmptyFirstOption'] === true)
             $this->params['values'] = array(''=>' ') + $this->params['values'];
@@ -304,7 +307,7 @@ class HTMLFormInput extends CaMykSLibrary {
      * Build html for default attributes.
      * @return string
      */
-    protected function build_attributes() {
+    protected function build_attributes(): string {
         $html = '';
 
         /* Add name */

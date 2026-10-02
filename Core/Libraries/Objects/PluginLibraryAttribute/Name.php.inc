@@ -3,10 +3,10 @@
  * @brief NamePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: May 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,7 +22,7 @@ final class NamePluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @var constant array SUBPARAMS
      * @brief Attribute level 3 default parameters.
      */
-    protected const SUBPARAMS = array('Length'=>32, 'ValidationRegex'=>'[^0-9A-Za-z]*', 'ReplacementChar'=>'');
+    protected const SUBPARAMS = array('Length'=>32, 'ValidationRegex'=>'[^0-9A-Za-z\-_]*', 'ReplacementChar'=>'');
 
     /* Mark: Override PluginLibraryAttribute methods */
 
@@ -30,7 +30,7 @@ final class NamePluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Check validated characters */
         $this->value = preg_replace('/'.$this->params['ValidationRegex'].'/', $this->params['ReplacementChar'], $this->value);
 

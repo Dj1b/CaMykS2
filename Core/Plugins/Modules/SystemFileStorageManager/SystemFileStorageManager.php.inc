@@ -4,10 +4,10 @@
  * <br />Module to manage in-database local storage.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -41,7 +41,7 @@ final class SystemFileStorageManager extends ToolModule {
      * @param string $URLMode
      * @return mixed
      */
-    public function get_documentsURL($plugin, $path, $files=array(), $URLMode=null) {
+    public function get_documentsURL($plugin, $path, $files=array(), $URLMode=null): mixed {
 
     }
 
@@ -52,7 +52,7 @@ final class SystemFileStorageManager extends ToolModule {
      * @param array $files
      * @return mixed
      */
-    public function save_uploadedDocuments($plugin, $path, $files=array()) {
+    public function save_uploadedDocuments($plugin, $path, $files=array()): mixed {
 
     }
 
@@ -65,7 +65,7 @@ final class SystemFileStorageManager extends ToolModule {
      * @param string $name
      * @return array
      */
-    public function get_configuration($plugin, $type, $name) {
+    public function get_configuration($plugin, $type, $name): array {
 
     }
 
@@ -77,7 +77,7 @@ final class SystemFileStorageManager extends ToolModule {
      * @param array $data
      * @return boolean success
      */
-    public function save_configuration($plugin, $type, $name, $data) {
+    public function save_configuration($plugin, $type, $name, $data): bool {
 
     }
 
@@ -87,7 +87,7 @@ final class SystemFileStorageManager extends ToolModule {
      * Enable database storage
      * @return void
      */
-    public function enable_databaseStorage() {
+    public function enable_databaseStorage(): void {
 
     }
 
@@ -95,7 +95,7 @@ final class SystemFileStorageManager extends ToolModule {
      * Disable database storage
      * @return void
      */
-    public function disable_databaseStorage() {
+    public function disable_databaseStorage(): void {
 
     }
 }

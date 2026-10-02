@@ -3,10 +3,10 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Feb 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ final class AdminPage extends Template {
      * @var boolean $actionBarStatus
      * @brief Is the action bar displayed.
      */
-    protected $actionBarStatus = false;
+    protected bool $actionBarStatus = false;
 
     /**
      * @var array $actionBarButtons
      * @brief List of buttons to be displayed in action bar
      */
-    protected $actionBarButtons = array();
+    protected array $actionBarButtons = array();
 
     /**
      * Class constructor.
@@ -47,7 +47,7 @@ final class AdminPage extends Template {
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise($params=array()): void {
         global $CaMykS;
         parent::initialise($params);
 
@@ -75,7 +75,7 @@ final class AdminPage extends Template {
      * Enable action bar display.
      * @return void
      */
-    public function enable_actionBar() {
+    public function enable_actionBar(): void {
         $this->actionBarStatus = true;
     }
 
@@ -84,7 +84,7 @@ final class AdminPage extends Template {
      * @param array $button
      * @return void
      */
-    public function add_actionBarButton($button) {
+    public function add_actionBarButton($button): void {
         $this->actionBarButtons[] = $button;
     }
 
@@ -94,7 +94,7 @@ final class AdminPage extends Template {
      * Check has a logo to display in header.
      * @return boolean result
      */
-    protected function has_logo() {
+    protected function has_logo(): bool {
         global $CaMykS;
         $logo = $CaMykS->get_configValue('Admin_HeaderLogoFile');
         return (!is_null($logo) and $logo !== '');
@@ -104,7 +104,7 @@ final class AdminPage extends Template {
      * Return header logo url.
      * @return string
      */
-    protected function get_headerLogo() {
+    protected function get_headerLogo(): string {
         global $CaMykS;
         return $CaMykS->get_configValue('Admin_HeaderLogoFile');
     }
@@ -113,7 +113,7 @@ final class AdminPage extends Template {
      * Return header title.
      * @return string
      */
-    protected function get_headerTitle() {
+    protected function get_headerTitle(): string {
         global $CaMykS;
 
         switch ($CaMykS->mode) {
@@ -125,13 +125,16 @@ final class AdminPage extends Template {
 
                 break;
         }
+
+        /* Return default value */
+        return '';
     }
 
     /**
      * Return home link.
      * @return string
      */
-    protected function get_homeLink() {
+    protected function get_homeLink(): string {
         global $CaMykS;
 
         switch ($CaMykS->mode) {
@@ -149,7 +152,7 @@ final class AdminPage extends Template {
      * Return logout link.
      * @return string
      */
-    protected function get_logoutLink() {
+    protected function get_logoutLink(): string {
         global $CaMykS;
 
         switch ($CaMykS->mode) {

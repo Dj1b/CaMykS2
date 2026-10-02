@@ -3,9 +3,9 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre49
+ * @version 2.0pre50
  * @date Creation: Feb 2017
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2017 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -46,31 +46,31 @@ final class CaMykS {
      * @var integer $mode
      * @brief CaMykS current mode.
      */
-    private $mode;
+    private int $mode;
 
     /**
      * @var array $engineConfiguration
      * @brief CaMykS configuration.
      */
-    private $engineConfiguration = array();
+    private array $engineConfiguration = array();
 
     /**
      * @var array $websiteConfiguration
      * @brief Website configuration.
      */
-    private $websiteConfiguration = array();
+    private array $websiteConfiguration = array();
 
     /**
      * @var array $plugins
      * @brief Loaded plugins.
      */
-    private $plugins = array('Components'=>array(), 'Modules'=>array(), 'Templates'=>array(), 'Themes'=>array());
+    private array $plugins = array('Components'=>array(), 'Modules'=>array(), 'Templates'=>array(), 'Themes'=>array());
 
     /**
      * @var array $systemPlugins
      * @brief System required plugins name.
      */
-    private $systemPlugins = array(
+    private array $systemPlugins = array(
         array('Name'=>'SystemPluginManager', 'Type'=>'Module', 'Location'=>'System'),
         array('Name'=>'SystemLogManager', 'Type'=>'Module', 'Location'=>'System'),
         array('Name'=>'SystemSessionManager', 'Type'=>'Module', 'Location'=>'System'),
@@ -78,28 +78,28 @@ final class CaMykS {
     );
 
     /**
-     * @var integer $startMicroTime
+     * @var float $startMicroTime
      * @brief Store CaMykS starting microtime
      */
-    private $startMicroTime;
+    private float $startMicroTime;
 
     /**
-     * @var Object $databaseConnection
+     * @var DatabaseConnector|null $databaseConnection
      * @brief Website, main database connection.
      */
-    private $databaseConnection;
+    private ?DatabaseConnector $databaseConnection = null;
 
     /**
      * @var array $openedDBConnections
      * @brief CaMykS opened database connections.
      */
-    private $openedDBConnections = array();
+    private array $openedDBConnections = array();
 
     /**
      * @var array $eventsHandlers
      * @brief CaMykS event handlers.
      */
-    private $eventsHandlers = array(
+    private array $eventsHandlers = array(
         'onInitialise'      => array(),
         'onVisitPageLoad'   => array(),
         'onVisitBodyOpen'   => array(),
@@ -111,36 +111,36 @@ final class CaMykS {
     );
 
     /**
-     * @var array $accessibilityFolders
+     * @var array|null $accessibilityFolders
      * @brief List of accessible folders.
      */
-    private $accessibilityFolders;
+    private ?array $accessibilityFolders = null;
 
     /**
      * @var boolean $falseRef
      * @brief CaMykS false value as reference.
      */
-    private $falseRef = false;
+    private bool $falseRef = false;
 
     /* Mark: Language variables */
 
     /**
-     * @var array $currentLanguage
+     * @var string $currentLanguage
      * @brief Optimised language currently used.
      */
-    private $currentLanguage = 'fr_FR';
+    private string $currentLanguage = 'fr_FR';
 
     /**
      * @var array $locales
      * @brief List of all available locales.
      */
-    private $locales = array();
+    private array $locales = array();
 
     /**
      * @var array $loadedLocales
      * @brief List all loaded locale files.
      */
-    private $loadedLocales = array();
+    private array $loadedLocales = array();
 
     /* Mark: Data */
 
@@ -148,7 +148,7 @@ final class CaMykS {
      * @var array $assetData
      * @brief Stores loaded asset data.
      */
-    private $assetData = array();
+    private array $assetData = array();
 
     /* Mark: URLs and paths */
 
@@ -156,95 +156,95 @@ final class CaMykS {
      * @var string $CaMykSPath
      * @brief CaMykS path.
      */
-    private $CaMykSPath;
+    private string $CaMykSPath;
 
     /**
      * @var string $websitePath
      * @brief Website path.
      */
-    private $websitePath;
+    private string $websitePath;
 
     /**
      * @var string $websiteURL
      * @brief Website URL.
      */
-    private $websiteURL;
+    private string $websiteURL;
 
     /**
      * @var string $corePluginLink
      * @brief Symbolic link to core plugin folder
      */
-    private $corePluginLink = 'CorePlugins';
+    private string $corePluginLink = 'CorePlugins';
 
     /**
      * @var string $sharedPluginLink
      * @brief Symbolic link to shared plugin folder
      */
-    private $sharedPluginLink = 'SharedPlugins';
+    private string $sharedPluginLink = 'SharedPlugins';
 
     /**
      * @var string $coreAssetLink
      * @brief Symbolic link to core asset folder
      */
-    private $coreAssetLink = 'CoreAssets';
+    private string $coreAssetLink = 'CoreAssets';
 
     /* Mark: Links to internal object libraries */
 
     /**
-     * @var Object $bench
+     * @var Bench|false $bench
      * @brief CaMykS internal bench object.
      */
-    private $bench = false;
+    private Bench|false $bench = false;
 
     /**
-     * @var Object $errorHandler
+     * @var ErrorHandler|false $errorHandler
      * @brief CaMykS internal error handler.
      */
-    private $errorHandler = false;
+    private ErrorHandler|false $errorHandler = false;
 
     /**
-     * @var Object $HTMLPage
+     * @var HTMLPage $HTMLPage
      * @brief Main HTML page.
      */
-    private $HTMLPage;
+    private HTMLPage $HTMLPage;
 
     /**
-     * @var Object $localStorage
+     * @var LocalStorage $localStorage
      * @brief Local storage object.
      */
-    private $localStorage;
+    private LocalStorage $localStorage;
 
     /* Mark: Links to plugins */
 
     /**
-     * @var Object $currentTheme
+     * @var Theme|null $currentTheme
      * @brief Link to current theme used in CaMykS.
      */
-    private $currentTheme;
+    private ?Theme $currentTheme = null;
 
     /**
-     * @var Object $currentTemplate
+     * @var Template|null $currentTemplate
      * @brief Link to current template used in CaMykS.
      */
-    private $currentTemplate;
+    private ?Template $currentTemplate = null;
 
     /**
-     * @var Object $manager
+     * @var Plugin|null $manager
      * @brief Link to manager special plugin.
      */
-    private $manager;
+    private ?Plugin $manager = null;
 
     /**
-     * @var Object $installer
+     * @var Plugin|null $installer
      * @brief Link to installer special plugin.
      */
-    private $installer;
+    private ?Plugin $installer = null;
 
     /**
-     * @var string $layoutContext
+     * @var mixed $layoutContext
      * @brief Selected layout context.
      */
-    private $layoutContext;
+    private mixed $layoutContext = null;
 
     /**
      * Class constructor.
@@ -269,7 +269,7 @@ final class CaMykS {
      * @param string $variableName
      * @return mixed
      */
-    public function __get(string $variableName) {
+    public function __get(string $variableName): mixed {
         /* Temporary edit to find occurences */
         if (in_array($variableName, array('name', 'version', 'versionMajor', 'versionMinor', 'lastModificationDate', 'CMSWebsiteURL', 'libraryExtension', 'layoutExtension'))) {
             $this->trigger_error('CaMykS', 0, $variableName.' is unknown', '');
@@ -287,7 +287,7 @@ final class CaMykS {
      * @param integer $mode to run
      * @return void
      */
-    public function execute(int $mode) {
+    public function execute(int $mode): void {
         /* Store mode */
         $this->mode = $mode;
 
@@ -307,7 +307,7 @@ final class CaMykS {
      * Initialise CaMykS.
      * @return void
      */
-    private function initialise() {
+    private function initialise(): void {
         /* Initialise engine */
         $this->initialise_engine();
 
@@ -344,7 +344,7 @@ final class CaMykS {
      * Display CaMykS.
      * @return void
      */
-    private function display() {
+    private function display(): void {
 
         /* Add bench step */
         $this->bench->add_step('CaMykS display mode.');
@@ -376,7 +376,7 @@ final class CaMykS {
      * Close CaMykS.
      * @return void
      */
-    public function close() {
+    public function close(): void {
         /* Kill processus to call terminate through registered shutdown function */
         die();
     }
@@ -385,7 +385,7 @@ final class CaMykS {
      * Terminate CaMykS.
      * @return void
      */
-    public function terminate() {
+    public function terminate(): void {
         /* Add bench step */
         if ($this->bench !== false) $this->bench->add_step('CaMykS terminate.');
 
@@ -412,7 +412,7 @@ final class CaMykS {
      * Initialise engine.
      * @return void
      */
-    private function initialise_engine() {
+    private function initialise_engine(): void {
         /* Set up CaMykS files path */
         $this->CaMykSPath = dirname(__FILE__);
 
@@ -464,7 +464,7 @@ final class CaMykS {
      * Initialise visit mode.
      * @return void
      */
-    private function initialise_visit() {
+    private function initialise_visit(): void {
         /* Load visit configuration */
         $this->load_configuration('Visit');
 
@@ -495,7 +495,7 @@ final class CaMykS {
      * Initialise admin mode.
      * @return void
      */
-    private function initialise_admin() {
+    private function initialise_admin(): void {
         /* Load admin configuration */
         $this->load_configuration('Admin');
 
@@ -529,7 +529,7 @@ final class CaMykS {
      * Execute common initialisation from visit and admin mode, can eventually be called from request mode.
      * @return void
      */
-    public function initialise_common() {
+    public function initialise_common(): void {
         /* Initialise database connection */
 
         /* Load system plugins */
@@ -549,7 +549,7 @@ final class CaMykS {
      * Initialise request mode.
      * @return void
      */
-    private function initialise_request() {
+    private function initialise_request(): void {
 
     }
 
@@ -557,7 +557,7 @@ final class CaMykS {
      * Initialise manager mode.
      * @return void
      */
-    private function initialise_manager() {
+    private function initialise_manager(): void {
         /* Load manager configuration */
         $this->load_configuration('Manager');
 
@@ -601,7 +601,22 @@ final class CaMykS {
      * Initialise install mode.
      * @return void
      */
-    private function initialise_install() {
+    private function initialise_install(): void {
+        /* Load admin configuration */
+        $this->load_configuration('Visit');
+
+        /* Set up base URL */
+        $this->define_baseURL($this->get_configValue('Visit_SSL'));
+
+        /* Start session */
+        session_set_cookie_params(array(
+            'Lifetime' => $this->get_configValue('Engine_SessionLifetime', 24)*60,
+            'Secure' => $this->get_configValue('Visit_SSL'),
+            'HttpOnly' => "1",
+            'SameSite' => "Strict",
+        ));
+        session_start();
+
         /* Load language */
         $this->load_currentLanguage();
 
@@ -627,7 +642,7 @@ final class CaMykS {
      * Display visit mode.
      * @return void
      */
-    private function display_visit() {
+    private function display_visit(): void {
         /* Run onVisitBodyOpen event handlers */
         $this->run_eventHandlers('onVisitBodyOpen');
 
@@ -642,7 +657,7 @@ final class CaMykS {
      * Display admin mode.
      * @return void
      */
-    private function display_admin() {
+    private function display_admin(): void {
         /* Run onAdminBodyOpen event handlers */
         $this->run_eventHandlers('onAdminBodyOpen');
 
@@ -657,7 +672,7 @@ final class CaMykS {
      * Display visit mode.
      * @return void
      */
-    private function display_request() {
+    private function display_request(): void {
 
     }
 
@@ -665,7 +680,7 @@ final class CaMykS {
      * Display manager mode.
      * @return void
      */
-    private function display_manager() {
+    private function display_manager(): void {
         /* Display template main layout */
         $this->currentTemplate->display();
     }
@@ -674,7 +689,7 @@ final class CaMykS {
      * Display install mode.
      * @return void
      */
-    private function display_install() {
+    private function display_install(): void {
         /* Display template main layout */
         $this->currentTemplate->display();
     }
@@ -686,7 +701,7 @@ final class CaMykS {
      * @param integer $slotIndex
      * @return void
      */
-    public function display_templateSlotContent(int $slotIndex) {
+    public function display_templateSlotContent(int $slotIndex): void {
         /* Display mode */
         switch ($this->mode) {
             case CAMYKS_MODE_VISIT:
@@ -721,7 +736,7 @@ final class CaMykS {
      * @param string $configFile
      * @return void
      */
-    public function load_configuration(string $configFile) {
+    public function load_configuration(string $configFile): void {
 
         /* Load engine configuration file */
         $config = new ConfigurationFile($configFile, 'Engine');
@@ -739,7 +754,7 @@ final class CaMykS {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue(string $name, mixed $default=null) {
+    public function get_configValue(string $name, mixed $default=null): mixed {
         /* Check website configuration */
         if (isset($this->websiteConfiguration[$name]) and !is_null($this->websiteConfiguration[$name]))
             return $this->websiteConfiguration[$name];
@@ -758,7 +773,7 @@ final class CaMykS {
      * @param mixed $value
      * @return void
      */
-    public function set_configValue(string $name, mixed $value) {
+    public function set_configValue(string $name, mixed $value): void {
         $this->websiteConfiguration[$name] = $value;
     }
 
@@ -770,7 +785,7 @@ final class CaMykS {
      * @param mixed $value
      * @return void
      */
-    public function set_sessionValue(string $name, mixed $value='') {
+    public function set_sessionValue(string $name, mixed $value=''): void {
         $_SESSION[$this->get_configValue('Website_Name').'_'.$name] = $value;
     }
 
@@ -780,12 +795,53 @@ final class CaMykS {
      * @param mixed $default
      * @return mixed
      */
-    public function get_sessionValue(string $name, mixed $default=null) {
+    public function get_sessionValue(string $name, mixed $default=null): mixed {
         /* Set up session variable */
         $var = $this->get_configValue('Website_Name').'_'.$name;
 
         /* Return value */
         return isset($_SESSION[$var]) ? $_SESSION[$var] : $default;
+    }
+
+    /**
+     * Delete variable from session.
+     * @param string $name
+     * @return void
+     */
+    public function delete_sessionValue(string $name): void {
+        /* Set up session variable */
+        $var = $this->get_configValue('Website_Name').'_'.$name;
+
+        /* Check it exists */
+        if (!isset($_SESSION[$var]))
+            return;
+
+        /* Delete it */
+        unset($_SESSION[$var]);
+    }
+
+    /**
+     * Return and delete variable frem session.
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function pop_sessionValue(string $name, mixed $default=null): mixed {
+        /* Set up session variable */
+        $var = $this->get_configValue('Website_Name').'_'.$name;
+
+        /* Check it exists */
+        if (!isset($_SESSION[$var]))
+            return $default;
+
+        /* Get it */
+        $v = $_SESSION[$var];
+
+        /* Delete it */
+        unset($_SESSION[$var]);
+
+        /* Return value */
+        return $v;
     }
 
     /* Mark: Library related methods */
@@ -796,7 +852,7 @@ final class CaMykS {
      * @param string $folder
      * @return boolean success
      */
-    public function load_library(string $library, string $folder='') {
+    public function load_library(string $library, string $folder=''): bool {
         /* Define file */
         $file = 'Core/Libraries/'.($folder == '' ? '' : $folder.'/').$library.'.php.inc';
 
@@ -806,13 +862,14 @@ final class CaMykS {
 
         /* Load library */
         require_once($this->get_engineFileFullPath($file));
+        return true;
     }
 
     /**
      * Load engine libraries.
      * @return void
      */
-    private function load_engineFirstLibraries() {
+    private function load_engineFirstLibraries(): void {
         /* Load tool libraries */
         $this->load_library('folder', 'Tools');
 
@@ -826,7 +883,7 @@ final class CaMykS {
      * Load engine libraries.
      * @return void
      */
-    private function load_engineLibraries() {
+    private function load_engineLibraries(): void {
         /* Start capturing extra code in live mode */
         if ($this->get_configValue('Website_Status') == false)
             ob_start();
@@ -902,7 +959,6 @@ final class CaMykS {
         $this->load_library('PluginLibraryAttribute/Password', 'Objects');
         $this->load_library('PluginLibraryAttribute/Phone', 'Objects');
         $this->load_library('PluginLibraryAttribute/Price', 'Objects');
-        $this->load_library('PluginLibraryAttribute/SymbolicName', 'Objects');
         $this->load_library('PluginLibraryAttribute/URL', 'Objects');
         $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
@@ -926,7 +982,7 @@ final class CaMykS {
      * Define encoding.
      * @return void
      */
-    private function define_encoding() {
+    private function define_encoding(): void {
         if (extension_loaded('mbstring'))
             mb_internal_encoding($this->get_configValue('Website_Encoding', 'UTF8'));
     }
@@ -935,7 +991,7 @@ final class CaMykS {
      * Check server requirements.
      * @return void
      */
-    private function check_serverRequirements() {
+    private function check_serverRequirements(): void {
         /* Check PHP version */
         if (version_compare(PHP_VERSION, CAMYKS_PHPMINVERSION, '<')) {
             $this->trigger_error('CaMykS', 1, 'Current PHP version ('.PHP_VERSION.') doesn\'t meet minimum requirements.'."\n".
@@ -955,13 +1011,21 @@ final class CaMykS {
     /* Mark: Plugin related methods */
 
     /**
+     * Return plugin type list.
+     * @return array
+     */
+    public function get_pluginTypes(): array {
+        return array('Component', 'Module', 'Template', 'Theme');
+    }
+
+    /**
      * Load plugin from its source.
      * @param string $name
      * @param string $type
      * @param string $location
-     * @return Plugin
+     * @return Plugin|false
      */
-    public function &load_plugin(string $name, string $type, ?string $location=null) {
+    public function &load_plugin(string $name, string $type, ?string $location=null): Plugin|false {
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
 
@@ -1021,9 +1085,9 @@ final class CaMykS {
      * Load component.
      * @param string $name
      * @param string $location
-     * @return Component
+     * @return Component|false
      */
-    public function load_component(string $name, ?string $location=null) {
+    public function load_component(string $name, ?string $location=null): Component|false {
         return $this->load_plugin($name, 'Component', $location);
     }
 
@@ -1031,9 +1095,9 @@ final class CaMykS {
      * Load module.
      * @param string $name
      * @param string $location
-     * @return Module
+     * @return Module|false
      */
-    public function load_module(string $name, ?string $location=null) {
+    public function load_module(string $name, ?string $location=null): Module|false {
         return $this->load_plugin($name, 'Module', $location);
     }
 
@@ -1041,9 +1105,9 @@ final class CaMykS {
      * Load template.
      * @param string $name
      * @param string $location
-     * @return Template
+     * @return Template|false
      */
-    public function load_template(string $name, ?string $location=null) {
+    public function load_template(string $name, ?string $location=null): Template|false {
         return $this->load_plugin($name, 'Template', $location);
     }
 
@@ -1051,9 +1115,9 @@ final class CaMykS {
      * Load theme.
      * @param string $name
      * @param string $location
-     * @return Theme
+     * @return Theme|false
      */
-    public function load_theme(string $name, ?string $location=null) {
+    public function load_theme(string $name, ?string $location=null): Theme|false {
         return $this->load_plugin($name, 'Theme', $location);
     }
 
@@ -1063,9 +1127,9 @@ final class CaMykS {
      * @param string $type
      * @param boolean $autoLoad
      * @param string $location
-     * @return Plugin
+     * @return Plugin|false
      */
-    public function &get_plugin(string $name, string $type, bool $autoLoad=false, ?string $location=null) {
+    public function &get_plugin(string $name, string $type, bool $autoLoad=false, ?string $location=null): Plugin|false {
 
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
@@ -1092,9 +1156,9 @@ final class CaMykS {
      * @param string $name
      * @param boolean $autoLoad
      * @param string $location
-     * @return Input
+     * @return Component|false
      */
-    public function &get_component(string $name, bool $autoLoad=false, ?string $location=null) {
+    public function &get_component(string $name, bool $autoLoad=false, ?string $location=null): Component|false {
         return $this->get_plugin($name, 'Component', $autoLoad, $location);
     }
 
@@ -1103,9 +1167,9 @@ final class CaMykS {
      * @param string $name
      * @param boolean $autoLoad
      * @param string $location
-     * @return Module
+     * @return Module|false
      */
-    public function &get_module(string $name, bool $autoLoad=false, ?string $location=null) {
+    public function &get_module(string $name, bool $autoLoad=false, ?string $location=null): Module|false {
         return $this->get_plugin($name, 'Module', $autoLoad, $location);
     }
 
@@ -1114,9 +1178,9 @@ final class CaMykS {
      * @param string $name
      * @param boolean $autoLoad
      * @param string $location
-     * @return Theme
+     * @return Theme|false
      */
-    public function &get_theme(string $name, bool $autoLoad=false, ?string $location=null) {
+    public function &get_theme(string $name, bool $autoLoad=false, ?string $location=null): Theme|false {
         return $this->get_plugin($name, 'Theme', $autoLoad, $location);
     }
 
@@ -1125,9 +1189,9 @@ final class CaMykS {
      * @param string $name
      * @param boolean $autoLoad
      * @param string $location
-     * @return Template
+     * @return Template|false
      */
-    public function &get_template(string $name, bool $autoLoad=false, ?string $location=null) {
+    public function &get_template(string $name, bool $autoLoad=false, ?string $location=null): Template|false {
         return $this->get_plugin($name, 'Template', $autoLoad, $location);
     }
 
@@ -1136,7 +1200,7 @@ final class CaMykS {
      * @param array $params
      * @return array
      */
-    public function get_availableComponents(array $params=array()) {
+    public function get_availableComponents(array $params=array()): array {
         /* Return plugins */
         return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Component')));
     }
@@ -1146,7 +1210,7 @@ final class CaMykS {
      * @param array $params
      * @return array
      */
-    public function get_availableModules(array $params=array()) {
+    public function get_availableModules(array $params=array()): array {
         /* Build default params */
         $defaultParams = array('Type'=>null);
 
@@ -1177,7 +1241,7 @@ final class CaMykS {
      * @param array $params
      * @return array
      */
-    public function get_availableThemes(array $params=array()) {
+    public function get_availableThemes(array $params=array()): array {
         /* Return plugins */
         return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Theme')));
     }
@@ -1187,7 +1251,7 @@ final class CaMykS {
      * @param array $params
      * @return array
      */
-    public function get_availableTemplates(array $params=array()) {
+    public function get_availableTemplates(array $params=array()): array {
         /* Return plugins */
         return $this->get_availablePlugins(array_merge($params, array('PluginType'=>'Template')));
     }
@@ -1197,7 +1261,7 @@ final class CaMykS {
      * @param array $params
      * @return array
      */
-    private function get_availablePlugins(array $params) {
+    private function get_availablePlugins(array $params): array {
         /* Build default params */
         $defaultParams = array('Location'=>array('Website', 'Shared', 'System'), 'Package'=>null, 'PluginType'=>null, 'PluginSubType'=>'');
 
@@ -1246,7 +1310,7 @@ final class CaMykS {
      * Return system required plugins.
      * @return array
      */
-    public function get_systemPlugins() {
+    public function get_systemPlugins(): array {
         return $this->systemPlugins;
     }
 
@@ -1255,7 +1319,7 @@ final class CaMykS {
      * @return void
      * @todo
      */
-    private function load_systemPlugins() {
+    private function load_systemPlugins(): void {
         foreach ($this->systemPlugins as $plugin) {
             $plugin = $this->get_plugin($plugin['Name'], $plugin['Type'], true, $plugin['Location']);
 
@@ -1273,7 +1337,7 @@ final class CaMykS {
      * Load website plugins.
      * @return void
      */
-    private function load_websitePlugins() {
+    private function load_websitePlugins(): void {
         /* Load plugin manager */
         $pluginManager = $this->get_module('Admin/SystemPluginManager');
 
@@ -1296,7 +1360,7 @@ final class CaMykS {
      * @param string $filePath
      * @return boolean result
      */
-    public function check_engineFileExists(string $filePath) {
+    public function check_engineFileExists(string $filePath): bool {
         return file_exists($this->get_engineFileFullPath($filePath));
     }
 
@@ -1305,7 +1369,7 @@ final class CaMykS {
      * @param string $filePath
      * @return string
      */
-    public function get_engineFileFullPath(string $filePath) {
+    public function get_engineFileFullPath(string $filePath): string {
         return realpath($this->CaMykSPath.'/'.$filePath);
     }
 
@@ -1314,7 +1378,7 @@ final class CaMykS {
      * @param string $filePath
      * @return boolean result
      */
-    public function check_websiteFileExists(string $filePath) {
+    public function check_websiteFileExists(string $filePath): bool {
         return file_exists($this->get_websiteFileFullPath($filePath));
     }
 
@@ -1323,7 +1387,7 @@ final class CaMykS {
      * @param string $filePath
      * @return string
      */
-    public function get_websiteFileFullPath(string $filePath) {
+    public function get_websiteFileFullPath(string $filePath): string {
         return realpath($this->websitePath.'/'.$filePath);
     }
 
@@ -1332,7 +1396,7 @@ final class CaMykS {
      * @param string $filePath
      * @return string
      */
-    public function get_websiteDataFileFullPath(string $filePath) {
+    public function get_websiteDataFileFullPath(string $filePath): string {
         return realpath($this->websitePath.'/Data/'.$filePath);
     }
 
@@ -1342,7 +1406,7 @@ final class CaMykS {
      * @param string $action
      * @return boolean result
      */
-    public function check_pathAccessibility(string $path, string $action='Read') {
+    public function check_pathAccessibility(string $path, string $action='Read'): bool {
         /* Check action */
         if (!in_array($action, array('Read', 'Write', 'Delete')))
             return false;
@@ -1370,7 +1434,7 @@ final class CaMykS {
      * Load accessibility folders.
      * @return void
      */
-    private function load_accessibilityFolders() {
+    private function load_accessibilityFolders(): void {
         /* Build folder */
         $this->accessibilityFolders = array(
             /* Read permission on website root */
@@ -1403,16 +1467,18 @@ final class CaMykS {
      * @param string $SSLMode
      * @return void
      */
-    private function define_baseURL(string $SSLMode='Default') {
+    private function define_baseURL(?string $SSLMode='Default'): void {
+        if (is_null($SSLMode))
+            $SSLMode = 'Default';
         $this->websiteURL = url_getURLWithSSLMode($SSLMode, $this->get_configValue('Website_URL'));
     }
 
     /**
      * Return base URL, case of given mode.
      * @param string $URLMode
-     * @return $string
+     * @return string
      */
-    public function get_baseURL(string $URLMode=null) {
+    public function get_baseURL(?string $URLMode=null): string {
         /* Check for website default URL mode */
         if ($URLMode == null)
             $URLMode = $this->get_configValue('Visit_URLMode');
@@ -1429,7 +1495,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_websiteFileURL(string $filePath, ?string $URLMode=null) {
+    public function get_websiteFileURL(string $filePath, ?string $URLMode=null): string {
         return $this->get_baseURL($URLMode).$filePath;
     }
 
@@ -1441,7 +1507,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_websitePluginFileURL(string $filePath, ?string $URLMode=null) {
+    public function get_websitePluginFileURL(string $filePath, ?string $URLMode=null): string {
         return $this->get_baseURL($URLMode).($this->websitePluginLink != '' ? $this->websitePluginLink.'/' : '').$filePath;
     }
 
@@ -1451,7 +1517,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_sharedPluginFileURL(string $filePath, ?string $URLMode=null) {
+    public function get_sharedPluginFileURL(string $filePath, ?string $URLMode=null): string {
         return $this->get_baseURL($URLMode).($this->sharedPluginLink != '' ? $this->sharedPluginLink.'/' : '').$filePath;
     }
 
@@ -1461,7 +1527,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_corePluginFileURL(string $filePath, ?string $URLMode=null) {
+    public function get_corePluginFileURL(string $filePath, ?string $URLMode=null): string {
         return $this->get_baseURL($URLMode).($this->corePluginLink != '' ? $this->corePluginLink.'/' : '').$filePath;
     }
 
@@ -1472,7 +1538,7 @@ final class CaMykS {
      * @param string $asset
      * @return string
      */
-    public function get_assetFilePath(string $asset) {
+    public function get_assetFilePath(string $asset): string {
         /* Check for asset with identifier */
         $fileName = explode('?', $asset);
         $asset = $fileName[0];
@@ -1499,7 +1565,7 @@ final class CaMykS {
      * @param string $URLMode
      * @return string
      */
-    public function get_assetFileURL(string $asset, ?string $URLMode=null) {
+    public function get_assetFileURL(string $asset, ?string $URLMode=null): string {
         /* Check for asset with identifier */
         $fileName = explode('?', $asset);
         $asset = $fileName[0];
@@ -1525,7 +1591,7 @@ final class CaMykS {
      * @param mixed $context
      * @return string
      */
-    public function load_assetLayout(string $layout, mixed $context=null) {
+    public function load_assetLayout(string $layout, mixed $context=null): string {
         /* Save context */
         $this->layoutContext = $context;
 
@@ -1550,7 +1616,7 @@ final class CaMykS {
      * @param string $data
      * @return mixed
      */
-    public function get_assetData(string $data) {
+    public function get_assetData(string $data): mixed {
         /* Load data if not present */
         if (!isset($this->assetData[$data])) {
             $dataFile = new File($this->get_assetFilePath('Data/'.$data.CAMYKS_ASSETDATAEXTENSION));
@@ -1569,7 +1635,7 @@ final class CaMykS {
      * @param string $data
      * @return void
      */
-    public function unload_assetData(string $data) {
+    public function unload_assetData(string $data): void {
         if (isset($this->assetData[$data]))
             unset($this->assetData[$data]);
     }
@@ -1582,8 +1648,9 @@ final class CaMykS {
      * @param string $folder
      * @param array $params
      * @param string $URLMode
+     * @return void
      */
-    public function load_engineJSScript(string $file, string $folder, array $params=array(), ?string $URLMode=null) {
+    public function load_engineJSScript(string $file, string $folder, array $params=array(), ?string $URLMode=null): void {
         /* Default params */
         $defaultParams = array('async'=>'');
         $params = array_merge($defaultParams, $params);
@@ -1597,7 +1664,7 @@ final class CaMykS {
      * Load CaMykS client-side object.
      * @return void
      */
-    public function load_CaMykSJSScript() {
+    public function load_CaMykSJSScript(): void {
         /* Load object script */
         $this->load_engineJSScript('CaMykS.js?v=1.0pre2', 'Objects');
 
@@ -1613,7 +1680,7 @@ final class CaMykS {
      * @param integer $mode
      * @return void
      */
-    private function load_currentLanguage(?int $mode=null) {
+    private function load_currentLanguage(?int $mode=null): void {
         /* Check mode */
         if (is_null($mode)) $language = $this->get_currentLanguage();
 
@@ -1637,9 +1704,9 @@ final class CaMykS {
      * @param string $language
      * @return boolean success
      */
-    public function set_currentLanguage(string $language) {
+    public function set_currentLanguage(string $language): bool {
         /* Get optimised language */
-        $language = language_read($language);
+        $l = language_read($language);
         if ($language === false)
             return false;
 
@@ -1647,7 +1714,7 @@ final class CaMykS {
         $this->currentLanguage = $language;
 
         /* Change system language */
-        if (setlocale(LC_ALL, language_getSystemLanguages($language)) === false)
+        if (setlocale(LC_ALL, language_getSystemLanguages($l)) === false)
             return false;
 
         /* Return success */
@@ -1656,9 +1723,9 @@ final class CaMykS {
 
     /**
      * Return current language.
-     * @return array
+     * @return string
      */
-    public function get_currentLanguage() {
+    public function get_currentLanguage(): string {
         return $this->currentLanguage;
     }
 
@@ -1666,7 +1733,7 @@ final class CaMykS {
      * Return current language value.
      * @return string
      */
-    public function get_currentLanguageValue() {
+    public function get_currentLanguageValue(): string {
         return language_export($this->currentLanguage);
     }
 
@@ -1679,7 +1746,7 @@ final class CaMykS {
      * @param string $language
      * @return boolean success
      */
-    public function load_locales(string $file, string $prefix='', ?string $language=null) {
+    public function load_locales(string $file, string $prefix='', ?string $language=null): bool {
         /* Check language */
         if (is_null($language))
             $language = $this->get_currentLanguage();
@@ -1723,9 +1790,10 @@ final class CaMykS {
      * @param string $language
      * @return boolean success
      */
-    public function load_engineLocales(string $file, string $prefix='', ?string $language=null) {
+    public function load_engineLocales(string $file, string $prefix='', ?string $language=null): bool {
         if (file_exists($this->get_engineFileFullPath('/Core/Locales/'.$file)))
             return $this->load_locales($this->get_engineFileFullPath('/Core/Locales/'.$file), $prefix, $language);
+        return false;
     }
 
     /**
@@ -1734,7 +1802,7 @@ final class CaMykS {
      * @param string $prefix
      * @return boolean result
      */
-    public function check_locale(string $key, string $prefix='') {
+    public function check_locale(string $key, string $prefix=''): bool {
         /* Do the check, with prefix */
         if ($prefix != '' and isset($this->locales[$prefix.'_'.$key]))
             return true;
@@ -1751,7 +1819,7 @@ final class CaMykS {
      * @param string $default
      * @return string
      */
-    public function get_locale(string $key, string $prefix='', mixed $data=array(), ?string $default=null) {
+    public function get_locale(string $key, string $prefix='', mixed $data=array(), ?string $default=null): string {
         /* Check data value */
         if (is_null($data))
             $data = array();
@@ -1780,7 +1848,7 @@ final class CaMykS {
      * @param string $prefix
      * @return array
      */
-    public function get_localeKeysByValue(string $value, string $prefix='') {
+    public function get_localeKeysByValue(string $value, string $prefix=''): array {
         /* Search keys */
         $keys = array_keys($this->locales, $value);
 
@@ -1799,7 +1867,7 @@ final class CaMykS {
      * @param string $language
      * @return boolean success
      */
-    private function load_localeFile(string $file, string $prefix, string $language) {
+    private function load_localeFile(string $file, string $prefix, string $language): bool {
         /* Build path */
         $path = $file .'/Locales.'.$language.CAMYKS_LIBRARYEXTENSION;
 
@@ -1833,7 +1901,7 @@ final class CaMykS {
      * @param string $folder
      * @return array
      */
-    public function get_availableEngineLocaleLanguages(string $folder='') {
+    public function get_availableEngineLocaleLanguages(string $folder=''): array {
         /* Load file list */
         $files = glob($this->CaMykSPath.'/Core/Locales'.($folder != ''? '/'.$folder : '').'/*');
 
@@ -1862,12 +1930,11 @@ final class CaMykS {
      * @param string $file
      * @param integer $line
      * @param boolean $isFatal
-     * @return boolean success
+     * @return void
      */
-    public function trigger_error(string $origin, int $code, string $message, string $details, string $file='', int $line=0, bool $isFatal=false) {
+    public function trigger_error(string $origin, int $code, string $message, string $details, string $file='', int $line=0, bool $isFatal=false): void {
         if ($this->errorHandler !== false)
-            return $this->errorHandler->handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal);
-        return false;
+            $this->errorHandler->handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal);
     }
 
     /**
@@ -1877,12 +1944,11 @@ final class CaMykS {
      * @param string $details
      * @param string $file
      * @param integer $line
-     * @return boolean success
+     * @return void
      */
-    public function trigger_databaseError(int $code, string $message, string $details, string $file='', int $line=0) {
+    public function trigger_databaseError(int $code, string $message, string $details, string $file='', int $line=0): void {
         if ($this->errorHandler !== false)
-            return $this->errorHandler->handle_CaMykSDatabaseError($code, $message, $details, $file, $line);
-        return false;
+            $this->errorHandler->handle_CaMykSDatabaseError($code, $message, $details, $file, $line);
     }
 
     /**
@@ -1892,7 +1958,7 @@ final class CaMykS {
      * @param string $message
      * @return boolean success
      */
-    public function log_message(string $object, string $action, string $message='') {
+    public function log_message(string $object, string $action, string $message=''): bool {
         $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
@@ -1905,7 +1971,7 @@ final class CaMykS {
      * @param array $messages
      * @return boolean success
      */
-    public function log_messages(string $object, array $messages=array()) {
+    public function log_messages(string $object, array $messages=array()): bool {
         $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
@@ -1917,7 +1983,7 @@ final class CaMykS {
      * @param CaMykS2\Error $error
      * @return boolean success
      */
-    public function log_error(CaMykS2\Error $error) {
+    public function log_error(CaMykS2\Error $error): bool {
         $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
@@ -1931,7 +1997,7 @@ final class CaMykS {
      * @param integer $HTTPCode
      * @return void
      */
-    public function display_splashMessage(string $layout, string $content='', int $HTTPCode=200) {
+    public function display_splashMessage(string $layout, string $content='', int $HTTPCode=200): void {
         /* Send HTTP code */
         $this->HTMLPage->set_status($HTTPCode);
 
@@ -1960,7 +2026,7 @@ final class CaMykS {
      * @param Object $plugin
      * @return void
      */
-    public function register_eventHandler(string $event, CaMykS2\Plugin &$plugin) {
+    public function register_eventHandler(string $event, CaMykS2\Plugin &$plugin): void {
         $this->eventsHandlers[$event][] = $plugin;
     }
 
@@ -1969,7 +2035,7 @@ final class CaMykS {
      * @param string $event
      * @return void
      */
-    private function run_eventHandlers(string $event) {
+    private function run_eventHandlers(string $event): void {
         foreach ($this->eventsHandlers[$event] as $plugin) {
             switch ($event) {
                 case 'onInitialise' :       $plugin->execute_onCaMykSInitialise(); break;
@@ -1991,7 +2057,7 @@ final class CaMykS {
      * @param Object $connection
      * @return void
      */
-    public function register_databaseConnection(CaMykS2\DatabaseConnector $connection) {
+    public function register_databaseConnection(DatabaseConnector $connection): void {
         $this->openedDBConnections[$connection->get_connectionName()] = &$connection;
     }
 
@@ -2000,7 +2066,7 @@ final class CaMykS {
      * @param string $connectionName
      * @return boolean success
      */
-    public function close_databaseConnection(string $connectionName) {
+    public function close_databaseConnection(string $connectionName): bool {
         /* Check connection */
         if (!isset($this->openedDBConnections[$connectionName]))
             return false;
@@ -2018,7 +2084,7 @@ final class CaMykS {
      * Close all database connection.
      * @return void
      */
-    public function close_databaseConnections() {
+    public function close_databaseConnections(): void {
         foreach ($this->openedDBConnections as $connection)
             $connection->close_connection();
     }
@@ -2026,9 +2092,9 @@ final class CaMykS {
     /**
      * Return requested database connection.
      * @param string $connectionName
-     * @return Object
+     * @return DatabaseConnector|false
      */
-    public function &get_databaseConnection(string $connectionName) {
+    public function &get_databaseConnection(string $connectionName): DatabaseConnector|false {
         if (isset($this->openedDBConnections[$connectionName]))
             return $this->openedDBConnections[$connectionName];
         return $this->falseRef;
@@ -2038,7 +2104,7 @@ final class CaMykS {
      * Load main database connection.
      * @return void
      */
-    public function load_mainDatabaseConnection() {
+    public function load_mainDatabaseConnection(): void {
         /* Check database is already loaded */
         if (!is_null($this->databaseConnection))
             return;
@@ -2063,7 +2129,7 @@ final class CaMykS {
      * Initialise main database object.
      * @return void
      */
-    public function initialise_mainDatabase() {
+    public function initialise_mainDatabase(): void {
         /* Load database configuration */
         $this->load_configuration('Database');
 

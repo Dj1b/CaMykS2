@@ -3,9 +3,9 @@
  * @brief BlobPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,7 +37,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_valueFromSave(mixed $value) {
+    protected function read_valueFromSave(mixed $value): mixed {
         return stripSlashes($value);
     }
 
@@ -46,7 +46,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function optimise_valueToSave(mixed $value) {
+    protected function optimise_valueToSave(mixed $value): mixed {
         return addSlashes($value);
     }
 
@@ -54,7 +54,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Check format-specific validation */
         switch ($this->params['Format']) {
             case 'HTML':
@@ -101,7 +101,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * Return attribute parameters for table creation in database.
      * @return array
      */
-    public function export_databaseParameters() {
+    public function export_databaseParameters(): array {
         /* Get database type based on size */
         $dbType = $this->get_databaseType();
 
@@ -123,7 +123,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * Return maximum size in bytes based on Size parameter.
      * @return integer
      */
-    private function get_maxSize() {
+    private function get_maxSize(): int {
         switch ($this->params['Size']) {
             case 'Small':
                 return 65535;       // ~64 KB
@@ -140,7 +140,7 @@ class BlobPluginLibraryAttribute extends PluginLibraryAttribute {
      * Return database type based on Size parameter.
      * @return string
      */
-    private function get_databaseType() {
+    private function get_databaseType(): string {
         switch ($this->params['Size']) {
             case 'Small':
                 return 'text';

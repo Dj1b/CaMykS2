@@ -4,10 +4,10 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre18
+ * @version 1.0pre19
  * @date Creation: Nov 2019
- * @date Modification: Jul 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -19,82 +19,82 @@ namespace CaMykS2;
  */
 abstract class Plugin extends CaMykSLibrary {
     /**
-     * var string $pluginStatus
+     * @var string $pluginStatus
      * @brief Plugin status.
      */
-    protected $pluginStatus = 'initiated';
+    protected string $pluginStatus = 'initiated';
 
     /**
      * @var string $pluginVersion
      * @brief Plugin version.
      */
-    protected $pluginVersion = '1.0';
+    protected string $pluginVersion = '1.0';
 
     /**
      * @var string $pluginType
      * @brief Plugin type, values are "Component", "Module", "Special", "Template", "Theme".
      */
-    protected $pluginType;
+    protected string $pluginType;
 
     /**
-     * @var string $pluginLocation
+     * @var string|null $pluginLocation
      * @brief Plugin location, values are "Website", "Shared", "System".
      */
-    protected $pluginLocation;
+    protected ?string $pluginLocation;
 
     /**
-     * @var string $pluginPackage
+     * @var string|null $pluginPackage
      * @brief Plugin package.
      */
-    protected $pluginPackage;
+    protected ?string $pluginPackage;
 
     /**
      * @var string $pluginFolder
      * @brief Plugin folder path.
      */
-    protected $pluginFolder;
+    protected string $pluginFolder;
 
     /**
      * @var string $pluginPath
      * @brief Plugin path.
      */
-    protected $pluginPath;
+    protected string $pluginPath;
 
     /**
-     * @var string $pluginPath
+     * @var string $pluginFullPath
      * @brief Plugin full path.
      */
-    protected $pluginFullPath;
+    protected string $pluginFullPath;
 
     /**
      * @var array $pluginDependencies
      * @brief Plugin list of dependencies, including version and necessity (mandatory / recommended / optional).
      */
-    protected $pluginDependencies = array();
+    protected array $pluginDependencies = array();
 
     /**
      * @var array $pluginExtensions
      * @brief List of plugin which it provides an extension.
      */
-    protected $pluginExtensions = array();
+    protected array $pluginExtensions = array();
 
     /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
      */
-    protected $hasConfiguration = false;
+    protected bool $hasConfiguration = false;
 
     /**
-     * @var Object $configuration
+     * @var Object|null $configuration
      * @brief Configuration library.
      */
-    protected $configuration;
+    protected mixed $configuration = null;
 
     /**
      * @var string $selectedLayout
      * @brief Currently selected layout to be displayed in display method.
      */
-    protected $selectedLayout = '';
+    protected string $selectedLayout = '';
 
     /**
      * @var array $styleFiles.
@@ -102,7 +102,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @note Style files are indicated like "file.js" => "media and condition"
      * @note Optionaly, version can be added to file name like "file.js?v=1.0.0"
      */
-    protected $styleFiles = array();
+    protected array $styleFiles = array();
 
     /**
      * @var array $adminStyleFiles.
@@ -110,7 +110,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @note Style files are indicated like "file.js" => "media and condition"
      * @note Optionaly, version can be added to file name like "file.js?v=1.0.0"
      */
-    protected $adminStyleFiles = array();
+    protected array $adminStyleFiles = array();
 
     /**
      * Class constructor.
@@ -130,7 +130,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Load plugin.
      * @return void
      */
-    protected function load() {
+    protected function load(): void {
         /* Check is already loaded */
         if ($this->pluginStatus === 'loaded')
             return;
@@ -156,7 +156,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Load plugin data.
      * @return void
      */
-    protected function load_data() {
+    protected function load_data(): void {
         /* To be override by PluginType libraries or plugin themselves */
     }
 
@@ -164,7 +164,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Install plugin.
      * @return boolean success
      */
-    public function install() {
+    public function install(): bool {
         global $CaMykS;
 
         /* Load plugin if required */
@@ -186,7 +186,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Uninstall plugin.
      * @return boolean success
      */
-    public function uninstall() {
+    public function uninstall(): bool {
         global $CaMykS;
 
         /* Load plugin if required */
@@ -208,7 +208,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Check plugin installation.
      * @return boolean result.
      */
-    public function is_installed() {
+    public function is_installed(): bool {
         return true;
     }
 
@@ -216,7 +216,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Check plugin activation.
      * @return boolean result.
      */
-    public function is_enabled() {
+    public function is_enabled(): bool {
         global $CaMykS;
 
         /* Load plugin manager */
@@ -230,7 +230,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Check plugin availability.
      * @return boolean result.
      */
-    public function is_available() {
+    public function is_available(): bool {
         return ($this->is_installed() and $this->is_enabled());
     }
 
@@ -241,7 +241,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function initialise(array $params=array()) {
+    public function initialise(array $params=array()): void {
         /* Load plugin */
         $this->load();
 
@@ -253,7 +253,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Display plugin.
      * @return boolean success
      */
-    public function display() {
+    public function display(): bool {
         return $this->load_layout($this->selectedLayout);
     }
 
@@ -263,7 +263,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Set up plugin location value and path.
      * @return void
      */
-    private function define_locationAndPath() {
+    private function define_locationAndPath(): void {
         global $CaMykS;
 
         /* Load type folder */
@@ -283,7 +283,7 @@ abstract class Plugin extends CaMykSLibrary {
                 $this->pluginLocation = 'Website';
             else {
                 /* Plugin not found throw fatal error */
-                $camyks->trigger_error('Core', 0, 'Plugin '.$this->libraryName.' not found.', '', __FILE__, __LINE__, true);
+                $CaMykS->trigger_error('Core', 0, 'Plugin '.$this->libraryName.' not found.', '', __FILE__, __LINE__, true);
             }
         }
 
@@ -299,7 +299,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Return plugin type folder.
      * @return string
      */
-    protected function get_typeFolder() {
+    protected function get_typeFolder(): string {
         return ucwords(strtolower($this->pluginType.'s'));
     }
 
@@ -309,23 +309,23 @@ abstract class Plugin extends CaMykSLibrary {
      * Return plugin version.
      * @return string
      */
-    public function get_version() {
+    public function get_version(): string {
         return $this->pluginVersion;
     }
 
     /**
      * Return plugin location.
-     * @return string
+     * @return string|null
      */
-    public function get_location() {
+    public function get_location(): ?string {
         return $this->pluginLocation;
     }
 
     /**
      * Return plugin package.
-     * @return string
+     * @return string|null
      */
-    public function get_package() {
+    public function get_package(): ?string {
         return $this->pluginPackage;
     }
 
@@ -336,7 +336,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $library
      * @return boolean success
      */
-    public function load_library(string $library='') {
+    public function load_library(string $library=''): bool {
         global $CaMykS;
 
         /* build file path */
@@ -354,17 +354,17 @@ abstract class Plugin extends CaMykSLibrary {
      * Check plugin has a configuration.
      * @return boolean result
      */
-    public function has_configuration() {
+    public function has_configuration(): bool {
         return $this->hasConfiguration;
     }
 
     /**
      * Load plugin configuration.
-     * @return void
+     * @return mixed
      */
-    public function load_configuration() {
+    public function load_configuration(): mixed {
         if (!is_null($this->configuration))
-            return;
+            return true;
 
         /* Load plugin configuration */
         $this->load_library('Configuration');
@@ -382,19 +382,20 @@ abstract class Plugin extends CaMykSLibrary {
 
         /* Create new configuration object from library */
         $this->configuration = new $libraryFullName($this);
+        return true;
     }
 
     /**
      * Install plugin configuration.
      * @return boolean success
      */
-    public function install_configuration() {
+    public function install_configuration(): bool {
         /* Check plugin has configuration */
         if (!$this->has_configuration())
             return true;
 
         /* Check plugin is already installed */
-        if ($this->in_installed())
+        if ($this->is_installed())
             return true;
 
         /* Load plugin configuration if required */
@@ -411,7 +412,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue(string $name, ?string $language=null, mixed $default=null) {
+    public function get_configValue(string $name, ?string $language=null, mixed $default=null): mixed {
         /* Check for plugin configuration */
         if ($this->has_configuration()) {
             /* Load configuration if required */
@@ -441,9 +442,9 @@ abstract class Plugin extends CaMykSLibrary {
 
     /**
      * Check Plugin dependencies.
-     * @return @todo
+     * @return void
      */
-    protected function check_dependencies() {
+    protected function check_dependencies(): void {
 
     }
 
@@ -456,7 +457,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $locale
      * @return boolean result
      */
-    public function check_locale(string $locale='') {
+    public function check_locale(string $locale=''): bool {
         global $CaMykS;
 
         /* Check locale in CaMykS object */
@@ -469,7 +470,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    public function get_locale(string $locale='', mixed $data=null) {
+    public function get_locale(string $locale='', mixed $data=null): string {
         global $CaMykS;
 
         /* Return locale from CaMykS object */
@@ -482,7 +483,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $language
      * @return boolean success
      */
-    public function load_locales(string $folder='', ?string $language=null) {
+    public function load_locales(string $folder='', ?string $language=null): bool {
         global $CaMykS;
 
         /* Load locales in plugin folder */
@@ -494,7 +495,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $folder
      * @return array
      */
-    public function get_availableLocaleLanguages(string $folder='') {
+    public function get_availableLocaleLanguages(string $folder=''): array {
         /* Load file list */
         $files = glob($this->pluginPath.'Locales'.($folder != '' ? '/'.$folder : '').'/*');
 
@@ -517,9 +518,9 @@ abstract class Plugin extends CaMykSLibrary {
     /**
      * Return file path, allowing file overriding.
      * @param string $filePath
-     * @return string
+     * @return string|false
      */
-    public function get_filePath(string $filePath) {
+    public function get_filePath(string $filePath): string|false {
         global $CaMykS;
 
         /* Complete file path */
@@ -557,9 +558,9 @@ abstract class Plugin extends CaMykSLibrary {
      * Return file URL, allowing file overriding.
      * @param string $file
      * @param string $URLMode
-     * @return string
+     * @return string|false
      */
-    public function get_fileURL(string $file, ?string $URLMode=null) {
+    public function get_fileURL(string $file, ?string $URLMode=null): string|false {
         global $CaMykS;
 
         /* Keep back QueryString for versioned files */
@@ -604,9 +605,9 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $filePath
      * @return boolean result
      */
-    public function load_file(string $filePath) {
+    public function load_file(string $filePath): bool {
         $filePath = $this->get_filePath($filePath);
-        if ($filePath == '')
+        if ($filePath == '' or $filePath === false)
             return false;
         require $filePath;
         return true;
@@ -619,7 +620,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $layout
      * @return void
      */
-    protected function update_selectedLayout(string $layout='') {
+    protected function update_selectedLayout(string $layout=''): void {
         $this->selectedLayout = $layout;
     }
 
@@ -628,7 +629,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $file
      * @return boolean result
      */
-    protected function load_layout(string $file) {
+    protected function load_layout(string $file): bool {
         return $this->load_file('Layouts/'.$file.CAMYKS_LAYOUTEXTENSION);
     }
 
@@ -641,7 +642,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return void
      */
-    protected function add_JSFile(string $file, array $params=array(), ?string $URLMode=null) {
+    protected function add_JSFile(string $file, array $params=array(), ?string $URLMode=null): void {
         global $CaMykS;
         $CaMykS->HTMLPage->add_JSFile($this->get_fileURL('Scripts/'.$file, $URLMode), $params);
     }
@@ -653,7 +654,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $event
      * @return void
      */
-    public function add_JSScript(string $script='', bool $unique=false, string $event='Main') {
+    public function add_JSScript(string $script='', bool $unique=false, string $event='Main'): void {
         global $CaMykS;
         $CaMykS->HTMLPage->add_JSScript($script, $unique, $event);
     }
@@ -664,7 +665,7 @@ abstract class Plugin extends CaMykSLibrary {
      * Load generic styles files.
      * @return void
      */
-    public function load_styleFiles() {
+    public function load_styleFiles(): void {
         /* Attach style files to HTML page */
         foreach ($this->styleFiles as $file => $condition)
             $this->add_styleFile($file, $condition);
@@ -675,7 +676,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $mode
      * @return void
      */
-    public function load_adminStyleFiles(string $mode = 'Attached') {
+    public function load_adminStyleFiles(string $mode = 'Attached'): void {
         if ($mode === 'Attached') {
             /* Attach admin style files to HTML page */
             foreach ($this->adminStyleFiles as $file => $condition)
@@ -694,7 +695,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return void
      */
-    protected function add_styleFile(string $file, string $condition='', ?string $URLMode=null) {
+    protected function add_styleFile(string $file, string $condition='', ?string $URLMode=null): void {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleFile($this->get_fileURL('Styles/'.$file, $URLMode), $condition);
     }
@@ -706,7 +707,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $URLMode
      * @return void
      */
-    protected function add_styleIncludedFile(string $file, string $condition='', ?string $URLMode=null) {
+    protected function add_styleIncludedFile(string $file, string $condition='', ?string $URLMode=null): void {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleIncludedFile($this->get_filePath('Styles/'.$file, $URLMode), $condition);
     }
@@ -717,7 +718,7 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $condition
      * @return void
      */
-    public function add_styleScript(string $script='', string $condition='') {
+    public function add_styleScript(string $script='', string $condition=''): void {
         global $CaMykS;
         $CaMykS->HTMLPage->add_styleScript($script, $condition);
     }

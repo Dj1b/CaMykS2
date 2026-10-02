@@ -3,10 +3,10 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Dec 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@
  * Return server software description.
  * @return array
  */
-function server_getSoftware() {
+function server_getSoftware(): array {
     if (preg_match('#^([A-Za-z]*)/([0-9\.])#', $_SERVER['SERVER_SOFTWARE'], $matches))
         return array('Name'=>$matches[1], 'Version'=>$matches[2]);
     return array('Name'=>'', 'Version'=>'');
@@ -27,7 +27,7 @@ function server_getSoftware() {
  * Return server software name.
  * @return string
  */
-function server_getSoftwareName() {
+function server_getSoftwareName(): string {
     $data = server_getSoftware();
     return $data['Name'];
 }
@@ -36,7 +36,7 @@ function server_getSoftwareName() {
  * Return server software version.
  * @return string
  */
-function server_getSoftwareVersion() {
+function server_getSoftwareVersion(): string {
     $data = server_getSoftware();
     return $data['Version'];
 }
@@ -45,7 +45,7 @@ function server_getSoftwareVersion() {
  * Return server software module list.
  * @return array
  */
-function server_getSoftwareModules() {
+function server_getSoftwareModules(): array {
     /* Return Apache httpd modules */
     if (server_getSoftwareName() == 'Apache') {
         return apache_get_modules();
@@ -60,7 +60,7 @@ function server_getSoftwareModules() {
  * @param string $module
  * @return boolean result
  */
-function server_checkModuleAvailability(string $module='') {
+function server_checkModuleAvailability(string $module=''): bool {
     /* Do the check for Apache httpd */
     if (server_getSoftwareName() == 'Apache') {
         return in_array($module, apache_get_modules());
@@ -74,7 +74,7 @@ function server_checkModuleAvailability(string $module='') {
  * Check if required modules are available on server software.
  * @return array
  */
-function server_checkModuleRequirements() {
+function server_checkModuleRequirements(): array {
     /* Do the check for Apache httpd */
     if (server_getSoftwareName() == 'Apache') {
         /* Load available modules */
@@ -124,7 +124,7 @@ function server_checkModuleRequirements() {
  * Return server document root.
  * @return string
  */
-function server_getDocumentRoot() {
+function server_getDocumentRoot(): string {
     /* Do the check for Apache httpd */
     switch (server_getSoftwareName()) {
         case 'Apache': return getEnv('DOCUMENT_ROOT');
@@ -140,7 +140,7 @@ function server_getDocumentRoot() {
  * Return server operating system description.
  * @return array
  */
-function server_getOperatingSystem() {
+function server_getOperatingSystem(): array {
     return server_getOperatingSystemName().' '.server_getOperatingSystemVersion();
 }
 
@@ -148,7 +148,7 @@ function server_getOperatingSystem() {
  * Return server operating system name.
  * @return string
  */
-function server_getOperatingSystemName() {
+function server_getOperatingSystemName(): string {
     return php_uname('s');
 }
 
@@ -156,7 +156,7 @@ function server_getOperatingSystemName() {
  * Return server operating system version.
  * @return string
  */
-function server_getOperatingSystemVersion() {
+function server_getOperatingSystemVersion(): string {
     return php_uname('r').' ('.php_uname('m').')';
 }
 ?>

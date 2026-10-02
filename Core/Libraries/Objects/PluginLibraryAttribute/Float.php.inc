@@ -3,10 +3,10 @@
  * @brief FloatPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Feb 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,7 +31,7 @@ class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value(mixed $value) {
+    protected function read_value(mixed $value): mixed {
         if (is_string($value) and substr_count(',', $value) == 1)
             $value = preg_replace('/,/', '.', $value);
 
@@ -42,7 +42,7 @@ class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Force value as a float */
         $this->value = (float)$this->value;
 
@@ -66,7 +66,7 @@ class FloatPluginLibraryAttribute extends PluginLibraryAttribute {
      * Return attribute parameters for table creation in database.
      * @return array
      */
-    public function export_databaseParameters() {
+    public function export_databaseParameters(): array {
         $params = array(
             /* Generic values */
             'Type'      => 'float',

@@ -3,10 +3,10 @@
  * @brief Array related methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Oct 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,7 +18,7 @@
  * @param boolean $keepKeys
  * @return string
  */
-function array_dropValue(array $array=array(), mixed $value=null, bool $keepKeys=true) {
+function array_dropValue(array $array=array(), mixed $value=null, bool $keepKeys=true): string {
     /* Check array */
     if (!is_array($array))
         return array();
@@ -42,7 +42,7 @@ function array_dropValue(array $array=array(), mixed $value=null, bool $keepKeys
  * @param mixed $value
  * @return array
  */
-function array_applySameValue(array $array, mixed $value=null) {
+function array_applySameValue(array $array, mixed $value=null): array {
     return array_fill_keys(array_keys($array), $value);
 }
 
@@ -52,7 +52,7 @@ function array_applySameValue(array $array, mixed $value=null) {
  * @param string $prefix
  * @return array
  */
-function array_prefixValues(array $array, string $prefix='') {
+function array_prefixValues(array $array, string $prefix=''): array {
     if ($prefix == '')
         return $array;
     array_walk($array, function(&$value, $key, $prefix) {$value = $prefix.$value;}, $prefix);
@@ -65,7 +65,7 @@ function array_prefixValues(array $array, string $prefix='') {
  * @param string $prefix
  * @return array
  */
-function array_prefixKeys(array $array, string $prefix='') {
+function array_prefixKeys(array $array, string $prefix=''): array {
     if ($prefix == '')
         return $array;
     $result = array();
@@ -82,7 +82,7 @@ function array_prefixKeys(array $array, string $prefix='') {
  * @param string $type
  * @return boolean result
  */
-function array_checkDataType(array $array=array(), string $type='') {
+function array_checkDataType(array $array=array(), string $type=''): bool {
     if (!function_exists('is_'.$type))
         return false;
     return (count($array) === count(array_filter($array, 'is_'.$type)));
@@ -93,7 +93,7 @@ function array_checkDataType(array $array=array(), string $type='') {
  * @param array $array
  * @return boolean result
  */
-function array_isAssociative(array $array) {
+function array_isAssociative(array $array): bool {
     /* Quick tests */
     if (count($array) == 0)
         return true;
@@ -107,7 +107,7 @@ function array_isAssociative(array $array) {
  * @param array $array
  * @return boolean result
  */
-function array_isSequential(array $array) {
+function array_isSequential(array $array): bool {
     /* Quick tests */
     if (count($array) == 0)
         return true;
@@ -124,7 +124,7 @@ function array_isSequential(array $array) {
  * @param array $array2
  * @return array
  */
-function array_mergeRecursive(array $array1=array(), array $array2=array()) {
+function array_mergeRecursive(array $array1=array(), array $array2=array()): array {
     /* Check arrays */
     if (!is_array($array1) and !is_array($array2))
         return array();
@@ -156,7 +156,7 @@ function array_mergeRecursive(array $array1=array(), array $array2=array()) {
  * @param string $function
  * @return array
  */
-function array_filterRecursive(array $array, string $function) {
+function array_filterRecursive(array $array, string $function): array {
     /* Check array */
     if (!is_array($array))
         return $array;
@@ -183,7 +183,7 @@ function array_filterRecursive(array $array, string $function) {
  * @param array $array
  * @return integer
  */
-function array_countRecursive(array $array) {
+function array_countRecursive(array $array): int {
     /* Check array */
     if (!is_array($array))
         return $array;

@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin configuration objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Jan 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,15 +22,15 @@ abstract class PluginConfiguration extends PluginLibrary {
      * @var string $objectName
      * @brief Object name.
      */
-    protected $objectName;
+    protected string $objectName;
 
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param Plugin $parent
      * @param string $name
      * @return void
      */
-    public function __construct(Object &$parent, string $name='config') {
+    public function __construct(Plugin &$parent, string $name='config') {
         /* Execute parent construct */
         parent::__construct($parent);
 
@@ -45,7 +45,7 @@ abstract class PluginConfiguration extends PluginLibrary {
      * @param mixed $language
      * @return boolean success
      */
-    public function load($language=true) {
+    public function load(mixed $language=true): bool {
         global $CaMykS;
 
         /* Load default values */
@@ -67,7 +67,7 @@ abstract class PluginConfiguration extends PluginLibrary {
      * Save object to its main source.
      * @return boolean success
      */
-    public function save() {
+    public function save(): bool {
         global $CaMykS;
 
         /* Save data in LocalStorage */
@@ -78,8 +78,8 @@ abstract class PluginConfiguration extends PluginLibrary {
      * Delete object source.
      * @return boolean success
      */
-    public function delete() {
-        global $camyks;
+    public function delete(): bool {
+        global $CaMykS;
 
         /* Delete data from LocalStorage */
         return $CaMykS->LocalStorage->delete_configuration($this->libraryParent->libraryName, $this->libraryShortName, $this->objectName);

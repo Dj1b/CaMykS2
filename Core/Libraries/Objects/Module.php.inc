@@ -4,10 +4,10 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Dec 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -19,16 +19,16 @@ namespace CaMykS2;
  */
 abstract class Module extends Plugin {
     /**
-     * @var string $moduleType
+     * @var string|null $moduleType
      * @brief Module type, values are "Admin", "Content", "Tool".
      */
-    protected $moduleType;
+    protected ?string $moduleType = null;
 
     /**
      * @var array $libraries
      * @brief List of module internal libraries names.
      */
-    protected $libraries = array();
+    protected array $libraries = array();
 
     /**
      * Class constructor.
@@ -49,7 +49,7 @@ abstract class Module extends Plugin {
      * Load module data.
      * @return void
      */
-    protected function load_data() {
+    protected function load_data(): void {
         /* Load module libraries */
         $this->load_internalLibraries();
     }
@@ -58,7 +58,7 @@ abstract class Module extends Plugin {
      * Install plugin.
      * @return boolean success
      */
-    public function install() {
+    public function install(): bool {
         /* Check Plugin installation */
         if (!parent::install())
             return false;
@@ -81,7 +81,7 @@ abstract class Module extends Plugin {
      * Uninstall plugin.
      * @return boolean result.
      */
-    public function uninstall() {
+    public function uninstall(): bool {
          /* Check Plugin installation */
         if (!parent::uninstall())
             return false;
@@ -104,7 +104,7 @@ abstract class Module extends Plugin {
      * Check plugin installation.
      * @return boolean result.
      */
-    public function is_installed() {
+    public function is_installed(): bool {
         global $CaMykS;
 
         /* Return plugin manager answer */
@@ -121,9 +121,9 @@ abstract class Module extends Plugin {
     /**
      * Initialise object in admin mode.
      * @param array $params
-     * return void
+     * @return void
      */
-    public function initialise_admin(array $params=array()) {
+    public function initialise_admin(array $params=array()): void {
         /* Do generic initialisation */
         $this->initialise($params);
 
@@ -146,7 +146,7 @@ abstract class Module extends Plugin {
      * Display object in admin mode.
      * @return void
      */
-    public function display_admin() {
+    public function display_admin(): void {
         /* Do generic display */
         parent::display();
     }
@@ -155,7 +155,7 @@ abstract class Module extends Plugin {
      * Initialise object admin/main mode.
      * @return void
      */
-    protected function initialise_admin_Main() {
+    protected function initialise_admin_Main(): void {
 
     }
 
@@ -165,7 +165,7 @@ abstract class Module extends Plugin {
      * Return button for configuration panel.
      * @return false|array
      */
-    public function get_adminConfigurationPanelButton() {
+    public function get_adminConfigurationPanelButton(): false|array {
         return false;
 
         return array(
@@ -184,7 +184,7 @@ abstract class Module extends Plugin {
      * Initialise object in view configuration mode.
      * @return void
      */
-    protected function initialise_configuration_view() {
+    protected function initialise_configuration_view(): void {
 
     }
 
@@ -192,7 +192,7 @@ abstract class Module extends Plugin {
      * Display object in view configuration mode.
      * @return void
      */
-    protected function display_configuration_view() {
+    protected function display_configuration_view(): void {
 
     }
 
@@ -200,7 +200,7 @@ abstract class Module extends Plugin {
      * Initialise object in edit configuration mode.
      * @return void
      */
-    protected function initialise_configuration_edit() {
+    protected function initialise_configuration_edit(): void {
 
     }
 
@@ -208,7 +208,7 @@ abstract class Module extends Plugin {
      * Display object in edit configuration mode.
      * @return void
      */
-    protected function display_configuration_edit() {
+    protected function display_configuration_edit(): void {
 
     }
 
@@ -218,7 +218,7 @@ abstract class Module extends Plugin {
      * Load libraries.
      * @return boolean success
      */
-    private function load_internalLibraries() {
+    private function load_internalLibraries(): bool {
         foreach ($this->libraries as $library) {
             /* Load library */
             if (!$this->load_library($library)) {

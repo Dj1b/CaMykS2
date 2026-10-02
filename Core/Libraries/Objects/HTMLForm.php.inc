@@ -3,10 +3,10 @@
  * @brief HTML Form.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Mar 2020
- * @date Modification: Apr 2025
- * @copyright 2020 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,61 +21,61 @@ class HTMLForm extends CaMykSLibrary {
      * @var string $status
      * @brief Form status
      */
-    protected $status = 'initiated'; // opened, closed
+    protected string $status = 'initiated'; // opened, closed
 
     /**
      * @var boolean $useJS
      * @brief Do the form use client side scripts to add controls on inputs.
      */
-    protected $useJS = false;
+    protected bool $useJS = false;
 
     /**
      * @var integer $uploadLimit
      * @brief Files upload limit.
      */
-    protected $uploadLimit = 0;
+    protected int $uploadLimit = 0;
 
     /**
      * @var Object $contentObject
      * @brief Link to content object for automatic default values.
      */
-    protected $contentObject;
+    protected mixed $contentObject = null;
 
     /**
      * @var array $hiddens
      * @brief Form hidden value list.
      */
-    protected $hiddens = array();
+    protected array $hiddens = array();
 
     /**
      * @var integer $inputsCount
      * @brief Form inputs counter.
      */
-    protected $inputsCount = 0;
+    protected int $inputsCount = 0;
 
     /**
      * @var integer $inputsLimit
      * @brief Form input limit.
      */
-    protected $inputsLimit;
+    protected ?int $inputsLimit = null;
 
     /**
      * @var array $inputsLimitUniques
      * @brief Form stored unique input names.
      */
-    protected $inputsLimitUniques = array();
+    protected array $inputsLimitUniques = array();
 
     /**
      * @var boolean $inputsLimitReached
      * @brief Form input limit reached.
      */
-    protected $inputsLimitReached = false;
+    protected bool $inputsLimitReached = false;
 
     /**
      * @var integer $tabIndex
      * @brief Form tabulation index.
      */
-    protected $tabIndex = -1;
+    protected int $tabIndex = -1;
 
     /**
      * Class constructor.
@@ -101,7 +101,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param mixed $limit
      * @return void
      */
-    public function set_uploadLimit(mixed $limit=0) {
+    public function set_uploadLimit(mixed $limit=0): void {
         /* Read integer value */
 
         /* Read text value */
@@ -121,7 +121,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param Object $content
      * @return void
      */
-    public function set_contentObject(Object $content) {
+    public function set_contentObject(Object $content): void {
         $this->contentObject = &$content;
     }
 
@@ -131,7 +131,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param mixed $value
      * @param array $attributes
      */
-    public function add_hidden(string $name, mixed $value, array $attributes=array()) {
+    public function add_hidden(string $name, mixed $value, array $attributes=array()): void {
         $this->hiddens[$name] = array_merge(array('name'=>$name, 'default'=>$value), $attributes);
     }
 
@@ -139,7 +139,7 @@ class HTMLForm extends CaMykSLibrary {
      * Enable client side scripts for input controls.
      * @return void
      */
-    public function enable_JSControls() {
+    public function enable_JSControls(): void {
         global $CaMykS;
 
         /* Set up internal variable */
@@ -157,7 +157,7 @@ class HTMLForm extends CaMykSLibrary {
      * Return form name.
      * @return string
      */
-    public function get_name() {
+    public function get_name(): string {
         return $this->params['Name'];
     }
 
@@ -165,7 +165,7 @@ class HTMLForm extends CaMykSLibrary {
      * Return current form, HTML submit link.
      * @return string
      */
-    public function get_HTMLSubmitLink() {
+    public function get_HTMLSubmitLink(): string {
         return 'javascript:document.'.$this->get_name().'.submit();';
     }
 
@@ -173,7 +173,7 @@ class HTMLForm extends CaMykSLibrary {
      * Return current form, javascript submit link.
      * @return string
      */
-    public function get_JSSubmitLink() {
+    public function get_JSSubmitLink(): string {
         return 'document.'.$this->get_name().'.submit();';
     }
 
@@ -183,10 +183,10 @@ class HTMLForm extends CaMykSLibrary {
      * Display form header.
      * @return void
      */
-    public function display_header() {
+    public function display_header(): void {
         /* Check status */
         if ($this->status != 'initiated')
-            return '';
+            return;
 
         /* Build tag */
         $tag = '<form';
@@ -213,10 +213,10 @@ class HTMLForm extends CaMykSLibrary {
      * Display form hiddens.
      * @return string
      */
-    public function display_hiddens() {
+    public function display_hiddens(): void {
         /* Check status */
         if ($this->status != 'opened')
-            return '';
+            return;
 
         /* Display all hidden inputs */
         foreach ($this->hiddens as $hidden) {
@@ -229,10 +229,10 @@ class HTMLForm extends CaMykSLibrary {
      * Display form footer.
      * @return string
      */
-    public function display_footer() {
+    public function display_footer(): void {
         /* Check status */
         if ($this->status != 'opened')
-            return '';
+            return;
 
         /* Display tag */
         echo '</form>';
@@ -248,7 +248,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_input(array $params=array()) {
+    public function display_input(array $params=array()): void {
         /* Load new input */
         $input = new HTMLFormInput($params, $this);
 
@@ -264,7 +264,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_hiddenInput(array $params=array()) {
+    public function display_hiddenInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'hidden'), $params));
     }
 
@@ -273,7 +273,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_textInput(array $params=array()) {
+    public function display_textInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'text'), $params));
     }
 
@@ -282,7 +282,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_passwordInput(array $params=array()) {
+    public function display_passwordInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'password'), $params));
     }
 
@@ -291,7 +291,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_selectInput(array $params=array()) {
+    public function display_selectInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'select'), $params));
     }
 
@@ -300,7 +300,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_checkboxInput(array $params=array()) {
+    public function display_checkboxInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'checkbox'), $params));
     }
 
@@ -309,7 +309,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_numberInput(array $params=array()) {
+    public function display_numberInput(array $params=array()): void {
         $this->display_input(array_merge(array('type'=>'number'), $params));
     }
 
@@ -320,7 +320,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_booleanSelectInput(array $params=array()) {
+    public function display_booleanSelectInput(array $params=array()): void {
         /* Merge with specific params */
         $params = array_merge(array('values' => array(
             0 => $this->get_locale('No'),
@@ -338,7 +338,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param array $params
      * @return void
      */
-    public function display_toggleSwitchInput(array $params=array()) {
+    public function display_toggleSwitchInput(array $params=array()): void {
         /* Merge with specific params */
         $params = array_merge(array(
             'name'      => '',
@@ -359,7 +359,7 @@ class HTMLForm extends CaMykSLibrary {
      * Start tabulation index.
      * @return void
      */
-    public function start_tabIndex() {
+    public function start_tabIndex(): void {
         $this->tabIndex = 0;
     }
 
@@ -367,7 +367,7 @@ class HTMLForm extends CaMykSLibrary {
      * Return next tabulation index value
      * @return integer
      */
-    public function get_nextTabIndex() {
+    public function get_nextTabIndex(): int {
         if ($this->tabIndex > 0)
             return ++$this->tabIndex;
         return 0;
@@ -379,7 +379,7 @@ class HTMLForm extends CaMykSLibrary {
      * Return form id.
      * @return string
      */
-    protected function get_id() {
+    protected function get_id(): string {
         return ($this->params['Id'] != '' ? $this->params['Id'] : $this->params['Name']);
     }
 
@@ -389,7 +389,7 @@ class HTMLForm extends CaMykSLibrary {
      * @param string $name
      * @return boolean result
      */
-    protected function check_inputsLimit(int $items=1, ?string $name=null) {
+    protected function check_inputsLimit(int $items=1, ?string $name=null): bool {
         global $camyks;
 
         /* Check if limit has already been reached */

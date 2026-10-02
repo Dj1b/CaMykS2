@@ -3,10 +3,10 @@
  * @brief AdvancedModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2022
- * @date Modification: Jul 2025
- * @copyright 2022 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(CaMykS2\Module &$parent, int $id=0) {
+    public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 
@@ -42,7 +42,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
      * @param boolean $loadPreviousVersion
      * @return boolean result
      */
-    public function check_data(bool $loadPreviousVersion=false) {
+    public function check_data(bool $loadPreviousVersion=false): bool {
         global $CaMykS;
 
         /* Perform parent check data loading previous version */
@@ -76,7 +76,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
      * @param boolean $createNew
      * @return boolean success
      */
-    public function load_fromUniqueId(string $uniqueId='', bool $createNew=false) {
+    public function load_fromUniqueId(string $uniqueId='', bool $createNew=false): bool {
 
         /* Check empty unique ID value */
         if ($uniqueId == '') {

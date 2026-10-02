@@ -3,10 +3,10 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
@@ -36,7 +36,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_builtQuery(CaMykS2\DbQuery $query, string $resourceName='Default') {
+    public function execute_builtQuery(DbQuery $query, string $resourceName='Default'): bool {
         switch ($query->get_action()) {
             case 'select': return $this->execute_directQuery($this->get_builtSelectQuery($query), $resourceName);
             case 'insert': return $this->execute_directQuery($this->get_builtInsertQuery($query), $resourceName);
@@ -55,7 +55,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtSelectQuery(CaMykS2\DbQuery $query) {
+    protected function get_builtSelectQuery(DbQuery $query): string {
         return  'select '.
             $this->get_selectItems($query->get_selectItems()).
             ' from '.
@@ -72,7 +72,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtInsertQuery(CaMykS2\DbQuery$query) {
+    protected function get_builtInsertQuery(DbQuery$query): string {
         return  'insert into '.
             $this->get_tables($query->get_tables()).
             $this->get_insertPartition($query->get_insertPartition()).
@@ -86,7 +86,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtUpdateQuery(CaMykS2\DbQuery $query) {
+    protected function get_builtUpdateQuery(DbQuery $query): string {
         return  'update '.
             $this->get_tables($query->get_tables()).
             ' set '.
@@ -100,7 +100,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param Object $query
      * @return string
      */
-    protected function get_builtDeleteQuery(CaMykS2\DbQuery $query) {
+    protected function get_builtDeleteQuery(DbQuery $query): string {
         return  'delete from '.
             $this->get_tables($query->get_tables()).
             $this->get_whereConditions($query->get_whereConditions()).
@@ -116,7 +116,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $tables
      * @return string
      */
-    protected function get_tables(array $tables) {
+    protected function get_tables(array $tables): string {
         /* Initialise result */
         $result = '';
 
@@ -150,7 +150,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $whereConditions
      * @return string
      */
-    protected function get_whereConditions($whereConditions) {
+    protected function get_whereConditions($whereConditions): string {
         /* Check where conditions */
         if (!is_array($whereConditions) or !isset($whereConditions['Operator']) or !isset($whereConditions['Conditions']))
             return 'false';
@@ -179,7 +179,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param DbQueryWhereCondition $condition
      * @return string
      */
-    protected function get_whereCondition($condition) {
+    protected function get_whereCondition($condition): string {
 
 
         /* Initiate result */
@@ -251,7 +251,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param mixed $value
      * @return mixed
      */
-    protected function get_whereConditionValue($value, $table='') {
+    protected function get_whereConditionValue($value, $table=''): mixed {
         if ($table !== '')
             return $table.'`'.$value.'`';
         if (is_numeric($value))
@@ -264,7 +264,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $orderBy
      * @return string
      */
-    protected function get_orderBy($orderBy) {
+    protected function get_orderBy($orderBy): string {
         /* Check order by */
         if (count($orderBy) == 0)
             return '';
@@ -296,7 +296,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $limits
      * @return string
      */
-    protected function get_limits($limits) {
+    protected function get_limits($limits): string {
         if ($limits['count'] > 0 and $limits['offset'] > 0)
             return ' limit '.$limits['offset'].', '.$limits['count'];
 
@@ -316,7 +316,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $items
      * @return string
      */
-    protected function get_selectItems($items) {
+    protected function get_selectItems($items): string {
         /* Initialise result list */
         $list = array();
 
@@ -342,7 +342,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $groupBy
      * @return string
      */
-    protected function get_selectGroupBy($groupBy) {
+    protected function get_selectGroupBy($groupBy): string {
         /* Check group by */
         if (count($groupBy) == 0)
             return '';
@@ -370,7 +370,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $partition
      * @return string
      */
-    protected function get_insertPartition($partition) {
+    protected function get_insertPartition($partition): string {
         return '(`'.implode('`,`', $partition).'`)';
     }
 
@@ -379,7 +379,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $valueList
      * @return string
      */
-    protected function get_insertValues($valueList) {
+    protected function get_insertValues($valueList): string {
         /* Initialise result list */
         $list = array();
 
@@ -402,7 +402,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param array $assignments
      * @return string
      */
-    protected function get_updateAssignments($assignments) {
+    protected function get_updateAssignments($assignments): string {
         /* Initialise result list */
         $list = array();
 
@@ -421,7 +421,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param mixed $value
      * @return string
      */
-    private function get_escapedValue($value) {
+    private function get_escapedValue($value): string {
         return '"'.$this->escape_string($value).'"';
     }
 }

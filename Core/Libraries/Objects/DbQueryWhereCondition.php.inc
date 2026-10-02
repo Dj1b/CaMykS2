@@ -3,10 +3,10 @@
  * @brief CaMykS Database query, where condition builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2022
- * @date Modification: Apr 2025
- * @copyright 2022 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo Creation of where conditions from the parsing from a SQL query fragment
@@ -22,37 +22,37 @@ final class DbQueryWhereCondition {
      * @var string $identifier
      * @brief Identifier name.
      */
-    private $identifier;
+    private string $identifier;
 
     /**
      * @var string $identifierTable
      * @brief Identifier table name or alias.
      */
-    private $identifierTable = '';
+    private string $identifierTable = '';
 
     /**
      * @var mixed $value
      * @brief Value or column name.
      */
-    private $value;
+    private mixed $value;
 
     /**
      * @var string $valueTable
      * @brief Table name or alias for value as a column name.
      */
-    private $valueTable = '';
+    private string $valueTable = '';
 
     /**
      * @var string $operator
      * @brief Operator to apply between identifier and value.
      */
-    private $operator;
+    private string $operator;
 
     /**
      * @var boolean $isNot
      * @brief Operator is negative.
      */
-    private $isNot = false;
+    private bool $isNot = false;
 
     /**
      * Class constructor.
@@ -60,6 +60,7 @@ final class DbQueryWhereCondition {
      * @param mixed $value
      * @param string $operator
      * @param boolean $isNot
+     * @return void
      */
     public function __construct(string $identifier='', mixed $value='', string $operator='=', bool $isNot=false) {
         $this->define_identifier($identifier);
@@ -75,7 +76,7 @@ final class DbQueryWhereCondition {
      * @param string $variableName
      * @return mixed
      */
-    public function __get(string $variableName) {
+    public function __get(string $variableName): mixed {
         if (isset($this->$variableName))
             return $this->$variableName;
         return null;
@@ -85,11 +86,11 @@ final class DbQueryWhereCondition {
 
     /**
      * Define identifier.
-     * @param string $identifier
-     * @param string $table
+     * @param string|null $identifier
+     * @param string|null $table
      * @return void
      */
-    public function define_identifier(string $identifier=null, string $table=null) {
+    public function define_identifier(?string $identifier=null, ?string $table=null): void {
         if (!is_null($identifier))
             $this->identifier = $identifier;
         if (!is_null($table))
@@ -98,11 +99,11 @@ final class DbQueryWhereCondition {
 
     /**
      * Define value.
-     * @param string $value
-     * @param string $table
+     * @param mixed $value
+     * @param string|null $table
      * @return void
      */
-    public function define_value(string $value=null, string $table=null) {
+    public function define_value(mixed $value=null, ?string $table=null): void {
         if (!is_null($value))
             $this->value = $value;
         if (!is_null($table))
@@ -114,7 +115,7 @@ final class DbQueryWhereCondition {
      * @param string $operator
      * @return void
      */
-    public function define_operator(string $operator) {
+    public function define_operator(string $operator): void {
         switch ($operator) {
             /* Mathematic operators */
             case '>':
@@ -163,10 +164,10 @@ final class DbQueryWhereCondition {
 
     /**
      * Define negative condition.
-     * @param boolean $iNot
+     * @param boolean $isNot
      * @return void
      */
-    public function define_isNot(bool $isNot) {
+    public function define_isNot(bool $isNot): void {
         if (is_bool($isNot))
             $this->isNot = $isNot;
     }

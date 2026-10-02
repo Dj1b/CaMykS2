@@ -3,9 +3,9 @@
  * @brief PasswordPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2026
- * @date Modification: Feb 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,7 +36,7 @@ class PasswordPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         global $CaMykS;
 
         /* Load password tool library */
@@ -110,7 +110,7 @@ class PasswordPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Return attribute parameters for table creation in database.
      * @return array
      */
-    public function export_databaseParameters() {
+    public function export_databaseParameters(): array {
         /* Define hash length based on algorithm */
         $hashLength = 0;
         switch ($this->params['Algorithm']) {
@@ -142,7 +142,7 @@ class PasswordPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * Return safe list of authorised special characters.
      * @return string
      */
-    public function get_specialCharactersList() {
+    public function get_specialCharactersList(): string {
         return self::SPECIAL_CHARS;
     }
 }

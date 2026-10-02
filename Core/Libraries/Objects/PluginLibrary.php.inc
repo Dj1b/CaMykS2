@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Jan 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,38 +22,38 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @var string $libraryShortName
      * @brief Library short name.
      */
-    protected $libraryShortName;
+    protected string $libraryShortName;
 
     /**
-     * @var Object $libraryParent
+     * @var Plugin $libraryParent
      * @brief Parent plugin.
      */
-    protected $libraryParent;
+    protected Plugin $libraryParent;
 
     /**
      * @var array $libraryAttributes
      * @brief Library attributes.
      */
-    protected $libraryAttributes = array();
+    protected array $libraryAttributes = array();
 
     /**
-     * var array $actionMessages
+     * @var array $actionMessages
      * @brief Stores action messages.
      */
-    protected $actionMessages = array();
+    protected array $actionMessages = array();
 
     /**
-     * var array $actionErrors
+     * @var array $actionErrors
      * @brief Stores action errors.
      */
-    protected $actionErrors = array();
+    protected array $actionErrors = array();
 
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param Plugin $parent
      * @return void
      */
-    public function __construct(Object &$parent) {
+    public function __construct(Plugin &$parent) {
         /* Execute parent construct */
         parent::__construct();
 
@@ -69,18 +69,19 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $name
      * @return mixed
      */
-    public function __get(string $name) {
+    public function __get(string $name): mixed {
         if (isset($this->libraryAttributes[$name]))
             return $this->libraryAttributes[$name]->get_value();
+        return null;
     }
 
     /**
      * Write attribute value as variable.
      * @param string $name
      * @param mixed $value
-     * @return mixed
+     * @return void
      */
-    public function __set(string $name, mixed $value) {
+    public function __set(string $name, mixed $value): void {
         if (isset($this->libraryAttributes[$name]))
             $this->libraryAttributes[$name]->set_value($value);
     }
@@ -91,7 +92,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * Define error code list.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         $this->errorCodes = array(
             /* Attributes errors */
             1 => 'UnknownAttributeType',
@@ -106,7 +107,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * Initialise object.
      * @return void
      */
-    public function initialise() {
+    public function initialise(): void {
         foreach ($this->libraryAttributes as $attribute) {
             $attribute->initialise();
         }
@@ -117,27 +118,27 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param mixed $language
      * @return boolean success
      */
-    abstract public function load(mixed $language=true);
+    abstract public function load(mixed $language=true): bool;
 
     /**
      * Save object to its main source.
      * @return boolean success
      */
-    abstract public function save();
+    abstract public function save(): bool;
 
     /**
      * Delete object source.
      * @return boolean success
      */
-    abstract public function delete();
+    abstract public function delete(): bool;
 
     /* Mark: Values related methods */
 
     /**
      * Return values as array.
-     * @return void
+     * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         $result = array();
         foreach ($this->libraryAttributes as $attribute)
             $result = array_merge($result, $attribute->toArray());
@@ -150,7 +151,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param boolean $update
      * @return void
      */
-    public function load_fromArray(array $array=array(), bool $update=false) {
+    public function load_fromArray(array $array=array(), bool $update=false): void {
         foreach ($this->libraryAttributes as $attribute) {
             $attribute->load_fromArray($array, $update);
         }
@@ -162,7 +163,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param boolean $update
      * @return void
      */
-    public function load_fromHeader(string $prefix='', bool $update=false) {
+    public function load_fromHeader(string $prefix='', bool $update=false): void {
         foreach ($this->libraryAttributes as $attribute) {
             $attribute->load_fromHeader($prefix, $update);
         }
@@ -173,7 +174,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $name
      * @return void
      */
-    public function load_fromSession(string $name) {
+    public function load_fromSession(string $name): void {
         global $CaMykS;
         if (!is_null($values = $CaMykS->get_sessionValue($name)))
             $this->load_fromArray($values);
@@ -186,7 +187,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $name
      * @return void
      */
-    public function save_toSession(string $name) {
+    public function save_toSession(string $name): void {
         global $CaMykS;
         $CaMykS->set_sessionValue($name, $this->toArray());
     }
@@ -198,7 +199,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $locale
      * @return boolean result
      */
-    public function check_locale(string $locale='') {
+    public function check_locale(string $locale=''): bool {
         return $this->libraryParent->check_locale($locale);
     }
 
@@ -208,7 +209,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param mixed $data
      * @return string
      */
-    public function get_locale(string $locale='', mixed $data=null) {
+    public function get_locale(string $locale='', mixed $data=null): string {
         return $this->libraryParent->get_locale($locale, $data);
     }
 
@@ -218,7 +219,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $language
      * @return boolean success
      */
-    protected function load_locales(string $folder='', ?string $language=null) {
+    protected function load_locales(string $folder='', ?string $language=null): bool {
         return $this->libraryParent->load_locales($folder, $language);
     }
 
@@ -233,7 +234,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param boolean $isLocalised
      * @return boolean result
      */
-    protected function define_attribute(string $name, string $type, mixed $default, array $params=array(), bool $isLocalised=false) {
+    protected function define_attribute(string $name, string $type, mixed $default, array $params=array(), bool $isLocalised=false): bool {
         /* Check name is already used */
         if (isset($this->libraryAttributes[$name])) {
             $this->add_error(2, 'Duplicate name is '.$name, __FILE__, __LINE__);
@@ -263,7 +264,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * Check attributes values.
      * @return boolean success
      */
-    protected function check_attributesValues() {
+    protected function check_attributesValues(): bool {
         /* Initialise result */
         $result = true;
 
@@ -284,7 +285,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param string $message
      * @return void
      */
-    protected function add_actionMessage(string $message) {
+    protected function add_actionMessage(string $message): void {
         $this->actionMessages[] = $message;
     }
 
@@ -292,7 +293,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * Return action messages.
      * @return array
      */
-    public function get_actionMessages() {
+    public function get_actionMessages(): array {
         return $this->actionMessages;
     }
 
@@ -301,7 +302,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param Error $error
      * @return void
      */
-    protected function add_actionError(CaMykS2\Error $error) {
+    protected function add_actionError(CaMykS2\Error $error): void {
         $this->actionErrors[] = $error;
     }
 
@@ -309,7 +310,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * Return action error.
      * @return array
      */
-    public function get_actionErrors() {
+    public function get_actionErrors(): array {
         return $this->actionErrors;
     }
 
@@ -322,7 +323,7 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @param mixed $default
      * @return mixed
      */
-    public function get_configValue(string $name, ?string $language=null, mixed $default=null) {
+    public function get_configValue(string $name, ?string $language=null, mixed $default=null): mixed {
         return $this->libraryParent->get_configValue($name, $language, $default);
     }
 }

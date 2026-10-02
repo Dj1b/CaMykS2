@@ -3,10 +3,10 @@
  * @brief String specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -19,7 +19,7 @@
  * @param string $encoding
  * @return string
  */
-function string_html2Text(string $string, ?string $encoding=null) {
+function string_html2Text(string $string, ?string $encoding=null): string {
     global $CaMykS;
 
     /* check encoding */
@@ -51,7 +51,7 @@ function string_html2Text(string $string, ?string $encoding=null) {
  * @param string $encoding
  * @return string
  */
-function string_text2Html(string $string, ?string $encoding=null) {
+function string_text2Html(string $string, ?string $encoding=null): string {
     global $CaMykS;
 
     /* check encoding */
@@ -77,7 +77,7 @@ function string_text2Html(string $string, ?string $encoding=null) {
  * @param string $string
  * @return boolean
  */
-function string_isHTML(string $string) {
+function string_isHTML(string $string): bool {
     return (strip_tags($string) != $string or preg_match('/&[^ ]+;/', $string));
 }
 
@@ -86,7 +86,7 @@ function string_isHTML(string $string) {
  * @param string $string
  * @return boolean
  */
-function string_isURL(string $string) {
+function string_isURL(string $string): bool {
     return preg_match('#^https?://#i', $string);
 }
 
@@ -95,7 +95,7 @@ function string_isURL(string $string) {
  * @param string $string
  * @return boolean
  */
-function string_isUTF8(string $string) {
+function string_isUTF8(string $string): bool {
     return preg_match('%(?:
         [\xC2-\xDF][\x80-\xBF]              # non-overlong 2-byte
         |\xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
@@ -113,7 +113,7 @@ function string_isUTF8(string $string) {
  * @param string $string
  * @return boolean
  */
-function string_isBase64(string $string) {
+function string_isBase64(string $string): bool {
     if (base64_decode($string, true) === false)
         return false;
     if (strlen($string) % 4 != 0)
@@ -129,7 +129,7 @@ function string_isBase64(string $string) {
  * @param string $replacement
  * @return string
  */
-function string_stripTags(string $value, string $replacement='') {
+function string_stripTags(string $value, string $replacement=''): string {
     if ($replacement == '')
         return strip_tags($value);
     return preg_replace('/<([^>]+)>/i', $replacement, $value);
@@ -141,7 +141,7 @@ function string_stripTags(string $value, string $replacement='') {
  * @param string $replacement
  * @return string
  */
-function string_stripPHPTags(string $value, string $replacement='') {
+function string_stripPHPTags(string $value, string $replacement=''): string {
     $tags = array();
     $tags[] = '/<\?[^\?'.'>]*\?'.'>/';
     $tags[] = '/<\?/';
@@ -154,7 +154,7 @@ function string_stripPHPTags(string $value, string $replacement='') {
  * @param string $replacement
  * @return string
  */
-function string_stripScriptTags(string $value, string $replacement='') {
+function string_stripScriptTags(string $value, string $replacement=''): string {
     return preg_replace('/<script.*?\/script>/s', $replacement, $value);
 }
 
@@ -166,7 +166,7 @@ function string_stripScriptTags(string $value, string $replacement='') {
  * @param integer $length
  * @return string
  */
-function string_getShortenedSentence(string $string='', int $length=64) {
+function string_getShortenedSentence(string $string='', int $length=64): string {
     $length = max($length, 4);
     if (strlen($string) > $length) {
         if (preg_match('/^(.){1,'.($length-3).'} /u', $string, $matches))
@@ -187,7 +187,7 @@ function string_getShortenedSentence(string $string='', int $length=64) {
  * @param boolean $caseSensitive
  * @return boolean result
  */
-function string_startsWith(string $haystack, mixed $needle, bool $caseSensitive=false) {
+function string_startsWith(string $haystack, mixed $needle, bool $caseSensitive=false): bool {
     if (is_array($needle)) {
         foreach ($needle as $id => $value)
             $needle[$id] = preg_quote($value, '/');
@@ -208,7 +208,7 @@ function string_startsWith(string $haystack, mixed $needle, bool $caseSensitive=
  * @param boolean $caseSensitive
  * @return boolean result
  */
-function string_endsWith(string $haystack, mixed $needle, bool $caseSensitive=false) {
+function string_endsWith(string $haystack, mixed $needle, bool $caseSensitive=false): bool {
     if (is_array($needle)) {
         foreach ($needle as $id => $value)
             $needle[$id] = preg_quote($value, '/');
@@ -229,7 +229,7 @@ function string_endsWith(string $haystack, mixed $needle, bool $caseSensitive=fa
  * @param string $string
  * @return string
  */
-function string_escape4Regex(string $string='') {
+function string_escape4Regex(string $string=''): string {
   return preg_replace('/(\/|\(|\)|\.|\?|\$|\^|\[|\]|\*|\+|\{|\}|\,)/', '\\\$1', $string);
 }
 

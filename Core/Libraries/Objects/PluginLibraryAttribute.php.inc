@@ -4,10 +4,10 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Jan 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,16 +21,16 @@ define('ATTRIBUTE_FULLNAME_SEPARATOR', '_');
  */
 abstract class PluginLibraryAttribute {
     /**
-     * @var Object $libraryParent
+     * @var object $libraryParent
      * @brief Parent plugin.
      */
-    protected $libraryParent;
+    protected object $libraryParent;
 
     /**
      * @var string $libraryName
      * @brief Library name.
      */
-    public $libraryName;
+    public string $libraryName;
 
     /**
      * @var constant array DEFAULTPARAMS
@@ -48,36 +48,36 @@ abstract class PluginLibraryAttribute {
      * @var array $params
      * @brief Attribute parameters
      */
-    protected $params = array();
+    protected array $params = array();
 
     /**
      * @var mixed $defaultValue
      * @brief Attribute default value
      */
-    protected $defaultValue;
+    protected mixed $defaultValue;
 
      /**
      * @var mixed $value
      * @brief Attribute current value
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * @var boolean $isLocalised
      * @brief Is attribute localised
      */
-    public $isLocalised = false;
+    public bool $isLocalised = false;
 
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param object $parent
      * @param string $name
      * @param mixed $default
      * @param array $params
      * @param boolean $isLocalised
      * @return void
      */
-    public function __construct(Object &$parent, string $name, mixed $default, array $params=array(), bool $isLocalised=false) {
+    public function __construct(object &$parent, string $name, mixed $default, array $params=array(), bool $isLocalised=false) {
         /* Define library variables */
         $this->libraryParent = $parent;
         $this->libraryName = $name;
@@ -100,7 +100,7 @@ abstract class PluginLibraryAttribute {
      * @param string $language
      * @return mixed
      */
-    public function get_value(?string $language=null) {
+    public function get_value(?string $language=null): mixed {
         global $CaMykS;
 
         if ($this->isLocalised) {
@@ -119,7 +119,7 @@ abstract class PluginLibraryAttribute {
      * @param string $language
      * @return void
      */
-    public function set_value(string $value, ?string $language=null) {
+    public function set_value(mixed $value, ?string $language=null): void {
         global $CaMykS;
 
         if ($this->isLocalised) {
@@ -135,7 +135,7 @@ abstract class PluginLibraryAttribute {
      * Initialise attribute.
      * @return void
      */
-    public function initialise() {
+    public function initialise(): void {
         if ($this->isLocalised) {
             $this->value = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
@@ -151,7 +151,7 @@ abstract class PluginLibraryAttribute {
      * @param array $array
      * @return void
      */
-    public function load_fromSave(array $array=array()) {
+    public function load_fromSave(array $array=array()): void {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (isset($array[$this->get_fullName($language)]))
@@ -169,9 +169,9 @@ abstract class PluginLibraryAttribute {
 
     /**
      * Return optimised value for saving.
-     * @return void
+     * @return mixed
      */
-    public function export_forSaving() {
+    public function export_forSaving(): mixed {
         return $this->value;
     }
 
@@ -181,7 +181,7 @@ abstract class PluginLibraryAttribute {
      * @param boolean $update
      * @return void
      */
-    public function load_fromHeader(string $prefix='', bool $update=false) {
+    public function load_fromHeader(string $prefix='', bool $update=false): void {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (!is_null($value = $this->load_valueFromHeader($this->get_fullName($language, $prefix))))
@@ -190,10 +190,10 @@ abstract class PluginLibraryAttribute {
                     $this->value[$language] = $this->get_defaultValue();
             }
         } else {
-            if (!is_null($value = $this->load_valueFromHeader($this->get_fullName($language, $prefix))))
-                $this->value[$language] = $value;
+            if (!is_null($value = $this->load_valueFromHeader($this->get_fullName(null, $prefix))))
+                $this->value = $value;
             elseif ($update === false)
-                $this->value[$language] = $this->get_defaultValue();
+                $this->value = $this->get_defaultValue();
         }
     }
 
@@ -203,7 +203,7 @@ abstract class PluginLibraryAttribute {
      * @param boolean $update
      * @return void
      */
-    public function load_fromArray(array $array=array(), bool $update=false) {
+    public function load_fromArray(array $array=array(), bool $update=false): void {
         if ($this->isLocalised) {
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (isset($array[$this->get_fullName($language)]))
@@ -221,9 +221,9 @@ abstract class PluginLibraryAttribute {
 
     /**
      * Return values as array.
-     * @return void
+     * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         if ($this->isLocalised) {
             $result = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
@@ -238,7 +238,7 @@ abstract class PluginLibraryAttribute {
      * Return attribute parameters for table creation in database.
      * @return array
      */
-    abstract public function export_databaseParameters();
+    abstract public function export_databaseParameters(): array;
 
     /* Mark: Specific tool methods */
 
@@ -247,16 +247,16 @@ abstract class PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_valueFromSave(mixed $value) {
+    protected function read_valueFromSave(mixed $value): mixed {
         return $value;
     }
 
     /**
      * Return optimised value for save.
      * @param mixed $value
-     * @return $mixed
+     * @return mixed
      */
-    protected function optimise_valueToSave(mixed $value) {
+    protected function optimise_valueToSave(mixed $value): mixed {
         return $value;
     }
 
@@ -265,7 +265,7 @@ abstract class PluginLibraryAttribute {
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value(mixed $value) {
+    protected function read_value(mixed $value): mixed {
         return $value;
     }
 
@@ -273,7 +273,7 @@ abstract class PluginLibraryAttribute {
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         return true;
     }
 
@@ -281,7 +281,7 @@ abstract class PluginLibraryAttribute {
      * Return default value.
      * @return mixed
      */
-    protected function get_defaultValue() {
+    protected function get_defaultValue(): mixed {
         return $this->defaultValue;
     }
 
@@ -290,7 +290,7 @@ abstract class PluginLibraryAttribute {
      * @param string $name
      * @return mixed
      */
-    protected function load_valueFromHeader(string $name) {
+    protected function load_valueFromHeader(string $name): mixed {
         if (!isset($_REQUEST[$name]))
             return null;
         return $this->read_value($_REQUEST[$name]);
@@ -302,7 +302,7 @@ abstract class PluginLibraryAttribute {
      * @param string $prefix
      * @return string
      */
-    protected function get_fullName(?string $language=null, ?string $prefix=null) {
+    protected function get_fullName(?string $language=null, ?string $prefix=null): string {
         /* Initialise name */
         $name = $this->libraryName;
 

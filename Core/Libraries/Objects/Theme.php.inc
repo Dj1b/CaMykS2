@@ -4,10 +4,10 @@
  * <br />Theme abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Dec 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,47 +22,47 @@ abstract class Theme extends Plugin {
      * @var boolean $supportAdminMode
      * @brief Is theme capable to design admin mode.
      */
-    private $supportAdminMode = false;
+    private bool $supportAdminMode = false;
 
     /**
      * @var boolean $supportManagerMode
      * @brief Is theme capable to design manager mode.
      */
-    private $supportManagerMode = false;
+    private bool $supportManagerMode = false;
 
     /**
      * @var boolean $supportVisitMode
      * @brief Is theme capable to design visit mode.
      */
-    private $supportVisitMode = true;
+    private bool $supportVisitMode = true;
 
     /**
      * @var array $supportPluginList
      * @brief List of plugins supported by theme.
      */
-    private $supportPluginList = array();
+    private array $supportPluginList = array();
 
     /**
      * @var string $shortName
      * @brief Short name for graphical element classes.
      */
-    protected $shortName;
+    protected string $shortName;
 
     /**
-     * @var array $layoutContext
+     * @var mixed $layoutContext
      * @brief Temporary element to display in layouts.
      */
-    protected $layoutContext;
+    protected mixed $layoutContext = null;
 
     /**
      * @var array $pluginStyleFiles
      * @brief List all available plugins style files.
      */
-    protected $pluginStyleFiles = array();
+    protected array $pluginStyleFiles = array();
 
     /**
      * Class constructor.
-     * @param string $location
+     * @param string|null $location
      * @return void
      */
     public function __construct(?string $location=null) {
@@ -80,7 +80,7 @@ abstract class Theme extends Plugin {
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise(array $params=array()): void {
         parent::initialise($params);
 
         /* Build element base name */
@@ -93,15 +93,15 @@ abstract class Theme extends Plugin {
      * Check if theme supports visit mode.
      * @return boolean result
      */
-    public function support_visitMode() {
+    public function support_visitMode(): bool {
         return (count($this->styleFiles) > 0);
     }
 
     /**
      * Check if theme support admin mode.
-     * @return boolan result
+     * @return boolean result
      */
-    public function support_adminMode() {
+    public function support_adminMode(): bool {
         return (count($this->adminStyleFiles) > 0);
     }
 
@@ -112,7 +112,7 @@ abstract class Theme extends Plugin {
      * @param array $params
      * @return boolean success.
      */
-    public function display_button(array $params=array()) {
+    public function display_button(array $params=array()): bool {
         global $CaMykS;
 
         /* Build default params */
@@ -147,7 +147,7 @@ abstract class Theme extends Plugin {
             return true;
 
         /* Load generic layout */
-        return $CaMykS->load_assetLayout('Theme/Button', $this->layoutContext);
+        return $CaMykS->load_assetLayout('Theme/Button', $this->layoutContext) !== '';
     }
 
     /* Mark: Plugin related methods */
@@ -159,7 +159,7 @@ abstract class Theme extends Plugin {
      * @param string $URLMode
      * @return void
      */
-    public function add_pluginStyleFile(string $plugin, string $condition='', ?string $URLMode=null) {
+    public function add_pluginStyleFile(string $plugin, string $condition='', ?string $URLMode=null): void {
         if (isset($this->pluginStyleFiles[$plugin]))
             $this->add_styleFile('Plugins/'.$this->pluginStyleFiles[$plugin], $condition, $URLMode);
     }

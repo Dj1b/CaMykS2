@@ -3,10 +3,10 @@
  * @brief BooleanPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Apr 2025
- * @copyright 2022 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,7 +31,7 @@ final class BooleanPluginLibraryAttribute extends IntegerPluginLibraryAttribute 
      * @param mixed $value
      * @return $mixed
      */
-    protected function optimise_valueToSave(mixed $value) {
+    protected function optimise_valueToSave(mixed $value): mixed {
         return (bool)$value ? 1 : 0;
     }
 }

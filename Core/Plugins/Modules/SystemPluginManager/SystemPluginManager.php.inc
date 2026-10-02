@@ -4,10 +4,10 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: May 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ final class SystemPluginManager extends AdminModule {
      * @var array $libraries
      * @brief List of module internal libraries name.
      */
-    protected $libraries = array('Plugin');
+    protected array $libraries = array('Plugin');
 
     /**
      * @var array $installedTables
      * @brief List of installed tables.
      */
-    private $installedTables;
+    private array $installedTables;
 
     /**
      * Class constructor.
@@ -46,7 +46,7 @@ final class SystemPluginManager extends AdminModule {
      * Install plugin.
      * @return boolean success
      */
-    public function install() {
+    public function install(): bool {
         /* Perform plugin installation */
         if (!parent::install())
             return false;
@@ -80,7 +80,7 @@ final class SystemPluginManager extends AdminModule {
      * @param string $location
      * @return boolean success
      */
-    public function enable_plugin($name, $type, $location=null) {
+    public function enable_plugin($name, $type, $location=null): bool {
         global $CaMykS;
 
         /* Load plugin information from database */
@@ -117,7 +117,7 @@ final class SystemPluginManager extends AdminModule {
      * @param string $name
      * @return boolean result
      */
-    public function is_pluginEnabled($name) {
+    public function is_pluginEnabled($name): bool {
         /* Load plugin information from database */
         $pluginInfo = $this->Plugin->get_newInstance();
         $pluginInfo->load_byName($name);
@@ -137,7 +137,7 @@ final class SystemPluginManager extends AdminModule {
      * @param string $tableName
      * @return boolean result
      */
-    public function check_tableExists($tableName='') {
+    public function check_tableExists($tableName=''): bool {
         if ($this->installedTables === null)
             $this->load_installedTables();
         return (in_array($tableName, $this->installedTables));
@@ -149,7 +149,7 @@ final class SystemPluginManager extends AdminModule {
      * Load installed tables.
      * @return boolean success
      */
-    private function load_installedTables() {
+    private function load_installedTables(): bool {
         global $CaMykS;
 
         /* Load all tables in databases */

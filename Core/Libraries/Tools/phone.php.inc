@@ -3,9 +3,9 @@
  * @brief Phone specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2026
- * @date Modification: Sep 2026
+ * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -17,7 +17,7 @@
  * @param string $country
  * @return array|false components list
  */
-function phone_parse(string $phone, string $country='') {
+function phone_parse(string $phone, string $country=''): array|false {
     /* Check country */
     if ($country === '')
         $country = phone_getCountryFromNumber($phone);
@@ -67,7 +67,7 @@ function phone_parse(string $phone, string $country='') {
  * @param string $country
  * @return boolean result
  */
-function phone_validate(string $phone, string $country='') {
+function phone_validate(string $phone, string $country=''): bool {
     /* Parse phone number */
     $parsed = phone_parse($phone, $country);
 
@@ -108,7 +108,7 @@ function phone_validate(string $phone, string $country='') {
  * @param string $country
  * @return boolean result
  */
-function phone_isMobile(string $phone, string $country='') {
+function phone_isMobile(string $phone, string $country=''): bool {
     /* Parse phone number */
     $parsed = phone_parse($phone, $country);
 
@@ -132,7 +132,7 @@ function phone_isMobile(string $phone, string $country='') {
  * @param string $separator
  * @return string
  */
-function phone_format(string $phone, string $country='', bool $intl=true, string $separator='') {
+function phone_format(string $phone, string $country='', bool $intl=true, string $separator=''): string {
     /* Parse phone number */
     $parsed = phone_parse($phone, $country);
 
@@ -151,7 +151,7 @@ function phone_format(string $phone, string $country='', bool $intl=true, string
  * @param string $phone
  * @return string
  */
-function phone_getCountryFromNumber(string $phone) {
+function phone_getCountryFromNumber(string $phone): string {
     /* Clean phone number to keep only digits */
     $phone = preg_replace('/[^0-9]/', '', $phone);
 

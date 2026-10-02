@@ -4,10 +4,10 @@
  * <br />Module to manage unique ids.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ final class SystemUniqueIdManager extends AdminModule {
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
      */
-    protected $hasConfiguration = true;
+    protected bool $hasConfiguration = true;
 
     /**
      * @var array $libraries
      * @brief List of module internal libraries name.
      */
-    protected $libraries = array('Key');
+    protected array $libraries = array('Key');
 
     /**
      * Class constructor.
@@ -50,7 +50,7 @@ final class SystemUniqueIdManager extends AdminModule {
      * @param array $params
      * @return mixed // unique ID on success, false on failure
      */
-    public function get_newUniqueId($plugin, $object, $objectId, $params=array()) {
+    public function get_newUniqueId($plugin, $object, $objectId, $params=array()): mixed {
         /* Check for free key or initialise new one */
         if (count($params) == 0 or !$this->Key->load_freeItem())
             $this->Key->initialise();

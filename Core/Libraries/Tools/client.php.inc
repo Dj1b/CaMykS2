@@ -3,10 +3,10 @@
  * @brief Client specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Dec 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -15,7 +15,7 @@
  * Return client IP address.
  * @return string
  */
-function client_getIp() {
+function client_getIp(): string {
     if (!empty($_SERVER['HTTP_CLIENT_IP']))
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
@@ -40,7 +40,7 @@ function client_getIp() {
  * Check if page is loaded in HTTPS(SSL).
  * @return boolean result
  */
-function client_isHTTPS() {
+function client_isHTTPS(): bool {
     return (!empty($_SERVER['HTTPS']) or (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) and $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'));
 }
 
@@ -48,7 +48,7 @@ function client_isHTTPS() {
  * Return current request URL.
  * @return string
  */
-function client_getCurrentURL() {
+function client_getCurrentURL(): string {
     return 'http'.(client_isHTTPS() ? 's' : '').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER["REQUEST_URI"], '?');
 }
 
@@ -56,7 +56,7 @@ function client_getCurrentURL() {
  * Return client referer site.
  * @return string
  */
-function client_getRefererSite() {
+function client_getRefererSite(): string {
     return (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');
 }
 
@@ -64,7 +64,7 @@ function client_getRefererSite() {
  * Check if the server is also the client.
  * @return boolean result
  */
-function client_isServerClient() {
+function client_isServerClient(): bool {
     return ($_SERVER['SERVER_ADDR'] == client_getIp());
 }
 
@@ -72,7 +72,7 @@ function client_isServerClient() {
  * Check if client is marked as Do Not Track.
  * @return boolean result
  */
-function client_getDoNotTrack() {
+function client_getDoNotTrack(): bool {
     return (isset($_SERVER['HTTP_DNT']) and $_SERVER['HTTP_DNT'] == 1);
 }
 
@@ -80,7 +80,7 @@ function client_getDoNotTrack() {
  * Return client user agent.
  * @return string
  */
-function client_getUserAgent() {
+function client_getUserAgent(): string {
     return (isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'');
 }
 
@@ -89,7 +89,7 @@ function client_getUserAgent() {
  * @return string
  * @todo
  */
-function client_getUserAgentDetails() {
+function client_getUserAgentDetails(): string {
     return array();
 }
 ?>

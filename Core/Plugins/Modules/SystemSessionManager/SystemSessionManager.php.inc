@@ -4,10 +4,10 @@
  * <br />Module to manage visitors (and admin users) sessions.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2.1
  * @date Creation: Jun 2021
- * @date Modification: Feb 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,13 +22,13 @@ final class SystemSessionManager extends AdminModule {
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
      */
-    protected $hasConfiguration = false;
+    protected bool $hasConfiguration = false;
 
     /**
      * @var array $libraries
      * @brief List of module internal libraries name.
      */
-    protected $libraries = array('Session', 'Request');
+    protected array $libraries = array('Session', 'Request');
 
     /**
      * Class constructor.

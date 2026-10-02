@@ -3,9 +3,9 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: May 2021
- * @date Modification: Sep 2026
+ * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,103 +21,97 @@ final class CaMykSInstaller extends Plugin {
      * @var string $action
      * @brief Current action to execute in installer.
      */
-    protected $action = 'Welcome';
+    protected string $action = 'Welcome';
 
     /**
      * @var Object $theme
      * @brief Link to current CaMykS theme.
      */
-    protected $theme;
+    protected object $theme;
 
     /**
      * @var Object $configurationManager
      * @brief Link to configuration manager module.
      */
-    protected $configurationManager;
+    protected object $configurationManager;
 
     /**
      * @var array $currentConfiguration
      * @brief Current configuration
      */
-    protected $currentConfiguration;
+    protected array $currentConfiguration;
 
     /**
      * @var string $section
      * @brief Current section to configure.
      */
-    protected $section;
+    protected string $section;
 
     /**
      * @var object $welcomePicture
      * @brief Welcome picture file.
      */
-    protected $welcomePicture;
+    protected object $welcomePicture;
 
     /**
      * @var object $configurationForm
      * @brief Configuration form.
      */
-    protected $configurationForm;
+    protected object $configurationForm;
 
     /**
      * @var array $localStorageValues
      * @brief List of available storage values.
      */
-    protected $localStorageValues;
+    protected array $localStorageValues;
 
     /**
      * @var array $CMSSignatureValues
      * @brief List of available signature values.
      */
-    protected $CMSSignatureValues;
+    protected array $CMSSignatureValues;
 
     /**
      * @var array $encodingValues
      * @brief List of available encoding values.
      */
-    protected $encodingValues;
+    protected array $encodingValues;
 
     /**
      * @var array $availableThemes
      * @brief List of available themes.
      */
-    protected $availableThemes;
+    protected array $availableThemes;
 
     /**
      * @var array $availableTemplates
      * @brief List of available templates.
      */
-    protected $availableTemplates;
+    protected array $availableTemplates;
 
     /**
      * @var array $availableSSLModes
      * @brief List of available SSL modes.
      */
-    protected $availableSSLModes;
+    protected array $availableSSLModes;
 
     /**
      * @var array $availableURLModes
      * @brief List of available URL modes.
      */
-    protected $availableURLModes;
+    protected array $availableURLModes;
 
     /**
      * @var array $availableLanguages
      * @brief List of available languages.
      */
-    protected $availableLanguages;
+    protected array $availableLanguages;
 
     /**
      * @var array $databaseDrivers
      * @brief List of available database drivers.
      */
-    protected $databaseDrivers;
-
-    /**
-     * @var array $administratorManager
-     * @brief Link to administrator manager module.
-     */
-    protected $administratorManager;
+    protected array $databaseDrivers;
 
     /**
      * Class constructor.
@@ -137,12 +131,12 @@ final class CaMykSInstaller extends Plugin {
      * @param array $params
      * @return void
      */
-    public function initialise($params=array()) {
+    public function initialise($params=array()): void {
         global $CaMykS;
         parent::initialise($params);
 
         /* Override some website configuration variables */
-        $CaMykS->set_configValue('Website_Name', $this->libraryName);
+        //$CaMykS->set_configValue('Website_Name', $this->libraryName);
         $CaMykS->set_configValue('Website_Title', 'Website Installer');
         $CaMykS->set_configValue('Website_URL', dirname($this->get_actionLink()).'/');
         $CaMykS->set_configValue('Admin_HeaderLogoFile', $this->get_filePath('Images/Banner.svg'));
@@ -236,14 +230,14 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in Welcome mode.
      * @return void
      */
-    private function initialise_Welcome() {
+    private function initialise_Welcome(): void {
         global $CaMykS;
 
         /* Load CaMykS logo */
         $this->welcomePicture = new File($CaMykS->get_assetFilePath('Images/Logo/Logo500.png'));
 
         /* Reset configuration if requered */
-        $this->currentConfiguration = null;
+        $this->currentConfiguration = array();
         $this->save_currentConfiguration();
 
         /* Update layout */
@@ -254,8 +248,11 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayWebsiteConfiguration mode.
      * @return void
      */
-    private function initialise_DisplayWebsiteConfiguration() {
+    private function initialise_DisplayWebsiteConfiguration(): void {
         global $CaMykS;
+
+        /* Load configuration */
+        $this->load_currentConfiguration();
 
         /* Build configuration form */
         $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveWebsiteConfiguration')));
@@ -274,7 +271,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in SaveWebsiteConfiguration mode.
      * @return void
      */
-    private function initialise_SaveWebsiteConfiguration() {
+    private function initialise_SaveWebsiteConfiguration(): void {
         global $CaMykS;
 
         /* Load values */
@@ -302,7 +299,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayVisitConfiguration mode.
      * @return void
      */
-    private function initialise_DisplayVisitConfiguration() {
+    private function initialise_DisplayVisitConfiguration(): void {
         global $CaMykS;
 
         /* Load configuration */
@@ -343,10 +340,8 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in SaveVisitConfiguration mode.
      * @return void
      */
-    private function initialise_SaveVisitConfiguration() {
+    private function initialise_SaveVisitConfiguration(): void {
         global $CaMykS;
-
-        print_r($_REQUEST);
 
         /* Load values */
         $this->currentConfiguration['Visit']['Visit_DefaultLanguage'] = http_getStringRequest('DefaultLanguage');
@@ -376,7 +371,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayAdminConfiguration mode.
      * @return void
      */
-    private function initialise_DisplayAdminConfiguration() {
+    private function initialise_DisplayAdminConfiguration(): void {
         global $CaMykS;
 
         /* Load configuration */
@@ -407,7 +402,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in SaveAdminConfiguration mode.
      * @return void
      */
-    private function initialise_SaveAdminConfiguration() {
+    private function initialise_SaveAdminConfiguration(): void {
         global $CaMykS;
 
         /* Load values */
@@ -434,11 +429,15 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayDatabaseConfiguration mode.
      * @return void
      */
-    private function initialise_DisplayDatabaseConfiguration() {
+    private function initialise_DisplayDatabaseConfiguration(): void {
         global $CaMykS;
 
         /* Load configuration */
         $CaMykS->load_configuration('Database');
+
+        /* Check for default database name */
+        if ($this->get_currentConfigurationValue('Database', 'Database_Name') == '')
+            $this->set_currentConfigurationValue('Database', 'Database_Name', $CaMykS->get_configValue('Website_Name'));
 
         /* Build configuration form */
         $this->configurationForm = new HTMLForm(array('Name'=>'ConfigurationForm', 'Action'=>$this->get_actionLink('SaveDatabaseConfiguration')));
@@ -457,7 +456,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in SaveDatabaseConfiguration mode.
      * @return void
      */
-    private function initialise_SaveDatabaseConfiguration() {
+    private function initialise_SaveDatabaseConfiguration(): void {
         global $CaMykS;
 
         /* Load values */
@@ -485,7 +484,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayWebmasterConfiguration mode.
      * @return void
      */
-    private function initialise_DisplayWebmasterConfiguration() {
+    private function initialise_DisplayWebmasterConfiguration(): void {
         global $CaMykS;
 
         /* Build configuration form */
@@ -503,7 +502,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in SaveWebmasterConfiguration mode.
      * @return void
      */
-    private function initialise_SaveWebmasterConfiguration() {
+    private function initialise_SaveWebmasterConfiguration(): void {
         global $CaMykS;
 
         /* Load values */
@@ -515,14 +514,14 @@ final class CaMykSInstaller extends Plugin {
         $this->currentConfiguration['Webmaster']['PasswordConfirmation'] = http_getStringRequest('PasswordConfirmation');
 
         /* Load administrator manager module */
-        $this->administratorManager = $CaMykS->load_module('SystemAdministratorManager', 'System');
-        if ($this->administratorManager === false) {
+        $administratorManager = $CaMykS->load_module('SystemAdministratorManager', 'System');
+        if ($administratorManager === false) {
             /* Throw fatal error */
 
             die();
         }
-        $this->administratorManager->initialise();
-        $this->administratorManager->load_locales();
+        $administratorManager->initialise();
+        $administratorManager->load_locales();
 
         /* Save configuration */
         $this->save_currentConfiguration();
@@ -540,7 +539,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in FinaliseInstallation mode.
      * @return void
      */
-    private function initialise_FinaliseInstallation() {
+    private function initialise_FinaliseInstallation(): void {
         global $CaMykS;
 
         /* Check again website configuration */
@@ -676,7 +675,7 @@ final class CaMykSInstaller extends Plugin {
                 $this->update_selectedLayout('FinalisationError');
 
                 /* Avoid doing other checks and installation */
-                return;
+            return;
             }
             $installationManifest[] = $this->get_locale('Manifest_DatabaseConnectionCreated');
         }
@@ -707,7 +706,7 @@ final class CaMykSInstaller extends Plugin {
                     $this->update_selectedLayout('FinalisationError');
 
                     /* Avoid doing other checks and installation */
-                    return;
+            return;
                 }
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkCorePluginsAlreadyExists');
             } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Plugins', $CaMykS->corePluginLink)) {
@@ -718,7 +717,7 @@ final class CaMykSInstaller extends Plugin {
                 $this->update_selectedLayout('FinalisationError');
 
                 /* Avoid doing other checks and installation */
-                return;
+            return;
             } else
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkCorePluginsCreated');
 
@@ -732,7 +731,7 @@ final class CaMykSInstaller extends Plugin {
                     $this->update_selectedLayout('FinalisationError');
 
                     /* Avoid doing other checks and installation */
-                    return;
+            return;
                 }
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkSharedPluginsAlreadyExists');
             } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Plugins', $CaMykS->sharedPluginLink)) {
@@ -743,7 +742,7 @@ final class CaMykSInstaller extends Plugin {
                 $this->update_selectedLayout('FinalisationError');
 
                 /* Avoid doing other checks and installation */
-                return;
+            return;
             } else
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkSharedPluginsCreated');
 
@@ -757,7 +756,7 @@ final class CaMykSInstaller extends Plugin {
                     $this->update_selectedLayout('FinalisationError');
 
                     /* Avoid doing other checks and installation */
-                    return;
+            return;
                 }
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkCoreAssetsAlreadyExists');
             } elseif (!symlink($this->currentConfiguration['Website']['Website_CaMykSPath'].'/Core/Assets', $CaMykS->coreAssetLink)) {
@@ -768,7 +767,7 @@ final class CaMykSInstaller extends Plugin {
                 $this->update_selectedLayout('FinalisationError');
 
                 /* Avoid doing other checks and installation */
-                return;
+            return;
             } else
                 $installationManifest[] = $this->get_locale('Manifest_SymLinkAssetsCreated');
         }
@@ -806,7 +805,7 @@ final class CaMykSInstaller extends Plugin {
                     $this->update_selectedLayout('FinalisationError');
 
                     /* Avoid doing other checks and installation */
-                    return;
+            return;
                 }
                 $installationManifest[] = $this->get_locale('Manifest_PluginInstalled', $name);
             }
@@ -828,7 +827,7 @@ final class CaMykSInstaller extends Plugin {
      * Initialise plugin in DisplayInstallationDone mode.
      * @return void
      */
-    private function initialise_DisplayInstallationDone() {
+    private function initialise_DisplayInstallationDone(): void {
         global $CaMykS;
 
         /* Update website configuration status *
@@ -874,7 +873,7 @@ final class CaMykSInstaller extends Plugin {
      * Check website configuration.
      * @return boolean success
      */
-    private function check_websiteConfiguration() {
+    private function check_websiteConfiguration(): bool {
         global $CaMykS;
 
         /* Check website title */
@@ -895,7 +894,7 @@ final class CaMykSInstaller extends Plugin {
      * Check database configuration.
      * @return boolean success
      */
-    private function check_databaseConfiguration() {
+    private function check_databaseConfiguration(): bool {
         global $CaMykS;
 
         /* Check database name */
@@ -968,7 +967,7 @@ final class CaMykSInstaller extends Plugin {
      * Check webmaster configuration.
      * @return boolean success
      */
-    private function check_webmasterConfiguration() {
+    private function check_webmasterConfiguration(): bool {
         global $CaMykS;
 
         /* Check email value */
@@ -1017,7 +1016,7 @@ final class CaMykSInstaller extends Plugin {
      * @param array $params
      * @return string
      */
-    protected function get_actionLink($action='', $params=array()) {
+    protected function get_actionLink($action='', $params=array()): string {
         /* Create link base url */
         $link = client_getCurrentURL();
 
@@ -1040,16 +1039,14 @@ final class CaMykSInstaller extends Plugin {
      * Load current configuration.
      * @return void
      */
-    private function load_currentConfiguration() {
+    private function load_currentConfiguration(): void {
         global $CaMykS;
 
         /* Load configuration from session */
-        $this->currentConfiguration = $CaMykS->get_sessionValue('InstallationConfiguration', null);
-
-        //$this->currentConfiguration = null;
+        $this->currentConfiguration = $CaMykS->get_sessionValue('InstallationConfiguration', array());
 
         /* Check if configuration has been defined */
-        if (!is_null($this->currentConfiguration))
+        if (!empty($this->currentConfiguration))
             return;
 
         /* Create new configuration */
@@ -1088,7 +1085,7 @@ final class CaMykSInstaller extends Plugin {
      * Save current configuration.
      * @return void
      */
-    private function save_currentConfiguration() {
+    private function save_currentConfiguration(): void {
         global $CaMykS;
 
         /* Load configuration from session */
@@ -1101,10 +1098,23 @@ final class CaMykSInstaller extends Plugin {
      * @param string $name
      * @return mixed
      */
-    protected function get_currentConfigurationValue($section, $name) {
+    protected function get_currentConfigurationValue($section, $name): mixed {
         if (isset($this->currentConfiguration[$section][$name]))
             return $this->currentConfiguration[$section][$name];
         return '';
+    }
+
+    /**
+     * Define current configuration value.
+     * @param string $section
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    protected function set_currentConfigurationValue($section, $name, $value): void {
+        if (!isset($this->currentConfiguration[$section][$name]))
+            return;
+        $this->currentConfiguration[$section][$name] = $value;
     }
 }
 ?>

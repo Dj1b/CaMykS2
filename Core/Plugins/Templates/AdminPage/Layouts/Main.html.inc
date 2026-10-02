@@ -3,10 +3,10 @@
  * @brief AdminPage Template main layout.
  * @details Plugin / Template layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Feb 2020
- * @date Modification: Jan 2022
- * @copyright 2020 - 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -39,25 +39,22 @@ global $CaMykS;
         </div>
     </div>
     <div id="PageContent">
-        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Message', '')) !== '') : ?>
+        <?php if (($v = $CaMykS->pop_sessionValue('AdminInterface-Message', '')) !== '') : ?>
             <div class="interfaceMessage">
                 <?= $v; ?>
             </div>
-            <?php $CaMykS->set_sessionValue('AdminInterface-Message', ''); ?>
         <?php endif; ?>
 
-        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Error', '')) !== '') : ?>
+        <?php if (($v = $CaMykS->pop_sessionValue('AdminInterface-Error', '')) !== '') : ?>
             <div class="interfaceError">
                 <?= $v; ?>
             </div>
-            <?php $CaMykS->set_sessionValue('AdminInterface-Error', ''); ?>
         <?php endif; ?>
 
-        <?php if (($v = $CaMykS->get_sessionValue('AdminInterface-Warning', '')) !== '') : ?>
+        <?php if (($v = $CaMykS->pop_sessionValue('AdminInterface-Warning', '')) !== '') : ?>
             <div class="interfaceWarning">
                 <?= $v; ?>
             </div>
-            <?php $CaMykS->set_sessionValue('AdminInterface-Warning', ''); ?>
         <?php endif; ?>
 
         <div class="innerContent">

@@ -3,10 +3,10 @@
  * @brief ObjectIdPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Feb 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -31,7 +31,7 @@ final class ObjectIdPluginLibraryAttribute extends IntegerPluginLibraryAttribute
      * @param mixed $value
      * @return mixed
      */
-    protected function read_value(mixed $value) {
+    protected function read_value(mixed $value): mixed {
         return (int)$value;
     }
 
@@ -39,7 +39,7 @@ final class ObjectIdPluginLibraryAttribute extends IntegerPluginLibraryAttribute
      * Check and optimise stored value.
      * @return boolean result
      */
-    public function check_value() {
+    public function check_value(): bool {
         /* Force value as an integer */
         $this->value = (int)$this->value;
 

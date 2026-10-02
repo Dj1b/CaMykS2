@@ -3,10 +3,10 @@
  * @brief XML specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Apr 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -18,7 +18,7 @@
  * @param string $name
  * @return string
  */
-function xml_encode(mixed $data, string $name='xml') {
+function xml_encode(mixed $data, string $name='xml'): string {
     /* Initialise result */
     $xml = '';
 

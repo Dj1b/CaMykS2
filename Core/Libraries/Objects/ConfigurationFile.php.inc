@@ -3,10 +3,10 @@
  * @brief ConfigurationFile object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Mar 2020
- * @date Modification: Apr 2025
- * @copyright 2020 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,43 +21,43 @@ final class ConfigurationFile {
      * @var boolean $status
      * @brief Stores data is loaded status.
      */
-    private $status = false;
+    private bool $status = false;
 
     /**
      * @var string $file
      * @brief Configuration file to use.
      */
-    private $file = '';
+    private string $file = '';
 
     /**
      * @var string $source
      * @brief Configuration source.
      */
-    private $source = '';
+    private string $source = '';
 
     /**
      * @var string $mode
      * @brief Configuration file opening mode.
      */
-    private $mode = '';
+    private string $mode = '';
 
     /**
      * @var array $data
      * @brief Configuration data.
      */
-    private $data = array();
+    private array $data = array();
 
     /**
      * @var string $fileType
      * @brief Stores configuration file type
      */
-    private $fileType;
+    private string $fileType;
 
     /**
-     * @var object $configurationFile.
+     * @var File $configurationFile.
      * @brief CaMykS File object to access file.
      */
-    private $configurationFile;
+    private File $configurationFile;
 
     /**
      * Class constructor.
@@ -78,7 +78,7 @@ final class ConfigurationFile {
      * Load configuration file.
      * @return boolean success
      */
-    public function load() {
+    public function load(): bool {
         /* Load file */
         switch ($this->source) {
             case 'Engine': $this->load_engineFile(); break;
@@ -87,7 +87,7 @@ final class ConfigurationFile {
         }
 
         /* Check file availability */
-        if ($this->configurationFile->is_accessible('Read')) {
+        if (isset($this->configurationFile) and $this->configurationFile->is_accessible('Read')) {
             /* Load configuration data */
             switch($this->fileType) {
                 case 'JSON': $this->load_JSONData(); break;
@@ -106,7 +106,7 @@ final class ConfigurationFile {
      * Save configuration file.
      * @return boolean success
      */
-    public function save() {
+    public function save(): bool {
         /* Check file is loaded */
         if (!$this->status)
             return false;
@@ -128,7 +128,7 @@ final class ConfigurationFile {
      * Export data.
      * @return array
      */
-    public function export() {
+    public function export(): array {
         if (!$this->status)
             $this->load();
         return $this->data;
@@ -139,7 +139,7 @@ final class ConfigurationFile {
      * @param string $name
      * @return mixed
      */
-    public function value(string $name) {
+    public function value(string $name): mixed {
         if (!$this->status)
             $this->load();
         if (!isset($this->data[$name]))
@@ -153,7 +153,7 @@ final class ConfigurationFile {
      * @param mixed $value
      * @return void
      */
-    public function define(string $name, mixed $value) {
+    public function define(string $name, mixed $value): void {
         if (!$this->status)
             $this->load();
         $this->data[$name] = $value;
@@ -164,7 +164,7 @@ final class ConfigurationFile {
      * @param array $values
      * @return void
      */
-    public function merge(array $values) {
+    public function merge(array $values): void {
         if (!$this->status)
             $this->load();
         $this->data = array_merge($this->data, $values);
@@ -174,9 +174,9 @@ final class ConfigurationFile {
 
     /**
      * Load engine configuration file.
-     * @return b
+     * @return void
      */
-    private function load_engineFile() {
+    private function load_engineFile(): void {
         global $CaMykS;
 
         /* Load engine configuration file */
@@ -190,7 +190,7 @@ final class ConfigurationFile {
      * Load website configuration file.
      * @return void
      */
-    private function load_websiteFile() {
+    private function load_websiteFile(): void {
         global $CaMykS;
 
         /* Load website configuration file */
@@ -207,7 +207,7 @@ final class ConfigurationFile {
      * Load full path configuration file.
      * @return void
      */
-    private function load_fullPathFile() {
+    private function load_fullPathFile(): void {
         global $CaMykS;
 
         /* Load engine configuration file */
@@ -226,7 +226,7 @@ final class ConfigurationFile {
      * Load JSON data.
      * @return void
       */
-    private function load_JSONData() {
+    private function load_JSONData(): void {
         /* Load configuration data */
         $this->data = $this->configurationFile->get_JSONData(array());
     }
@@ -235,7 +235,7 @@ final class ConfigurationFile {
      * Load PHP data.
      * @return void
      */
-    private function load_PHPData() {
+    private function load_PHPData(): void {
         include $this->configurationFile->get_filePath();
 
         if (isset($configuration))
@@ -248,7 +248,7 @@ final class ConfigurationFile {
      * Save JSON data in configuration file.
      * @return boolean result
      */
-    private function save_JSONData() {
+    private function save_JSONData(): bool {
         global $CaMykS;
 
         /* Write configuration */
@@ -259,7 +259,7 @@ final class ConfigurationFile {
      * Save PHP data in configuration file.
      * @return boolean result
      */
-    private function save_PHPData() {
+    private function save_PHPData(): bool {
         $content = '<?php'."\n";
         $content .= '$configuration = ';
         $content .= var_export($this->data, true);

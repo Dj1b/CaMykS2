@@ -4,10 +4,10 @@
  * <br />Module to manage website configuration.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Jun 2021
- * @date Modification: Jun 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -36,7 +36,7 @@ final class SystemConfigurationManager extends AdminModule {
      * Return encoding values.
      * @return array
      */
-    public function get_encodingValues() {
+    public function get_encodingValues(): array {
         return array('UTF-8'=>'UTF-8');
     }
 
@@ -44,7 +44,7 @@ final class SystemConfigurationManager extends AdminModule {
      * Return CMS Signature values.
      * @return array
      */
-    public function get_displayCMSSignatureValues() {
+    public function get_displayCMSSignatureValues(): array {
         return array(
             0 => $this->get_locale('DisplayCMSSignature_Hidden'),
             1 => $this->get_locale('DisplayCMSSignature_Display'),
@@ -55,7 +55,7 @@ final class SystemConfigurationManager extends AdminModule {
      * Return available themes titles, compatible with admin mode.
      * @return array
      */
-    public function get_availableAdminThemesTitles() {
+    public function get_availableAdminThemesTitles(): array {
         global $CaMykS;
 
         /* Initialise result */
@@ -77,7 +77,7 @@ final class SystemConfigurationManager extends AdminModule {
      * Return available themes titles, compatible with visit mode.
      * @return array
      */
-    public function get_availableVisitThemesTitles() {
+    public function get_availableVisitThemesTitles(): array {
         global $CaMykS;
 
         /* Initialise result */
@@ -99,7 +99,7 @@ final class SystemConfigurationManager extends AdminModule {
      * Return available templates titles, compatible with visit mode.
      * @return array
      */
-    public function get_availableVisitTemplatesTitles() {
+    public function get_availableVisitTemplatesTitles(): array {
         global $CaMykS;
 
         /* Initialise result */
@@ -108,7 +108,7 @@ final class SystemConfigurationManager extends AdminModule {
         /* Load available templates from CMS */
         $templates = $CaMykS->get_availableTemplates();
 
-        /* Check themes that support visit mode */
+        /* Check template that are not dedicated to admin mode */
         foreach ($templates as $name => $template)
             if ($template->libraryName !== 'AdminPage')
                 $result[$name] = $name;

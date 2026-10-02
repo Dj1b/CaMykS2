@@ -3,10 +3,10 @@
  * @brief SimpleModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Apr 2025
- * @copyright 2022 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(CaMykS2\Module &$parent, int $id=0) {
+    public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 
@@ -37,7 +37,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * Return status values.
      * @return array
      */
-    public function get_statusValueList() {
+    public function get_statusValueList(): array {
         return array(
             1 => $this->get_locale('ObjectStatus_Disabled'),
             2 => $this->get_locale('ObjectStatus_Enabled'),
@@ -49,7 +49,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param array $params
      * @return array
      */
-    public function get_multiStatusValueList(array $params=array()) {
+    public function get_multiStatusValueList(array $params=array()): array {
         /* Check params */
         $params = array_merge(array('AddAll'=>false), $params);
 
@@ -73,7 +73,7 @@ class SimpleModuleLibrary extends ModuleLibrary {
      * @param integer $status
      * @return string
      */
-    public function get_statusTitle(?int $status=null) {
+    public function get_statusTitle(?int $status=null): string {
         if (is_null($status)) $status = $this->Status;
 
         $list = $this->get_statusValueList();

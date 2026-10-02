@@ -3,10 +3,10 @@
  * @brief CaMykS time zone(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation:  Mar 2021
- * @date Modification: Sep 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @warning This library is not loaded with CaMykS initialisation.
@@ -18,7 +18,7 @@
  * Return timezones data.
  * @return array
  */
-function timezone_getTimezonesData() {
+function timezone_getTimezonesData(): array {
     global $CaMykS;
 
     return $CaMykS->get_assetData('TimeZones');
@@ -29,7 +29,7 @@ function timezone_getTimezonesData() {
  * Return timezone locations data.
  * @return array
  */
-function timezone_getTimezoneLocationsData() {
+function timezone_getTimezoneLocationsData(): array {
     global $CaMykS;
 
     return $CaMykS->get_assetData('TimeZoneLocations');
@@ -42,7 +42,7 @@ function timezone_getTimezoneLocationsData() {
  * @param array $params
  * @return array
  */
-function timezone_getZoneTitles(array $params=array()) {
+function timezone_getZoneTitles(array $params=array()): array {
     /* Build default params */
     $defaultParams = array('Display'=>'Name', 'Type'=>'All');
 
@@ -75,7 +75,7 @@ function timezone_getZoneTitles(array $params=array()) {
  * @param array $params
  * @return array
  */
-function timezone_getLocationTitles(array $params=array()) {
+function timezone_getLocationTitles(array $params=array()): array {
     /* Build default params */
     $defaultParams = array('Region'=>'', 'Country'=>'', 'Sort'=>'Name', 'HideRegion'=>false, 'AddOffset'=>false, 'GroupByZone'=>false);
 
@@ -166,7 +166,7 @@ function timezone_getLocationTitles(array $params=array()) {
  * @param string $zone
  * @return string
  */
-function timezone_getLongName(string $zone) {
+function timezone_getLongName(string $zone): string {
     /* Load data file */
     $timezonesData = timezone_getTimezonesData();
 
@@ -183,7 +183,7 @@ function timezone_getLongName(string $zone) {
  * @param string $zone
  * @return string
  */
-function timezone_getOffsetText(string $zone) {
+function timezone_getOffsetText(string $zone): string {
     /* Load data file */
     $timezonesData = timezone_getTimezonesData();
 

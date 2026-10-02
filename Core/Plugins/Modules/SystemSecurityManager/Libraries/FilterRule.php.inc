@@ -3,10 +3,10 @@
  * @brief SystemSecurityManager admin module, filter rule library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre0
+ * @version 1.0pre1
  * @date Creation: Feb 2022
- * @date Modification: Feb 2022
- * @copyright 2022 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ final class SystemSecurityManagerFilterRule extends AdvancedModuleLibrary {
      * @param integer $id
      * @return void
      */
-    public function __construct(&$parent, $id=0) {
+    public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
         parent::__construct($parent);
 
@@ -52,7 +52,7 @@ final class SystemSecurityManagerFilterRule extends AdvancedModuleLibrary {
      * Return login identifier values.
      * @return array
      */
-    public function get_loginIdentifierList() {
+    public function get_loginIdentifierList(): array {
         return array(
             0 => $this->get_locale('FilterRulePermission_Deny'),
             1 => $this->get_locale('FilterRulePermission_Allow'),

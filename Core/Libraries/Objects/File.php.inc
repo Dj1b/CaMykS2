@@ -3,10 +3,10 @@
  * @brief CaMykS file object library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Nov 2019
- * @date Modification: Sep 2025
- * @copyright 2019 - 2025 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * @todo File icon collections.
@@ -22,55 +22,55 @@ final class File extends CaMykSLibrary {
      * @var string $file
      * @brief File name.
      */
-    private $file;
+    private string $file;
 
     /**
      * @var string $path
      * @brief File path.
      */
-    private $path;
+    private string $path;
 
     /**
      * @var string $mode
      * @brief File opening mode.
      */
-    private $mode;
+    private string $mode;
 
     /**
      * @var string $filePath
      * @brief File full path.
      */
-    private $filePath;
+    private string $filePath;
 
     /**
      * @var string $queryString
      * @brief File query string.
      */
-    private $queryString = '';
+    private string $queryString = '';
 
     /**
      * @var string $ext
      * @brief File extension.
      */
-    private $ext;
+    private string $ext;
 
     /**
      * @var array $mimes
      * @brief List of known mimes.
      */
-    private $mimes = null;
+    private ?array $mimes = null;
 
     /**
      * @var boolean $isAccessible
      * @brief Is file accessible.
      */
-    private $isAccessible = null;
+    private ?bool $isAccessible = null;
 
     /**
      * @var array $stats
      * @brief File statistics.
      */
-    private $stats = array(
+    private array $stats = array(
         'mime'      => null,
         'type'      => null,
         'size'      => null,
@@ -122,7 +122,7 @@ final class File extends CaMykSLibrary {
      * Define error code list.
      * @return void
      */
-    protected function define_errorCodes() {
+    protected function define_errorCodes(): void {
         $this->errorCodes = array(
             1 => 'FileDoesntExists',
             2 => 'FileIsntAccessible',
@@ -135,7 +135,7 @@ final class File extends CaMykSLibrary {
      * Is file readable.
      * @return boolean result
      */
-    public function is_readable() {
+    public function is_readable(): bool {
         if (!$this->is_accessible('Read'))
             return false;
         return is_readable($this->filePath);
@@ -145,7 +145,7 @@ final class File extends CaMykSLibrary {
      * Is file writable.
      * @return boolean result
      */
-    public function is_writable() {
+    public function is_writable(): bool {
         if (!$this->is_accessible('Write'))
             return false;
 
@@ -159,7 +159,7 @@ final class File extends CaMykSLibrary {
      * @param string $mode
      * @return boolean result
      */
-    public function is_accessible(string $mode='All') {
+    public function is_accessible(string $mode='All'): bool {
         if ($mode !== 'All' and $this->mode !== $mode)
             return false;
         return $this->isAccessible;
@@ -169,7 +169,7 @@ final class File extends CaMykSLibrary {
      * Is file a picture.
      * @return boolean result
      */
-    public function is_picture() {
+    public function is_picture(): bool {
         return ($this->get_genericType() === 'image');
     }
 
@@ -179,7 +179,7 @@ final class File extends CaMykSLibrary {
      * Return file name.
      * @return string
      */
-    public function get_name() {
+    public function get_fileName(): string|false {
         if (!$this->is_accessible())
             return false;
         return $this->file;
@@ -189,7 +189,7 @@ final class File extends CaMykSLibrary {
      * Return file path.
      * @return string
      */
-    public function get_path() {
+    public function get_path(): string|false {
         if (!$this->is_accessible())
             return false;
         return $this->path;
@@ -199,7 +199,7 @@ final class File extends CaMykSLibrary {
      * Return full file path.
      * @return string
      */
-    public function get_filePath() {
+    public function get_filePath(): string|false {
         if (!$this->is_accessible())
             return false;
         return $this->filePath;
@@ -209,7 +209,7 @@ final class File extends CaMykSLibrary {
      * Return querystring.
      * @return string
      */
-    public function get_queryString() {
+    public function get_queryString(): string|false {
         if (!$this->is_accessible())
             return false;
         return $this->queryString;
@@ -222,19 +222,23 @@ final class File extends CaMykSLibrary {
      * @param string $mode
      * @return void
      */
-    public function change_mode(string $mode) {
+    public function change_mode(string $mode): void {
         /* Check mode */
         $this->mode = ucwords(strtolower($mode));
         if (!in_array($this->mode, array('Read', 'Write', 'Detete')))
             $this->mode = 'Read';
 
         /* Check if file exists in read/delete mode */
-        if ($this->mode != 'Write' and ($this->isAccessible = file_exists($this->filePath)) == false)
-            return $this->add_error(1, '', __FILE__, __LINE__);
+        if ($this->mode != 'Write' and ($this->isAccessible = file_exists($this->filePath)) == false) {
+            $this->add_error(1, '', __FILE__, __LINE__);
+            return;
+        }
 
         /* Check if file is accessible in given mode */
-        if (($this->isAccessible = folder_checkPathAccessibility($this->filePath, $this->mode)) == false)
-            return $this->add_error(2, '', __FILE__, __LINE__);
+        if (($this->isAccessible = folder_checkPathAccessibility($this->filePath, $this->mode)) == false) {
+            $this->add_error(2, '', __FILE__, __LINE__);
+            return;
+        }
     }
 
 
@@ -244,7 +248,7 @@ final class File extends CaMykSLibrary {
      * Return mime.
      * @return string
      */
-    public function get_mime() {
+    public function get_mime(): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -259,7 +263,7 @@ final class File extends CaMykSLibrary {
      * Return generic type (image, audio, video, font, script, archive, document).
      * @return string
      */
-    public function get_genericType() {
+    public function get_genericType(): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -296,7 +300,7 @@ final class File extends CaMykSLibrary {
      * Return type.
      * @return string
      */
-    public function get_type() {
+    public function get_type(): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -322,7 +326,7 @@ final class File extends CaMykSLibrary {
      * @param array $params
      * @return string
      */
-    public function get_description(array $params=array()) {
+    public function get_description(array $params=array()): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -372,7 +376,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $URLMode
      * @return string
      */
-    public function get_iconURL(string $collection='', int $size=16, mixed $URLMode=false) {
+    public function get_iconURL(string $collection='', int $size=16, mixed $URLMode=false): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -426,7 +430,7 @@ final class File extends CaMykSLibrary {
      * @param array $imgParams
      * @return string
      */
-    public function get_iconTag(string $collection='', int $size=16, mixed $URLMode=false, array $imgParams=array()) {
+    public function get_iconTag(string $collection='', int $size=16, mixed $URLMode=false, array $imgParams=array()): string|false {
         /* Add source to image parameters */
         $imgParams['src'] = $this->get_iconURL($collection, $size, $URLMode);
 
@@ -446,7 +450,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $humanReadable
      * @return string
      */
-    public function get_size(mixed $humanReadable=false) {
+    public function get_size(mixed $humanReadable=false): mixed {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -466,7 +470,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $format
      * @return string
      */
-    public function get_humanReadableSize(mixed $format='Binary') {
+    public function get_humanReadableSize(mixed $format='Binary'): string|false {
         if (!$this->is_accessible('Read'))
             return false;
 
@@ -484,7 +488,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $rawOutput
      * @return string
      */
-    public function md5(bool $rawOutput=false) {
+    public function md5(bool $rawOutput=false): string|false {
         if (!$this->is_accessible('Read'))
             return false;
         return md5_file($this->filePath, $rawOutput);
@@ -495,7 +499,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $rawOutput
      * @return string
      */
-    public function crc32(bool $rawOutput=false) {
+    public function crc32(bool $rawOutput=false): string|int|false {
         if (!$this->is_accessible('Read'))
             return false;
         return hash_file('CRC32', $this->filePath, $rawOutput);
@@ -508,7 +512,7 @@ final class File extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function download(?string $title=null) {
+    public function download(?string $title=null): mixed {
         global $CaMykS;
 
         /* Check file is accessible */
@@ -541,7 +545,7 @@ final class File extends CaMykSLibrary {
      * @param string $title
      * @return void
      */
-    public function send(?string $title=null) {
+    public function send(?string $title=null): mixed {
         global $CaMykS;
 
         /* Check file is accessible */
@@ -574,7 +578,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $deleteOPCache
      * @return boolean success
      */
-    public function write(string $content, bool $deleteOPCache=false) {
+    public function write(string $content, bool $deleteOPCache=false): bool {
        if (!$this->is_accessible('Write'))
             return false;
 
@@ -596,7 +600,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $content
      * @return boolean success
      */
-    public function append(mixed $content) {
+    public function append(mixed $content): bool {
        if (!$this->is_accessible('Write'))
             return false;
 
@@ -620,7 +624,7 @@ final class File extends CaMykSLibrary {
      * Delete file.
      * @return boolean success
      */
-    public function delete() {
+    public function delete(): bool {
         if (!$this->is_accessible('Delete'))
             return false;
         return @unlink($this->filePath);
@@ -632,7 +636,7 @@ final class File extends CaMykSLibrary {
      * Return file content.
      * @return string
      */
-    public function get_contents() {
+    public function get_contents(): string|false {
         if (!$this->is_accessible())
             return false;
         return file_get_contents($this->filePath);
@@ -642,7 +646,7 @@ final class File extends CaMykSLibrary {
      * Return file content as base64 data.
      * @return string
      */
-    public function get_base64Data() {
+    public function get_base64Data(): string|false {
         if (!$this->is_accessible())
             return false;
         return 'data:'.$this->get_mime().';base64,'.base64_encode($this->get_contents());
@@ -653,7 +657,7 @@ final class File extends CaMykSLibrary {
      * @param mixed $default
      * @return array
      */
-    public function get_JSONData(mixed $default=null) {
+    public function get_JSONData(mixed $default=null): mixed {
         /* Load file content */
         $data = $this->get_contents();
 
@@ -680,7 +684,7 @@ final class File extends CaMykSLibrary {
      * @param boolean $deleteOPCache
      * @return boolean success
      */
-    public function write_JSONData(array $data=array(), bool $deleteOPCache=false) {
+    public function write_JSONData(array $data=array(), bool $deleteOPCache=false): bool {
         /* Encode data */
         $data = json_encode($data, JSON_PRETTY_PRINT);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -698,7 +702,7 @@ final class File extends CaMykSLibrary {
      * Return picture size as an array.
      * @return array
      */
-    public function get_pictureSize() {
+    public function get_pictureSize(): array|false {
         /* Check file is an picture */
         if (!$this->is_picture())
             return false;
@@ -714,7 +718,7 @@ final class File extends CaMykSLibrary {
      * Return picture width.
      * @return array
      */
-    public function get_pictureWidth() {
+    public function get_pictureWidth(): int|false {
         /* Check file is an picture */
         if (!$this->is_picture())
             return false;
@@ -730,7 +734,7 @@ final class File extends CaMykSLibrary {
      * Return picture height.
      * @return array
      */
-    public function get_pictureHeight() {
+    public function get_pictureHeight(): int|false {
         /* Check file is an picture */
         if (!$this->is_picture())
             return false;
@@ -748,7 +752,7 @@ final class File extends CaMykSLibrary {
      * Load mime information.
      * @return boolean success
      */
-    private function load_mimeInformation() {
+    private function load_mimeInformation(): bool {
         /* Check information are already loaded */
         if ($this->stats['mime'] != null)
             return true;
@@ -769,10 +773,10 @@ final class File extends CaMykSLibrary {
      * Load file statistics.
      * @return void
      */
-    private function load_statistics() {
+    private function load_statistics(): void {
         /* Check statistics are already loaded */
         if ($this->stats['size'] != null)
-            return true;
+            return;
 
         $stat = stat($this->filePath);
         $this->stats['size'] = $stat['size'];
@@ -786,10 +790,10 @@ final class File extends CaMykSLibrary {
      * Load picture information.
      * @return void
      */
-    private function load_pictureInformation() {
+    private function load_pictureInformation(): void {
         /* Check information are already loaded */
         if ($this->stats['width'] != null)
-            return true;
+            return;
 
         /* Load data */
         $data = getImageSize($this->filePath);
@@ -809,7 +813,7 @@ final class File extends CaMykSLibrary {
      * Load file mime from finfo method.
      * @return boolean success
      */
-    private function load_mimeInformationFromFinfo() {
+    private function load_mimeInformationFromFinfo(): bool {
         /* Check finfo is available */
         if (!class_exists('finfo'))
             return false;
@@ -837,7 +841,7 @@ final class File extends CaMykSLibrary {
      * Load file mime from PHP internal method.
      * @return boolean success
      */
-    private function load_mimeInformationFromMimeContentType() {
+    private function load_mimeInformationFromMimeContentType(): bool {
         /* Check php method is available */
         if (!function_exists('mime_content_type'))
             return false;
@@ -860,7 +864,7 @@ final class File extends CaMykSLibrary {
      * Load file mime from file extension.
      * @return boolean success
      */
-    private function load_mimeInformationFromExtension() {
+    private function load_mimeInformationFromExtension(): bool {
         global $CaMykS;
 
         /* Load for mimes list */
