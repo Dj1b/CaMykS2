@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre50
+ * @version 2.0pre51
  * @date Creation: Feb 2017
  * @date Modification: Oct 2026
  * @copyright 2017 - 2026 CaMykS Team
@@ -925,6 +925,7 @@ final class CaMykS {
         $this->load_library('HTMLForm', 'Objects');
         $this->load_library('HTMLFormInput', 'Objects');
         $this->load_library('HTMLPage', 'Objects');
+        $this->load_library('HTTPRequest', 'Objects');
         $this->load_library('LocalStorage', 'Objects');
         $this->load_library('Module', 'Objects');
         $this->load_library('Module/Admin', 'Objects');
