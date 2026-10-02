@@ -4,7 +4,7 @@
  * <br /> Developers can add their own steps in CaMykS running bench, or create their own bench.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -121,6 +121,34 @@ final class Bench extends CaMykSLibrary {
      */
     public function get_results(): array {
         return $this->results;
+    }
+
+    /**
+     * Return current full time.
+     * @return integer
+     */
+    public function get_fullTime(): int {
+        /* Check bench has not started */
+        if ($this->status == 'idle')
+            return 0;
+
+        /* Load start time */
+        $start = $this->bench[0]['time'];
+
+        /* Check bench is still running */
+        if ($this->status == 'running')
+            $stop = microtime(true);
+
+        /* Check check is already stopped */
+        elseif ($this->status == 'stopped') {
+            $stop = end($this->bench);
+            $stop = $stop['time'];
+
+        /* Check undefined status */
+        } else
+            return 0;
+
+        return $stop - $start;
     }
 
     /* Mark: Private methods */
