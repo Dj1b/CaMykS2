@@ -3,7 +3,7 @@
  * @brief String specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -68,6 +68,74 @@ function string_text2Html(string $string, ?string $encoding=null): string {
         case '':
     }
     return htmlentities($string);
+}
+
+/**
+ * Return unaccentued words list from html.
+ * @param string $string
+ * @param array $params
+ * @parblock - Available parameters are <br />
+ * \e string contenttype - \b text / \b html <br />
+ * \e string accents - \b replace / \b keep <br />
+ * \e string changecase - \b void / \b lower / \b upper <br />
+ * \e string keptchars - <br />
+ * \e integer minlength <br />
+ * @endparblock
+ * @return array
+ */
+function string_text2Words(string $string, array $params=array()): string {
+    /* default config */
+    $config = array('contenttype'=>'html', 'accents'=>'replace', 'changecase'=>'', 'keptchars'=>'', 'minlength'=>0);
+
+    /* merge config & params */
+    $params = array_merge($config, $params);
+
+    /* remove html tags */
+    $string = string_stripTags($string, ' ');
+
+    /* update case */
+    if ($params['changecase'] == 'lower')
+        $string = strtolower($string);
+    else if ($params['changecase'] == 'upper')
+        $string = strtoupper($string);
+
+    /* check text mode */
+    if ($params['contenttype'] == 'text')
+        $string = string_text2Html($string);
+
+    /* check html mode */
+    if ($params['contenttype'] == 'html' and $params['accents'] != 'replace')
+        $string = string_html2Text($string);
+
+    /* parse accents */
+    if ($params['accents'] == 'replace') {
+        $string = string_replaceEntityChars($string, array('lastreplace'=>' '));
+        $accentChars = '';
+    } else {
+        $accentChars = string_getAccentuedChars(array('listmode'=>'string', 'charmode'=>'text'));
+    }
+
+    /* set min length word regexp modifier */
+    if ($params['minlength']>2)
+        $length_modifier = '{'.$params['minlength'].',}';
+    else
+        $length_modifier = '+';
+
+    /* split on non-letter chars */
+    $count = preg_match_all('/\b[\w'.$accentChars.string_escape4Regex($params['keptchars']).']'.$length_modifier.'\b/', $string, $array);
+    $array = $array[0];
+
+    /* check html mode */
+    if ($params['contenttype'] == 'html' and $params['accents'] != 'replace') {
+        foreach ($array as $idx => $value) {
+            $array[$idx] = htmlentities($value);
+        }
+    } elseif ($params['contenttype'] == 'text') {
+        foreach ($array as $idx => $value) {
+            $array[$idx] = string_html2Text($value);
+        }
+    }
+    return $array;
 }
 
 /* Mark: Check methods */
@@ -230,7 +298,7 @@ function string_endsWith(string $haystack, mixed $needle, bool $caseSensitive=fa
  * @return string
  */
 function string_escape4Regex(string $string=''): string {
-  return preg_replace('/(\/|\(|\)|\.|\?|\$|\^|\[|\]|\*|\+|\{|\}|\,)/', '\\\$1', $string);
+    return preg_replace('/(\/|\(|\)|\.|\?|\$|\^|\[|\]|\*|\+|\{|\}|\,|\-)/', '\\\$1', $string);
 }
 
 ?>
