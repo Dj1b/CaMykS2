@@ -3,7 +3,7 @@
  * @brief PDO PostgreSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -125,11 +125,13 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database(string $encoding='UTF8'): bool {
-        return $this->execute_directQuery('CREATE DATABASE "'.$this->get_param('Name').'" ENCODING \''.$this->charsets[$encoding].'\';');
+    public function create_database(string $name='', string $charset='UTF8'): bool {
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'UTF8';
+        return $this->execute_directQuery('CREATE DATABASE "'.$dbName.'" ENCODING \''.$charsetVal.'\';');
     }
 
     /**
@@ -457,6 +459,30 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             return false;
         }
         return ($this->queryResources[$resourceName] !== false);
+    }
+
+    /**
+     * Return replace query using DbQuery builder (PostgreSQL ON CONFLICT syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        $partition = $query->get_insertPartition();
+        $conflictColumn = count($partition) > 0 ? '`'.$partition[0].'`' : '`id`';
+
+        $assignments = $query->get_updateAssignments();
+        $assignmentsSql = count($assignments) > 0 ?
+            $this->get_updateAssignments($assignments) :
+            $this->get_replaceAssignments($query);
+
+        return 'insert into '.
+            $this->get_tables($query->get_tables()).
+            $this->get_insertPartition($partition).
+            ' values '.
+            $this->get_insertValues($query->get_insertValues()).
+            ' on conflict ('.$conflictColumn.') do update set '.
+            $assignmentsSql.
+            ';';
     }
 
     /**

@@ -3,7 +3,7 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -42,6 +42,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
             case 'insert': return $this->execute_directQuery($this->get_builtInsertQuery($query), $resourceName);
             case 'update': return $this->execute_directQuery($this->get_builtUpdateQuery($query), $resourceName);
             case 'delete': return $this->execute_directQuery($this->get_builtDeleteQuery($query), $resourceName);
+            case 'replace': return $this->execute_directQuery($this->get_builtReplaceQuery($query), $resourceName);
         }
 
         /* Return default result */
@@ -107,6 +108,27 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
             $this->get_orderBy($query->get_orderBy()).
             $this->get_limits($query->get_limits()).
             ';';
+    }
+
+    /**
+     * Return replace query using DbQuery builder (default MySQL syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        $sql = 'insert into '.
+            $this->get_tables($query->get_tables()).
+            $this->get_insertPartition($query->get_insertPartition()).
+            ' values '.
+            $this->get_insertValues($query->get_insertValues());
+
+        $assignments = $query->get_updateAssignments();
+        if (count($assignments) > 0) {
+            $sql .= ' on duplicate key update '.$this->get_updateAssignments($assignments);
+        } else {
+            $sql .= ' on duplicate key update '.$this->get_replaceAssignments($query);
+        }
+        return $sql.';';
     }
 
     /* Mark: Execute built query generic sub methods */
@@ -414,6 +436,26 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
         return implode(',', $list);
     }
 
+    /**
+     * Return default assignments for replace query from insert partition and values.
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_replaceAssignments(DbQuery $query): string {
+        $partition = $query->get_insertPartition();
+        $values = $query->get_insertValues();
+        if (count($partition) === 0 or count($values) === 0)
+            return '';
+
+        $firstRow = $values[0];
+        $list = array();
+        foreach ($partition as $idx => $col) {
+            if (array_key_exists($idx, $firstRow))
+                $list[] = '`'.$col.'`='.$this->get_escapedValue($firstRow[$idx]);
+        }
+        return implode(',', $list);
+    }
+
     /* Mark: Specific tool methods */
 
     /**
@@ -421,7 +463,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @param mixed $value
      * @return string
      */
-    private function get_escapedValue($value): string {
+    protected function get_escapedValue($value): string {
         return '"'.$this->escape_string($value).'"';
     }
 }

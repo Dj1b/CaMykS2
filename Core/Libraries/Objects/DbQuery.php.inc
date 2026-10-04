@@ -3,7 +3,7 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -24,7 +24,7 @@ final class DbQuery extends CaMykSLibrary {
      * @var array $actionValues
      * @brief List of available actions.
      */
-    private array $actionValues = array('select', 'insert', 'update', 'delete');
+    private array $actionValues = array('select', 'insert', 'update', 'delete', 'replace');
 
     /**
      * @var array $itemsFunctions
@@ -504,8 +504,8 @@ final class DbQuery extends CaMykSLibrary {
      * @return boolean success
      */
     public function set_insertPartition(?array $partition=null): bool {
-        /* Check if query action is defined to insert */
-        if ($this->action != 'insert')
+        /* Check if query action is defined to insert or replace */
+        if (!in_array($this->action, array('insert', 'replace')))
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check partition */
@@ -533,8 +533,8 @@ final class DbQuery extends CaMykSLibrary {
      * @return boolean success
      */
      public function add_insertValues(array $values): bool {
-        /* Check if query action is defined to insert */
-        if ($this->action != 'insert')
+        /* Check if query action is defined to insert or replace */
+        if (!in_array($this->action, array('insert', 'replace')))
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check values */
@@ -579,8 +579,8 @@ final class DbQuery extends CaMykSLibrary {
       * @return boolean success
       */
      public function add_insertValuesList(array $list): bool {
-        /* Check if query action is defined to insert */
-        if ($this->action != 'insert')
+        /* Check if query action is defined to insert or replace */
+        if (!in_array($this->action, array('insert', 'replace')))
             return $this->add_error(31, $this->action, __FILE__, __LINE__);
 
         /* Check values */
@@ -613,8 +613,8 @@ final class DbQuery extends CaMykSLibrary {
      * @return boolean success
      */
     public function add_updateAssignment(?string $name=null, mixed $value=null): bool {
-        /* Check if query action is defined to update */
-        if ($this->action != 'update')
+        /* Check if query action is defined to update or replace */
+        if (!in_array($this->action, array('update', 'replace')))
             return $this->add_error(41, $this->action, __FILE__, __LINE__);
 
         /* Check name and value */

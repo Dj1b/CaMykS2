@@ -3,7 +3,7 @@
  * @brief PostgreSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -141,11 +141,13 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8'): bool {
-        $sql = 'CREATE DATABASE "'.$name.'" ENCODING \''.$this->charsets[$encoding].'\';';
+    public function create_database(string $name='', string $charset='UTF8'): bool {
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'UTF8';
+        $sql = 'CREATE DATABASE "'.$dbName.'" ENCODING \''.$charsetVal.'\';';
         return $this->execute_directQuery($sql);
     }
 
@@ -469,6 +471,30 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     }
 
     /**
+     * Return replace query using DbQuery builder (PostgreSQL ON CONFLICT syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        $partition = $query->get_insertPartition();
+        $conflictColumn = count($partition) > 0 ? '`'.$partition[0].'`' : '`id`';
+
+        $assignments = $query->get_updateAssignments();
+        $assignmentsSql = count($assignments) > 0 ?
+            $this->get_updateAssignments($assignments) :
+            $this->get_replaceAssignments($query);
+
+        return 'insert into '.
+            $this->get_tables($query->get_tables()).
+            $this->get_insertPartition($partition).
+            ' values '.
+            $this->get_insertValues($query->get_insertValues()).
+            ' on conflict ('.$conflictColumn.') do update set '.
+            $assignmentsSql.
+            ';';
+    }
+
+    /**
      * Execute direct queries.
      * @param string $queries
      * @param string $resourceName
@@ -602,6 +628,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function escape_string(string $string=''): string {
+        if (is_null($this->connection))
+            return addslashes($string);
         return pg_escape_string($this->connection, $string);
     }
 }

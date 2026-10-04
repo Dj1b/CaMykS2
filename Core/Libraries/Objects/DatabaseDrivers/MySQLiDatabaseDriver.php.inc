@@ -3,7 +3,7 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -129,11 +129,13 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database(string $encoding='UTF8'): bool {
-        return $this->execute_directQuery('create database `'.$this->get_param('Name').'` default character set '.$this->charsets[$encoding].';');
+    public function create_database(string $name='', string $charset='UTF8'): bool {
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'utf8mb4';
+        return $this->execute_directQuery('create database `'.$dbName.'` default character set '.$charsetVal.';');
     }
 
     /**
@@ -636,6 +638,8 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     public function escape_string(string $string=''): string {
+        if (is_null($this->connection))
+            return addslashes($string);
         return mysqli_real_escape_string($this->connection, $string);
     }
 

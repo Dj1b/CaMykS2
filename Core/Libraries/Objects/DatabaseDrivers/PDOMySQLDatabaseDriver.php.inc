@@ -3,7 +3,7 @@
  * @brief PDO MySQLi database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -134,11 +134,13 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8'): bool {
-        return $this->execute_directQuery('CREATE DATABASE `'.($name ?? $this->get_param('Name')).'` DEFAULT CHARACTER SET '.$this->charsets[$encoding].';');
+    public function create_database(string $name='', string $charset='UTF8'): bool {
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'utf8mb4';
+        return $this->execute_directQuery('CREATE DATABASE `'.$dbName.'` DEFAULT CHARACTER SET '.$charsetVal.';');
     }
 
     /**

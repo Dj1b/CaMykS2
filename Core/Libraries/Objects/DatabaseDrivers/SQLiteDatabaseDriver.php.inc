@@ -3,7 +3,7 @@
  * @brief SQLite database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -161,13 +161,14 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8'): bool {
+    public function create_database(string $name='', string $charset='UTF8'): bool {
         /* SQLite creates database file on connection */
         /* Just check if we can create the file */
-        $path = $this->get_fullDatabaseName($name);
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $path = $this->get_fullDatabaseName($dbName);
         if (file_exists($path))
             return true;
 
@@ -440,6 +441,20 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
     }
 
     /* Mark: Query methods */
+
+    /**
+     * Return replace query using DbQuery builder (SQLite native syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        return 'replace into '.
+            $this->get_tables($query->get_tables()).
+            $this->get_insertPartition($query->get_insertPartition()).
+            ' values '.
+            $this->get_insertValues($query->get_insertValues()).
+            ';';
+    }
 
     /**
      * Execute direct query.

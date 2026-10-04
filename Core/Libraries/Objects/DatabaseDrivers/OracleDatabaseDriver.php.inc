@@ -3,7 +3,7 @@
  * @brief Oracle database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -123,16 +123,17 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8'): bool {
+    public function create_database(string $name='', string $charset='UTF8'): bool {
         /* Creating a database in Oracle is a complex task usually done by DBA. */
         /* We'll assume we're creating a user/schema. */
-        $sql = 'CREATE USER "'.$name.'" IDENTIFIED BY "'.$this->get_param('Password').'";';
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $sql = 'CREATE USER "'.$dbName.'" IDENTIFIED BY "'.$this->get_param('Password').'";';
         if (!$this->execute_directQuery($sql))
             return false;
-        return $this->execute_directQuery('GRANT CONNECT, RESOURCE TO "'.$name.'";');
+        return $this->execute_directQuery('GRANT CONNECT, RESOURCE TO "'.$dbName.'";');
     }
 
     /**
@@ -392,6 +393,54 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
         if ($this->queryResources[$resourceName] === false)
             return false;
         return oci_execute($this->queryResources[$resourceName]);
+    }
+
+    /**
+     * Return replace query using DbQuery builder (Oracle MERGE syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        $tablesSql = $this->get_tables($query->get_tables());
+        $partition = $query->get_insertPartition();
+        $values = $query->get_insertValues();
+
+        if ($tablesSql === '' or count($partition) === 0 or count($values) === 0)
+            return '';
+
+        $firstRow = $values[0];
+        $keyCol = '`'.$partition[0].'`';
+
+        $usingVals = array();
+        foreach ($partition as $idx => $col) {
+            if (array_key_exists($idx, $firstRow))
+                $usingVals[] = $this->get_escapedValue($firstRow[$idx]).' AS `'.$col.'`';
+        }
+
+        $assignments = $query->get_updateAssignments();
+        if (count($assignments) > 0) {
+            $updateSql = $this->get_updateAssignments($assignments);
+        } else {
+            $updateList = array();
+            foreach ($partition as $idx => $col) {
+                if (array_key_exists($idx, $firstRow))
+                    $updateList[] = '`'.$col.'` = src.`'.$col.'`';
+            }
+            $updateSql = implode(',', $updateList);
+        }
+
+        $insertCols = array();
+        $insertVals = array();
+        foreach ($partition as $idx => $col) {
+            $insertCols[] = '`'.$col.'`';
+            $insertVals[] = 'src.`'.$col.'`';
+        }
+
+        return 'MERGE INTO '.$tablesSql.' tgt '.
+            'USING (SELECT '.implode(', ', $usingVals).' FROM dual) src '.
+            'ON (tgt.'.$keyCol.' = src.'.$keyCol.') '.
+            'WHEN MATCHED THEN UPDATE SET '.$updateSql.' '.
+            'WHEN NOT MATCHED THEN INSERT ('.implode(', ', $insertCols).') VALUES ('.implode(', ', $insertVals).');';
     }
 
     /**

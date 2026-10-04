@@ -3,7 +3,7 @@
  * @brief MSSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -123,11 +123,12 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * Create a database.
      * @param string $name
-     * @param string $encoding
+     * @param string $charset
      * @return boolean
      */
-    public function create_database($name, $encoding='UTF8'): bool {
-        $sql = 'CREATE DATABASE ['.$name.'];';
+    public function create_database(string $name='', string $charset='UTF8'): bool {
+        $dbName = $name !== '' ? $name : $this->get_param('Name');
+        $sql = 'CREATE DATABASE ['.$dbName.'];';
         return $this->execute_directQuery($sql);
     }
 
@@ -452,6 +453,54 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         $this->record_query($query);
         $this->queryResources[$resourceName] = sqlsrv_query($this->connection, $query);
         return ($this->queryResources[$resourceName] !== false);
+    }
+
+    /**
+     * Return replace query using DbQuery builder (MSSQL MERGE syntax).
+     * @param DbQuery $query
+     * @return string
+     */
+    protected function get_builtReplaceQuery(DbQuery $query): string {
+        $tablesSql = $this->get_tables($query->get_tables());
+        $partition = $query->get_insertPartition();
+        $values = $query->get_insertValues();
+
+        if ($tablesSql === '' or count($partition) === 0 or count($values) === 0)
+            return '';
+
+        $firstRow = $values[0];
+        $keyCol = '`'.$partition[0].'`';
+
+        $usingVals = array();
+        foreach ($partition as $idx => $col) {
+            if (array_key_exists($idx, $firstRow))
+                $usingVals[] = $this->get_escapedValue($firstRow[$idx]).' AS `'.$col.'`';
+        }
+
+        $assignments = $query->get_updateAssignments();
+        if (count($assignments) > 0) {
+            $updateSql = $this->get_updateAssignments($assignments);
+        } else {
+            $updateList = array();
+            foreach ($partition as $idx => $col) {
+                if (array_key_exists($idx, $firstRow))
+                    $updateList[] = '`'.$col.'` = src.`'.$col.'`';
+            }
+            $updateSql = implode(',', $updateList);
+        }
+
+        $insertCols = array();
+        $insertVals = array();
+        foreach ($partition as $idx => $col) {
+            $insertCols[] = '`'.$col.'`';
+            $insertVals[] = 'src.`'.$col.'`';
+        }
+
+        return 'MERGE '.$tablesSql.' WITH (HOLDLOCK) AS tgt '.
+            'USING (SELECT '.implode(', ', $usingVals).') AS src '.
+            'ON (tgt.'.$keyCol.' = src.'.$keyCol.') '.
+            'WHEN MATCHED THEN UPDATE SET '.$updateSql.' '.
+            'WHEN NOT MATCHED THEN INSERT ('.implode(', ', $insertCols).') VALUES ('.implode(', ', $insertVals).');';
     }
 
     /**

@@ -3,7 +3,7 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -129,10 +129,11 @@ abstract class DatabaseDriverInterface {
 
     /**
      * Create a database.
+     * @param string $name
      * @param string $charset
      * @return boolean
      */
-    abstract public function create_database(string $charset='UTF8'): bool;
+    abstract public function create_database(string $name='', string $charset='UTF8'): bool;
 
     /**
      * Dump database.
