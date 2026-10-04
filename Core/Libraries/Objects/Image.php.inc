@@ -3,7 +3,7 @@
  * @brief Image manipulating object
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Dec 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -55,7 +55,7 @@ final class Image extends CaMykSLibrary {
      * @var string $type
      * @brief Image type.
      */
-    private ?int $type = null;
+    private ?string $type = null;
 
     /**
      * @var integer $width
@@ -101,6 +101,19 @@ final class Image extends CaMykSLibrary {
         $this->load_image($source);
     }
 
+    /* Mark: Magic methods */
+
+    /**
+     * Makes some variables accessible in read-only
+     * @param string $variableName
+     * @return mixed
+     */
+    public function __get(string $variableName): mixed {
+        if (in_array($variableName, array('width', 'height', 'source', 'type', 'loaded', 'engine', 'resource', 'jpgQuality', 'transparentReplacement', 'hasTransparency')))
+            return $this->$variableName;
+        return null;
+    }
+
     /* Mark: Override CaMykSLibrary methods */
 
     /**
@@ -132,9 +145,9 @@ final class Image extends CaMykSLibrary {
 
         /* Check source value */
         if ($source == '')
-            return $this->add_error(3, $source, __FILE__, __LINE__);
+            return false;
 
-        if (string_isURL($source) === false) {
+        if (\string_isURL($source) === false) {
             /* Check local file */
             if (!file_exists($source))
                 return $this->add_error(3, $source, __FILE__, __LINE__);
@@ -209,10 +222,10 @@ final class Image extends CaMykSLibrary {
      * @param integer $width
      * @param integer $height
      * @param mixed $position
-     * @param string $bgColor (\#transp for transparent background)
+     * @param mixed $bgColor (\#transp or Color object for background)
      * @return boolean success
      */
-    public function crop(int $width, int $height, mixed $position='', string $bgColor='#FFFFFF'): bool {
+    public function crop(int $width, int $height, mixed $position='', mixed $bgColor='#FFFFFF'): bool {
         if (!$this->is_loaded()) return false;
         switch ($this->engine) {
             case 'gd':
@@ -353,6 +366,30 @@ final class Image extends CaMykSLibrary {
         return false;
     }
 
+    /**
+     * Replace a color in image with another.
+     * @param mixed $color1
+     * @param mixed $color2
+     * @return boolean success
+     */
+    public function replace_color(mixed $color1, mixed $color2): bool {
+        if (!$this->is_loaded()) return false;
+
+        $color1 = new Color($color1);
+        $color2 = new Color($color2);
+
+        /* Check colors */
+        if ($color1->is_identical($color2))
+            return true;
+
+        /* Execute action in selected engine */
+        switch ($this->engine) {
+            case 'gd':
+                return $this->_gd_replace_color($color1, $color2);
+        }
+        return false;
+    }
+
     /* Mark: Private methods */
 
     /**
@@ -365,11 +402,15 @@ final class Image extends CaMykSLibrary {
         $engine = strToLower($engine);
 
         /* Check provided engine */
-        if (in_array($engine, self::KNOWNENGINES)) {
+        if (!in_array($engine, self::KNOWNENGINES)) {
             /* Check favorite engine from configuration */
-            $engine = $this->get_configValue('Engine_PictureEditor');
-            if (!in_array($engine, self::KNOWNENGINES))
-                return $this->add_error(1, $engine, __FILE__, __LINE__);
+            $engine = (string)$this->get_engineConfigValue('Engine_PictureEditor');
+            if (!in_array($engine, self::KNOWNENGINES)) {
+                if (extension_loaded('gd'))
+                    $engine = 'gd';
+                else
+                    return $this->add_error(1, $engine, __FILE__, __LINE__);
+            }
         }
 
         /* Check engine extension */
@@ -395,7 +436,7 @@ final class Image extends CaMykSLibrary {
         $this->source = $source;
 
         /* Check file type */
-        $ext = file_getImageType($this->source);
+        $ext = \file_getImageType($this->source);
 
         /* Check image while loading sizes */
         if (!list($this->width, $this->height) = getimagesize($this->source)) return false;
@@ -432,7 +473,7 @@ final class Image extends CaMykSLibrary {
             $filename .= '.'.$type;
 
         /* Complete file path */
-        folder_completePath(dirname($filename));
+        \folder_completePath(dirname($filename));
 
         /* Save image */
         switch($type) {
@@ -452,7 +493,7 @@ final class Image extends CaMykSLibrary {
      * @param string $bgColor
      * @return boolean success
      */
-    private function _gd_crop(int $width, int $height, mixed $position, string $bgColor): bool {
+    private function _gd_crop(int $width, int $height, mixed $position, mixed $bgColor): bool {
         /* Check resource */
         if ($this->resource == null) return false;
 
@@ -460,12 +501,13 @@ final class Image extends CaMykSLibrary {
         $newSrc = imageCreateTrueColor($width, $height);
 
         /* Add background color */
-        if ($bgColor == '#transp' or $this->_gd_is_transparencyEnabled()) {
+        $colorObj = new Color($bgColor);
+        if ($colorObj->is_transparent() or $this->_gd_is_transparencyEnabled()) {
             imageAlphaBlending($newSrc, false);
             imageSaveAlpha($newSrc, true);
             imageFilledRectangle($newSrc, 0, 0, $width, $height, imageColorAllocateAlpha($newSrc, 255, 255, 255, 127));
         } else {
-            imageFill($newSrc, 0, 0, $this->_gd_getAllocatedColor($bgColor, $newSrc));
+            imageFill($newSrc, 0, 0, $this->_gd_getAllocatedColor($colorObj, $newSrc));
         }
 
         /* Set default values */
@@ -910,26 +952,72 @@ final class Image extends CaMykSLibrary {
     /* Mark: GD sub methods */
 
     /**
-     * Return allocated color for GD.
-     * @param string $color
-     * @param GDImage $resource
-     * @return resource
+     * Replace a color in image for GD engine.
+     * @param Color $color1
+     * @param Color $color2
+     * @return boolean success
      */
-    private function _gd_getAllocatedColor(string $color, mixed $resource=null): mixed {
+    private function _gd_replace_color(Color $color1, Color $color2): bool {
 
-        /* Check color */
-        if (preg_match('/#?([0-9A-Fa-f]{6})/', $color, $matches)) {
-            $color = $matches[1];
-            $r = hexdec(substr($color,0,2));
-            $g = hexdec(substr($color,2,2));
-            $b = hexdec(substr($color,4,2));
+        /* Check for transparency */
+        if ($color1->is_transparent()) {
+            /* Create a new picture at the same size */
+            $newSrc = imagecreatetruecolor($this->width, $this->height);
+
+            /* Apply color as background */
+            $color = $this->_gd_getAllocatedColor($color2, $newSrc);
+            imagefill($newSrc, 0, 0, $color);
+
+            /* Merge pictures */
+            imagecopyresampled($newSrc, $this->resource, 0, 0, 0, 0, $this->width, $this->height, $this->width, $this->height);
+
+            /* Save new picture as current resource */
+            imagedestroy($this->resource);
+            $this->resource = $newSrc;
+
+        } elseif ($color2->is_transparent()) {
+            /* Define color to replace */
+            $color = $this->_gd_getAllocatedColor($color1);
+
+            /* Replace color */
+            imagecolortransparent($this->resource, $color);
+
         } else {
-            $r = 255; $g = 255; $b = 255;
+
+            /* Define colors */
+            $c2 = $this->_gd_getAllocatedColor($color2);
+
+            /* Replace colors */
+            for ($i = 0; $i < $this->width; $i++) {
+                for ($j = 0; $j < $this->height; $j++) {
+                    $pixelColor = new Color(imagecolorsforindex($this->resource, imagecolorat($this->resource, $i, $j)));
+                    if ($color1->is_identical($pixelColor)) {
+                        imagesetpixel($this->resource, $i, $j, $c2);
+                    }
+                }
+            }
         }
 
-        if (is_null($resource))
-            return imagecolorallocate($this->resource, $r, $g, $b);
-        return imagecolorallocate($resource, $r, $g, $b);
+        /* Return success */
+        return true;
+    }
+
+    /**
+     * Return allocated color for GD.
+     * @param mixed $color
+     * @param mixed $resource
+     * @return mixed
+     */
+    private function _gd_getAllocatedColor(mixed $color, mixed $resource=null): mixed {
+        /* Check color */
+        if (!is_object($color) or get_class($color) !== 'CaMykS2\Color') {
+            $colorObj = new Color($color);
+        } else {
+            $colorObj = $color;
+        }
+
+        $targetResource = is_null($resource) ? $this->resource : $resource;
+        return imagecolorallocatealpha($targetResource, $colorObj->red, $colorObj->green, $colorObj->blue, $colorObj->alpha);
     }
 
     /**

@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -124,6 +124,8 @@ abstract class CaMykSLibrary {
      */
     public function get_engineConfigValue(string $name, mixed $default=null): mixed {
         global $CaMykS;
+        if (is_null($CaMykS))
+            return $default;
         return $CaMykS->get_configValue($name, $default);
     }
 
@@ -226,7 +228,8 @@ abstract class CaMykSLibrary {
         array_unshift($this->errorList, $errorId);
 
         /* Send error to CaMykS */
-        $CaMykS->trigger_error($this->libraryName, $errorId, $this->get_errorCode($errorId), $details, $file, $line, $isFatal);
+        if (!is_null($CaMykS))
+            $CaMykS->trigger_error($this->libraryName, $errorId, $this->get_errorCode($errorId), $details, $file, $line, $isFatal);
 
         /* Return false */
         return false;

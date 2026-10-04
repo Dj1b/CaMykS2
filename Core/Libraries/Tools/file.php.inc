@@ -3,7 +3,7 @@
  * @brief File specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -78,6 +78,30 @@ function file_search(string $pattern='*', string $rootPath='./', int $globFlags=
         $files = array_merge($files, file_search($pattern, $path, $globFlags));
     }
     return $files;
+}
+
+/**
+ * Return image type for given file.
+ * @param string $file
+ * @return string
+ */
+function file_getImageType(string $file): string {
+    /* Return image type from EXIF */
+    if (function_exists('exif_imagetype') and file_exists($file) and ($type = @exif_imagetype($file)) !== false) {
+        switch ($type) {
+            case 1: return 'gif';
+            case 2: return 'jpg';
+            case 3: return 'png';
+            case 5: return 'psd';
+            case 6: return 'bmp';
+            case 18: return 'webp';
+        }
+    }
+
+    /* By default return type from its extension */
+    if (preg_match('/\.([^.]{1,4})$/', $file, $ext))
+        return strtolower($ext[1]);
+    return '';
 }
 
 ?>

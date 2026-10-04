@@ -3,7 +3,7 @@
  * @brief Color object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jul 2024
  * @date Modification: Oct 2026
  * @copyright 2024 - 2026 CaMykS Team
@@ -117,18 +117,18 @@ final class Color {
 
         /* Check value is textual : black */
         if (strtolower($value) == 'black') {
-            $this->red      = 255;
-            $this->green    = 255;
-            $this->blue     = 255;
+            $this->red      = 0;
+            $this->green    = 0;
+            $this->blue     = 0;
             $this->alpha    = 0;
             return true;
         }
 
         /* Check value is textual : white */
         if (strtolower($value) == 'white') {
-            $this->red      = 0;
-            $this->green    = 0;
-            $this->blue     = 0;
+            $this->red      = 255;
+            $this->green    = 255;
+            $this->blue     = 255;
             $this->alpha    = 0;
             return true;
         }
