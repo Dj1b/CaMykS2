@@ -3,7 +3,7 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -58,11 +58,15 @@ abstract class CaMykSLibrary {
      * @return void
      */
     public function __construct(array $params=array()) {
-        /* Define library namespace */
-        $this->libraryNamespace = __NAMESPACE__;
-
-        /* Define library name */
-        $this->libraryName = preg_replace('#^'.$this->libraryNamespace.'\\\#', '', get_class($this));
+        /* Define library namespace and name */
+        $className = get_class($this);
+        if (($pos = strrpos($className, '\\')) !== false) {
+            $this->libraryNamespace = substr($className, 0, $pos);
+            $this->libraryName = substr($className, $pos + 1);
+        } else {
+            $this->libraryNamespace = '';
+            $this->libraryName = $className;
+        }
 
         /* Define initial parameters */
         $this->update_params($params);

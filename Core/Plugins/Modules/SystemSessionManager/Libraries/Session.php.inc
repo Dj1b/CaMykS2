@@ -3,7 +3,7 @@
  * @brief SystemSessionManager admin module, session library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jan 2022
  * @date Modification: Oct 2026
  * @copyright 2022 - 2026 CaMykS Team
@@ -11,12 +11,13 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Modules\SystemSessionManager;
+use CaMykS2\Language;
 
 /**
- * SystemSessionManagerSession class.
+ * Session class.
  */
-final class SystemSessionManagerSession extends ModuleLibrary {
+final class Session extends \CaMykS2\ModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent

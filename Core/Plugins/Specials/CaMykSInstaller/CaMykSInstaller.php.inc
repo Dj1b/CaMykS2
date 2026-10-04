@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: May 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -11,12 +11,19 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Specials\CaMykSInstaller;
+use CaMykS2\ConfigurationFile;
+use CaMykS2\DatabaseConnector;
+use CaMykS2\Error;
+use CaMykS2\File;
+use CaMykS2\HTMLForm;
+use CaMykS2\HTMLPage;
+use CaMykS2\LocalStorage;
 
 /**
  * CaMykSInstaller class.
  */
-final class CaMykSInstaller extends Plugin {
+final class CaMykSInstaller extends \CaMykS2\Plugin {
     /**
      * @var string $action
      * @brief Current action to execute in installer.

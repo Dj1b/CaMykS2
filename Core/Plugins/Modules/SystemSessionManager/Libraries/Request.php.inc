@@ -11,12 +11,13 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Modules\SystemSessionManager;
+use CaMykS2\Language;
 
 /**
  * SystemSessionManagerSession class.
  */
-final class SystemSessionManagerRequest extends ModuleLibrary {
+final class Request extends \CaMykS2\ModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent

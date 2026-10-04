@@ -4,7 +4,7 @@
  * <br />Module to manage security in the website.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jun 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemSecurityManager;
 /**
  * SystemSecurityManager class.
  */
-final class SystemSecurityManager extends AdminModule {
+final class SystemSecurityManager extends \CaMykS2\AdminModule {
     /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.

@@ -4,7 +4,7 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Dec 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -230,9 +230,13 @@ abstract class Module extends Plugin {
             }
 
             /* Compute library full name */
-            $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
+            $libraryFullName = $this->libraryNamespace.'\\'.$library;
 
-            /* Create and check full library name */
+            /* Check fallback to legacy prefixed class name */
+            if (!class_exists($libraryFullName))
+                $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
+
+            /* Check full library name */
             if (!class_exists($libraryFullName)) {
                 /* Log error */
                 /* @TODO */

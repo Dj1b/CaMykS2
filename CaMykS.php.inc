@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre52
+ * @version 2.0pre53
  * @date Creation: Feb 2017
  * @date Modification: Oct 2026
  * @copyright 2017 - 2026 CaMykS Team
@@ -1032,7 +1032,7 @@ final class CaMykS {
         $folder = ucwords(strtolower($type)).'s';
 
         /* Build full class name */
-        $class = 'CaMykS2\\'.$name;
+        $class = 'CaMykS2\\Plugins\\'.$folder.'\\'.$name.'\\'.$name;
 
         /* Check class is already loaded */
         if (!class_exists($class)) {

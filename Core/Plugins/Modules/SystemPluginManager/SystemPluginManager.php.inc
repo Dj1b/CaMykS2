@@ -4,7 +4,7 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: May 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemPluginManager;
 /**
  * SystemPluginManager class.
  */
-final class SystemPluginManager extends AdminModule {
+final class SystemPluginManager extends \CaMykS2\AdminModule {
     /**
      * @var array $libraries
      * @brief List of module internal libraries name.

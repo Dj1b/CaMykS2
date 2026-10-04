@@ -4,7 +4,7 @@
  * <br />Module to manage logs and errors.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemLogManager;
 /**
  * SystemLogManager class.
  */
-final class SystemLogManager extends AdminModule {
+final class SystemLogManager extends \CaMykS2\AdminModule {
 
     /**
      * Class constructor.

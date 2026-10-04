@@ -4,7 +4,7 @@
  * <br />Component to create media popup.
  * @details Plugin / Component Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -19,12 +19,11 @@
  * <br />- DOM Element: DOMElement:DOMElementId
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Components\MediaPopup;
 /**
  * MediaPopup class.
  */
-final class MediaPopup extends Component {
+final class MediaPopup extends \CaMykS2\Component {
     /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.

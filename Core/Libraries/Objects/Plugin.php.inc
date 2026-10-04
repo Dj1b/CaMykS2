@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre19
+ * @version 1.0pre20
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -370,7 +370,9 @@ abstract class Plugin extends CaMykSLibrary {
         $this->load_library('Configuration');
 
         /* Create and check full library name */
-        $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.'Configuration';
+        $libraryFullName = $this->libraryNamespace.'\\Configuration';
+        if (!class_exists($libraryFullName))
+            $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.'Configuration';
 
         if (!class_exists($libraryFullName)) {
             /* Log error */

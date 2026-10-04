@@ -3,7 +3,7 @@
  * @brief CaMykSStyle theme.
  * @details Plugin / Theme engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre4
+ * @version 1.0pre5
  * @date Creation: Feb 2020
  * @date Modification: Oct 2026
  * @copyright 2020 - 2026 CaMykS Team
@@ -11,12 +11,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Themes\CaMykSStyle;
 /**
  * CaMykSStyle class.
  */
-final class CaMykSStyle extends Theme {
+final class CaMykSStyle extends \CaMykS2\Theme {
 
     /**
      * @var array $params

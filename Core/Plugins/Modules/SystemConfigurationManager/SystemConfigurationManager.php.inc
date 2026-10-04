@@ -4,7 +4,7 @@
  * <br />Module to manage website configuration.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jun 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemConfigurationManager;
 /**
  * SystemConfigurationManager class.
  */
-final class SystemConfigurationManager extends AdminModule {
+final class SystemConfigurationManager extends \CaMykS2\AdminModule {
     /**
      * Class constructor.
      * @param string $location

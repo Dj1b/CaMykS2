@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemSessionManager;
 /**
  * SystemSessionManager class.
  */
-final class SystemSessionManager extends AdminModule {
+final class SystemSessionManager extends \CaMykS2\AdminModule {
     /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.

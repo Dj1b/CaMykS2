@@ -3,7 +3,7 @@
  * @brief SystemPluginManager admin module, plugin library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: May 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -11,12 +11,14 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Modules\SystemPluginManager;
+use CaMykS2\DbQuery;
+use CaMykS2\DbQueryWhereCondition;
 
 /**
- * SystemPluginManagerPlugin class.
+ * CaMykS2\Plugins\Modules\SystemPluginManager\Plugin class.
  */
-final class SystemPluginManagerPlugin extends SimpleModuleLibrary {
+final class Plugin extends \CaMykS2\SimpleModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent

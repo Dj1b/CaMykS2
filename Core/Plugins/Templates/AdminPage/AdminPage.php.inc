@@ -3,7 +3,7 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Feb 2020
  * @date Modification: Oct 2026
  * @copyright 2020 - 2026 CaMykS Team
@@ -11,12 +11,13 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Templates\AdminPage;
+use CaMykS2\HTMLPage;
 
 /**
  * AdminPage class.
  */
-final class AdminPage extends Template {
+final class AdminPage extends \CaMykS2\Template {
 
     /**
      * @var boolean $actionBarStatus

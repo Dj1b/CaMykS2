@@ -3,7 +3,7 @@
  * @brief SystemAdministratorManager admin module, group library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2022
  * @date Modification: Oct 2026
  * @copyright 2022 - 2026 CaMykS Team
@@ -11,12 +11,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemAdministratorManager;
 /**
- * SystemAdministratorManagerGroup class.
+ * Group class.
  */
-final class SystemAdministratorManagerGroup extends SimpleModuleLibrary {
+final class Group extends \CaMykS2\SimpleModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent

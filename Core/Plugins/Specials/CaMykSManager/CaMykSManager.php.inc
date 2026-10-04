@@ -3,7 +3,7 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre20
+ * @version 1.0pre21
  * @date Creation: Dec 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -11,12 +11,20 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
+namespace CaMykS2\Plugins\Specials\CaMykSManager;
+use CaMykS2\ConfigurationFile;
+use CaMykS2\DatabaseConnector;
+use CaMykS2\Error;
+use CaMykS2\File;
+use CaMykS2\Folder;
+use CaMykS2\HTMLForm;
+use CaMykS2\HTMLPage;
+use CaMykS2\Image;
 
 /**
  * CaMykSManager class.
  */
-final class CaMykSManager extends Plugin {
+final class CaMykSManager extends \CaMykS2\Plugin {
     /**
      * @var string $action
      * @brief Current action to execute in manager.

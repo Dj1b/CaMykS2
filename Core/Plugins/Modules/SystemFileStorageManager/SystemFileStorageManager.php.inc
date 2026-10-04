@@ -4,7 +4,7 @@
  * <br />Module to manage in-database local storage.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -12,12 +12,11 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2;
-
+namespace CaMykS2\Plugins\Modules\SystemFileStorageManager;
 /**
  * SystemFileStorageManager class.
  */
-final class SystemFileStorageManager extends ToolModule {
+final class SystemFileStorageManager extends \CaMykS2\ToolModule {
 
     /**
      * Class constructor.
