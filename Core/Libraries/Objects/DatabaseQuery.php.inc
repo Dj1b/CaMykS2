@@ -3,7 +3,7 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -17,9 +17,9 @@
 namespace CaMykS2;
 
 /**
- * DbQuery class.
+ * DatabaseQuery class.
  */
-final class DbQuery extends CaMykSLibrary {
+final class DatabaseQuery extends CaMykSLibrary {
     /**
      * @var array $actionValues
      * @brief List of available actions.
@@ -49,10 +49,16 @@ final class DbQuery extends CaMykSLibrary {
     private array $joinValues = array('inner', 'outer', 'left', 'right', 'cross', 'full', 'natural');
 
     /**
-     * @var array $orderBySpecialValues
-     * @brief Define order by special values.
+     * @var array $orderByTypeValues
+     * @brief Define order by type values.
      */
-    private array $orderBySpecialValues = array('rand');
+    private array $orderByTypeValues = array('column', 'field', 'rand', 'expression');
+
+    /**
+     * @var array $orderByNullsValues
+     * @brief Define order by nulls position values.
+     */
+    private array $orderByNullsValues = array('first', 'last');
 
     /**
      * @var array $orderByWayValues
@@ -171,7 +177,7 @@ final class DbQuery extends CaMykSLibrary {
             11 => 'TableIsNull',
             12 => 'MultiTableIsOnlySupportedBySelectCommand',
             13 => 'TableJoinUnknown',
-            14 => 'OrderBySpecialUnknown',
+            14 => 'OrderByTypeUnknown',
             15 => 'OrderByWayUnknown',
             16 => 'ColumnNameInvalid',
             17 => 'ColumnFunctionUnknown',
@@ -317,10 +323,10 @@ final class DbQuery extends CaMykSLibrary {
 
     /**
      * Add a where condition.
-     * @param DbQueryWhereCondition $condition
+     * @param DatabaseQueryWhereCondition $condition
      * @return boolean success
      */
-    public function add_whereCondition(DbQueryWhereCondition $condition): bool {
+    public function add_whereCondition(DatabaseQueryWhereCondition $condition): bool {
         /* Check condition */
 
         /* Add condition */
@@ -354,42 +360,127 @@ final class DbQuery extends CaMykSLibrary {
     }
 
     /**
-     * Add order by.
-     * @param string $value
+     * Add order by condition.
+     * @param mixed $value
      * @param string $way
      * @param string $table
      * @param string $type
+     * @param array $values
+     * @param string|null $nulls
      * @return boolean success
      */
-    public function add_orderBy(string $value, string $way='asc', string $table='', string $type='column'): bool {
-        /* Put some values in lower case */
+    public function add_orderBy(mixed $value, string $way='asc', string $table='', string $type='column', array $values=array(), ?string $nulls=null): bool {
+        /* Put string parameters in lower case */
         $way = strtolower($way);
         $type = strtolower($type);
+        if (!is_null($nulls))
+            $nulls = strtolower($nulls);
 
-        /* Check for null value */
-        if (is_null($value)) {
-            return $this->add_error(16, '', __FILE__, __LINE__);
-
-        /* Check for rand() value */
-        } elseif (strtolower($value) == 'rand()') {
+        /* Check for rand() string value */
+        if ($type === 'rand' || (is_string($value) && strtolower(trim($value)) === 'rand()')) {
+            $type = 'rand';
             $value = 'rand';
-            $type = 'special';
+            $way = '';
+        }
 
-        /* Check for special value */
-        } elseif ($type == 'special') {
-            $value = strtolower($value);
-            if (!in_array($value, $this->orderBySpecialValues))
-              return $this->add_error(14, $value, __FILE__, __LINE__);
+        /* Check type is valid */
+        if (!in_array($type, $this->orderByTypeValues))
+            return $this->add_error(14, $type, __FILE__, __LINE__);
 
-        /* Check way */
-        } elseif (!in_array($way, $this->orderByWayValues))
+        /* Check way is valid */
+        if ($way !== '' && !in_array($way, $this->orderByWayValues))
             return $this->add_error(15, $way, __FILE__, __LINE__);
 
-        /* Add value to list */
-        $this->orderBy[] = array('value'=>$value, 'way'=>$way, 'table'=>$table, 'type'=>$type);
+        /* Check nulls is valid */
+        if (!is_null($nulls) && !in_array($nulls, $this->orderByNullsValues))
+            return false;
 
-        /* Return success */
+        /* Auto-split table prefix if value is 'table.column' for column type */
+        if ($type === 'column' && is_string($value) && strpos($value, '.') !== false) {
+            $parts = explode('.', $value, 2);
+            $table = $parts[0];
+            $value = $parts[1];
+        }
+
+        /* Check value for non-rand types */
+        if ($type !== 'rand' && (is_null($value) || $value === ''))
+            return $this->add_error(16, '', __FILE__, __LINE__);
+
+        /* Add order element to list */
+        $this->orderBy[] = array(
+            'value'  => $value,
+            'way'    => $way,
+            'table'  => $table,
+            'type'   => $type,
+            'values' => $values,
+            'nulls'  => $nulls,
+        );
+
         return true;
+    }
+
+    /**
+     * Add column order by.
+     * @param string $column
+     * @param string $way
+     * @param string $table
+     * @param string|null $nulls
+     * @return boolean success
+     */
+    public function add_orderByColumn(string $column, string $way='asc', string $table='', ?string $nulls=null): bool {
+        return $this->add_orderBy($column, $way, $table, 'column', array(), $nulls);
+    }
+
+    /**
+     * Add multiple column order bys.
+     * @param array $columns
+     * @param string $table
+     * @return boolean success
+     */
+    public function add_orderByColumns(array $columns=array(), string $table=''): bool {
+        $result = true;
+        foreach ($columns as $field => $dir) {
+            if (is_int($field) && is_string($dir)) {
+                if (!$this->add_orderByColumn($dir, 'asc', $table))
+                    $result = false;
+            } else {
+                if (!$this->add_orderByColumn((string)$field, (string)$dir, $table))
+                    $result = false;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Add field value list order by.
+     * @param string $column
+     * @param array $values
+     * @param string $way
+     * @param string $table
+     * @param string|null $nulls
+     * @return boolean success
+     */
+    public function add_orderByField(string $column, array $values=array(), string $way='asc', string $table='', ?string $nulls=null): bool {
+        return $this->add_orderBy($column, $way, $table, 'field', $values, $nulls);
+    }
+
+    /**
+     * Add random order by.
+     * @return boolean success
+     */
+    public function add_orderByRand(): bool {
+        return $this->add_orderBy('rand', '', '', 'rand');
+    }
+
+    /**
+     * Add expression order by.
+     * @param string $expression
+     * @param string $way
+     * @param string|null $nulls
+     * @return boolean success
+     */
+    public function add_orderByExpression(string $expression, string $way='asc', ?string $nulls=null): bool {
+        return $this->add_orderBy($expression, $way, '', 'expression', array(), $nulls);
     }
 
     /**
@@ -934,9 +1025,9 @@ final class DbQuery extends CaMykSLibrary {
         foreach ($data as $o) {
             $o = trim($o);
 
-            /* Check special value */
-            if (preg_match('/^('.implode('|', $this->orderBySpecialValues).')\(\)$/', $o, $matches)) {
-                if (!$this->add_orderBy($matches[1], '', '', 'special'))
+            /* Check rand value */
+            if (preg_match('/^rand\(\)$/i', $o)) {
+                if (!$this->add_orderByRand())
                     return false;
                 continue;
             }

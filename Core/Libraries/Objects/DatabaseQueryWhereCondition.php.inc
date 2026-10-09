@@ -3,7 +3,7 @@
  * @brief CaMykS Database query, where condition builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2022
  * @date Modification: Oct 2026
  * @copyright 2022 - 2026 CaMykS Team
@@ -15,9 +15,9 @@
 namespace CaMykS2;
 
 /**
- * DbQueryWhereCondition class.
+ * DatabaseQueryWhereCondition class.
  */
-final class DbQueryWhereCondition {
+final class DatabaseQueryWhereCondition {
     /**
      * @var string $identifier
      * @brief Identifier name.

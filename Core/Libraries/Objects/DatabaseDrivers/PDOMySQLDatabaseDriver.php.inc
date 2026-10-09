@@ -3,7 +3,7 @@
  * @brief PDO MySQLi database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -315,7 +315,7 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                             $s .= 'LONGTEXT';
                     } elseif (is_string($data['Length'])) {
                         $data['Length'] = strtolower($data['Length']);
-                        if ($data['Length'] === 'small')
+                        if ($data['Length'] === 'tiny')
                             $s .= 'VARCHAR(255) DEFAULT "'.addslashes($data['Default']).'"';
                         elseif ($data['Length'] === 'medium')
                             $s .= 'MEDIUMTEXT';
@@ -487,6 +487,35 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function alter_table(array $params=array()): bool {
         // To be implemented
+    }
+
+    /* Mark: Query builder methods */
+
+    /**
+     * Return field value list order by expression (MySQL FIELD function).
+     * @param string $column
+     * @param array $values
+     * @param string $way
+     * @return string
+     */
+    protected function get_builtOrderByField(string $column, array $values=array(), string $way='asc'): string {
+        if (empty($values)) {
+            $s = $column;
+            if ($way != '')
+                $s .= ' '.$way;
+            return $s;
+        }
+
+        $escapedValues = array();
+        foreach ($values as $val) {
+            $escapedValues[] = $this->get_escapedValue($val);
+        }
+
+        $sql = 'field('.$column.', '.implode(', ', $escapedValues).')';
+        if ($way != '')
+            $sql .= ' '.$way;
+
+        return $sql;
     }
 
     /* Mark: Query methods */

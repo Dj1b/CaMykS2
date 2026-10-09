@@ -3,7 +3,7 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -209,12 +209,12 @@ abstract class DatabaseDriverInterface {
     abstract public function execute_directQuery(string $query, string $resourceName='Default'): mixed;
 
     /**
-     * Execute prepared query using DbQuery builder.
-     * @param DbQuery $query
+     * Execute prepared query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @param string $resourceName
      * @return mixed
      */
-    abstract public function execute_builtQuery(DbQuery $query, string $resourceName='Default'): mixed;
+    abstract public function execute_builtQuery(DatabaseQuery $query, string $resourceName='Default'): mixed;
 
     /**
      * Execute direct queries.

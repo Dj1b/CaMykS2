@@ -3,7 +3,7 @@
  * @brief Oracle database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -396,11 +396,11 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
     }
 
     /**
-     * Return replace query using DbQuery builder (Oracle MERGE syntax).
-     * @param DbQuery $query
+     * Return replace query using DatabaseQuery builder (Oracle MERGE syntax).
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtReplaceQuery(DbQuery $query): string {
+    protected function get_builtReplaceQuery(DatabaseQuery $query): string {
         $tablesSql = $this->get_tables($query->get_tables());
         $partition = $query->get_insertPartition();
         $values = $query->get_insertValues();

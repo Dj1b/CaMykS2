@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief DbQuery library french dictionary.
+ * @brief DatabaseQuery library french dictionary.
  * @details Engine / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0.0.1
+ * @version 1.0pre2
  * @date Creation: Nov 2019
- * @date Modification: Feb 2021
- * @copyright 2019 - 2021 CaMykS Team
+ * @date Modification: Oct 2026
+ * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,7 +17,7 @@ $locales = array(
     'Error_TableIsNull' => 'La table est ind&eacute;termin&eacute;e.',
     'Error_MultiTableIsOnlySupportedBySelectCommand' => 'Les tables multiples ne sont pas support&eacute;es pour cette action.',
     'Error_TableJoinUnknown' => 'Valeur de jointure inconnue.',
-    'Error_OrderBySpecialUnknown' => 'Valeur de tri sp&eacute;cial inconnue.',
+    'Error_OrderByTypeUnknown' => 'Valeur de type de tri inconnue.',
     'Error_OrderByWayUnknown' => 'Valeur de sens de tri inconnue.',
     'Error_ColumnNameInvalid' => 'Nom de colonne invalide.',
     'Error_ColumnFunctionUnknown' => 'Fonction inconnue.',

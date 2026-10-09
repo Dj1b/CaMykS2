@@ -3,7 +3,7 @@
  * @brief PostgreSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -471,11 +471,11 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     }
 
     /**
-     * Return replace query using DbQuery builder (PostgreSQL ON CONFLICT syntax).
-     * @param DbQuery $query
+     * Return replace query using DatabaseQuery builder (PostgreSQL ON CONFLICT syntax).
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtReplaceQuery(DbQuery $query): string {
+    protected function get_builtReplaceQuery(DatabaseQuery $query): string {
         $partition = $query->get_insertPartition();
         $conflictColumn = count($partition) > 0 ? '`'.$partition[0].'`' : '`id`';
 

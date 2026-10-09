@@ -3,13 +3,13 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * @todo Management of where conditions, enhancement of select items management, see DbQuery library.
+ * @todo Management of where conditions, enhancement of select items management, see DatabaseQuery library.
  */
 
 namespace CaMykS2;
@@ -31,12 +31,12 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     /* Mark: Override DatabaseDriverInterface methods */
 
     /**
-     * Execute prepared query using DbQuery builder.
-     * @param Object $query
+     * Execute prepared query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @param string $resourceName
      * @return boolean success
      */
-    public function execute_builtQuery(DbQuery $query, string $resourceName='Default'): bool {
+    public function execute_builtQuery(DatabaseQuery $query, string $resourceName='Default'): bool {
         switch ($query->get_action()) {
             case 'select': return $this->execute_directQuery($this->get_builtSelectQuery($query), $resourceName);
             case 'insert': return $this->execute_directQuery($this->get_builtInsertQuery($query), $resourceName);
@@ -52,11 +52,11 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     /* Mark: Execute built query methods */
 
     /**
-     * Return select query using DbQuery builder.
-     * @param Object $query
+     * Return select query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtSelectQuery(DbQuery $query): string {
+    protected function get_builtSelectQuery(DatabaseQuery $query): string {
         return  'select '.
             $this->get_selectItems($query->get_selectItems()).
             ' from '.
@@ -69,11 +69,11 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return insert query using DbQuery builder.
-     * @param Object $query
+     * Return insert query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtInsertQuery(DbQuery$query): string {
+    protected function get_builtInsertQuery(DatabaseQuery $query): string {
         return  'insert into '.
             $this->get_tables($query->get_tables()).
             $this->get_insertPartition($query->get_insertPartition()).
@@ -83,11 +83,11 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return update query using DbQuery builder.
-     * @param Object $query
+     * Return update query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtUpdateQuery(DbQuery $query): string {
+    protected function get_builtUpdateQuery(DatabaseQuery $query): string {
         return  'update '.
             $this->get_tables($query->get_tables()).
             ' set '.
@@ -97,11 +97,11 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return delete query using DbQuery builder.
-     * @param Object $query
+     * Return delete query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtDeleteQuery(DbQuery $query): string {
+    protected function get_builtDeleteQuery(DatabaseQuery $query): string {
         return  'delete from '.
             $this->get_tables($query->get_tables()).
             $this->get_whereConditions($query->get_whereConditions()).
@@ -111,11 +111,11 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return replace query using DbQuery builder (default MySQL syntax).
-     * @param DbQuery $query
+     * Return replace query using DatabaseQuery builder (default MySQL syntax).
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtReplaceQuery(DbQuery $query): string {
+    protected function get_builtReplaceQuery(DatabaseQuery $query): string {
         $sql = 'insert into '.
             $this->get_tables($query->get_tables()).
             $this->get_insertPartition($query->get_insertPartition()).
@@ -184,7 +184,7 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
         /* Read conditions list */
         foreach ($whereConditions['Conditions'] as $condition) {
-            if (is_object($condition) and get_class($condition) == 'CaMykS2\DbQueryWhereCondition')
+            if (is_object($condition) and get_class($condition) == 'CaMykS2\DatabaseQueryWhereCondition')
                 $conditions[] = $this->get_whereCondition($condition);
             elseif (is_array($condition))
                 $conditions[] = '('.$this->get_whereConditions($condition).')';
@@ -197,8 +197,8 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
     }
 
     /**
-     * Return query single where condition from DbQueryWhereCondition object.
-     * @param DbQueryWhereCondition $condition
+     * Return query single where condition from DatabaseQueryWhereCondition object.
+     * @param DatabaseQueryWhereCondition $condition
      * @return string
      */
     protected function get_whereCondition($condition): string {
@@ -288,29 +288,80 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      */
     protected function get_orderBy($orderBy): string {
         /* Check order by */
-        if (count($orderBy) == 0)
+        if (!is_array($orderBy) or count($orderBy) == 0)
             return '';
 
         /* Initialise result list */
         $list = array();
 
-        /* Read order by tables */
-        foreach($orderBy as $table) {
-            if ($table['type'] == 'special')
-                $s = $table['type'].'()';
-            else {
-                $s = '';
-                if ($table['value'] != '')
-                    $s .= $table['value'].'.';
-                $s .= $table['column'];
-                if ($table['way'] != '')
-                    $s .= ' '.$table['way'];
+        /* Read order by elements */
+        foreach ($orderBy as $item) {
+            $type = isset($item['type']) ? $item['type'] : 'column';
+            $way = isset($item['way']) ? $item['way'] : '';
+            $table = isset($item['table']) ? $item['table'] : '';
+            $value = isset($item['value']) ? $item['value'] : '';
+            $values = isset($item['values']) && is_array($item['values']) ? $item['values'] : array();
+            $nulls = isset($item['nulls']) ? $item['nulls'] : null;
+
+            /* Build column expression if applicable */
+            $col = ($table != '' ? '`'.$table.'`.`'.$value.'`' : '`'.$value.'`');
+
+            if ($type === 'rand') {
+                $s = 'rand()';
+            } elseif ($type === 'field') {
+                $s = $this->get_builtOrderByField($col, $values, $way);
+            } elseif ($type === 'expression') {
+                $s = $value;
+                if ($way != '')
+                    $s .= ' '.$way;
+            } else {
+                /* Default: column */
+                $s = $col;
+                if ($way != '')
+                    $s .= ' '.$way;
             }
+
+            /* Add NULLS positioning if requested */
+            if (!is_null($nulls)) {
+                if ($nulls === 'first')
+                    $s .= ' nulls first';
+                elseif ($nulls === 'last')
+                    $s .= ' nulls last';
+            }
+
             $list[] = $s;
         }
 
         /* Return computed result */
         return ' order by '.implode(',', $list);
+    }
+
+    /**
+     * Return field value list order by expression (ANSI SQL CASE standard).
+     * @param string $column
+     * @param array $values
+     * @param string $way
+     * @return string
+     */
+    protected function get_builtOrderByField(string $column, array $values=array(), string $way='asc'): string {
+        if (empty($values)) {
+            $s = $column;
+            if ($way != '')
+                $s .= ' '.$way;
+            return $s;
+        }
+
+        $cases = array();
+        $i = 1;
+        foreach ($values as $val) {
+            $cases[] = 'when '.$column.' = '.$this->get_escapedValue($val).' then '.$i++;
+        }
+
+        $sql = 'case '.implode(' ', $cases).' else '.$i.' end';
+        if ($way != '')
+            $sql .= ' '.$way;
+
+        return $sql;
     }
 
     /**
@@ -438,10 +489,10 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
 
     /**
      * Return default assignments for replace query from insert partition and values.
-     * @param DbQuery $query
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_replaceAssignments(DbQuery $query): string {
+    protected function get_replaceAssignments(DatabaseQuery $query): string {
         $partition = $query->get_insertPartition();
         $values = $query->get_insertValues();
         if (count($partition) === 0 or count($values) === 0)

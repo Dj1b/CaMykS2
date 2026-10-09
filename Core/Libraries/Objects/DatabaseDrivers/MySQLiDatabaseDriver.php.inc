@@ -3,7 +3,7 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -308,7 +308,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                             $s .= ' longtext';
                     } elseif (is_string($data['Length'])) {
                         $data['Length'] = strtolower($data['Length']);
-                        if ($data['Length'] === 'small')
+                        if ($data['Length'] === 'tiny')
                             $s .= 'varchar(255) default "'.addslashes($data['Default']).'"';
                         elseif ($data['Length'] === 'medium')
                             $s .= 'mediumtext';
@@ -496,6 +496,35 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      */
     public function alter_table(array $params=array()): bool {
 
+    }
+
+    /* Mark: Query builder methods */
+
+    /**
+     * Return field value list order by expression (MySQL FIELD function).
+     * @param string $column
+     * @param array $values
+     * @param string $way
+     * @return string
+     */
+    protected function get_builtOrderByField(string $column, array $values=array(), string $way='asc'): string {
+        if (empty($values)) {
+            $s = $column;
+            if ($way != '')
+                $s .= ' '.$way;
+            return $s;
+        }
+
+        $escapedValues = array();
+        foreach ($values as $val) {
+            $escapedValues[] = $this->get_escapedValue($val);
+        }
+
+        $sql = 'field('.$column.', '.implode(', ', $escapedValues).')';
+        if ($way != '')
+            $sql .= ' '.$way;
+
+        return $sql;
     }
 
     /* Mark: Query methods */

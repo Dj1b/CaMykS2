@@ -3,7 +3,7 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre12
+ * @version 1.0pre13
  * @date Creation: Oct 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -369,7 +369,7 @@ final class DatabaseConnector extends CaMykSLibrary {
     public function execute_query(mixed $query, string $resourceName='Default'): mixed {
         if (is_string($query))
             return $this->execute_directQuery($query, $resourceName);
-        if (is_object($query) and get_class($query) == 'CaMykS2\DbQuery')
+        if (is_object($query) and get_class($query) == 'CaMykS2\DatabaseQuery')
             return $this->execute_builtQuery($query, $resourceName);
         return false;
     }
@@ -385,12 +385,12 @@ final class DatabaseConnector extends CaMykSLibrary {
     }
 
     /**
-     * Execute prepared query using DbQuery builder.
-     * @param DbQuery $query
+     * Execute prepared query using DatabaseQuery builder.
+     * @param DatabaseQuery $query
      * @param string $resourceName
      * @return mixed
      */
-    public function execute_builtQuery(DbQuery $query, string $resourceName='Default'): mixed {
+    public function execute_builtQuery(DatabaseQuery $query, string $resourceName='Default'): mixed {
         return $this->connection->execute_builtQuery($query, $resourceName);
     }
 

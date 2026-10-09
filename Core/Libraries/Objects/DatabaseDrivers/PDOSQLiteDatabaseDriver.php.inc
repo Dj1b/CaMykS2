@@ -3,7 +3,7 @@
  * @brief PDO SQLite database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2026
  * @date Modification: Oct 2026
  * @copyright 2026 CaMykS Team
@@ -44,13 +44,16 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
 
     /**
      * Class constructor.
+     * @param DatabaseConnector $parent
+     * @return void
      */
-    public function __construct() {
+    public function __construct(DatabaseConnector &$parent) {
         global $CaMykS;
-        parent::__construct();
+        parent::__construct($parent);
 
         /* Loading database path */
-        $this->dbPath = $CaMykS->get_websiteDataFileFullPath('Databases');
+        if (isset($CaMykS) && method_exists($CaMykS, 'get_websiteDataFileFullPath'))
+            $this->dbPath = $CaMykS->get_websiteDataFileFullPath('Databases');
     }
 
     /**
@@ -435,11 +438,11 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
     }
 
     /**
-     * Return replace query using DbQuery builder (SQLite native syntax).
-     * @param DbQuery $query
+     * Return replace query using DatabaseQuery builder (SQLite native syntax).
+     * @param DatabaseQuery $query
      * @return string
      */
-    protected function get_builtReplaceQuery(DbQuery $query): string {
+    protected function get_builtReplaceQuery(DatabaseQuery $query): string {
         return 'replace into '.
             $this->get_tables($query->get_tables()).
             $this->get_insertPartition($query->get_insertPartition()).
@@ -613,8 +616,9 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return string
      */
     private function get_fullDatabaseName($dbName): string {
-        /* Check name : to do */
-
+        /* Check if dbName is an absolute path or special SQLite name */
+        if (!empty($dbName) && (str_starts_with($dbName, '/') || str_starts_with($dbName, ':')))
+            return $dbName;
 
         /* Return database path */
         return $this->dbPath.'/'.$dbName.$this->dbExtension;
