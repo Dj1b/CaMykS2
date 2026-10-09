@@ -1,12 +1,12 @@
 <?php
 /**
- * @brief AdvancedModuleLibrary object.
+ * @brief ManagedIdentifiableModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
- * @date Creation: Jan 2022
+ * @version 1.0pre1
+ * @date Creation: Oct 2026
  * @date Modification: Oct 2026
- * @copyright 2022 - 2026 CaMykS Team
+ * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -14,12 +14,12 @@
 namespace CaMykS2;
 
 /**
- * AdvancedModuleLibrary class.
+ * ManagedIdentifiableModuleLibrary class.
  */
-class AdvancedModuleLibrary extends SimpleModuleLibrary {
+class ManagedIdentifiableModuleLibrary extends ManagedModuleLibrary {
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param Module $parent
      * @param integer $id
      * @return void
      */
@@ -27,12 +27,8 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
         /* Execute parent construct */
         parent::__construct($parent, $id);
 
-        /* Advanced module library attributes */
-        $this->define_databaseAttribute('UniqueId',         'UniqueId', '', array());
-        $this->define_databaseAttribute('CreationUser',     'ObjectId', 0);
-        $this->define_databaseAttribute('CreationDate',     'Date',     true);
-        $this->define_databaseAttribute('LastEditionUser',  'ObjectId', 0);
-        $this->define_databaseAttribute('LastEditionDate',  'Date',     true);
+        /* Managed identifiable module library attributes */
+        $this->define_databaseAttribute('UniqueId', 'UniqueId', '', array());
     }
 
     /* Mark: Override ModuleLibrary methods */
@@ -49,20 +45,15 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
         if (!parent::check_data(true))
             return false;
 
-        /* Check advanced module library attributes */
+        /* Check managed identifiable module library attributes */
         if ($this->objectId > 0) {
             /* Object is updated */
             $this->UniqueId = $this->previousVersion->UniqueId;
-            $this->CreationUser = $this->previousVersion->CreationUser;
-            $this->CreationDate = $this->previousVersion->CreationDate;
 
         } else {
             /* Object is created */
-            /* $this->CreationUser = $CaMykS->currentSession->AdminCurrentUser; */
-            $this->CreationDate = time();
+            /* $this->UniqueId = $this->get_newUniqueId(); */
         }
-        /* $this->LastEditionUser = $CaMykS->currentSession->AdminCurrentUser; */
-        $this->LastEditionDate = time();
 
         /* Return data is conform */
         return true;
@@ -93,7 +84,7 @@ class AdvancedModuleLibrary extends SimpleModuleLibrary {
             return false;
 
         /* Build query to load object */
-        $query = new DbQuery(array());
+        $query = new DatabaseQuery(array());
 
         /* Execute query */
         if (!$this->execute_DBBuiltQuery($query))

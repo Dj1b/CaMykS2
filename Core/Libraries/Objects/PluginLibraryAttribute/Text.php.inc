@@ -49,25 +49,38 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
      * @return boolean result
      */
     public function check_value(): bool {
-        /* Check tags stripping */
-        if ($this->params['StripHTMLTags']) {
-            $this->value = strip_tags($value, '<br>');
-            $this->value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $this->value);
+        if ($this->isLocalised && is_array($this->value)) {
+            foreach ($this->value as $lang => $value) {
+                $value = is_array($value) ? (string)reset($value) : (string)$value;
+                if ($this->params['StripHTMLTags']) {
+                    $value = strip_tags($value, '<br>');
+                    $value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value);
+                } else {
+                    if ($this->params['StripPHPTags'])
+                        $value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $value);
+                    if ($this->params['StripJSTags'])
+                        $value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $value);
+                }
+                if ($this->params['AutoTrim'])
+                    $value = trim($value);
+                $this->value[$lang] = substr($value, 0, $this->get_realMaxLength());
+            }
         } else {
-            if ($this->params['StripPHPTags'])
-                $this->value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $this->value);
-            if ($this->params['StripJSTags'])
-                $this->value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $this->value);
+            $value = (string)$this->value;
+            if ($this->params['StripHTMLTags']) {
+                $value = strip_tags($value, '<br>');
+                $value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value);
+            } else {
+                if ($this->params['StripPHPTags'])
+                    $value = preg_replace(array('/<\?[^\?>]*\?>/', '/<\?/', '/<qss[^>]*>/', '/<qss/'), '', $value);
+                if ($this->params['StripJSTags'])
+                    $value = preg_replace(array('/<script[^>]*>[^<]<\/script>/', '/<script/'), '', $value);
+            }
+            if ($this->params['AutoTrim'])
+                $value = trim($value);
+            $this->value = substr($value, 0, $this->get_realMaxLength());
         }
 
-        /* Check autotrim */
-        if ($this->params['AutoTrim'])
-            $this->value = trim($this->value);
-
-        /* Check length */
-        $this->value = substr($value, 0, $this->params['Length']);
-
-        /* Return value is conform */
         return true;
     }
 
@@ -83,12 +96,38 @@ class TextPluginLibraryAttribute extends PluginLibraryAttribute {
             'IsUnique'  => $this->params['IsUnique'],
 
             /* Text settings */
-            'Length'    => $this->params['Length'],
+            'Length'    => $this->params['Length'], /* 0-255|Tiny, 65535|Small, 16777215|Medium, 4294967295|Long  */
 
             /* Primary key and index settings */
             'IndexName'     => $this->params['IndexName'],
             'IndexLength'   => $this->params['IndexLength'],
         );
+    }
+
+    /**
+     * Return real maximum string length from parameters.
+     * @return integer
+     */
+    public function get_realMaxLength(): int {
+        if (is_int($this->params['Length'])) {
+            if ($this->params['Length'] <= 256)
+                return $this->params['Length'];
+            elseif ($this->params['Length'] <= 65535)
+                return 65535;
+            elseif ($this->params['Length'] <= 16777215)
+                return 16777215;
+            else
+                return 4294967295;
+        } elseif (is_string($this->params['Length'])) {
+            if ($this->params['Length'] === 'Tiny')
+                return 256;
+            elseif ($this->params['Length'] === 'Small')
+                return 65535;
+            elseif ($this->params['Length'] === 'Medium')
+                return 16777215;
+            elseif ($this->params['Length'] === 'Long')
+                return 4294967295;
+        }
     }
 }
 ?>

@@ -3,7 +3,7 @@
  * @brief CaMykS error library, initiated by ErrorHandler.
  * @details Engine / Object Library
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -72,6 +72,12 @@ final class Error {
     private array $backtrace;
 
     /**
+     * @var integer $level
+     * @brief Error level (default 3: Error).
+     */
+    private int $level = 3;
+
+    /**
      * Object constructor.
      * @param string $origin
      * @param string $type
@@ -81,9 +87,10 @@ final class Error {
      * @param string $message
      * @param string $details
      * @param array $backtrace
+     * @param integer $level
      * @return void
      */
-    public function __construct(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message='', string $details='', array $backtrace=array()) {
+    public function __construct(string $origin, string $type, int $code=0, string $file='', int $line=0, string $message='', string $details='', array $backtrace=array(), int $level=3) {
         $this->origin = $origin;
         $this->type = $type;
         $this->code = $code;
@@ -92,6 +99,20 @@ final class Error {
         $this->message = trim($message);
         $this->details = trim($details);
         $this->backtrace = $backtrace;
+        $this->level = $level;
+    }
+
+    /* Mark: Magic methods */
+
+    /**
+     * Read property value as variable.
+     * @param string $name
+     * @return mixed
+     */
+    public function __get(string $name): mixed {
+        if (isset($this->$name))
+            return $this->$name;
+        return null;
     }
 
     /* Mark: Data related methods */

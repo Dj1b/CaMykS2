@@ -141,7 +141,7 @@ final class ErrorHandler extends CaMykSLibrary {
         foreach ($this->errors as $error) {
             if ($error->is_similar($origin, $type, $code, $file, $line, $message)) {
                 $error->update_count();
-                return null;
+                return $error;
             }
         }
 
@@ -183,6 +183,8 @@ final class ErrorHandler extends CaMykSLibrary {
             case 'html': return $this->export_toHTML();
             case 'none': return null;
             case 'auto': default:
+                if (PHP_SAPI === 'cli')
+                    return null;
                 if ($CaMykS->get_configValue('Website_Status') == 1)
                     return $this->export('logs');
                 else

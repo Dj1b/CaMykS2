@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre20
+ * @version 1.0pre21
  * @date Creation: Nov 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -288,11 +288,11 @@ abstract class Plugin extends CaMykSLibrary {
         }
 
         /* Define plugin full path */
-        switch ($this->pluginLocation) {
-            case 'Shared'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath($this->pluginPath); break;
-            case 'System'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginPath); break;
-            case 'Website'  : $this->pluginFullPath = $CaMykS->get_websiteFileFullPath($this->pluginPath); break;
-        }
+            switch ($this->pluginLocation) {
+                case 'Shared'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath($this->pluginPath); break;
+                case 'System'   : $this->pluginFullPath = $CaMykS->get_engineFileFullPath('Core/'.$this->pluginPath); break;
+                case 'Website'  : $this->pluginFullPath = $CaMykS->get_websiteFileFullPath($this->pluginPath); break;
+            }
     }
 
     /**
@@ -336,11 +336,15 @@ abstract class Plugin extends CaMykSLibrary {
      * @param string $library
      * @return boolean success
      */
-    public function load_library(string $library=''): bool {
+    protected function load_library(string $library=''): bool {
         global $CaMykS;
 
+        /* ensure plugin full path is defined */
+        if (!isset($this->pluginFullPath))
+            $this->define_locationAndPath();
+
         /* build file path */
-        $filePath = $this->pluginFullPath.'/Libraries/'.$library.CAMYKS_LIBRARYEXTENSION;
+        $filePath = $this->pluginFullPath.'/Libraries/'.str_replace('\\', '/', $library).CAMYKS_LIBRARYEXTENSION;
 
         /* load file if exists */
         if (file_exists($filePath))
@@ -419,7 +423,7 @@ abstract class Plugin extends CaMykSLibrary {
         if ($this->has_configuration()) {
             /* Load configuration if required */
             if ($this->configuration === null)
-                $this->configuration->load();
+                $this->load_configuration();
 
             /* Load configuration */
             if (is_null($language))
@@ -613,6 +617,26 @@ abstract class Plugin extends CaMykSLibrary {
             return false;
         require $filePath;
         return true;
+    }
+
+    /**
+     * Return data file path.
+     * @param string $filePath
+     * @return string
+     */
+    public function get_dataFilePath(string $filePath): string {
+        global $CaMykS;
+        return $CaMykS->get_websiteDataFileFullPath('/'.$this->libraryName.'/'.$filePath);
+    }
+
+    /**
+     * Create data file path.
+     * @param string $filePath
+     * @return boolean success
+     */
+    public function create_dataFilePath(string $filePath): bool {
+        global $CaMykS;
+        return $CaMykS->create_websiteDataFileFullPath('/'.$this->libraryName.'/'.$filePath);
     }
 
     /* Mark: Layout related methods */

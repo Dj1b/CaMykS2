@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Jan 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -84,6 +84,52 @@ abstract class PluginLibrary extends CaMykSLibrary {
     public function __set(string $name, mixed $value): void {
         if (isset($this->libraryAttributes[$name]))
             $this->libraryAttributes[$name]->set_value($value);
+    }
+
+    /**
+     * Check attribute exists.
+     * @param string $name
+     * @return boolean
+     */
+    public function __isset(string $name): bool {
+        return isset($this->libraryAttributes[$name]);
+    }
+
+    /* Mark: Attribute helper methods */
+
+    /**
+     * Return library attribute object.
+     * @param string $name
+     * @return PluginLibraryAttribute|false
+     */
+    public function get_attribute(string $name): PluginLibraryAttribute|false {
+        if (isset($this->libraryAttributes[$name]))
+            return $this->libraryAttributes[$name];
+        return false;
+    }
+
+    /**
+     * Return library attribute parameter.
+     * @param string $attribute
+     * @param string $param
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_attributeParam(string $attribute, string $param, mixed $default=null): mixed {
+        if (isset($this->libraryAttributes[$attribute]))
+            return $this->libraryAttributes[$attribute]->get_param($param, $default);
+        return $default;
+    }
+
+    /**
+     * Return library attribute parameters.
+     * @param string $attribute
+     * @return array
+     */
+    public function get_attributeParams(string $attribute): array {
+        if (isset($this->libraryAttributes[$attribute]))
+            return $this->libraryAttributes[$attribute]->get_params();
+        return array();
     }
 
     /* Mark: Override CaMykSLibrary methods */
@@ -247,6 +293,10 @@ abstract class PluginLibrary extends CaMykSLibrary {
         /* Build attribute type */
         $attributeType = $this->libraryNamespace.'\\'.$type.'PluginLibraryAttribute';
 
+        /* Check core fallback type */
+        if (!class_exists($attributeType))
+            $attributeType = 'CaMykS2\\'.$type.'PluginLibraryAttribute';
+
         /* Check type */
         if (!class_exists($attributeType)) {
             $this->add_error(1, 'Unknown attribute type '.$type, __FILE__, __LINE__);
@@ -325,6 +375,24 @@ abstract class PluginLibrary extends CaMykSLibrary {
      */
     public function get_configValue(string $name, ?string $language=null, mixed $default=null): mixed {
         return $this->libraryParent->get_configValue($name, $language, $default);
+    }
+
+    /**
+     * Return data file path.
+     * @param string $fileName
+     * @return string
+     */
+    public function get_dataFilePath(string $fileName=''): string {
+        return $this->libraryParent->get_dataFilePath($fileName);
+    }
+
+    /**
+     * Create data file path.
+     * @param string $fileName
+     * @return boolean success
+     */
+    public function create_dataFilePath(string $fileName): bool {
+        return $this->libraryParent->create_dataFilePath($fileName);
     }
 }
 ?>

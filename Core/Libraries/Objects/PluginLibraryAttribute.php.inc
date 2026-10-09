@@ -4,7 +4,7 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Jan 2021
  * @date Modification: Oct 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -14,7 +14,7 @@
 
 namespace CaMykS2;
 
-define('ATTRIBUTE_FULLNAME_SEPARATOR', '_');
+define('CAMYKS_ATTRIBUTE_FULLNAME_SEPARATOR', '_');
 
 /**
  * PluginLibraryAttribute class.
@@ -105,10 +105,12 @@ abstract class PluginLibraryAttribute {
 
         if ($this->isLocalised) {
             if (is_null($language))
-                $language = $CaMykS->get_currentLanguage();
+                $language = $this->get_currentLanguage();
             if (isset($this->value[(string)$language]))
                 return $this->value[(string)$language];
-            return null;
+            if (is_array($this->value) && !empty($this->value))
+                return reset($this->value);
+            return $this->defaultValue;
         }
         return $this->value;
     }
@@ -123,12 +125,23 @@ abstract class PluginLibraryAttribute {
         global $CaMykS;
 
         if ($this->isLocalised) {
+            if (!is_array($this->value))
+                $this->value = array();
             if (is_null($language))
-                $language = $CaMykS->get_currentLanguage();
-            if (isset($this->value[(string)$language]))
-                $this->value[(string)$language] = $value;
+                $language = $this->get_currentLanguage();
+            $this->value[(string)$language] = $value;
+        } else {
+            $this->value = $value;
         }
-        $this->value = $value;
+    }
+
+    /**
+     * Return current language string.
+     * @return string
+     */
+    protected function get_currentLanguage(): string {
+        global $CaMykS;
+        return (string)$CaMykS->get_currentLanguageValue();
     }
 
     /**
@@ -138,7 +151,10 @@ abstract class PluginLibraryAttribute {
     public function initialise(): void {
         if ($this->isLocalised) {
             $this->value = array();
-            foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
+            $languages = $this->get_configValue('Admin_EditionLanguages', null, array(CAMYKS_DEFAULTLANGUAGE));
+            if (!is_array($languages))
+                $languages = array(CAMYKS_DEFAULTLANGUAGE);
+            foreach ($languages as $language) {
                 $this->value[(string)$language] = $this->get_defaultValue();
             }
         } else {
@@ -153,6 +169,8 @@ abstract class PluginLibraryAttribute {
      */
     public function load_fromSave(array $array=array()): void {
         if ($this->isLocalised) {
+            if (!is_array($this->value))
+                $this->value = array();
             foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
                 if (isset($array[$this->get_fullName($language)]))
                     $this->value[(string)$language] = $this->read_valueFromSave($array[$this->get_fullName($language)]);
@@ -308,14 +326,47 @@ abstract class PluginLibraryAttribute {
 
         /* Check for prefix */
         if (!is_null($prefix))
-            $name = $prefix.ATTRIBUTE_FULLNAME_SEPARATOR.$name;
+            $name = $prefix.CAMYKS_ATTRIBUTE_FULLNAME_SEPARATOR.$name;
 
         /* Check for language */
         if (!is_null($language))
-            $name .= ATTRIBUTE_FULLNAME_SEPARATOR.$language;
+            $name .= CAMYKS_ATTRIBUTE_FULLNAME_SEPARATOR.$language;
 
         /* Return built name */
         return $name;
+    }
+
+    /**
+     * Return configuration value.
+     * @param string $name
+     * @param string $language
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_configValue(string $name, ?string $language=null, mixed $default=null): mixed {
+        if (method_exists($this->libraryParent, 'get_configValue'))
+            return $this->libraryParent->get_configValue($name, $language, $default);
+        return null;
+    }
+
+    /**
+     * Return parameter value.
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get_param(string $name, mixed $default=null): mixed {
+        if (isset($this->params[$name]))
+            return $this->params[$name];
+        return $default;
+    }
+
+    /**
+     * Return parameters list.
+     * @return array
+     */
+    public function get_params(): array {
+        return $this->params;
     }
 }
 ?>

@@ -4,7 +4,7 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Dec 2019
  * @date Modification: Oct 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -210,6 +210,48 @@ abstract class Module extends Plugin {
      */
     protected function display_configuration_edit(): void {
 
+    }
+
+    /* Mark: Library methods */
+
+    /**
+     * Return library instance.
+     * @param string $library
+     * @param integer $objectId
+     * @return ModuleLibrary|false
+     */
+    public function get_libraryInstance(string $library, int $objectId=0): ModuleLibrary|false {
+        /* Check library property exists */
+        if (isset($this->$library) && $this->$library instanceof ModuleLibrary)
+            return $this->$library->get_newInstance($objectId);
+
+        /* Check library is declared in module */
+        if (!in_array($library, $this->libraries))
+            return false;
+
+        /* Compute library class name */
+        $libraryFullName = $this->libraryNamespace.'\\'.$library;
+
+        /* Check fallback to legacy prefixed class name */
+        if (!class_exists($libraryFullName))
+            $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
+
+        /* Check class exists, or attempt to load library file */
+        if (!class_exists($libraryFullName)) {
+            if (!$this->load_library($library))
+                return false;
+
+            $libraryFullName = $this->libraryNamespace.'\\'.$library;
+            if (!class_exists($libraryFullName))
+                $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
+        }
+
+        /* Check class exists */
+        if (!class_exists($libraryFullName))
+            return false;
+
+        /* Return new instance */
+        return new $libraryFullName($this, $objectId);
     }
 
     /* Mark: Private methods */
