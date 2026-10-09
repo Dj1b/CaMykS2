@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre53
+ * @version 2.0pre54
  * @date Creation: Feb 2017
  * @date Modification: Oct 2026
  * @copyright 2017 - 2026 CaMykS Team
@@ -396,7 +396,8 @@ final class CaMykS {
         $this->run_eventHandlers('onTerminate');
 
         /* Export errorHandler result */
-        if ($this->errorHandler !== false) $this->errorHandler->export();
+        if (!is_null($this->errorHandler) && $this->errorHandler !== false)
+            $this->errorHandler->export();
 
         /* Export bench result */
         if (!is_null($this->bench)) $this->bench->export();
@@ -431,6 +432,9 @@ final class CaMykS {
         /* Load first libraries */
         $this->load_engineFirstLibraries();
 
+        /* Load errorhandler object */
+        $this->errorHandler = new ErrorHandler();
+
         /* Load engine configuration */
         $this->load_configuration('Engine');
 
@@ -445,9 +449,6 @@ final class CaMykS {
 
         /* Load main dictionary */
         $this->load_engineLocales('');
-
-        /* Load errorhandler object */
-        $this->errorHandler = new ErrorHandler();
 
         /* Check server requirements */
         $this->check_serverRequirements();
@@ -872,12 +873,15 @@ final class CaMykS {
     private function load_engineFirstLibraries(): void {
         /* Load tool libraries */
         $this->load_library('folder', 'Tools');
+        $this->load_library('file', 'Tools');
 
         /* Load object libraries */
         $this->load_library('CaMykSLibrary', 'Objects');
         $this->load_library('ConfigurationFile', 'Objects');
         $this->load_library('File', 'Objects');
         $this->load_library('Language', 'Objects');
+        $this->load_library('Error', 'Objects');
+        $this->load_library('ErrorHandler', 'Objects');
     }
 
     /**
@@ -918,11 +922,9 @@ final class CaMykS {
         $this->load_library('Bench', 'Objects');
         $this->load_library('DatabaseConnector', 'Objects');
         $this->load_library('DatabaseDriverInterface', 'Objects');
-        $this->load_library('DbQuery', 'Objects');
-        $this->load_library('DbQueryWhereCondition', 'Objects');
+        $this->load_library('DatabaseQuery', 'Objects');
+        $this->load_library('DatabaseQueryWhereCondition', 'Objects');
         $this->load_library('Component', 'Objects');
-        $this->load_library('Error', 'Objects');
-        $this->load_library('ErrorHandler', 'Objects');
         $this->load_library('HTMLForm', 'Objects');
         $this->load_library('HTMLFormInput', 'Objects');
         $this->load_library('HTMLPage', 'Objects');
@@ -939,9 +941,17 @@ final class CaMykS {
         $this->load_library('Theme', 'Objects');
 
         /* Load ModuleLibrary object libraries */
+        $this->load_library('ModuleLibrary/Child', 'Objects');
         $this->load_library('ModuleLibrary/Simple', 'Objects');
-        $this->load_library('ModuleLibrary/Advanced', 'Objects');
+        $this->load_library('ModuleLibrary/Managed', 'Objects');
+        $this->load_library('ModuleLibrary/ManagedIdentifiable', 'Objects');
+        $this->load_library('ModuleLibrary/ManagedSortable', 'Objects');
         $this->load_library('ModuleLibrary/ObjectAssociation', 'Objects');
+
+        /* Load BuiltIn ModuleLibrary object libraries */
+        $this->load_library('ModuleLibrary/BuiltIn/Category', 'Objects');
+        $this->load_library('ModuleLibrary/BuiltIn/Article', 'Objects');
+        $this->load_library('ModuleLibrary/BuiltIn/Person', 'Objects');
 
         /* Load PluginLibraryAttribute simple object libraries */
         $this->load_library('PluginLibraryAttribute/Blob', 'Objects');
@@ -961,11 +971,12 @@ final class CaMykS {
         $this->load_library('PluginLibraryAttribute/Password', 'Objects');
         $this->load_library('PluginLibraryAttribute/Phone', 'Objects');
         $this->load_library('PluginLibraryAttribute/Price', 'Objects');
+        $this->load_library('PluginLibraryAttribute/UniqueId', 'Objects');
         $this->load_library('PluginLibraryAttribute/URL', 'Objects');
         $this->load_library('PluginLibraryAttribute/Version', 'Objects');
 
         /* Build object from libraries */
-        $this->LocalStorage = new LocalStorage();
+        $this->localStorage = new LocalStorage();
 
         /* Load site libraries */
         if ($this->websitePath != $this->CaMykSPath and file_exists($this->websitePath.'./Assets/Libraries')) {
@@ -1003,7 +1014,7 @@ final class CaMykS {
         }
 
         /* Check mod_rewrite module */
-        if (!server_checkModuleAvailability('mod_rewrite')) {
+        if (PHP_SAPI !== 'cli' && !server_checkModuleAvailability('mod_rewrite')) {
             $this->trigger_error('CaMykS', 2, 'URL rewriting module must be enabled.'."\n".
             'Please turn on the URL rewriting module of your web software, before running CaMykS2.',
             '', null, null, true);
@@ -1403,6 +1414,15 @@ final class CaMykS {
     }
 
     /**
+     * Create website data file full path.
+     * @param string $filePath
+     * @return boolean success
+     */
+    public function create_websiteDataFileFullPath(string $filePath): bool {
+        return folder_completePath($this->websitePath.'/Data/'.$filePath);
+    }
+
+    /**
      * Check if given path is autorised to be read or written.
      * @param string $path
      * @param string $action
@@ -1424,7 +1444,7 @@ final class CaMykS {
                 continue;
 
             /* Check is in path */
-            if (file_checkIsInPath($path, $folder))
+            if (\file_checkIsInPath($path, $folder))
                 return true;
         }
 
@@ -1473,6 +1493,38 @@ final class CaMykS {
         if (is_null($SSLMode))
             $SSLMode = 'Default';
         $this->websiteURL = url_getURLWithSSLMode($SSLMode, $this->get_configValue('Website_URL'));
+    }
+
+    /**
+     * Return website path.
+     * @return string
+     */
+    public function get_websitePath(): string {
+        return isset($this->websitePath) ? $this->websitePath : getcwd();
+    }
+
+    /**
+     * Return site path.
+     * @return string
+     */
+    public function get_sitePath(): string {
+        return $this->get_websitePath();
+    }
+
+    /**
+     * Return website URL.
+     * @return string
+     */
+    public function get_websiteURL(): string {
+        return isset($this->websiteURL) ? $this->websiteURL : '';
+    }
+
+    /**
+     * Return site URL.
+     * @return string
+     */
+    public function get_siteURL(): string {
+        return $this->get_websiteURL();
     }
 
     /**
@@ -1740,6 +1792,15 @@ final class CaMykS {
         return $this->currentLanguage->get_value();
     }
 
+    /**
+     * Return list of site languages.
+     * @return array
+     */
+    public function get_siteLanguages(): array {
+        $languages = $this->get_configValue('Admin_EditionLanguages', array($this->get_currentLanguageValue()));
+        return is_array($languages) ? $languages : array($this->get_currentLanguageValue());
+    }
+
     /* Mark: Locale related methods */
 
     /**
@@ -1936,7 +1997,7 @@ final class CaMykS {
      * @return void
      */
     public function trigger_error(string $origin, int $code, string $message, string $details, string $file='', int $line=0, bool $isFatal=false): void {
-        if ($this->errorHandler !== false)
+        if (!is_null($this->errorHandler) && $this->errorHandler !== false)
             $this->errorHandler->handle_CaMykSError($origin, $code, $message, $details, $file, $line, $isFatal);
     }
 
@@ -1950,7 +2011,7 @@ final class CaMykS {
      * @return void
      */
     public function trigger_databaseError(int $code, string $message, string $details, string $file='', int $line=0): void {
-        if ($this->errorHandler !== false)
+        if (!is_null($this->errorHandler) && $this->errorHandler !== false)
             $this->errorHandler->handle_CaMykSDatabaseError($code, $message, $details, $file, $line);
     }
 
@@ -1959,26 +2020,28 @@ final class CaMykS {
      * @param string $object
      * @param string $action
      * @param string $message
+     * @param mixed $level
      * @return boolean success
      */
-    public function log_message(string $object, string $action, string $message=''): bool {
+    public function log_message(string $object, string $action, string $message='', mixed $level=null): bool {
         $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
-        return $logManager->log_message($object, $action, $message);
+        return $logManager->log_message($object, $action, $message, $level);
     }
 
     /**
      * Log messages.
      * @param string $object
      * @param array $messages
+     * @param mixed $level
      * @return boolean success
      */
-    public function log_messages(string $object, array $messages=array()): bool {
+    public function log_messages(string $object, array $messages=array(), mixed $level=null): bool {
         $logManager = $this->get_module('SystemLogManager', true);
         if ($logManager === false)
             return false;
-        return $logManager->log_messages($object, $messages);
+        return $logManager->log_messages($object, $messages, $level);
     }
 
     /**
