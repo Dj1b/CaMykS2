@@ -3,9 +3,9 @@
  * @brief CaMykS language(s) library.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Oct 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -338,6 +338,10 @@ function language_numberFormat(float $number, int $floats=2, ?string $language=n
  * @return array
  */
 function language_getLocaleLoadingSequence(mixed $language): array {
+    /* Check language is valid */
+    if (is_null($language) || $language === '')
+        return array();
+
     /* Initialise sequence */
     $result = array();
 
@@ -355,12 +359,12 @@ function language_getLocaleLoadingSequence(mixed $language): array {
             $result[] = (new \CaMykS2\Language($default))->get_value();
     }
 
-    /* Add no country language
-    $result[] = (new \CaMykS2\Language($language))->get_value(true);
-    */
+    /* Add no country language */
+    if (!is_null($language->get_Language()))
+        $result[] = $language->get_Language();
 
     /* Return sequence */
-    return $result;
+    return array_unique($result);
 }
 
 /**

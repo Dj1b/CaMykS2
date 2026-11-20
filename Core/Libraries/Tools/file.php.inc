@@ -3,9 +3,9 @@
  * @brief File specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Nov 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -18,12 +18,19 @@
  * @return boolean result
  */
 function file_checkIsInPath(string $element='', string $path=''): bool {
-    /* Check path exists, is not empty, and is a directory */
-    if (!file_exists($path) or !is_dir($path) or $path == '')
+    if ($path === '')
         return false;
-    $path = realpath($path).'/';
 
-    /* Get element real path */
+    /* Get path real or virtual path */
+    if (file_exists($path) && is_dir($path))
+        $pathFolder = realpath($path);
+    else
+        $pathFolder = file_getVirtualRealPath($path);
+
+    if ($pathFolder === '')
+        return false;
+
+    /* Get element real or virtual path */
     if (file_exists($element))
         $element = realpath($element);
     else
@@ -34,7 +41,7 @@ function file_checkIsInPath(string $element='', string $path=''): bool {
         return false;
 
     /* Check folder is in path */
-    return preg_match('#^'.$path.'#', $element);
+    return (bool)preg_match('#^' . preg_quote($pathFolder, '#') . '#', $element);
 }
 
 /**
@@ -43,17 +50,26 @@ function file_checkIsInPath(string $element='', string $path=''): bool {
  * @return string
  */
 function file_getVirtualRealPath(string $element=''): string {
+    $isAbsolute = str_starts_with($element, '/');
+
     /* Explode element path in array */
     $path = explode('/', $element);
 
     /* Remove leading empty folders */
-    while ($path[0] == '')
+    while (isset($path[0]) && $path[0] == '')
         array_shift($path);
 
-    /* Check root real path */
-    $path[0] = realpath($path[0]);
-    if ($path[0] === '')
+    if (empty($path))
         return '';
+
+    if ($isAbsolute)
+        $path[0] = '/' . $path[0];
+
+    /* Check root real path */
+    $real = realpath($path[0]);
+    if ($real === false || $real === '')
+        return '';
+    $path[0] = $real;
 
     /* Implode back path */
     return implode('/', $path);

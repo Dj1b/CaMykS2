@@ -3,9 +3,9 @@
  * @brief Folder specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Nov 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,7 +22,7 @@ function folder_checkPathAccessibility(string $path, string $mode='Read'): bool 
     global $CaMykS;
 
     /* Check CaMykS exists */
-    if (!is_null($CaMykS) === false)
+    if (isset($CaMykS) && !is_null($CaMykS))
         return $CaMykS->check_pathAccessibility($path, $mode);
 
     /* By default return true */
@@ -212,16 +212,19 @@ function folder_getTemporaryFolder(): mixed {
  * @return array
  */
 function folder_listElements(string $folder, array $params=array()): array {
+    /* Build default */
+    $default = array('Path'=>$folder, 'Files'=>array(), 'Folders'=>array());
+
     /* Update folder */
     $folder = trim(preg_replace('#/$#', '', $folder));
 
     /* Check folder is a directory */
     if (!is_dir($folder))
-        return array();
+        return $default;
 
     /* Check folder is accessible */
     if (folder_checkPathAccessibility($folder, 'Read') === false)
-        return false;
+        return $default;
 
     /* Default params */
     $defaultParams = array(

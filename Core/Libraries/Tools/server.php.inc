@@ -3,9 +3,9 @@
  * @brief Server specific methods
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Dec 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -18,7 +18,7 @@
  * @return array
  */
 function server_getSoftware(): array {
-    if (preg_match('#^([A-Za-z]*)/([0-9\.])#', $_SERVER['SERVER_SOFTWARE'], $matches))
+    if (isset($_SERVER['SERVER_SOFTWARE']) && preg_match('#^([A-Za-z]*)/([0-9\.]*)#', $_SERVER['SERVER_SOFTWARE'], $matches))
         return array('Name'=>$matches[1], 'Version'=>$matches[2]);
     return array('Name'=>'', 'Version'=>'');
 }

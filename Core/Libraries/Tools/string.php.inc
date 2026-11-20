@@ -3,9 +3,9 @@
  * @brief String specific methods.
  * @details Engine / Tool Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -83,7 +83,7 @@ function string_text2Html(string $string, ?string $encoding=null): string {
  * @endparblock
  * @return array
  */
-function string_text2Words(string $string, array $params=array()): string {
+function string_text2Words(string $string, array $params=array()): array {
     /* default config */
     $config = array('contenttype'=>'html', 'accents'=>'replace', 'changecase'=>'', 'keptchars'=>'', 'minlength'=>0);
 
@@ -93,19 +93,15 @@ function string_text2Words(string $string, array $params=array()): string {
     /* remove html tags */
     $string = string_stripTags($string, ' ');
 
-    /* update case */
-    if ($params['changecase'] == 'lower')
-        $string = strtolower($string);
-    else if ($params['changecase'] == 'upper')
-        $string = strtoupper($string);
-
-    /* check text mode */
-    if ($params['contenttype'] == 'text')
-        $string = string_text2Html($string);
-
-    /* check html mode */
-    if ($params['contenttype'] == 'html' and $params['accents'] != 'replace')
+    /* normalise html and text encoding */
+    if ($params['accents'] == 'replace') {
         $string = string_html2Text($string);
+        $string = string_text2Html($string);
+    } elseif ($params['contenttype'] == 'text') {
+        $string = string_text2Html($string);
+    } elseif ($params['contenttype'] == 'html') {
+        $string = string_html2Text($string);
+    }
 
     /* parse accents */
     if ($params['accents'] == 'replace') {
@@ -115,8 +111,14 @@ function string_text2Words(string $string, array $params=array()): string {
         $accentChars = string_getAccentuedChars(array('listmode'=>'string', 'charmode'=>'text'));
     }
 
+    /* update case */
+    if ($params['changecase'] == 'lower')
+        $string = strtolower($string);
+    else if ($params['changecase'] == 'upper')
+        $string = strtoupper($string);
+
     /* set min length word regexp modifier */
-    if ($params['minlength']>2)
+    if ($params['minlength'] > 1)
         $length_modifier = '{'.$params['minlength'].',}';
     else
         $length_modifier = '+';
@@ -136,6 +138,134 @@ function string_text2Words(string $string, array $params=array()): string {
         }
     }
     return $array;
+}
+
+/**
+ * Return replace entity char by unaccentued chars.
+ * @param string $string
+ * @param array $params
+ * @parblock - Available parameters are <br />
+ * \e string/array pattern - containing patterns to complete built-in list <br />
+ * \e string/array replace - containing replacement values to complete built-in list<br />
+ * \e string lastreplace - all last entities are replaced by this value (empty string for no replacement) <br />
+ * @endparblock
+ * @return string
+ */
+function string_replaceEntityChars(string $string, array $params=array()): string {
+    /* default config */
+    $config = array('pattern'=>null, 'replace'=>null, 'lastreplace'=>null);
+
+    /* merge config & params */
+    $params = array_merge($config, $params);
+
+    /* init pattern array */
+    $pattern = array(
+        /* add html named entities */
+        '/&([a-zA-Z])(?:acute|grave|cedil|tilde|circ|uml|ring|slash);/',
+        /* add html number entities for capitalised letters */
+        '/&#19[2-7];/', '/&#199;/', '/&#20[0-3];/', '/&#20[4-7];/', '/&#209;/', '/&#21[0-46];/', '/&#2(?:1[7-9]|20);/', '/&#221;/',
+        /* add html number entities for small letters */
+        '/&#22[4-9];/', '/&#231;/', '/&#23[2-5];/', '/&#23[6-9];/', '/&#241;/', '/&#24[2-68];/', '/&#2(?:49|5[0-2]);/', '/&#25[35];/',
+        /* add html number entities for special letters */
+        '/&(?:#198|AElig);/', '/&(?:#223|szlig);/', '/&(?:#230|aelig);/', '/&(?:#338|oelig);/', '/&(?:#339|OElig);/', '/&#352;/', '/&#353;/', '/&#376;/',
+        /* add html number entities for special chars */
+        '/&amp;/', '/&hellip;/',
+    );
+
+    /* init replacement array */
+    $replace = array(
+        /* add html named entities */
+        '$1',
+        /* add html number entities for capitalised letters */
+        'A', 'C', 'E', 'I', 'N', 'O', 'U', 'Y',
+        /* add html number entities for small letters */
+        'a', 'c', 'e', 'i', 'n', 'o', 'u', 'y',
+        /* add html number entities for special letters */
+        'AE', 'ss', 'ae', 'OE', 'oe', 'S', 's', 'Y',
+        /* add html number entities for special chars */
+        '', '...',
+    );
+
+    /* add param patterns and replacements */
+    if (isset($params['pattern']) and isset($params['replace'])) {
+        if (is_string($params['pattern']) and is_string($params['replace'])) {
+            $pattern[] = $params['pattern'];
+            $replace[] = $params['replace'];
+        } else if (is_array($params['pattern']) and is_array($params['replace']) and count($params['pattern']) == count($params['replace'])) {
+            $pattern = array_merge($pattern, $params['pattern']);
+            $replace = array_merge($replace, $params['replace']);
+        }
+    }
+
+    /* all other entities */
+    if (isset($params['lastreplace'])) {
+        $pattern[] = '/&[#\w]+;/';
+        $replace[] = $params['lastreplace'];
+    }
+
+    /* execute replacement */
+    return preg_replace($pattern, $replace, $string);
+}
+
+/**
+ * Return accentued chars list.
+ * @param array $params
+ * @parblock - Available parameters are <br />
+ * \e string listmode - \b array / \b string <br />
+ * \e string charmode - \b text / \b html <br />
+ * @endparblock
+ * @return mixed
+ */
+function string_getAccentuedChars(array $params=array()): mixed {
+    /* default config */
+    $config = array('listmode'=>'array', 'charmode'=>'text');
+
+    /* merge config & params */
+    $params = array_merge($config, $params);
+
+    /* init list */
+    $accentChars = array();
+
+    /* special array/text optimisation */
+    if ($params['listmode'] == 'array' and $params['charmode'] == 'text') {
+        for ($i=192; $i<256; $i++)
+            $accentChars[] = html_entity_decode('&#'.$i.';');
+        foreach (array(338, 339, 352, 353) as $i)
+            $accentChars[] = html_entity_decode('&#'.$i.';');
+        return $accentChars;
+    }
+
+    /* generic  */
+    for ($i=192; $i<256; $i++)
+        $accentChars[] = '&#'.$i.';';
+    foreach (array(338, 339, 352, 353) as $i)
+        $accentChars[] = '&#'.$i.';';
+    if ($params['listmode'] != 'array')
+        $accentChars = implode('', $accentChars);
+    if ($params['charmode'] == 'text')
+        $accentChars = html_entity_decode($accentChars);
+    return $accentChars;
+}
+
+/**
+ * Return parsed string, accentued chars are replaced by their unaccentued equivalent.
+ * @param string $string
+ * @param array $params
+ * @parblock - Available parameters are <br />
+ * \e string/array pattern <br />
+ * \e string/array replace <br />
+ * @endparblock
+ * @return string
+ */
+function string_parseSpecialChars(string $string, array $params=array()): string {
+    /* default config */
+    $config = array('pattern'=>'/[^a-zA-Z]/', 'replace'=>'');
+
+    /* merge config & params */
+    $params = array_merge($config, $params);
+
+    /* execute replacement */
+    return string_replaceEntityChars(string_text2Html($string), array('pattern'=>$params['pattern'], 'replace'=>$params['replace'], 'lastreplace'=>''));
 }
 
 /* Mark: Check methods */
