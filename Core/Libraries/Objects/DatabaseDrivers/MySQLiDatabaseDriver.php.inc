@@ -3,9 +3,9 @@
  * @brief MySQLi database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Nov 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,10 +33,15 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private array $charsets = array(
-        'UTF8'  => 'utf8mb4',
-        'UTF16' => 'utf16',
-        'UTF32' => 'utf32',
+    protected array $charsets = array(
+        'UTF8MB4'   => 'utf8mb4',
+        'UTF8'      => 'utf8mb4',
+        'UTF-8'     => 'utf8mb4',
+        'UTF8MB3'   => 'utf8',
+        'UTF16'     => 'utf16',
+        'UTF32'     => 'utf32',
+        'LATIN1'    => 'latin1',
+        'ASCII'     => 'ascii',
     );
 
     /**
@@ -51,6 +56,8 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
         try {
             $this->connection = new \MySQLi($this->get_param('Host').($this->get_param('Port') > 0 ? ':'.$this->get_param('Port') : ''), $this->get_param('Login'), $this->get_param('Password'));
             $this->status = ($this->connection->connect_errno === 0);
+            if ($this->status && (string)$this->get_param('Charset') !== '')
+                $this->set_charset();
         } catch (Exception $e) {
             $this->status = false;
         }
@@ -77,6 +84,22 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Return success */
         return true;
+    }
+
+    /**
+     * Set connection character set.
+     * @param string $charset
+     * @return boolean success
+     */
+    public function set_charset(string $charset=''): bool {
+        if (!$this->is_active())
+            return false;
+
+        $charsetVal = $this->get_charsetValue($charset);
+        if ($charsetVal === '')
+            return true;
+
+        return $this->connection->set_charset($charsetVal);
     }
 
     /* Mark: Driver methods */
@@ -120,10 +143,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             return false;
 
         /* Check result */
-        $result = $this->get_queryDataLine();
-        if (is_null($result))
-            return false;
-        return $result;
+        return (!is_null($this->get_queryDataLine()));
     }
 
     /**
@@ -132,9 +152,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         $dbName = $name !== '' ? $name : $this->get_param('Name');
-        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'utf8mb4';
+        $charsetVal = $this->get_charsetValue($charset, 'UTF8MB4');
         return $this->execute_directQuery('create database `'.$dbName.'` default character set '.$charsetVal.';');
     }
 
@@ -203,7 +223,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
         $size = 0;
 
         /* Load information from database */
-        if ($this->execute_query('show table status;')) {
+        if ($this->execute_directQuery('show table status;')) {
             /* set size with infos */
             while ($data = $this->get_queryDataLine()) {
                 $size += $data['Data_length'] + $data['Index_length'];
@@ -232,7 +252,7 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Load list from database */
         $sql = 'show tables;';
-        if ($this->execute_query($sql))
+        if ($this->execute_directQuery($sql))
             while ($data = $this->get_queryNumDataLine())
                 $list[] = $data[0];
 
@@ -371,7 +391,10 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
                 case 'date':
                 case 'datetime':
                 case 'time':
-                    $s .= $data['Type'].' default CURRENT_TIMESTAMP';
+                    if ($data['Default'] === true)
+                        $s .= $data['Type'].' default CURRENT_TIMESTAMP';
+                    else
+                        $s .= $data['Type'].' null default null';
                     break;
                 default:
                     /* Type not known : return error */
@@ -399,8 +422,8 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             }
 
             /* Check for primary key */
-            if ($data['IndexName'] === true)
-                $params['PrimaryKey'][] = $field;
+            if ($data['PrimaryKey'] === true and !in_array($field, $params['PrimaryKeys']))
+                $params['PrimaryKeys'][] = $field;
         }
 
         /* Add indexes */
@@ -449,8 +472,9 @@ final class MySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
         $sql .= ')';
 
         /* Add charset */
-        if ($params['Charset'] !== '')
-            $sql .= ' character set '.$this->charsets[$params['Charset']].'';
+        $charsetVal = $this->get_charsetValue((string)$params['Charset']);
+        if ($charsetVal !== '')
+            $sql .= ' character set '.$charsetVal;
 
         /* Finalise query */
         $sql .= ';';

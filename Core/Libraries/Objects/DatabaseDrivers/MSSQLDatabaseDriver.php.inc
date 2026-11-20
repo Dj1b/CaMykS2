@@ -3,9 +3,9 @@
  * @brief MSSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,6 +31,19 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     private mixed $connection = null;
 
     /**
+     * @var array $charsets
+     * @brief Return default charsets for encoding values.
+     */
+    protected array $charsets = array(
+        'UTF8MB4'   => 'UTF-8',
+        'UTF8'      => 'UTF-8',
+        'UTF-8'     => 'UTF-8',
+        'UTF8MB3'   => 'UTF-8',
+        'UTF16'     => 'UTF-16',
+        'UTF32'     => 'UTF-32',
+    );
+
+    /**
      * Open connection.
      * @return boolean success
      */
@@ -44,8 +57,10 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
             'UID' => $this->get_param('Login'),
             'PWD' => $this->get_param('Password'),
             'Database' => $this->get_param('Name'),
-            'CharacterSet' => 'UTF-8',
         );
+        $charsetVal = $this->get_charsetValue();
+        if ($charsetVal !== '')
+            $options['CharacterSet'] = $charsetVal;
 
         /* Perform database server connection */
         try {
@@ -126,7 +141,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         $dbName = $name !== '' ? $name : $this->get_param('Name');
         $sql = 'CREATE DATABASE ['.$dbName.'];';
         return $this->execute_directQuery($sql);

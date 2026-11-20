@@ -3,9 +3,9 @@
  * @brief SQLite database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,7 +40,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var string $dbExtension
      * @brief Database file extension.
      */
-    private string $dbExtension = '\.sqlite3\.inc';
+    private string $dbExtension = '.sqlite3.inc';
 
     /**
      * Class constructor.
@@ -60,6 +60,9 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @return boolean success
      */
     public function open(): bool {
+        /* Ensure database folder exists */
+        folder_completePath($this->dbPath);
+
         /* Build database full path */
         $path = $this->get_fullDatabaseName($this->get_param('Name'));
 
@@ -164,7 +167,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         /* SQLite creates database file on connection */
         /* Just check if we can create the file */
         $dbName = $name !== '' ? $name : $this->get_param('Name');

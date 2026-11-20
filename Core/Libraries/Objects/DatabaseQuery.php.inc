@@ -3,9 +3,9 @@
  * @brief CaMykS Database query builder library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Oct 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -645,7 +645,7 @@ final class DatabaseQuery extends CaMykSLibrary {
                 /* Check keys are identical and put values in the partition orders */
                 $v = array();
                 foreach ($this->insertPartition as $key) {
-                    if (isset($values[$key]))
+                    if (array_key_exists($key, $values))
                         $v[] = $values[$key];
                     else
                         return $this->add_error(35, '', __FILE__, __LINE__);

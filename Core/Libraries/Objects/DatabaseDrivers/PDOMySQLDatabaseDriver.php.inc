@@ -3,9 +3,9 @@
  * @brief PDO MySQLi database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -34,10 +34,15 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private array $charsets = array(
-        'UTF8'  => 'utf8mb4',
-        'UTF16' => 'utf16',
-        'UTF32' => 'utf32',
+    protected array $charsets = array(
+        'UTF8MB4'   => 'utf8mb4',
+        'UTF8'      => 'utf8mb4',
+        'UTF-8'     => 'utf8mb4',
+        'UTF8MB3'   => 'utf8',
+        'UTF16'     => 'utf16',
+        'UTF32'     => 'utf32',
+        'LATIN1'    => 'latin1',
+        'ASCII'     => 'ascii',
     );
 
     /**
@@ -51,6 +56,9 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
             $dsn .= ';port='.$this->get_param('Port');
         if ($this->get_param('Name') !== '')
             $dsn .= ';dbname='.$this->get_param('Name');
+        $charsetVal = $this->get_charsetValue();
+        if ($charsetVal !== '')
+            $dsn .= ';charset='.$charsetVal;
 
         /* Perform database server connection */
         try {
@@ -82,6 +90,22 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Return success */
         return true;
+    }
+
+    /**
+     * Set connection character set.
+     * @param string $charset
+     * @return boolean success
+     */
+    public function set_charset(string $charset=''): bool {
+        if (!$this->is_active())
+            return false;
+
+        $charsetVal = $this->get_charsetValue($charset);
+        if ($charsetVal === '')
+            return true;
+
+        return $this->execute_directQuery('SET NAMES '.$this->get_escapedValue($charsetVal).';');
     }
 
     /* Mark: Driver methods */
@@ -137,9 +161,9 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         $dbName = $name !== '' ? $name : $this->get_param('Name');
-        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'utf8mb4';
+        $charsetVal = $this->get_charsetValue($charset, 'UTF8MB4');
         return $this->execute_directQuery('CREATE DATABASE `'.$dbName.'` DEFAULT CHARACTER SET '.$charsetVal.';');
     }
 
@@ -438,12 +462,9 @@ final class PDOMySQLiDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Add engine and charset */
         $sql .= ' ENGINE=InnoDB';
-        if ($params['Charset'] != '')
-            $sql .= ' DEFAULT CHARSET='.$this->charsets[$params['Charset']];
-        elseif ($this->get_param('Charset') != '')
-             $sql .= ' DEFAULT CHARSET='.$this->charsets[$this->get_param('Charset')];
-        else
-            $sql .= ' DEFAULT CHARSET='.$this->charsets['UTF8'];
+        $charsetVal = $this->get_charsetValue((string)$params['Charset']);
+        if ($charsetVal !== '')
+            $sql .= ' DEFAULT CHARSET='.$charsetVal;
 
         $sql .= ';';
 

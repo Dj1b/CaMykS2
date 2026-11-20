@@ -3,9 +3,9 @@
  * @brief PostgreSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -34,10 +34,15 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private array $charsets = array(
-        'UTF8'  => 'UTF8',
-        'UTF16' => 'UTF16',
-        'UTF32' => 'UTF32',
+    protected array $charsets = array(
+        'UTF8MB4'   => 'UTF8',
+        'UTF8'      => 'UTF8',
+        'UTF-8'     => 'UTF8',
+        'UTF8MB3'   => 'UTF8',
+        'UTF16'     => 'UTF16',
+        'UTF32'     => 'UTF32',
+        'LATIN1'    => 'LATIN1',
+        'ASCII'     => 'SQL_ASCII',
     );
 
     /**
@@ -60,6 +65,8 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
         try {
             $this->connection = pg_connect($string);
             $this->status = ($this->connection !== false);
+            if ($this->status && (string)$this->get_param('Charset') !== '')
+                $this->set_charset();
         } catch (\Exception $e) {
             $this->status = false;
         }
@@ -86,6 +93,22 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Return success */
         return true;
+    }
+
+    /**
+     * Set connection character set.
+     * @param string $charset
+     * @return boolean success
+     */
+    public function set_charset(string $charset=''): bool {
+        if (!$this->is_active())
+            return false;
+
+        $charsetVal = $this->get_charsetValue($charset);
+        if ($charsetVal === '')
+            return true;
+
+        return (pg_set_client_encoding($this->connection, $charsetVal) === 0);
     }
 
     /* Mark: Driver methods */
@@ -144,9 +167,9 @@ final class PostgreSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         $dbName = $name !== '' ? $name : $this->get_param('Name');
-        $charsetVal = isset($this->charsets[$charset]) ? $this->charsets[$charset] : 'UTF8';
+        $charsetVal = $this->get_charsetValue($charset, 'UTF8');
         $sql = 'CREATE DATABASE "'.$dbName.'" ENCODING \''.$charsetVal.'\';';
         return $this->execute_directQuery($sql);
     }

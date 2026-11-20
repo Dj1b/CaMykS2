@@ -3,9 +3,9 @@
  * @brief Oracle database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,6 +31,20 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
     private mixed $connection = null;
 
     /**
+     * @var array $charsets
+     * @brief Return default charsets for encoding values.
+     */
+    protected array $charsets = array(
+        'UTF8MB4'   => 'AL32UTF8',
+        'UTF8'      => 'AL32UTF8',
+        'UTF-8'     => 'AL32UTF8',
+        'UTF8MB3'   => 'UTF8',
+        'UTF16'     => 'AL16UTF16',
+        'LATIN1'    => 'WE8ISO8859P1',
+        'ASCII'     => 'US7ASCII',
+    );
+
+    /**
      * Open connection.
      * @return boolean success
      */
@@ -49,7 +63,11 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
 
         /* Perform database server connection */
         try {
-            $this->connection = oci_connect($this->get_param('Login'), $this->get_param('Password'), $db, 'AL32UTF8');
+            $charsetVal = $this->get_charsetValue();
+            if ($charsetVal !== '')
+                $this->connection = oci_connect($this->get_param('Login'), $this->get_param('Password'), $db, $charsetVal);
+            else
+                $this->connection = oci_connect($this->get_param('Login'), $this->get_param('Password'), $db);
             $this->status = ($this->connection !== false);
         } catch (\Exception $e) {
             $this->status = false;
@@ -126,7 +144,7 @@ final class OracleDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         /* Creating a database in Oracle is a complex task usually done by DBA. */
         /* We'll assume we're creating a user/schema. */
         $dbName = $name !== '' ? $name : $this->get_param('Name');

@@ -3,9 +3,9 @@
  * @brief CaMykS Dababase connector.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: Oct 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +29,7 @@ final class DatabaseConnector extends CaMykSLibrary {
         'Login'         => '',
         'Password'      => '',
         'Name'          => '',
+        'Charset'       => '',
         'TablePrefix'   => '',
     );
 
@@ -78,9 +79,11 @@ final class DatabaseConnector extends CaMykSLibrary {
                 $driver = 'MySQLiDatabaseDriver';
                 break;
             case 'SQLite':
+            case 'SQLite3':
                 $driver = 'SQLiteDatabaseDriver';
                 break;
             case 'PostgreSQL':
+            case 'PgSQL':
                 $driver = 'PostgreSQLDatabaseDriver';
                 break;
             case 'MSSQL':
@@ -89,13 +92,16 @@ final class DatabaseConnector extends CaMykSLibrary {
             case 'Oracle':
                 $driver = 'OracleDatabaseDriver';
                 break;
+            case 'PDOMySQL':
             case 'PDOMySQLi':
-                $driver = 'PDOMySQLiDatabaseDriver';
+                $driver = 'PDOMySQLDatabaseDriver';
                 break;
             case 'PDOSQLite':
+            case 'PDOSQLite3':
                 $driver = 'PDOSQLiteDatabaseDriver';
                 break;
             case 'PDOPostgreSQL':
+            case 'PDOPgSQL':
                 $driver = 'PDOPostgreSQLDatabaseDriver';
                 break;
             case 'PDOMSSQL':
@@ -264,9 +270,25 @@ final class DatabaseConnector extends CaMykSLibrary {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(?string $name=null, string $charset='UTF8'): bool {
-        if (!is_null($name)) $this->params['Name'] = $name;
+    public function create_database(?string $name=null, string $charset=''): bool {
+        if (!is_null($name))
+            $this->params['Name'] = $name;
+        if ($charset === '')
+            $charset = (string)$this->params['Charset'];
         return $this->connection->create_database($this->params['Name'], $charset);
+    }
+
+    /**
+     * Set connection character set.
+     * @param string $charset
+     * @return boolean success
+     */
+    public function set_charset(string $charset=''): bool {
+        if ($this->connection === false)
+            return false;
+        if ($charset !== '')
+            $this->params['Charset'] = $charset;
+        return $this->connection->set_charset($this->params['Charset']);
     }
 
     /**
@@ -542,6 +564,22 @@ final class DatabaseConnector extends CaMykSLibrary {
         if (extension_loaded('sqlsrv') and class_exists('PDO'))
             $list['PDOMSSQL'] = 'PDOMSSQL';
         return $list;
+    }
+
+    /**
+     * Return available charset list.
+     * <br />Method is static, to be called without having a running database connection.
+     * @return array
+     */
+    public static function get_availableCharsets(): array {
+        return array(
+            'UTF8MB4'   => 'UTF8 (Multi-Byte 4)',
+            'UTF8MB3'   => 'UTF8 (Multi-Byte 3)',
+            'UTF16'     => 'UTF16',
+            'UTF32'     => 'UTF32',
+            'LATIN1'    => 'Latin1 (ISO-8859-1)',
+            'ASCII'     => 'ASCII',
+        );
     }
 
     /**

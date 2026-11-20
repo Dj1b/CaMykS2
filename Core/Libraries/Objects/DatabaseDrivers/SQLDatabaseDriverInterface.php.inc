@@ -3,9 +3,9 @@
  * @brief Interface for CaMykS SQL database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Nov 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -515,7 +515,9 @@ abstract class SQLDatabaseDriverInterface extends DatabaseDriverInterface {
      * @return string
      */
     protected function get_escapedValue($value): string {
-        return '"'.$this->escape_string($value).'"';
+        if (is_null($value))
+            return 'NULL';
+        return '"'.$this->escape_string((string)$value).'"';
     }
 }
 ?>

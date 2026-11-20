@@ -3,9 +3,9 @@
  * @brief PDO MSSQL database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -15,9 +15,9 @@
 namespace CaMykS2;
 
 /**
- * MSSQLDatabaseDriver class.
+ * PDOMSSQLDatabaseDriver class.
  */
-final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
+final class PDOMSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
@@ -34,10 +34,13 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @var array $charsets
      * @brief Return default charsets for encoding values.
      */
-    private array $charsets = array(
-        'UTF8'  => 'UTF-8',
-        'UTF16' => 'UTF-16',
-        'UTF32' => 'UTF-32',
+    protected array $charsets = array(
+        'UTF8MB4'   => 'UTF-8',
+        'UTF8'      => 'UTF-8',
+        'UTF-8'     => 'UTF-8',
+        'UTF8MB3'   => 'UTF-8',
+        'UTF16'     => 'UTF-16',
+        'UTF32'     => 'UTF-32',
     );
 
     /**
@@ -133,7 +136,7 @@ final class MSSQLDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         $dbName = $name !== '' ? $name : $this->get_param('Name');
         return $this->execute_directQuery('CREATE DATABASE ['.$dbName.'] COLLATE SQL_Latin1_General_CP1_CI_AS;');
     }

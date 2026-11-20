@@ -3,9 +3,9 @@
  * @brief Interface for CaMykS database drivers.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Oct 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,6 +40,12 @@ abstract class DatabaseDriverInterface {
      * @brief Architecture of the database, can be "server" or "file"
      */
     protected string $architecture;
+
+    /**
+     * @var array $charsets
+     * @brief Driver charset mapping for CaMykS encoding keys.
+     */
+    protected array $charsets = array();
 
     /**
      * Class constructor.
@@ -83,6 +89,29 @@ abstract class DatabaseDriverInterface {
         return $this->parent->add_error($errorId, $query, $file, $line);
     }
 
+    /**
+     * Return driver-specific charset value from CaMykS charset key or connection Charset parameter.
+     * @param string $charset
+     * @param string $default
+     * @return string
+     */
+    protected function get_charsetValue(string $charset='', string $default=''): string {
+        if ($charset === '')
+            $charset = (string)$this->get_param('Charset');
+        if ($charset === '')
+            $charset = $default;
+        if ($charset === '')
+            return '';
+
+        $upper = strtoupper($charset);
+        if (isset($this->charsets[$upper]))
+            return $this->charsets[$upper];
+        if (isset($this->charsets[$charset]))
+            return $this->charsets[$charset];
+
+        return $charset;
+    }
+
     /* Mark: Connection methods */
 
     /**
@@ -96,6 +125,15 @@ abstract class DatabaseDriverInterface {
      * @return boolean success
      */
     abstract public function close(): bool;
+
+    /**
+     * Set connection character set.
+     * @param string $charset
+     * @return boolean success
+     */
+    public function set_charset(string $charset=''): bool {
+        return true;
+    }
 
     /* Mark: Driver methods */
 
@@ -133,7 +171,7 @@ abstract class DatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    abstract public function create_database(string $name='', string $charset='UTF8'): bool;
+    abstract public function create_database(string $name='', string $charset=''): bool;
 
     /**
      * Dump database.

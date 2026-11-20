@@ -3,9 +3,9 @@
  * @brief PDO SQLite database driver.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -15,9 +15,9 @@
 namespace CaMykS2;
 
 /**
- * SQLiteDatabaseDriver class.
+ * PDOSQLiteDatabaseDriver class.
  */
-final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
+final class PDOSQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
     /**
      * @var string $architecture
      * @brief Architecture of the database, can be "server" or "file"
@@ -148,7 +148,7 @@ final class SQLiteDatabaseDriver extends SQLDatabaseDriverInterface {
      * @param string $charset
      * @return boolean
      */
-    public function create_database(string $name='', string $charset='UTF8'): bool {
+    public function create_database(string $name='', string $charset=''): bool {
         /* SQLite creates database file on connection */
         /* Just touch the file to create it */
         $dbName = $name !== '' ? $name : $this->get_param('Name');
