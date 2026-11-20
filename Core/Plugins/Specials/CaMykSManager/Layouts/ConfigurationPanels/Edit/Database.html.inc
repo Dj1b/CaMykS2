@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, configuration panel, edit database section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2021
- * @date Modification: Apr 2025
- * @copyright 2021 - 2025 CaMykS Team
+ * @date Modification: Nov 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -88,6 +88,15 @@ global $CaMykS;
         </div>
         <div class="formInput">
 
+        </div>
+    </div>
+
+    <div class="formElement half">
+        <div class="formLabel">
+            <?= $this->configurationManager->get_locale('Charset'); ?>
+        </div>
+        <div class="formInput">
+            <?php $this->managerForm->display_selectInput(array('name'=>'Charset', 'default'=>$CaMykS->get_configValue('Database_Charset'), 'values'=>$this->databaseCharsets)); ?>
         </div>
     </div>
 

@@ -3,9 +3,9 @@
  * @brief CaMykSManager special plugin.
  * @details Plugin / Plugin engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre21
+ * @version 1.0pre22
  * @date Creation: Dec 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -20,11 +20,12 @@ use CaMykS2\Folder;
 use CaMykS2\HTMLForm;
 use CaMykS2\HTMLPage;
 use CaMykS2\Image;
+use CaMykS2\Plugin;
 
 /**
  * CaMykSManager class.
  */
-final class CaMykSManager extends \CaMykS2\Plugin {
+final class CaMykSManager extends Plugin {
     /**
      * @var string $action
      * @brief Current action to execute in manager.
@@ -812,6 +813,10 @@ final class CaMykSManager extends \CaMykS2\Plugin {
                     $this->errorLoggingOutputs = $CaMykS->errorHandler->get_availableLoggingOutputs();
                     $this->errorLoggingLevels = $CaMykS->errorHandler->get_availableLoggingLevels();
                     break;
+                case 'Database':
+                    /* Load available database charsets */
+                    $this->databaseCharsets = DatabaseConnector::get_availableCharsets();
+                    break;
             }
         } else
             $this->section = 'None';
@@ -911,6 +916,9 @@ final class CaMykSManager extends \CaMykS2\Plugin {
             case 'Database':
                 /* Load available database drivers */
                 $this->databaseDrivers = array_merge(array('Undefined' => $this->get_locale('Configuration_DriverUndefined')), DatabaseConnector::get_availableDrivers());
+
+                /* Load available database charsets */
+                $this->databaseCharsets = array_merge(array('' => $this->get_locale('Configuration_CharsetAutomatic')), DatabaseConnector::get_availableCharsets());
                 break;
         }
 
@@ -1004,7 +1012,7 @@ final class CaMykSManager extends \CaMykS2\Plugin {
     private function load_folderTree(string $path, int $level): array {
         global $CaMykS;
 
-        $content = folder_listElements($CaMykS->get_configValue('Manager_SiteListPath').$path, array(
+        $content = folder_listElements(realpath($CaMykS->get_configValue('Manager_SiteListPath')).$path, array(
             'MaxDepth'              => 1,
             'ExcludeHiddenFolders'  => $CaMykS->get_configValue('Manager_SiteListHideHiddenFolders'),
             'ExcludeHiddenFiles'    => $CaMykS->get_configValue('Manager_SiteListHideHiddenFiles'),

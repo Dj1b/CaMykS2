@@ -3,9 +3,9 @@
  * @brief CaMykSManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre16
+ * @version 1.0pre17
  * @date Creation: Mar 2020
- * @date Modification: Feb 2026
+ * @date Modification: Nov 2026
  * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -159,6 +159,7 @@ $locales = array(
     'Configuration_LoginUndefined' => 'Non d&eacute;fini',
     'Configuration_PasswordUndefined' => 'Non d&eacute;fini',
     'Configuration_PortAutomatic' => 'Automatique',
+    'Configuration_CharsetAutomatic' => 'Automatique',
     'Configuration_SecureUndefined' => 'Non d&eacute;fini',
     'Configuration_TablePrefixUndefined' => 'Non d&eacute;fini',
 );

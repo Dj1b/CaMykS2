@@ -3,10 +3,10 @@
  * @brief CaMykSManager plugin, configuration panel, view database section sublayout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Sep 2020
- * @date Modification: Jul 2021
- * @copyright 2020 - 2021 CaMykS Team
+ * @date Modification: Nov 2026
+ * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -117,6 +117,22 @@ global $CaMykS;
         <?php else : ?>
             <div class="formValue">
                 <?= $CaMykS->get_configValue('Database_Secure'); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="formElement half">
+        <div class="formLabel">
+            <?= $this->configurationManager->get_locale('Charset'); ?>
+        </div>
+        <?php $dbCharset = (string)$CaMykS->get_configValue('Database_Charset'); ?>
+        <?php if ($dbCharset === '') : ?>
+            <div class="formNoValue">
+                <?= $this->get_locale('Configuration_CharsetAutomatic'); ?>
+            </div>
+        <?php else : ?>
+            <div class="formValue">
+                <?= isset($this->databaseCharsets[$dbCharset]) ? $this->databaseCharsets[$dbCharset] : $dbCharset; ?>
             </div>
         <?php endif; ?>
     </div>
