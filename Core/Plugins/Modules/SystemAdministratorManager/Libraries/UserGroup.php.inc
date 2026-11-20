@@ -3,19 +3,22 @@
  * @brief SystemAdministratorManager admin module, user group link library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemAdministratorManager;
+
+use CaMykS2\ObjectAssociationModuleLibrary;
+
 /**
  * UserGroup class.
  */
-final class UserGroup extends \CaMykS2\ObjectAssociationModuleLibrary {
+final class UserGroup extends ObjectAssociationModuleLibrary {
     /**
      * @var string $object1
      * @brief Object 1 name.

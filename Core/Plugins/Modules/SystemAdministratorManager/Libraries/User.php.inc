@@ -3,19 +3,22 @@
  * @brief SystemAdministratorManager admin module, user library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Feb 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemAdministratorManager;
+
+use CaMykS2\ManagedModuleLibrary;
+
 /**
  * User class.
  */
-final class User extends \CaMykS2\SimpleModuleLibrary {
+final class User extends ManagedModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent
@@ -24,11 +27,11 @@ final class User extends \CaMykS2\SimpleModuleLibrary {
      */
     public function __construct(&$parent, $id=0) {
         /* Execute parent construct */
-        parent::__construct($parent);
+        parent::__construct($parent, $id);
 
         /* Define management attributes */
         $this->define_databaseAttribute('Type',                     'ListItem',     '', array('Values'=>array('Owner', 'Webmaster', 'Editor')));
-        $this->define_databaseAttribute('Email',                    'Email',        '');
+        $this->define_databaseAttribute('Email',                    'EmailAddress', '');
         $this->define_databaseAttribute('Login',                    'Text',         '');
         $this->define_databaseAttribute('Password',                 'Password',     '');
 
@@ -50,6 +53,23 @@ final class User extends \CaMykS2\SimpleModuleLibrary {
         $this->define_databaseAttribute('LastPasswordUpdateDate',   'Date',         true);
         $this->define_databaseAttribute('LastPasswords',            'Text',         '', array('Length'=>32767));
         $this->define_databaseAttribute('Last2FACheckDate',         'Date',         false);
+    }
+
+    /* Mark: Override ManagedModuleLibrary methods */
+
+    /**
+     * Check object data.
+     * @param boolean $loadPreviousVersion
+     * @return boolean result
+     */
+    public function check_data(bool $loadPreviousVersion=false): bool {
+        /* Apply Password_MinLength from module configuration */
+        $minLength = (int)$this->get_configValue('Password_MinLength', null, 6);
+        if ($minLength > 0)
+            $this->set_attributeParam('Password', 'MinLength', $minLength);
+
+        /* Perform parent check_data */
+        return parent::check_data($loadPreviousVersion);
     }
 }
 ?>

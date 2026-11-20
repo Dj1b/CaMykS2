@@ -3,19 +3,22 @@
  * @brief SystemAdministratorManager admin module, user permission library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Feb 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemAdministratorManager;
+
+use CaMykS2\ModuleLibrary;
+
 /**
  * UserPermission class.
  */
-final class UserPermission extends \CaMykS2\ModuleLibrary {
+final class UserPermission extends ModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent
