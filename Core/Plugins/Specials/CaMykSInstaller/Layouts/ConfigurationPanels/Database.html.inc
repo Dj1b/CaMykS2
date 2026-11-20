@@ -3,10 +3,10 @@
  * @brief CaMykSMInstaller plugin, database configuration sub layout.
  * @details Plugin / Special layout
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Jun 2021
- * @date Modification: Jan 2022
- * @copyright 2021 - 2022 CaMykS Team
+ * @date Modification: Nov 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -94,6 +94,15 @@ global $CaMykS;
         </div>
         <div class="formInput">
 
+        </div>
+    </div>
+
+    <div class="formElement half">
+        <div class="formLabel">
+            <?= $this->configurationManager->get_locale('Charset'); ?>
+        </div>
+        <div class="formInput">
+            <?php $this->configurationForm->display_selectInput(array('name'=>'Charset', 'default'=>$this->get_currentConfigurationValue('Database', 'Database_Charset'), 'values'=>$this->databaseCharsets)); ?>
         </div>
     </div>
 
