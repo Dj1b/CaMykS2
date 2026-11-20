@@ -3,9 +3,9 @@
  * @brief ManagedIdentifiableModuleLibrary object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Oct 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -52,7 +52,8 @@ class ManagedIdentifiableModuleLibrary extends ManagedModuleLibrary {
 
         } else {
             /* Object is created */
-            /* $this->UniqueId = $this->get_newUniqueId(); */
+            if ($this->UniqueId === '')
+                $this->UniqueId = (string)$this->get_newUniqueId();
         }
 
         /* Return data is conform */
@@ -60,6 +61,22 @@ class ManagedIdentifiableModuleLibrary extends ManagedModuleLibrary {
     }
 
     /* Mark: Unique id related methods */
+
+    /**
+     * Return a new unique id from SystemUniqueIdManager.
+     * @param array $params
+     * @return string|false
+     */
+    public function get_newUniqueId(array $params=array()): string|false {
+        global $CaMykS;
+
+        /* Load SystemUniqueIdManager module */
+        $uniqueIdManager = $CaMykS->get_module('SystemUniqueIdManager', true);
+        if ($uniqueIdManager === false)
+            return false;
+
+        return $uniqueIdManager->get_newUniqueId($this->libraryParent->libraryName, $this->libraryShortName, $this->objectId, $params);
+    }
 
     /**
      * Load object from its unique id.
@@ -84,10 +101,12 @@ class ManagedIdentifiableModuleLibrary extends ManagedModuleLibrary {
             return false;
 
         /* Build query to load object */
-        $query = new DatabaseQuery(array());
+        $query = new DatabaseQuery('select');
+        $query->add_table($this->dbTableName);
+        $query->add_whereCondition(new DatabaseQueryWhereCondition('UniqueId', $this->UniqueId));
 
         /* Execute query */
-        if (!$this->execute_DBBuiltQuery($query))
+        if (!$this->execute_DBQuery($query))
             return false;
 
         /* Check has data */
@@ -95,7 +114,7 @@ class ManagedIdentifiableModuleLibrary extends ManagedModuleLibrary {
             return false;
 
         /* Load data */
-        $this->objectId = $data['id'];
+        $this->objectId = (int)$data['id'];
         $this->load_fromArray($data);
 
         /* Return success */

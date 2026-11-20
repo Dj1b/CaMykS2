@@ -4,9 +4,9 @@
  * <br />Abstract library to create module objects to manage data.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre9
+ * @version 1.0pre10
  * @date Creation: Jan 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -98,7 +98,7 @@ abstract class ModuleLibrary extends PluginLibrary {
 
         /* Set up database tables */
         if ($this->databaseConnector !== false) {
-            $this->dbTableName = $this->databaseConnector->get_tablePrefix().$this->libraryName;
+            $this->dbTableName = $this->databaseConnector->get_tablePrefix().$parent->libraryName.$this->libraryName;
             $this->dbLocaleTableName = $this->dbTableName.'Locale';
         } else {
             $this->dbTableName = $this->libraryName;
@@ -178,7 +178,9 @@ abstract class ModuleLibrary extends PluginLibrary {
         global $CaMykS;
 
         /* Load plugin manager */
-        $pluginManager = $CaMykS->get_module('SystemPluginManager');
+        $pluginManager = $CaMykS->get_module('SystemPluginManager', true);
+        if ($pluginManager === false)
+            return false;
 
         /* Check localised library */
         if (count($this->attributesList['dbl']) > 0)
@@ -197,9 +199,9 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @param integer $objectId
      * @return ModuleLibrary
      */
-    public function get_newInstance(int $objectId=0): ModuleLibrary {
+    public function get_newInstance(?int $objectId=0): ModuleLibrary {
         $class = $this->libraryNamespace.'\\'.$this->libraryName;
-        return new $class($this->libraryParent, $objectId);
+        return new $class($this->libraryParent, $objectId ?? 0);
     }
 
     /* Mark: Data management methods */
@@ -214,7 +216,7 @@ abstract class ModuleLibrary extends PluginLibrary {
         if (!$this->check_attributesValues())
             return false;
 
-        if ($loadPreviousVersion) {
+        if ($loadPreviousVersion and $this->objectId > 0) {
             /* Load previous version */
             $this->previousVersion = $this->get_newInstance($this->objectId);
             $this->previousVersion->load(true);
@@ -452,7 +454,17 @@ abstract class ModuleLibrary extends PluginLibrary {
      * @return boolean success
      */
     public function create_DBTable(string $name, array $fields, array $params=array()): bool {
-        return $this->databaseConnector->create_table($name, $fields, $params);
+        global $CaMykS;
+
+        if (!$this->databaseConnector->create_table($name, $fields, $params))
+            return false;
+
+        /* Register newly created table in SystemPluginManager if loaded */
+        $pluginManager = $CaMykS->get_module('SystemPluginManager');
+        if ($pluginManager !== false)
+            $pluginManager->register_installedTable($name);
+
+        return true;
     }
 
     /**
@@ -612,7 +624,7 @@ abstract class ModuleLibrary extends PluginLibrary {
         /* Compile data for non-localised attributes */
         $values = array();
         foreach ($this->attributesList['db'] as $attributeName)
-            $values[$attributeName] = $this->libraryAttributes[$attributeName]->get_value();
+            $values[$attributeName] = $this->libraryAttributes[$attributeName]->export_forSaving();
 
         /* Build query for non-localised attributes */
         $query = new DatabaseQuery('insert');
@@ -629,6 +641,16 @@ abstract class ModuleLibrary extends PluginLibrary {
             $languages = $this->get_configValue('Admin_EditionLanguages', null, array());
             if (empty($languages) && isset($CaMykS))
                 $languages = $CaMykS->get_siteLanguages();
+            if (!is_array($languages))
+                $languages = array();
+
+            foreach ($this->attributesList['dbl'] as $attributeName) {
+                $val = $this->libraryAttributes[$attributeName]->get_values();
+                if (is_array($val)) {
+                    $languages = array_merge($languages, array_keys($val));
+                }
+            }
+            $languages = array_values(array_unique($languages));
 
             foreach ($languages as $language) {
                 $localeValues = array(
@@ -636,7 +658,7 @@ abstract class ModuleLibrary extends PluginLibrary {
                     '_ObjectLanguage' => $language,
                 );
                 foreach ($this->attributesList['dbl'] as $attributeName) {
-                    $localeValues[$attributeName] = $this->libraryAttributes[$attributeName]->get_value($language);
+                    $localeValues[$attributeName] = $this->libraryAttributes[$attributeName]->export_forSaving($language);
                 }
 
                 $localeQuery = new DatabaseQuery('insert');
@@ -659,7 +681,7 @@ abstract class ModuleLibrary extends PluginLibrary {
         /* Compile data for non-localised attributes */
         $values = array();
         foreach ($this->attributesList['db'] as $attributeName)
-            $values[$attributeName] = $this->libraryAttributes[$attributeName]->get_value();
+            $values[$attributeName] = $this->libraryAttributes[$attributeName]->export_forSaving();
 
         /* Build query for non-localised attributes */
         $query = new DatabaseQuery('update');
@@ -675,6 +697,16 @@ abstract class ModuleLibrary extends PluginLibrary {
             $languages = $this->get_configValue('Admin_EditionLanguages', null, array());
             if (empty($languages) && isset($CaMykS))
                 $languages = $CaMykS->get_siteLanguages();
+            if (!is_array($languages))
+                $languages = array();
+
+            foreach ($this->attributesList['dbl'] as $attributeName) {
+                $val = $this->libraryAttributes[$attributeName]->get_values();
+                if (is_array($val)) {
+                    $languages = array_merge($languages, array_keys($val));
+                }
+            }
+            $languages = array_values(array_unique($languages));
 
             foreach ($languages as $language) {
                 $localeValues = array(
@@ -682,7 +714,7 @@ abstract class ModuleLibrary extends PluginLibrary {
                     '_ObjectLanguage' => $language,
                 );
                 foreach ($this->attributesList['dbl'] as $attributeName) {
-                    $localeValues[$attributeName] = $this->libraryAttributes[$attributeName]->get_value($language);
+                    $localeValues[$attributeName] = $this->libraryAttributes[$attributeName]->export_forSaving($language);
                 }
 
                 $localeQuery = new DatabaseQuery('replace');
@@ -794,7 +826,7 @@ abstract class ModuleLibrary extends PluginLibrary {
         if (count($this->attributesList['dbl']) > 0) {
             /* Add system fields */
             $fields = array(
-                '_ObjectId'         => array('Type' => 'integer', 'Default' => 0, 'Min' => 0, 'Unsigned' => true, 'IndexName'=>true),
+                '_ObjectId'         => array('Type' => 'integer', 'Default' => 0, 'Min' => 0, 'Unsigned' => true, 'IndexName' => true, 'IndexLength' => 0),
                 '_ObjectLanguage'   => array('Type' => 'text', 'Default' => '', 'Length' => 16),
             );
 

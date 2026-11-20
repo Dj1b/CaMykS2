@@ -4,9 +4,9 @@
  * Module abstract library, extends Plugin.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre11
+ * @version 1.0pre12
  * @date Creation: Dec 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +29,12 @@ abstract class Module extends Plugin {
      * @brief List of module internal libraries names.
      */
     protected array $libraries = array();
+
+    /**
+     * @var boolean $hasWorkflow
+     * @brief Module manages workflow on its content objects.
+     */
+    protected bool $hasWorkflow = false;
 
     /**
      * Class constructor.
@@ -65,7 +71,8 @@ abstract class Module extends Plugin {
 
         /* Do libraries installation */
         foreach ($this->libraries as $library) {
-            if (!$this->$library->install()) {
+            $libraryInstance = $this->get_libraryInstance($library);
+            if ($libraryInstance === false or !$libraryInstance->install()) {
                 /* Add error */
 
                 /* Return false */
@@ -88,7 +95,8 @@ abstract class Module extends Plugin {
 
         /* Do libraries installation */
         foreach ($this->libraries as $library) {
-            if (!$library->uninstall()) {
+            $libraryInstance = $this->get_libraryInstance($library);
+            if ($libraryInstance === false or !$libraryInstance->uninstall()) {
                 /* Add error */
 
                 /* Return false */
@@ -108,9 +116,11 @@ abstract class Module extends Plugin {
         global $CaMykS;
 
         /* Return plugin manager answer */
-        foreach ($this->libraries as $library)
-            if (!$this->$library->is_installed())
+        foreach ($this->libraries as $library) {
+            $libraryInstance = $this->get_libraryInstance($library);
+            if ($libraryInstance === false or !$libraryInstance->is_installed())
                 return false;
+        }
 
         /* Return check success */
         return true;
@@ -217,14 +227,10 @@ abstract class Module extends Plugin {
     /**
      * Return library instance.
      * @param string $library
-     * @param integer $objectId
-     * @return ModuleLibrary|false
+     * @param mixed $objectParam
+     * @return PluginLibrary|false
      */
-    public function get_libraryInstance(string $library, int $objectId=0): ModuleLibrary|false {
-        /* Check library property exists */
-        if (isset($this->$library) && $this->$library instanceof ModuleLibrary)
-            return $this->$library->get_newInstance($objectId);
-
+    public function get_libraryInstance(string $library, mixed $objectParam=null): PluginLibrary|false {
         /* Check library is declared in module */
         if (!in_array($library, $this->libraries))
             return false;
@@ -251,7 +257,99 @@ abstract class Module extends Plugin {
             return false;
 
         /* Return new instance */
-        return new $libraryFullName($this, $objectId);
+        if (is_null($objectParam) || $objectParam === 0)
+            return new $libraryFullName($this);
+        return new $libraryFullName($this, $objectParam);
+    }
+
+    /* Mark: Workflow methods */
+
+    /**
+     * Check if module manages workflow.
+     * @return boolean result
+     */
+    public function has_workflow(): bool {
+        return $this->hasWorkflow;
+    }
+
+    /**
+     * Create a new workflow version for given content object.
+     * @param integer $contentId
+     * @param string|null $library
+     * @return WorkflowModuleLibrary|WorkflowContentModuleLibrary|false
+     */
+    public function create_contentNewVersion(int $contentId=0, ?string $library=null): WorkflowModuleLibrary|WorkflowContentModuleLibrary|false {
+        if (!$this->has_workflow() || $contentId <= 0)
+            return false;
+
+        /* Determine target content library */
+        if (is_null($library)) {
+            foreach ($this->libraries as $libName) {
+                if ($libName !== 'Configuration' && strpos($libName, '\\') === false) {
+                    $library = $libName;
+                    break;
+                }
+            }
+        }
+        if (is_null($library))
+            return false;
+
+        /* Load content instance and create new version */
+        $instance = $this->get_libraryInstance($library, $contentId);
+        if (!($instance instanceof WorkflowModuleLibrary) && !($instance instanceof WorkflowContentModuleLibrary))
+            return false;
+
+        if (!$instance->load(true))
+            return false;
+
+        return $instance->create_newVersion(true);
+    }
+
+    /**
+     * Update workflow status for given content object.
+     * @param integer $contentId
+     * @param integer $wfStatus
+     * @param string|null $library
+     * @return boolean success
+     */
+    public function update_contentWFStatus(int $contentId, int $wfStatus, ?string $library=null): bool {
+        if (!$this->has_workflow() || $contentId <= 0)
+            return false;
+
+        /* Determine target content library */
+        if (is_null($library)) {
+            foreach ($this->libraries as $libName) {
+                if ($libName !== 'Configuration' && strpos($libName, '\\') === false) {
+                    $library = $libName;
+                    break;
+                }
+            }
+        }
+        if (is_null($library))
+            return false;
+
+        /* Load content instance and update workflow status */
+        $instance = $this->get_libraryInstance($library, $contentId);
+        if ($instance instanceof WorkflowContentModuleLibrary) {
+            if (!$instance->load(true))
+                return false;
+            return $instance->update_wfStatus($wfStatus);
+        }
+
+        if ($instance instanceof WorkflowModuleLibrary) {
+            if (!$instance->load(true))
+                return false;
+            if ($wfStatus === 6)
+                return $instance->publish_version();
+            if ($wfStatus === 21)
+                return $instance->archive_version();
+
+            $instance->WFStatus = $wfStatus;
+            $instance->Status   = 1;
+            return $instance->save();
+        }
+
+        return false;
     }
 
     /* Mark: Private methods */
@@ -270,25 +368,6 @@ abstract class Module extends Plugin {
                 /* Return failure */
                 return false;
             }
-
-            /* Compute library full name */
-            $libraryFullName = $this->libraryNamespace.'\\'.$library;
-
-            /* Check fallback to legacy prefixed class name */
-            if (!class_exists($libraryFullName))
-                $libraryFullName = $this->libraryNamespace.'\\'.$this->libraryName.$library;
-
-            /* Check full library name */
-            if (!class_exists($libraryFullName)) {
-                /* Log error */
-                /* @TODO */
-
-                /* Return failure */
-                return false;
-            }
-
-            /* Create new object from library */
-            $this->$library = new $libraryFullName($this, 0);
         }
         return true;
     }
