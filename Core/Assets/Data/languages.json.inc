@@ -46,7 +46,7 @@
     "fi" : {"DefaultCountry" : "fi", "3LettersCode" : "fin", "Direction" : "ltr", "Title" : "Suomi"},
     "fj" : {"DefaultCountry" : null, "3LettersCode" : "fij", "Direction" : "ltr", "Title" : "Vosa Vakaviti"},
     "fo" : {"DefaultCountry" : null, "3LettersCode" : "fao", "Direction" : "ltr", "Title" : "føroyskt"},
-    "fr" : {"DefaultCountry" : null, "3LettersCode" : "fra", "Direction" : "ltr", "Title" : "Français"},
+    "fr" : {"DefaultCountry" : "fr", "3LettersCode" : "fra", "Direction" : "ltr", "Title" : "Français"},
     "fy" : {"DefaultCountry" : null, "3LettersCode" : "fry", "Direction" : "ltr", "Title" : "Frysk"},
     "ga" : {"DefaultCountry" : null, "3LettersCode" : "gle", "Direction" : "ltr", "Title" : "Gaeilge"},
     "gd" : {"DefaultCountry" : null, "3LettersCode" : "gla", "Direction" : "ltr", "Title" : "Gàidhlig"},
