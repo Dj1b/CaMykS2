@@ -3,19 +3,22 @@
  * @brief MediaPopup component, configuration library.
  * @details Plugin / Component Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Nov 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Components\MediaPopup;
+
+use CaMykS2\PluginConfiguration;
+
 /**
  * Configuration class.
  */
-final class Configuration extends \CaMykS2\PluginConfiguration {
+final class Configuration extends PluginConfiguration {
     /**
      * Class constructor.
      * @return void

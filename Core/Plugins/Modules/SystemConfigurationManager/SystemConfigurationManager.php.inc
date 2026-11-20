@@ -4,19 +4,22 @@
  * <br />Module to manage website configuration.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jun 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemConfigurationManager;
+
+use CaMykS2\AdminModule;
+
 /**
  * SystemConfigurationManager class.
  */
-final class SystemConfigurationManager extends \CaMykS2\AdminModule {
+final class SystemConfigurationManager extends AdminModule {
     /**
      * Class constructor.
      * @param string $location
@@ -61,12 +64,14 @@ final class SystemConfigurationManager extends \CaMykS2\AdminModule {
         $result = array();
 
         /* Load available themes from CMS */
-        $themes = $CaMykS->get_availableThemes();
+        $themes = $CaMykS->get_availableThemes(array('AddFolder'=>true));
 
         /* Check themes that support admin mode */
         foreach ($themes as $name => $theme)
-            if ($theme->support_adminMode())
-                $result[$name] = $name;
+            if ($theme->support_adminMode()) {
+                $names = explode(':', $name);
+                $result[$name] = $names[1];
+            }
 
         /* Return result */
         return $result;
@@ -83,12 +88,14 @@ final class SystemConfigurationManager extends \CaMykS2\AdminModule {
         $result = array();
 
         /* Load available themes from CMS */
-        $themes = $CaMykS->get_availableThemes();
+        $themes = $CaMykS->get_availableThemes(array('AddFolder'=>true));
 
         /* Check themes that support visit mode */
         foreach ($themes as $name => $theme)
-            if ($theme->support_visitMode())
-                $result[$name] = $name;
+            if ($theme->support_visitMode()) {
+                $names = explode(':', $name);
+                $result[$name] = $names[1];
+            }
 
         /* Return result */
         return $result;
@@ -105,12 +112,14 @@ final class SystemConfigurationManager extends \CaMykS2\AdminModule {
         $result = array();
 
         /* Load available templates from CMS */
-        $templates = $CaMykS->get_availableTemplates();
+        $templates = $CaMykS->get_availableTemplates(array('AddFolder'=>true));
 
         /* Check template that are not dedicated to admin mode */
         foreach ($templates as $name => $template)
-            if ($template->libraryName !== 'AdminPage')
-                $result[$name] = $name;
+            if ($template->libraryName !== 'AdminPage') {
+                $names = explode(':', $name);
+                $result[$name] = $names[1];
+            }
 
         /* Return result */
         return $result;

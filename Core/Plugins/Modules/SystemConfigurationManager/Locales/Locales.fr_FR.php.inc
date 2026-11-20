@@ -3,10 +3,10 @@
  * @brief SystemConfigurationManager plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Jun 2021
- * @date Modification: Nov 2021
- * @copyright 2021 CaMykS Team
+ * @date Modification: Nov 2026
+ * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY,
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -69,6 +69,7 @@ $locales = array(
     'Login' => 'Identifiant',
     'Password' => 'Mot de passe',
     'Port' => 'Port',
+    'Charset' => 'Encodage',
     'Secure' => 'S&eacute;curit&eacute;',
     'TablePrefix' => 'Pr&eacute;fixe des tables',
 
