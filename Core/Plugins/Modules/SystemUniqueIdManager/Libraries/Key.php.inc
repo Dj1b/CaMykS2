@@ -3,39 +3,41 @@
  * @brief SystemUniqueIdManager admin module, key library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre2
+ * @version 1.0pre3
  * @date Creation: Feb 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemUniqueIdManager;
-use CaMykS2\DbQuery;
-use CaMykS2\DbQueryWhereCondition;
+
+use CaMykS2\Module;
+use CaMykS2\SimpleModuleLibrary;
+use CaMykS2\DatabaseQuery;
+use CaMykS2\DatabaseQueryWhereCondition;
 
 /**
  * Key class.
  */
-final class Key extends \CaMykS2\ModuleLibrary {
+final class Key extends SimpleModuleLibrary {
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param Module $parent
      * @param integer $id
      * @return void
      */
     public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
-        parent::__construct($parent);
+        parent::__construct($parent, $id);
 
         /* Define management attributes */
         $this->define_databaseAttribute('CreationDate', 'Date',         true);
         $this->define_databaseAttribute('UniqueId',     'Text',         '', array('Length'=>36));
         $this->define_databaseAttribute('Plugin',       'Text',         '', array('Length'=>48));
-        $this->define_databaseAttribute('Object',       'Text',         '', array('Length'=>16));
+        $this->define_databaseAttribute('Object',       'Text',         '', array('Length'=>48));
         $this->define_databaseAttribute('ObjectId',     'Integer',      0, array('Unsigned'=>true));
-        $this->define_temporaryAttribute('Params',      'Params',       array());
     }
 
     /* Override PluginLibrary method */
@@ -56,16 +58,17 @@ final class Key extends \CaMykS2\ModuleLibrary {
 
     /**
      * Check object data
+     * @param boolean $loadPreviousVersion
      * @return boolean success
      */
-    public function check_data($loadPreviousVersion=false): bool {
+    public function check_data(bool $loadPreviousVersion=false): bool {
         /* Perform generic check_data method */
         if (parent::check_data(false) === false)
             return false;
 
         /* Check for unique id generating */
         if ($this->UniqueId === '')
-            $this->UniqueId = $this->generate_uniqueIdValue();
+            $this->UniqueId = (string)$this->generate_uniqueIdValue();
 
         /* Return success */
         return true;
@@ -89,7 +92,7 @@ final class Key extends \CaMykS2\ModuleLibrary {
      * @param array $params
      * @return array
      */
-    public function get_multiStatusValueList($params=array()): array {
+    public function get_multiStatusValueList(array $params=array()): array {
         /* Check params */
         $params = array_merge(array('AddAll'=>false), $params);
 
@@ -116,19 +119,22 @@ final class Key extends \CaMykS2\ModuleLibrary {
      */
     public function load_freeItem(): bool {
         /* Build query */
-        $query = new DbQuery('select');
+        $query = new DatabaseQuery('select');
         $query->add_table($this->dbTableName);
-        $query->add_whereCondition(new DbQueryWhereCondition('UniqueId', $uid));
+        $query->add_whereCondition(new DatabaseQueryWhereCondition('Status', 1));
+        $query->set_limit(1, 0);
 
         /* Execute query */
         if (!$this->execute_DBQuery($query))
             return false;
 
         /* Check exists */
-        if (($data = $this->get_DBQueryDataLine()) === false)
+        $data = $this->get_DBQueryDataLine();
+        if ($data === false || is_null($data))
             return false;
 
         /* Load object */
+        $this->objectId = (int)$data['id'];
         $this->load_fromArray($data);
 
         /* Return success */
@@ -144,7 +150,7 @@ final class Key extends \CaMykS2\ModuleLibrary {
         $c = 0;
 
         /* Check format to use */
-        $format = isset($this->Params['Format']) ? $this->Params['Format'] : $this->get_configValue('Generating_Format');
+        $format = isset($this->params['Format']) ? $this->params['Format'] : $this->get_configValue('Generating_Format');
 
         /* Check if max attempts limit is exceeded */
         while ($c++ < $this->get_configValue('Generating_MaxAttempts')) {
@@ -156,9 +162,9 @@ final class Key extends \CaMykS2\ModuleLibrary {
                 $uid = $this->compute_textUniqueId();
 
             /* Check if uid exists in database */
-            $query = new DbQuery('select');
+            $query = new DatabaseQuery('select');
             $query->add_table($this->dbTableName);
-            $query->add_whereCondition(new DbQueryWhereCondition('UniqueId', $uid));
+            $query->add_whereCondition(new DatabaseQueryWhereCondition('UniqueId', $uid));
 
             /* Execute query */
             if (!$this->execute_DBQuery($query))
@@ -186,8 +192,8 @@ final class Key extends \CaMykS2\ModuleLibrary {
      * @return string
      */
     private function compute_textUniqueId(): string {
-        $maxLength = isset($this->Params['Length']) ? $this->Params['Length'] : $this->get_configValue('Generating_TextLength');
-        return substr(uniqid(null, true), 0, $maxLength);
+        $maxLength = isset($this->params['Length']) ? $this->params['Length'] : $this->get_configValue('Generating_TextLength');
+        return substr(str_replace('.', '', uniqid('', true)), 0, (int)$maxLength);
     }
 
     /**

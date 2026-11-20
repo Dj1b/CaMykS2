@@ -4,19 +4,22 @@
  * <br />Module to manage unique ids.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemUniqueIdManager;
+
+use CaMykS2\AdminModule;
+
 /**
  * SystemUniqueIdManager class.
  */
-final class SystemUniqueIdManager extends \CaMykS2\AdminModule {
+final class SystemUniqueIdManager extends AdminModule {
     /**
      * @var boolean $hasConfiguration
      * @brief Plugin has a configuration.
@@ -50,20 +53,25 @@ final class SystemUniqueIdManager extends \CaMykS2\AdminModule {
      * @return mixed // unique ID on success, false on failure
      */
     public function get_newUniqueId($plugin, $object, $objectId, $params=array()): mixed {
+        /* Load Key library instance */
+        $key = $this->get_libraryInstance('Key');
+        if ($key === false)
+            return false;
+
         /* Check for free key or initialise new one */
-        if (count($params) == 0 or !$this->Key->load_freeItem())
-            $this->Key->initialise();
+        if (count($params) == 0 or !$key->load_freeItem())
+            $key->initialise();
 
         /* Update key attributes */
-        $this->Key->Status = 1;
-        $this->Key->Plugin = $plugin;
-        $this->Key->Object = $object;
-        $this->Key->ObjectId = $objectId;
-        $this->Key->Params = $params;
+        $key->Status = 2;
+        $key->Plugin = $plugin;
+        $key->Object = $object;
+        $key->ObjectId = $objectId;
+        $key->update_params($params);
 
         /* Save key */
-        if ($this->Key->save())
-            return $this->Key->UniqueId;
+        if ($key->save())
+            return $key->UniqueId;
 
         /* Unique key not generated, return failure */
         return false;

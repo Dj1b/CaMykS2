@@ -3,21 +3,24 @@
  * @brief SystemSessionManager admin module, session library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemSessionManager;
+
+use CaMykS2\Module;
+use CaMykS2\ModuleLibrary;
 use CaMykS2\Language;
 
 /**
  * Session class.
  */
-final class Session extends \CaMykS2\ModuleLibrary {
+final class Session extends ModuleLibrary {
     /**
      * Class constructor.
      * @param Object $parent
@@ -26,7 +29,7 @@ final class Session extends \CaMykS2\ModuleLibrary {
      */
     public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
-        parent::__construct($parent);
+        parent::__construct($parent, $id);
 
         /* Define management attributes */
         $this->define_databaseAttribute('PHPSessionId',         'UniqueId',     '');

@@ -4,19 +4,22 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: May 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 namespace CaMykS2\Plugins\Modules\SystemPluginManager;
+
+use CaMykS2\AdminModule;
+
 /**
  * SystemPluginManager class.
  */
-final class SystemPluginManager extends \CaMykS2\AdminModule {
+final class SystemPluginManager extends AdminModule {
     /**
      * @var array $libraries
      * @brief List of module internal libraries name.
@@ -24,10 +27,10 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
     protected array $libraries = array('Plugin');
 
     /**
-     * @var array $installedTables
+     * @var array|null $installedTables
      * @brief List of installed tables.
      */
-    private array $installedTables;
+    private ?array $installedTables = null;
 
     /**
      * Class constructor.
@@ -51,18 +54,19 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
             return false;
 
         /* Add its own information in plugin list data */
-        $this->Plugin->load_fromArray(array(
+        $pluginLibrary = $this->get_libraryInstance('Plugin');
+        $pluginLibrary->load_fromArray(array(
             'Status'    => 1,
             'Name'      => $this->libraryName,
             'Type'      => $this->pluginType,
             'Location'  => 'System',
             'Version'   => $this->pluginVersion,
         ));
-        if (!$this->Plugin->save())
+        if (!$pluginLibrary->save())
             return false;
 
-        /* Initialise installed tables list */
-        $this->installedTables = array();
+        /* Reset installed tables list so it will be reloaded on next check */
+        $this->installedTables = null;
 
         /* Return success */
         return true;
@@ -83,7 +87,10 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
         global $CaMykS;
 
         /* Load plugin information from database */
-        $pluginInfo = $this->Plugin->get_newInstance();
+        $pluginLibrary = $this->get_libraryInstance('Plugin');
+        if ($pluginLibrary === false)
+            return false;
+        $pluginInfo = $pluginLibrary->get_newInstance();
         if (!$pluginInfo->load_byName($name))
             return false;
 
@@ -118,7 +125,10 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
      */
     public function is_pluginEnabled($name): bool {
         /* Load plugin information from database */
-        $pluginInfo = $this->Plugin->get_newInstance();
+        $pluginLibrary = $this->get_libraryInstance('Plugin');
+        if ($pluginLibrary === false)
+            return false;
+        $pluginInfo = $pluginLibrary->get_newInstance();
         $pluginInfo->load_byName($name);
 
         /* Check plugin already exists */
@@ -126,7 +136,36 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
             return false;
 
         /* Return result from database */
-        return ($pluginInfo->Status === 1);
+        return ((int)$pluginInfo->Status === 1);
+    }
+
+    /**
+     * Return enabled plugin list.
+     * @param string|null $type
+     * @return array
+     */
+    public function get_enabledPluginList(?string $type=null): array {
+        /* Load Plugin library instance */
+        $pluginLibrary = $this->get_libraryInstance('Plugin');
+        if ($pluginLibrary === false)
+            return array();
+
+        /* Query enabled plugins from database */
+        $rows = $pluginLibrary->get_list(array(
+            'Status'    => 1,
+            'Type'      => $type ?? '',
+        ));
+
+        /* Build Plugin object list */
+        $plugins = array();
+        foreach ($rows as $id => $data) {
+            $plugin = $pluginLibrary->get_newInstance((int)$id);
+            $plugin->load_fromArray($data);
+            $plugins[$plugin->Name] = $plugin;
+        }
+
+        /* Return enabled plugins */
+        return $plugins;
     }
 
     /* Table/Library related tool methods */
@@ -142,6 +181,18 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
         return (in_array($tableName, $this->installedTables));
     }
 
+    /**
+     * Register a newly created table in the installed tables list.
+     * @param string $tableName
+     * @return void
+     */
+    public function register_installedTable(string $tableName): void {
+        if ($this->installedTables === null)
+            $this->load_installedTables();
+        if (!in_array($tableName, $this->installedTables))
+            $this->installedTables[] = $tableName;
+    }
+
     /* Private methods */
 
     /**
@@ -151,18 +202,28 @@ final class SystemPluginManager extends \CaMykS2\AdminModule {
     private function load_installedTables(): bool {
         global $CaMykS;
 
-        /* Load all tables in databases */
-        $list = $CaMykS->databaseConnection->get_tableList();
-
         /* Initialise installed tables list */
         $this->installedTables = array();
 
+        /* Get main database connection */
+        $dbConnection = &$CaMykS->get_databaseConnection();
+        if ($dbConnection === false)
+            return false;
+
+        /* Load all tables in databases */
+        $list = $dbConnection->get_tableList();
+        if (!is_array($list))
+            return false;
+
         /* Check for tables in website */
-        $tablePrefix = $CaMykS->databaseConnection->get_tablePrefix();
+        $tablePrefix = $dbConnection->get_tablePrefix();
         foreach ($list as $tableName) {
             if (string_startsWith($tableName, $tablePrefix))
                 $this->installedTables[] = $tableName;
         }
+
+        /* Return success */
+        return true;
     }
 }
 ?>

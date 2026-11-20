@@ -1,32 +1,34 @@
 <?php
 /**
- * @brief SystemSessionManager admin module, request library.
+ * @brief SystemSessionManager admin module, Session\Request library.
  * @details Plugin / Module Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1.1
+ * @version 1.0pre2
  * @date Creation: Jan 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace CaMykS2\Plugins\Modules\SystemSessionManager;
-use CaMykS2\Language;
+namespace CaMykS2\Plugins\Modules\SystemSessionManager\Session;
+
+use CaMykS2\Module;
+use CaMykS2\ChildModuleLibrary;
 
 /**
- * SystemSessionManagerSession class.
+ * Request class.
  */
-final class Request extends \CaMykS2\ModuleLibrary {
+final class Request extends ChildModuleLibrary {
     /**
      * Class constructor.
-     * @param Object $parent
+     * @param Module $parent
      * @param integer $id
      * @return void
      */
     public function __construct(Module &$parent, int $id=0) {
         /* Execute parent construct */
-        parent::__construct($parent);
+        parent::__construct($parent, $id);
 
         /* Define link to parent session attributes */
         $this->define_databaseAttribute('SessionId',            'ObjectId',     0);
@@ -54,7 +56,7 @@ final class Request extends \CaMykS2\ModuleLibrary {
         $this->define_databaseAttribute('ContentAction',        'Text',         '');
         $this->define_databaseAttribute('ContentStatus',        'Boolean',      false);
         $this->define_databaseAttribute('ContentObject',        'Text',         '');
-        $this->define_databaseAttribute('ContentObjectId',      'Integer',      '');
+        $this->define_databaseAttribute('ContentObjectId',      'Integer',      0);
     }
 }
 ?>
