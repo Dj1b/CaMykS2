@@ -3,9 +3,9 @@
  * @brief CaMykS generic abstract library.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: Oct 2019
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -72,7 +72,7 @@ abstract class CaMykSLibrary {
         $this->update_params($params);
     }
 
-    /* Mark : Data display methods */
+    /* Mark: Data display methods */
 
     /**
      * Return library name.

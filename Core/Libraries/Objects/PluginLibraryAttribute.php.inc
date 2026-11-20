@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin library attributes.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Jan 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -116,6 +116,14 @@ abstract class PluginLibraryAttribute {
     }
 
     /**
+     * Return all values.
+     * @return mixed
+     */
+    public function get_values(): mixed {
+        return $this->value;
+    }
+
+    /**
      * Set current value.
      * @param mixed $value
      * @param string $language
@@ -171,11 +179,23 @@ abstract class PluginLibraryAttribute {
         if ($this->isLocalised) {
             if (!is_array($this->value))
                 $this->value = array();
-            foreach ($this->get_configValue('Admin_EditionLanguages') as $language) {
-                if (isset($array[$this->get_fullName($language)]))
-                    $this->value[(string)$language] = $this->read_valueFromSave($array[$this->get_fullName($language)]);
-                else
-                    $this->value[(string)$language] = $this->get_defaultValue();
+
+            $prefix = $this->libraryName . CAMYKS_ATTRIBUTE_FULLNAME_SEPARATOR;
+            $prefixLen = strlen($prefix);
+
+            foreach ($array as $key => $val) {
+                if (str_starts_with($key, $prefix)) {
+                    $lang = substr($key, $prefixLen);
+                    $this->value[(string)$lang] = $this->read_valueFromSave($val);
+                }
+            }
+
+            $languages = $this->get_configValue('Admin_EditionLanguages');
+            if (is_array($languages)) {
+                foreach ($languages as $language) {
+                    if (!isset($this->value[(string)$language]))
+                        $this->value[(string)$language] = $this->get_defaultValue();
+                }
             }
         } else {
             if (isset($array[$this->get_fullName()]))
@@ -187,10 +207,11 @@ abstract class PluginLibraryAttribute {
 
     /**
      * Return optimised value for saving.
+     * @param mixed $language
      * @return mixed
      */
-    public function export_forSaving(): mixed {
-        return $this->value;
+    public function export_forSaving(mixed $language=null): mixed {
+        return $this->optimise_valueToSave($this->get_value($language));
     }
 
     /**
@@ -367,6 +388,25 @@ abstract class PluginLibraryAttribute {
      */
     public function get_params(): array {
         return $this->params;
+    }
+
+    /**
+     * Set or update a parameter value.
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function set_param(string $name, mixed $value): void {
+        $this->params[$name] = $value;
+    }
+
+    /**
+     * Update multiple parameters.
+     * @param array $params
+     * @return void
+     */
+    public function set_params(array $params=array()): void {
+        $this->params = array_merge($this->params, $params);
     }
 }
 ?>

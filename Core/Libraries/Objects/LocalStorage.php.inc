@@ -4,9 +4,9 @@
  * <br />Manages local files storage, using file system or database.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre6
+ * @version 1.0pre7
  * @date Creation: Dec 2020
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2020 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -99,7 +99,7 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $name
      * @return array
      */
-    public function get_configuration(string $plugin, string $library, string $name): array {
+    public function get_configuration(string $plugin, string $library, string $name): array|false {
         $this->load_storageMode();
 
         if ($this->storageMode === 'Database') {
@@ -111,11 +111,11 @@ final class LocalStorage extends CaMykSLibrary {
         }
 
         /* Check data */
-        if ($data === false)
+        if ($data === false || $data === '')
             return false;
 
         /* Return decoded JSON data */
-        return json_decode($data);
+        return (array)json_decode($data, true);
     }
 
     /**
@@ -155,10 +155,10 @@ final class LocalStorage extends CaMykSLibrary {
 
         if ($this->storageMode === 'Database') {
             /* Save data to database */
-            return $this->storageManager->delete_configuration($plugin, $library, $name, $data);
+            return $this->storageManager->delete_configuration($plugin, $library, $name);
         } else {
             /* Save data to files */
-            return $this->delete_configurationFile($plugin, $library, $name, $data);
+            return $this->delete_configurationFile($plugin, $library, $name);
         }
     }
 
@@ -208,10 +208,11 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $plugin
      * @param string $library
      * @param string $name
-     * @return array
+     * @return string|false
      */
-    private function get_configurationFile(string $plugin, string $library, string $name): array {
-        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
+    private function get_configurationFile(string $plugin, string $library, string $name): string|false {
+        global $CaMykS;
+        $file = new File($CaMykS->get_websiteFileFullPath($this->storageFolder.'/'.$plugin.'/'.$library), $name.'.json.inc');
         return $file->get_contents();
     }
 
@@ -220,17 +221,19 @@ final class LocalStorage extends CaMykSLibrary {
      * @param string $plugin
      * @param string $library
      * @param string $name
-     * @param array $data
+     * @param mixed $data
      * @return boolean success
      */
-    private function save_configurationFile(string $plugin, string $library, string $name, array $data): bool {
+    private function save_configurationFile(string $plugin, string $library, string $name, mixed $data): bool {
         global $CaMykS;
 
+        $folder = $CaMykS->get_websiteFileFullPath($this->storageFolder.'/'.$plugin.'/'.$library);
+
         /* Ensure folder path exists */
-        folder_completePath($CaMykS->get_websiteFileFullPath('').'/'.$this->storageFolder.'/'.$plugin.'/'.$library);
+        folder_completePath($folder);
 
         /* Write file */
-        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc', 'Write');
+        $file = new File($folder, $name.'.json.inc', 'Write');
         return $file->write($data);
     }
 
@@ -242,7 +245,8 @@ final class LocalStorage extends CaMykSLibrary {
      * @return boolean success
      */
     private function delete_configurationFile(string $plugin, string $library, string $name): bool {
-        $file = new File($this->storageFolder.'/'.$plugin.'/'.$library, $name.'.json.inc');
+        global $CaMykS;
+        $file = new File($CaMykS->get_websiteFileFullPath($this->storageFolder.'/'.$plugin.'/'.$library), $name.'.json.inc', 'Delete');
         return $file->delete();
     }
 
@@ -265,7 +269,7 @@ final class LocalStorage extends CaMykSLibrary {
         /* Check database storage is available */
         if ($CaMykS->get_configValue('Website_LocalStorage') === 'Database') {
             $this->load_storageManager();
-            if ($this->storageManager === false)
+            if ($this->storageManager === false or !$this->storageManager->is_installed())
                 $this->storageMode = 'Files';
         }
     }
@@ -275,6 +279,8 @@ final class LocalStorage extends CaMykSLibrary {
      * @return void
      */
     private function load_storageManager(): void {
+        global $CaMykS;
+
         $this->storageManager = $CaMykS->get_module('SystemFileStorageManager');
     }
 }

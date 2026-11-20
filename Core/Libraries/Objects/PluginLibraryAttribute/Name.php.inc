@@ -3,9 +3,9 @@
  * @brief NamePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre5
+ * @version 1.0pre6
  * @date Creation: May 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,8 +31,17 @@ final class NamePluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @return boolean result
      */
     public function check_value(): bool {
+        if ($this->isLocalised && is_array($this->value)) {
+            foreach ($this->value as $lang => $value) {
+                $value = is_array($value) ? (string)reset($value) : (string)$value;
+                $value = preg_replace('/'.$this->params['ValidationRegex'].'/', $this->params['ReplacementChar'], $value);
+                $this->value[$lang] = substr($value, 0, $this->params['Length']);
+            }
+            return true;
+        }
+
         /* Check validated characters */
-        $this->value = preg_replace('/'.$this->params['ValidationRegex'].'/', $this->params['ReplacementChar'], $this->value);
+        $this->value = preg_replace('/'.$this->params['ValidationRegex'].'/', $this->params['ReplacementChar'], (string)$this->value);
 
         /* Check length */
         $this->value = substr($this->value, 0, $this->params['Length']);

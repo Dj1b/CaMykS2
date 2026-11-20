@@ -4,9 +4,9 @@
  * <br />Abstract library to create plugin objects.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre10
+ * @version 1.0pre11
  * @date Creation: Jan 2021
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -132,6 +132,33 @@ abstract class PluginLibrary extends CaMykSLibrary {
         return array();
     }
 
+    /**
+     * Set or update a library attribute parameter.
+     * @param string $attribute
+     * @param string $param
+     * @param mixed $value
+     * @return boolean success
+     */
+    public function set_attributeParam(string $attribute, string $param, mixed $value): bool {
+        if (!isset($this->libraryAttributes[$attribute]))
+            return false;
+        $this->libraryAttributes[$attribute]->set_param($param, $value);
+        return true;
+    }
+
+    /**
+     * Update multiple library attribute parameters.
+     * @param string $attribute
+     * @param array $params
+     * @return boolean success
+     */
+    public function set_attributeParams(string $attribute, array $params=array()): bool {
+        if (!isset($this->libraryAttributes[$attribute]))
+            return false;
+        $this->libraryAttributes[$attribute]->set_params($params);
+        return true;
+    }
+
     /* Mark: Override CaMykSLibrary methods */
 
     /**
@@ -177,6 +204,30 @@ abstract class PluginLibrary extends CaMykSLibrary {
      * @return boolean success
      */
     abstract public function delete(): bool;
+
+    /**
+     * Install object.
+     * @return boolean success
+     */
+    public function install(): bool {
+        return true;
+    }
+
+    /**
+     * Uninstall object.
+     * @return boolean success
+     */
+    public function uninstall(): bool {
+        return true;
+    }
+
+    /**
+     * Check library is installed.
+     * @return boolean result
+     */
+    public function is_installed(): bool {
+        return true;
+    }
 
     /* Mark: Values related methods */
 
@@ -296,6 +347,10 @@ abstract class PluginLibrary extends CaMykSLibrary {
         /* Check core fallback type */
         if (!class_exists($attributeType))
             $attributeType = 'CaMykS2\\'.$type.'PluginLibraryAttribute';
+
+        /* Check alias fallback type */
+        if (!class_exists($attributeType) && $type === 'Email')
+            $attributeType = 'CaMykS2\\EmailAddressPluginLibraryAttribute';
 
         /* Check type */
         if (!class_exists($attributeType)) {

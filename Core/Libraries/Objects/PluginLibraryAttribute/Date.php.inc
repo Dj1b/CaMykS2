@@ -3,9 +3,9 @@
  * @brief DatePluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre3
+ * @version 1.0pre4
  * @date Creation: Jan 2022
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2022 - 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,13 +36,18 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
      * @return mixed
      */
     protected function read_valueFromSave(mixed $value): mixed {
-        return strtotime($value);
+        if (is_null($value) || $value === '' || $value === false || $value === 0 || $value === '0' || str_starts_with((string)$value, '0000-00-00'))
+            return 0;
+        if (is_numeric($value))
+            return (int)$value;
+        $ts = strtotime((string)$value);
+        return ($ts !== false) ? $ts : 0;
     }
 
     /**
      * Return optimise value for save.
      * @param mixed $value
-     * @return $mixed
+     * @return mixed
      */
     protected function optimise_valueToSave(mixed $value): mixed {
         return $this->format_date($value);
@@ -53,7 +58,8 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
      * @return boolean result
      */
     public function check_value(): bool {
-
+        if ($this->value === false || is_null($this->value) || $this->value === '')
+            $this->value = 0;
 
         /* Return value is conform */
         return true;
@@ -66,6 +72,8 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
     protected function get_defaultValue(): mixed {
         if ($this->defaultValue === true)
             return time();
+        if ($this->defaultValue === false || is_null($this->defaultValue))
+            return 0;
         return $this->defaultValue;
     }
 
@@ -92,11 +100,27 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
     /* Mark: Specific methods */
 
     /**
-     * Return formated date.
+     * Return formatted date or null when unset.
      * @param mixed $value
-     * @return string
+     * @return string|null
      */
-    private function format_date(mixed $value): string {
+    private function format_date(mixed $value): ?string {
+        if (is_null($value) || $value === false || $value === '' || $value === 0 || $value === '0')
+            return null;
+
+        if (!is_numeric($value)) {
+            if (str_starts_with((string)$value, '0000-00-00'))
+                return null;
+            $ts = strtotime((string)$value);
+            if ($ts === false || $ts <= 0)
+                return null;
+            $value = $ts;
+        } else {
+            $value = (int)$value;
+            if ($value <= 0)
+                return null;
+        }
+
         if ($this->params['Format'] == 'DateTime')
             return date('Y-m-d H:i:s', $value);
 
@@ -106,7 +130,7 @@ class DatePluginLibraryAttribute extends PluginLibraryAttribute {
         if ($this->params['Format'] == 'Time')
             return date('H:i:s', $value);
 
-        return '';
+        return null;
     }
 }
 ?>

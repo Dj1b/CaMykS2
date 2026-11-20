@@ -3,9 +3,9 @@
  * @brief UniqueIdPluginLibraryAttribute object.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre1
+ * @version 1.0pre2
  * @date Creation: Oct 2026
- * @date Modification: Oct 2026
+ * @date Modification: Nov 2026
  * @copyright 2026 CaMykS Team
  * @note This program is distributed as is - WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,7 +22,7 @@ final class UniqueIdPluginLibraryAttribute extends TextPluginLibraryAttribute {
      * @var constant array SUBPARAMS
      * @brief Attribute level 3 default parameters.
      */
-    protected const SUBPARAMS = array('Length'=>32, 'ValidationRegex'=>'[^0-9a-f]*', 'ReplacementChar'=>'');
+    protected const SUBPARAMS = array('Length'=>36, 'ValidationRegex'=>'[^0-9a-f\-]*', 'ReplacementChar'=>'');
 
     /* Mark: Override PluginLibraryAttribute methods */
 
