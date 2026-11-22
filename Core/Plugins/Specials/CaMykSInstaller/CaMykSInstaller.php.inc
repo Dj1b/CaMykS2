@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller special plugin.
  * @details Plugin / Plugin Engine
  * @author CaMykS Team <CaMykS.contact@gmail.com>
- * @version 1.0pre13
+ * @version 1.0pre14
  * @date Creation: May 2021
  * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -768,6 +768,16 @@ final class CaMykSInstaller extends Plugin {
             }
         }
 
+        /* Update website status in website configuration file */
+        $configuration = new ConfigurationFile('Website', 'Website', 'Write');
+        $configuration->load();
+        $configuration->merge(array('Website_Status' => 1));
+        if (!$configuration->save()) {
+            $this->initialise_FinalisationError($this->get_locale('Error_CantWriteWebsiteConfiguration'), $installationManifest);
+            return;
+        }
+        $installationManifest[] = $this->get_locale('Manifest_WebsiteStatusUpdated');
+
         /* Save installation manifest */
         $CaMykS->set_sessionValue('InstallationManifest', $installationManifest);
 
@@ -811,21 +821,6 @@ final class CaMykSInstaller extends Plugin {
      */
     private function initialise_DisplayInstallationDone(): void {
         global $CaMykS;
-
-        /* Update website configuration status *
-        $configuration = new ConfigurationFile('Website', 'Website', 'Write');
-        $configuration->load();
-        $configuration->merge($this->currentConfiguration['Website']);
-        if (!$configuration->save()) {
-            /* Define error *
-            $CaMykS->set_sessionValue('AdminInterface-Error', $this->get_locale('Error_CantWriteWebsiteConfiguration'));
-
-            /* Update layout *
-            $this->update_selectedLayout('FinalisationError');
-
-            /* Avoid doing other checks and installation *
-            return;
-        }
 
         /* Read admin configuration to get admin entry point */
         $CaMykS->load_configuration('Admin');

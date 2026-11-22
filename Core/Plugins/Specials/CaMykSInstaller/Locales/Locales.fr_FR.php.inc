@@ -3,7 +3,7 @@
  * @brief CaMykSInstaller plugin, french dictionary.
  * @details Plugin / Dictionary
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: Jun 2021
  * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -64,6 +64,7 @@ $locales = array(
     'Manifest_PluginInstalled' => 'Installation du plugin %s.',
     'Manifest_AdminAccountCreated' => 'Cr&eacute;ation du compte administrateur principal.',
     'Manifest_FirstPageCreated' => 'Cr&eacute;ation de la premi&egrave;re page du site.',
+    'Manifest_WebsiteStatusUpdated' => 'Activation du site.',
 
     /* Errors */
     'Error_ConfigurationFolderIsNotWritable' => 'Le dossier de configuration du site n\'est pas accessible en &eacute;criture.',
