@@ -3,7 +3,7 @@
  * @brief CaMykS version 2, CMS master class.
  * @details Engine / Master Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 2.0pre55
+ * @version 2.0pre57
  * @date Creation: Feb 2017
  * @date Modification: Nov 2026
  * @copyright 2017 - 2026 CaMykS Team
@@ -485,8 +485,8 @@ final class CaMykS {
         /* Start session */
         session_set_cookie_params(array(
             'Lifetime'  => $this->get_configValue('Engine_SessionLifetime', 24)*60,
-            'Path'      => parse_url($this->websiteURL, 'path').'/',
-            'Domain'    => parse_url($this->websiteURL, 'host'),
+            'Path'      => (parse_url($this->websiteURL, PHP_URL_PATH) ?: '').'/',
+            'Domain'    => parse_url($this->websiteURL, PHP_URL_HOST),
             'Secure'    => $this->get_configValue('Visit_SSL'),
             'HttpOnly'  => "1",
             'SameSite'  => $this->get_configValue('Engine_SessionSameSite', "Strict"),
@@ -516,8 +516,8 @@ final class CaMykS {
         /* Start session */
         session_set_cookie_params(array(
             'Lifetime'  =>  $this->get_configValue('Engine_SessionLifetime', 24)*60,
-            'Path'      => parse_url($this->websiteURL, 'path').'/',
-            'Domain'    => parse_url($this->websiteURL, 'host'),
+            'Path'      => (parse_url($this->websiteURL, PHP_URL_PATH) ?: '').'/',
+            'Domain'    => parse_url($this->websiteURL, PHP_URL_HOST),
             'Secure'    => $this->get_configValue('Admin_SSL'),
             'HttpOnly'  => "1",
             'SameSite'  => $this->get_configValue('Engine_SessionSameSite', "Strict"),
@@ -530,7 +530,14 @@ final class CaMykS {
         /* Load admin locales */
         $this->load_engineLocales('Admin', 'Admin', $this->currentLanguage);
 
+        /* Load template */
+        $this->currentTemplate = &$this->get_template('AdminPage', true, 'System');
+        $this->currentTemplate->initialise();
 
+        /* Load theme */
+        $this->currentTheme = &$this->get_theme($this->get_configValue('Admin_Theme'), true);
+        $this->currentTheme->initialise();
+        $this->currentTheme->load_adminStyleFiles();
 
         /* Run onAdminPageLoad event handlers */
         $this->run_eventHandlers('onAdminPageLoad');
@@ -542,6 +549,7 @@ final class CaMykS {
      */
     public function initialise_common(): void {
         /* Initialise database connection */
+        $this->load_mainDatabaseConnection();
 
         /* Load system plugins */
         $this->load_systemPlugins();
@@ -550,7 +558,7 @@ final class CaMykS {
         $this->load_websitePlugins();
 
         /* Check plugins for updates */
-        $this->check_plugins();
+        $this->check_pluginUpdates();
 
         /* Load client session */
 
@@ -1115,6 +1123,13 @@ final class CaMykS {
      * @return Plugin|false
      */
     public function &load_plugin(string $name, string $type, ?string $location=null): Plugin|false {
+        /* Check for Location:Plugin format */
+        if (str_contains($name, ':')) {
+            $parts = explode(':', $name, 2);
+            $location = $location ?? $parts[0];
+            $name = $parts[1];
+        }
+
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
 
@@ -1219,6 +1234,12 @@ final class CaMykS {
      * @return Plugin|false
      */
     public function &get_plugin(string $name, string $type, bool $autoLoad=false, ?string $location=null): Plugin|false {
+        /* Check for Location:Plugin format */
+        if (str_contains($name, ':')) {
+            $parts = explode(':', $name, 2);
+            $location = $location ?? $parts[0];
+            $name = $parts[1];
+        }
 
         /* Define plugins folder */
         $folder = ucwords(strtolower($type)).'s';
@@ -1491,9 +1512,53 @@ final class CaMykS {
 
         /* Load plugins */
         foreach ($enabledPlugins as $plugin) {
-            if ($this->get_plugin($plugin->Name, $plugin->Type, true, $plugin->Location) === false) {
+            $instance = $this->get_plugin($plugin->Name, $plugin->Type, true, $plugin->Location);
+            if ($instance === false) {
                 /* Plugin loading failed, log error */
                 $this->trigger_error('CaMykS', 102, 'CaMykS can\'t load enabled plugin '.$plugin->Name.'.', '', __FILE__, __LINE__-2);
+            } else {
+                /* Store installed version in plugin instance */
+                $instance->set_installedVersion($plugin->Version);
+            }
+        }
+    }
+
+    /**
+     * Check loaded plugins for updates.
+     * @return void
+     */
+    private function check_pluginUpdates(): void {
+        /* Load plugin manager */
+        $pluginManager = $this->get_module('SystemPluginManager');
+        if ($pluginManager === false)
+            return;
+
+        /* Iterate through all loaded plugins */
+        foreach ($this->plugins as $pluginFolder => $plugins) {
+            foreach ($plugins as $name => $plugin) {
+                /* Skip if plugin is not properly loaded */
+                if (!is_object($plugin))
+                    continue;
+
+                /* Get current installed version */
+                $installedVersion = $plugin->get_installedVersion();
+                if ($installedVersion === '')
+                    continue;
+
+                /* Compare version with source version */
+                if (version_compare($plugin->get_version(), $installedVersion, '>')) {
+                    /* Execute plugin update */
+                    if ($plugin->update($installedVersion)) {
+                        /* Update version in database */
+                        $pluginManager->update_pluginVersion($plugin->get_name(), $plugin->get_version());
+
+                        /* Update installed version in plugin object */
+                        $plugin->set_installedVersion($plugin->get_version());
+                    } else {
+                        /* Log error */
+                        $this->trigger_error('CaMykS', 103, 'Failed to update plugin '.$plugin->get_name().' from '.$installedVersion.' to '.$plugin->get_version().'.', '', __FILE__, __LINE__-8);
+                    }
+                }
             }
         }
     }
@@ -2330,12 +2395,6 @@ final class CaMykS {
 
         /* Try to connect */
         if (!$this->databaseConnection->open_connection()) {
-            /* Throw a fatal error */
-
-        }
-
-        /* Try to open database */
-        if (!$this->databaseConnection->open_database()) {
             /* Throw a fatal error */
 
         }
