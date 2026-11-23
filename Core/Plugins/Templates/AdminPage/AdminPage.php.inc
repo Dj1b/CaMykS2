@@ -3,7 +3,7 @@
  * @brief AdminPage template.
  * @details Plugin / Template engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre8
+ * @version 1.0pre9
  * @date Creation: Feb 2020
  * @date Modification: Nov 2026
  * @copyright 2020 - 2026 CaMykS Team
@@ -120,11 +120,14 @@ final class AdminPage extends Template {
         global $CaMykS;
 
         switch ($CaMykS->mode) {
-            case 2: /* Admin mode */
+            case CAMYKS_MODE_ADMIN:
+                /* Admin mode */
                 return $this->get_locale('HeaderTitle', array($CaMykS->get_configValue('Website_Title')));
-            case 3: /* Manager mode */
+            case CAMYKS_MODE_MANAGER:
+                /* Manager mode */
                 return $CaMykS->get_locale('TemplateHeaderTitle', 'CaMykSManager');
-            case 4: /* Install mode */
+            case CAMYKS_MODE_INSTALL:
+                /* Install mode */
 
                 break;
         }
@@ -141,14 +144,19 @@ final class AdminPage extends Template {
         global $CaMykS;
 
         switch ($CaMykS->mode) {
-            case 2: /* Admin mode */
-
-            case 3: /* Manager mode */
+            case CAMYKS_MODE_ADMIN:
+                /* Admin mode */
+                return '';
+            case CAMYKS_MODE_MANAGER:
+                /* Manager mode */
                 return $CaMykS->manager->get_homeLink();
-            case 4: /* Install mode */
-
-                break;
+            case CAMYKS_MODE_INSTALL:
+                /* Install mode */
+                return '';
         }
+
+        /* Default result */
+        return '';
     }
 
     /**
@@ -159,14 +167,19 @@ final class AdminPage extends Template {
         global $CaMykS;
 
         switch ($CaMykS->mode) {
-            case 2: /* Admin mode */
-
-            case 3: /* Manager mode */
+            case CAMYKS_MODE_ADMIN:
+                /* Admin mode */
+                return '';
+            case CAMYKS_MODE_MANAGER:
+                /* Manager mode */
                 return $CaMykS->manager->get_logoutLink();
-            case 4: /* Install mode */
-
-                break;
+            case CAMYKS_MODE_INSTALL:
+                /* Install mode */
+                return '';
         }
+
+        /* Default result */
+        return '';
     }
 }
 ?>
