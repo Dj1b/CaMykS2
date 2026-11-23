@@ -4,7 +4,7 @@
  * <br />Module to manage installed plugins.
  * @details Plugin / Module Engine
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre7
+ * @version 1.0pre8
  * @date Creation: May 2021
  * @date Modification: Nov 2026
  * @copyright 2021 - 2026 CaMykS Team
@@ -137,6 +137,32 @@ final class SystemPluginManager extends AdminModule {
 
         /* Return result from database */
         return ((int)$pluginInfo->Status === 1);
+    }
+
+    /**
+     * Update installed version of a plugin.
+     * @param string $name
+     * @param string $version
+     * @return boolean success
+     */
+    public function update_pluginVersion(string $name, string $version): bool {
+        /* Load plugin information from database */
+        $pluginLibrary = $this->get_libraryInstance('Plugin');
+        if ($pluginLibrary === false)
+            return false;
+        $pluginInfo = $pluginLibrary->get_newInstance();
+        if (!$pluginInfo->load_byName($name))
+            return false;
+
+        /* Check plugin exists */
+        if ($pluginInfo->objectId == 0)
+            return false;
+
+        /* Update version */
+        $pluginInfo->Version = $version;
+
+        /* Save plugin */
+        return $pluginInfo->save();
     }
 
     /**

@@ -4,7 +4,7 @@
  * <br />Parent object for Component, Module, Template, Theme.
  * @details Engine / Object Library
  * @author CaMykS Team <camyks.contact@gmail.com>
- * @version 1.0pre22
+ * @version 1.0pre23
  * @date Creation: Nov 2019
  * @date Modification: Nov 2026
  * @copyright 2019 - 2026 CaMykS Team
@@ -29,6 +29,12 @@ abstract class Plugin extends CaMykSLibrary {
      * @brief Plugin version.
      */
     protected string $pluginVersion = '1.0';
+
+    /**
+     * @var string $installedVersion
+     * @brief Plugin installed version in database.
+     */
+    protected string $installedVersion = '';
 
     /**
      * @var string $pluginType
@@ -205,6 +211,16 @@ abstract class Plugin extends CaMykSLibrary {
     }
 
     /**
+     * Update plugin.
+     * @param string $installedVersion
+     * @return boolean success
+     */
+    public function update(string $installedVersion): bool {
+        /* To be overridden by plugin implementations if migrations are required */
+        return true;
+    }
+
+    /**
      * Check plugin installation.
      * @return boolean result.
      */
@@ -311,6 +327,23 @@ abstract class Plugin extends CaMykSLibrary {
      */
     public function get_version(): string {
         return $this->pluginVersion;
+    }
+
+    /**
+     * Return plugin installed version.
+     * @return string
+     */
+    public function get_installedVersion(): string {
+        return $this->installedVersion;
+    }
+
+    /**
+     * Set plugin installed version.
+     * @param string $version
+     * @return void
+     */
+    public function set_installedVersion(string $version): void {
+        $this->installedVersion = $version;
     }
 
     /**
